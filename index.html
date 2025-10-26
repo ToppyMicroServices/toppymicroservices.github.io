@@ -3,34 +3,513 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToppyMicroServices OÜ</title>
-  <style>
-    body { font-family: -apple-system, Helvetica, sans-serif; margin: 3em; line-height: 1.6; max-width: 900px; }
-    h1 { font-size: 1.8em; }
-    h2 { margin-top: 1.6em; color: #555; }
-    a { color: #0066cc; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    footer { margin-top: 3em; font-size: 0.9em; color: #777; }
-  </style>
-  <!-- Favicon: ICO を使用 -->
+  <title>ToppyMicroServices OÜ — Independent AI & Control Research</title>
+  <meta name="description" content="ToppyMicroServices OÜ is an independent AI & Control research studio based in Tallinn, Estonia. We build open research that bridges feedback control and modern machine learning." />
+  <meta name="theme-color" content="#0b1221">
+  <link rel="canonical" href="https://toppymicros.com/" />
+
+  <!-- Favicon -->
   <link rel="icon" href="favicon.ico" sizes="any" type="image/x-icon">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <meta name="theme-color" content="#ffffff">
+
+  <!-- Open Graph / Twitter (basic, image can be added later) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ToppyMicroServices OÜ — Independent AI & Control Research" />
+  <meta property="og:description" content="Independent research studio bridging feedback control and modern ML." />
+  <meta property="og:url" content="https://toppymicros.com/" />
+  <meta property="og:site_name" content="ToppyMicroServices OÜ" />
+  <meta property="og:image" content="https://toppymicros.com/og-brand-clean.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://toppymicros.com/og-brand-clean.png" />
+  <meta property="og:image:alt" content="ToppyMicroServices — Independent AI & Control Research" />
+  <meta name="twitter:image:alt" content="ToppyMicroServices — Independent AI & Control Research" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Organization Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ToppyMicroServices OÜ",
+  "url": "https://toppymicros.com/",
+  "email": "info@toppymicros.com",
+  "logo": "https://toppymicros.com/og-brand-clean.png",
+    "description": "Independent AI & Control research studio based in Tallinn, Estonia.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Karamelli tn 2",
+      "postalCode": "11317",
+      "addressLocality": "Tallinn",
+      "addressRegion": "Harju County",
+      "addressCountry": "EE"
+    },
+    "sameAs": [
+      "https://github.com/ToppyMicroServices"
+    ],
+    "identifier": {
+      "@type": "PropertyValue",
+      "name": "Registry code",
+      "propertyID": "EE-AR",
+      "value": "16551297"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0b1221;           /* dark navy */
+      --fg: #e6e9f2;           /* near-white */
+      --muted: #a7b0c3;        /* muted fg */
+      --card: #121a2e;         /* card bg */
+      --accent: #5aa7ff;       /* blue */
+      --accent-2: #72e5b6;     /* teal */
+      --border: #1b2540;
+      --maxw: 1000px;
+      --navh: 64px; /* header height for scroll offset */
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #ffffff;
+        --fg: #0b1221;
+        --muted: #5b667a;
+        --card: #f7f9fc;
+        --accent: #0056cc;
+        --accent-2: #088a5b;
+        --border: #e6e9f2;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+
+    /* Header */
+    header { min-height: var(--navh); position: sticky; top: 0; backdrop-filter: saturate(150%) blur(8px); background: var(--bg); background: color-mix(in hsl, var(--bg) 88%, transparent); border-bottom: 1px solid var(--border); z-index: 20; }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { font-weight: 700; letter-spacing: .2px; }
+    .brand { display: inline-flex; align-items: center; gap: 8px; }
+    .brand-logo { height: 28px; width: auto; border-radius: 6px; opacity: .95; }
+    .nav a { color: var(--fg); opacity: .9; }
+    .nav .links { display: flex; gap: 18px; align-items: center; }
+    .btn { display: inline-block; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--fg); font-weight: 600; }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #0b1221; border: none; }
+
+    .section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:8px; }
+    .title-actions { display:flex; align-items:center; gap:14px; }
+    .btn.sm { padding: 8px 12px; font-weight: 600; }
+    .btn.quiet { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn.quiet:hover { color: var(--fg); border-color: var(--accent); text-decoration: none; }
+
+    /* GitHub icon link (header, top-right) */
+    .gh-link{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:32px; height:32px; border-radius:8px;
+      border:1px solid var(--border); background: var(--card);
+      text-decoration:none;
+    }
+    .gh-link:hover{ border-color: var(--accent); }
+    .gh-link svg{ width:18px; height:18px; fill: var(--fg); opacity:.9; }
+
+    /* Hero */
+    .hero { padding: 56px 0 24px; }
+    .hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 12px; line-height: 1.2; }
+    .hero p.lead { font-size: clamp(16px, 2vw, 18px); color: var(--muted); margin: 0 0 24px; }
+    .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .badge { border: 1px solid var(--border); background: var(--card); padding: 6px 10px; border-radius: 999px; font-size: 13px; color: var(--muted); }
+
+    /* Motto / prominent quote */
+    .motto{
+      position: relative;
+      margin: 14px 0;
+      padding: 16px 16px 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: linear-gradient(
+        180deg,
+        color-mix(in hsl, var(--accent) 4%, var(--card) 96%),
+        var(--card)
+      );
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+      scroll-margin-top: calc(var(--navh) + 10px);
+    }
+    .motto::before{
+      content: "“";
+      position: absolute;
+      top: -6px;
+      left: 10px;
+      font-size: clamp(28px, 4.5vw, 44px);
+      line-height: 1;
+      color: var(--accent);
+      opacity: .20;
+      pointer-events: none;
+    }
+    .motto blockquote{
+      margin: 0 0 4px 0;
+      font-style: italic;
+      font-size: clamp(16px, 2vw, 22px);
+      line-height: 1.3;
+      color: var(--fg);
+      letter-spacing: .05px;
+    }
+    .motto strong{
+      font-weight: 800;
+    }
+    .motto figcaption{
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .motto abbr{
+      text-decoration: none;
+      border-bottom: 1px dotted var(--border);
+      cursor: help;
+    }
+
+    /* Ensure in-page anchor targets appear below sticky header */
+    .hero, section { scroll-margin-top: calc(var(--navh) + 12px); }
+
+    /* Sections */
+    section { padding: 28px 0; border-top: 1px solid var(--border); }
+    h2 { font-size: 22px; margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card { grid-column: span 12; padding: 16px; border: 1px solid var(--border); background: var(--card); border-radius: 14px; }
+    .card h3 { margin: 0 0 6px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+    @media (min-width: 700px) { .card { grid-column: span 4; } }
+
+    ul.clean { list-style: none; padding-left: 0; margin: 0; }
+    ul.clean li { padding: 10px 0; border-bottom: 1px dashed var(--border); }
+    ul.clean li:last-child { border-bottom: none; }
+
+    /* Visual Roadmap */
+    .roadmap { margin-top: 8px; }
+    .roadmap-grid { 
+      display: grid; 
+      grid-template-columns: repeat(1, 1fr); 
+      gap: 12px; 
+      position: relative; 
+    }
+    @media (min-width: 700px) {
+      .roadmap-grid { grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    }
+    .rm-item { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      padding: 12px; 
+      position: relative; 
+    }
+    .rm-phase { 
+      font-weight: 700; 
+      letter-spacing: .2px; 
+      margin: 0 0 6px; 
+      font-size: 14px; 
+      color: var(--fg);
+    }
+    .rm-body { 
+      font-size: 14px; 
+      color: var(--muted);
+    }
+    /* connectors (desktop) */
+    @media (min-width: 700px) {
+      .rm-item::before { 
+        content: ""; 
+        position: absolute; 
+        top: -8px; 
+        left: 12px; 
+        right: 12px; 
+        height: 2px; 
+        background: var(--border); 
+      }
+      .rm-item::after {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px; height: 10px; border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 2px var(--bg);
+      }
+      .roadmap-grid > .rm-item:first-child::before { left: 50%; }
+      .roadmap-grid > .rm-item:last-child::before { right: 50%; }
+    }
+    /* Footer */
+    footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; padding: 24px 0 40px; }
+
+    /* Visually hidden, but accessible for screen readers; becomes visible when focused */
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    .sr-only:focus{
+      position:static;
+      width:auto;
+      height:auto;
+      margin:0;
+      clip:auto;
+      padding:8px 12px;
+      border-radius:8px;
+      background: var(--accent);
+      color:#0b1221; /* high contrast on accent background */
+      display:inline-block;
+      text-decoration:none;
+      font-weight:600;
+    }
+    /* Footer logo */
+    .footer-row { display:flex; align-items:center; gap:10px; }
+    .footer-logo { height:28px; width:auto; border-radius:6px; opacity:.95; }
+  </style>
 </head>
 <body>
-  <h1>ToppyMicroServices OÜ</h1>
-  <p>Independent AI & Control research studio based in Tallinn, Estonia.</p>
+  <a href="#main" class="sr-only">Skip to content</a>
 
-  <h2>Research</h2>
-  <ul>
-    <li><a href="https://arxiv.org/abs/2510.14925">Stable but Miscalibrated: A Kantian View on Overconfidence from Filters to Large Language Models</a></li>
-    <li><a href="https://github.com/ToppyMicroServices/MBS_analysis">MBS / Basel Dynamics Project</a></li>
-    <li><a href="https://zenodo.org/records/17358363">Zenodo Record #17358363</a></li>
-  </ul>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Main">
+      <a href="#main" class="brand" aria-label="Home">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" loading="lazy">
+        <span>ToppyMicroServices OÜ</span>
+      </a>
+      <div class="links">
+        <a href="#vision">Vision</a>
+        <a href="#research">Research</a>
+        <a href="#applications">Applications</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact" class="btn">Contact</a>
+        <a class="gh-link" href="https://github.com/ToppyMicroServices" aria-label="GitHub — ToppyMicroServices (opens in new tab)" title="GitHub — ToppyMicroServices" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
 
-  <h2>Contact</h2>
-  <p>Email: <a href="mailto:info@toppymicroservices.com">info@toppymicroservices.com</a></p>
+  <main id="main" class="container">
+    <section class="hero" aria-label="Hero">
+      <h1>Independent AI & Control research studio</h1>
+      <p class="lead">We bridge feedback control with modern machine learning to study stability, calibration, and reliability in reasoning systems — and we share our results openly.</p>
+      <div class="badge-row" aria-label="Highlights">
+        <span class="badge">Preprint (preliminary)</span>
+        <a class="badge" href="#vision" style="text-decoration:none">Reliability & Governance for LLMs</a>
+      </div>
 
-  <footer>© 2025 ToppyMicroServices OÜ</footer>
+
+
+    </section>
+
+    <section id="contact" aria-label="Contact">
+      <h2>Contact</h2>
+  <p>Email: <a href="mailto:info@toppymicros.com">info@toppymicros.com</a></p>
+    </section>
+
+    <section id="vision" aria-label="Vision & Commercialization">
+      <div class="section-head">
+        <h2 style="margin:0">Vision — Teach AI philosophy, Trust by limits</h2>
+        <div class="title-actions">
+          <a class="btn quiet sm" href="https://arxiv.org/abs/2510.14925">Read the preprint (preliminary)</a>
+          <a class="btn quiet sm" href="mailto:info@toppymicros.com">Contact us</a>
+        </div>
+      </div>
+
+      <figure class="motto" id="kant-quote" aria-label="Kant motto">
+        <blockquote>“The greatest—perhaps the only—use of the philosophy of pure reason is negative: not an organon for enlarging knowledge, but a discipline (training) for the setting of limits.”</blockquote>
+        <figcaption>— Immanuel Kant, <abbr title="Critique of Pure Reason">KrV</abbr> A795/B823 (paraphrase)</figcaption>
+      </figure>
+      <p class="lead" style="margin-top:8px">We operationalize this principle as engineering to <strong>contain hallucination</strong> (high‑confidence false content): a regulative, feedback‑based discipline that defines boundaries first, calibrates confidence, and maintains closed‑loop oversight with auditable logs. This is the core of AuditLoop.</p>
+
+      
+        <h3 style="margin:0 0 6px"><strong>AuditLoop</strong> — Stability & Governance for LLMs</h3>
+        <p style="margin:0">We commercialize a reliability & governance layer for LLM applications: closed-loop evaluation and optimization with audit‑ready reports, mapped to the EU AI Act, ISO/IEC 42001, and the NIST AI RMF.</p>
+
+
+      <div class="grid" aria-label="Business lines">
+        <div class="card">
+          <h3>A. Reliability & Governance SaaS</h3>
+          <p>Automatically measures <abbr title="Expected Calibration Error">ECE</abbr>/Brier/<abbr title="Population Stability Index">PSI</abbr>, LoopGain and variance shrinkage, citation consistency, and justified refusal F1 — feeding dashboards and audit reports.</p>
+          <p style="margin-top:8px; color: var(--muted)">Value: provides audit-ready evidence aligned with the EU AI Act (transparency, evaluation, record-keeping), ISO/IEC 42001, and the NIST AI RMF.</p>
+        </div>
+        <div class="card">
+          <h3>B. Closed-loop Optimization Middleware</h3>
+          <p>Auto-corrects production inference via a Prompt–Critique–Revision loop. Maintains token-budget parity while reducing hallucinations and dispersion.</p>
+          <p style="margin-top:8px; color: var(--muted)">Value: stabilizes quality KPIs (variance shrinkage) while keeping cost overruns in check.</p>
+        </div>
+        <div class="card">
+          <h3>C. Benchmarks & Conformity Reports</h3>
+          <p>Assigns “stability scores” for RAG/FAQ/procedural workloads. Delivers PDF/JSON reports usable for procurement and audits. Supports RAG evaluation (RAGAS-style metrics).</p>
+        </div>
+      </div>
+
+      <div class="card" aria-label="Targets & roadmap" style="margin-top:12px">
+        <h3 style="margin:0 0 6px">Targets & roadmap (to Dec 2026)</h3>
+        <div class="roadmap" aria-label="Roadmap timeline">
+          <div class="roadmap-grid">
+            <div class="rm-item">
+              <div class="rm-phase">Nov 2025–Jan 2026</div>
+              <div class="rm-body">Harden MVP SaaS (jobs, aggregation, PDF/JSON reports); enable Bedrock/Vertex connectors; initial RAG citation-consistency checks; recruit pilots and secure cloud credits.</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q1 2026</div>
+              <div class="rm-body">Scale closed-loop evaluations across providers (calibration drift, variance shrinkage); ship AuditLoop v0.2; run ~2 pilots with KPIs (ΔECE, ΔPSI, hallucination rate, refusal F1, LoopGain); release first audit-ready report templates; <em>prepare journal submission package</em> by end of Q1.</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q2 2026</div>
+              <div class="rm-body">Deliver metrics-to-clause mapping alpha (EU AI Act/NIST/ISO); add conformity report generator; 3–4 expanded pilots including production RAG; <em>target journal submission</em> — submission window Q2–Q3 depending on results.</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q3 2026</div>
+              <div class="rm-body">Harden closed-loop optimization middleware (Prompt–Critique–Revision); tune for cost parity; GA-beta of reliability dashboards; red-team and privacy risk reviews; revise/submit as needed.</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q4 2026</div>
+              <div class="rm-body">Release AuditLoop v1.0 and conformity reports v1; 6+ cumulative pilots; readiness for EU AI Act procurement checks.</div>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:8px; color: var(--muted)">Note: timelines are indicative and may shift ±1 quarter depending on cloud credits and pilot access.</p>
+      </div>
+
+  <p style="margin-top:8px; font-size: 14px; font-style: italic; color: var(--muted)">We also explore adjacent applications where privacy meets reliability — e.g., identity-neutral recruiting — strictly as a reference implementation of our trust-engineering framework.</p>
+
+
+      <section aria-label="Why now" style="padding-top:12px; border-top:none">
+        <h3>Why now (external demand)</h3>
+        <ul class="clean">
+          <li>EU AI Act: GPAI transparency obligations by ~Aug 2025; high-risk phases roll out through 2026. Strong demand for evaluation, logging, and accountability.</li>
+          <li>ISO/IEC 42001: AI management systems standard is live. Requires operating processes and evidence.</li>
+          <li>NIST AI RMF: Measurement-centric risk management is formalized — strong fit for an evaluation SaaS.</li>
+        </ul>
+      </section>
+
+      <div class="card" style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+        <div>
+          <strong>Pilot Program</strong>
+          <div style="color:var(--muted)">Seeking 3 pilot partners: validate ΔECE/ΔPSI, hallucination rate, refusal F1, and LoopGain improvements.</div>
+        </div>
+        <p style="margin:0">
+          <a class="btn primary" href="mailto:info@toppymicros.com?subject=Pilot%20Inquiry">Join the pilot</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="research" aria-label="Research">
+      <h2>Research</h2>
+      <div class="card" aria-label="Research status">
+        <h3 style="margin:0 0 6px">Status: Preliminary & Cloud‑backed follow‑ups</h3>
+        <p>Our current paper reports preliminary results. We are planning additional large‑scale experiments (multi‑provider RAG, calibration drift over time, closed‑loop stability under budget constraints) and will leverage cloud platforms (GCP / Azure / AWS) to run them reproducibly.</p>
+        <p style="margin-top:8px"><a class="btn" href="mailto:info@toppymicros.com?subject=Cloud%20collaboration%20%2F%20credits">Discuss cloud collaboration / credits</a></p>
+      </div>
+      <div class="card" aria-label="Research roadmap">
+        <h3 style="margin:0 0 6px">Research roadmap (to Dec 2026)</h3>
+        <div class="roadmap" aria-label="Research timeline">
+          <div class="roadmap-grid">
+            <div class="rm-item">
+              <div class="rm-phase">Nov 2025–Jan 2026</div>
+              <div class="rm-body">Implement black‑box suite (ECE/Brier/LogLoss; citation‑based hallucination; refusal F1; PSI; self‑consistency variance; G/A/S). Enforce token‑budget parity; shakedown run.</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q1 2026</div>
+              <div class="rm-body">Full factorial: Model × Protocol {Baseline, Critique, Critique+Retrieval} × PromptVar (30) × Seed (≥3) × Temp {0, 0.7} × Lang {JP, EN}. Auto‑generate PDF/JSON (ΔECE, ΔBrier, ΔHallucination, ΔPSI, G/A/S).</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q2 2026</div>
+              <div class="rm-body">Add gray‑box: logit‑lens / linear probe, activation patching, small‑perturbation sensitivity (output‑KL Lipschitz approx). Clause mapping α (EU AI Act / ISO 42001 / NIST AI RMF).</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q3 2026</div>
+              <div class="rm-body">Strengthen closed‑loop middleware under cost parity. Track KPIs (ΔECE, ΔBrier, ΔHallucination, ΔPSI, G/A/S). Dashboard beta; privacy &amp; red‑team review.</div>
+            </div>
+            <div class="rm-item">
+              <div class="rm-phase">Q4 2026</div>
+              <div class="rm-body">White‑box PoC (selected layers): local Jacobian spectral approx → H‑Risk (spectral margin, condition number). Release dataset/code v1.</div>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:8px; color: var(--muted)">Primary outcomes: ΔECE, ΔBrier, ΔHallucination, ΔPSI, G/A/S (LoopGain / pre–post KL / dispersion shrinkage). Secondary: answer length, latency, citation alignment.</p>
+      </div>
+      <ul class="clean">
+        <li>
+          <strong>Stable but Miscalibrated</strong> — A Kantian view on overconfidence from filters to LLMs.
+          <br><a href="https://arxiv.org/abs/2510.14925">arXiv:2510.14925</a> · <a href="https://doi.org/10.5281/zenodo.17358363">Zenodo</a> <span class="badge">Preprint (preliminary)</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="applications" aria-label="Applications / Case Studies">
+      <h2>Applications (Case Studies)</h2>
+      <div class="card">
+        <h3 style="margin:0 0 6px">Case Study: Identity-Neutral Matching (Blind Screening)</h3>
+        <p><strong>Problem.</strong> Early-stage hiring decisions can be noisy and biased when personally identifying information (PII) leaks into the loop.</p>
+        <p><strong>Approach.</strong> Apply our closed-loop trust engineering (Prompt–Critique–Revision) with privacy controls to evaluate requirements–skills outside of PII, logging provenance for audit.</p>
+        <ul class="clean">
+          <li><strong>Calibration & Stability:</strong> ECE/Brier reduction and variance shrinkage across prompt sets.</li>
+          <li><strong>Provenance:</strong> citation/traceability checks on requirement–evidence pairs.</li>
+          <li><strong>Justified refusal:</strong> policy-guarded rejection when PII or protected attributes are requested.</li>
+          <li><strong>Privacy risk:</strong> PII leakage rate ≤ threshold; data minimization by design.</li>
+        </ul>
+        <p style="margin-top:8px; color: var(--muted)">Compliance fit: EU AI Act (evaluation, logging), NIST AI RMF, ISO/IEC 42001; plus GDPR/ISO/IEC 27701 for privacy governance.</p>
+        <p style="margin-top:8px">Scope: reference implementation and audit reports. We are <em>not</em> a recruiting agency.</p>
+        <p style="margin-top:8px"><a class="btn" href="mailto:info@toppymicros.com?subject=Case%20Study%20Inquiry%20-%20Identity-Neutral%20Matching">Discuss this case study</a></p>
+      </div>
+    </section>
+
+    <section id="services" aria-label="Services">
+      <h2>Services</h2>
+      <div class="grid">
+        <div class="card">
+          <h2>Research & Modeling</h2>
+          <p>Control-theoretic analysis of ML systems, simulation studies, and quantitative metrics (stability, calibration, H-Risk).</p>
+        </div>
+        <div class="card">
+          <h3>Prototyping</h3>
+          <p>Lightweight tools, reproducible experiments, and open-source utilities for data, figures, and evaluation.</p>
+        </div>
+        <div class="card">
+          <h3>Advisory & Workshops</h3>
+          <p>Short-form advisory and internal workshops on uncertainty, evaluation, and reliability in AI.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" aria-label="About">
+      <h2>About</h2>
+      <p>We are a small, independent studio exploring the interface between <strong>feedback control</strong> and <strong>AI/ML</strong>. Our work focuses on epistemic stability, calibration, and methods that make intelligent systems more reliable. We value clear theory, reproducibility, and pragmatic prototypes.</p>
+    </section>
+
+    <section id="news" aria-label="News & Updates">
+      <h2>News</h2>
+      <ul class="clean">
+        <li><strong>Oct 2025</strong> — Posted the Kantian stability & miscalibration preprint on arXiv.</li>
+        <li><strong>Sep 2025</strong> — Public repo refresh for the MBS / Basel Dynamics project.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async">
+        <div>© 2025 ToppyMicroServices OÜ</div>
+      </div>
+      <div style="margin-top:8px">Legal address: Karamelli tn 2, 11317 Tallinn, Harju County, Estonia</div>
+      <div style="margin-top:8px">Registry code: 16551297</div>
+      <div style="margin-top:8px">Legal: Independent research. Views are those of the authors and not of any affiliated organization.</div>
+    </div>
+  </footer>
 </body>
 </html>
