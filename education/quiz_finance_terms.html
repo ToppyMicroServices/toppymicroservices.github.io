@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>[SKILL_NAME] 101: [SKILL_SUBTITLE]（学習ドリル）</title>
+  <link rel="alternate" hreflang="ja" href="quiz_finance_terms.html" />
+  <link rel="alternate" hreflang="en" href="quiz_finance_terms_en.html" />
+  <link rel="stylesheet" href="quiz.css" />
+  <style>
+    :root{
+      --bg-gradient-top:#0b0f14;
+      --bg-gradient-bottom:#0d141c;
+      --fg:#e7eef6;
+      --muted:#8aa0b5;
+      --accent:#4ea1ff;
+      --accent-2:#9be37f;
+      --card:#0f1722;
+      --glass:rgba(255,255,255,0.03);
+      --glass-2:rgba(255,255,255,0.02);
+      --border:#1c2531;
+      --ok:#36d399;
+      --warn:#ffcc66;
+      --danger:#ff6b6b;
+      --shadow:0 12px 30px rgba(2,6,23,.6);
+      --choice-hover:linear-gradient(90deg, rgba(78,161,255,0.04), rgba(155,227,127,0.02));
+      --control-padding-y:.5rem;
+      --control-padding-x:1rem;
+      --control-font-size:.9rem;
+      --control-min-height:44px;
+      --control-icon-size:1.05rem;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,var(--bg-gradient-top),var(--bg-gradient-top) 40%,var(--bg-gradient-bottom) 100%);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";transition:background .3s ease,color .3s ease}
+    a{color:var(--accent)}
+    .container{max-width:980px;margin:0 auto;padding:28px 16px 48px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}
+    h1{font-size:clamp(20px,3.6vw,34px);margin:0 0 6px}
+    h2{font-size:clamp(16px,2.6vw,22px);margin:0;color:var(--muted)}
+  .badge{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .75rem;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03);color:var(--muted);font-size:.85rem;line-height:1;min-height:var(--control-min-height)}
+    .badge.clickable{cursor:pointer;user-select:none}
+    .badge.clickable:focus{outline:2px solid var(--accent);outline-offset:2px}
+  .card{background:linear-gradient(180deg,var(--glass),var(--glass-2));border:1px solid rgba(255,255,255,0.03);border-radius:16px;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
+    .panel{display:grid;gap:12px;padding:16px;margin:16px 0}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .btn{appearance:none;border:1px solid var(--border);background:#141c27;color:var(--fg);padding:.55rem .8rem;border-radius:10px;cursor:pointer}
+    .btn:hover{border-color:#2a3748}
+  .lang-toggle{display:inline-flex;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(15,23,34,0.6);padding:4px;flex:0 0 auto;min-width:260px;flex-shrink:0}
+  .lang-toggle a, .lang-toggle button{padding:var(--control-padding-y) var(--control-padding-x);background:transparent;border:0;color:var(--muted);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:var(--control-font-size);white-space:nowrap;min-width:120px;text-align:center;flex:1 1 0;line-height:1}
+  .lang-toggle a.active, .lang-toggle button.active{background:linear-gradient(90deg,var(--accent),#59b0ff);color:white}
+  .theme-toggle{appearance:none;border:1px solid rgba(255,255,255,0.18);background:rgba(15,23,34,0.65);color:var(--muted);padding:var(--control-padding-y) var(--control-padding-x);border-radius:999px;font-size:var(--control-font-size);font-weight:600;cursor:pointer;transition:all .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:var(--control-min-height);line-height:1}
+  .theme-toggle:hover{color:var(--fg);border-color:rgba(255,255,255,0.35)}
+  .theme-toggle .theme-icon{font-size:var(--control-icon-size);line-height:1}
+  .theme-toggle .theme-label{line-height:1;font-size:var(--control-font-size)}
+  .header-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-start}
+  .brand{display:flex;align-items:flex-start;margin-bottom:6px}
+  .brand a{display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;color:var(--fg);font-weight:600;font-size:clamp(16px,2.1vw,20px);letter-spacing:.03em}
+  .brand img{height:40px;width:auto;max-width:140px}
+  .brand .name{white-space:nowrap}
+  .answer-btn{appearance:none;border:1px dashed rgba(255,255,255,0.16);background:rgba(15,23,34,0.6);color:var(--muted);padding:.35rem .8rem;border-radius:8px;cursor:pointer;transition:all .15s ease;font-size:.85rem}
+  .answer-btn:hover{color:var(--fg);border-color:rgba(255,255,255,0.35)}
+    .btn.ghost{background:transparent}
+    .btn.primary{background:linear-gradient(180deg,#1b2a3a,#132030);border-color:#223045}
+    .btn.success{background:#153521;border-color:#1d5b3f}
+    .btn.warn{background:#2a2412;border-color:#5f4c1a;color:#ffdf99}
+    .switch{display:inline-flex;gap:.6rem;align-items:center}
+    input[type="checkbox" i]{cursor:pointer}
+    input[type="checkbox"], input[type="radio"]{accent-color:var(--accent)}
+    /* Modern toggle for settings */
+    .switch input{position:absolute;opacity:0;width:0;height:0}
+    .switch .ui-toggle{width:52px;height:28px;border-radius:999px;border:1px solid var(--border);background:#101826;position:relative;display:inline-block;transition:all .18s ease;box-shadow:inset 0 2px 6px rgba(0,0,0,.35)}
+    .switch .ui-toggle::after{content:"";position:absolute;top:50%;left:4px;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:linear-gradient(180deg,#f9fafb,#dbe3ee);box-shadow:0 2px 4px rgba(0,0,0,.35);transition:left .18s ease}
+    .switch input:checked + .ui-toggle{background:linear-gradient(90deg,var(--accent),#59b0ff);border-color:#2a7dd6}
+    .switch input:checked + .ui-toggle::after{left:calc(100% - 26px)}
+    .switch .switch-label{color:var(--muted)}
+    .switch:focus-within .ui-toggle{outline:2px solid rgba(78,161,255,.6);outline-offset:2px}
+  /* Live score */
+  #score-badge{display:inline-flex;align-items:center;justify-content:center;gap:.25rem;padding:.25rem .75rem;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03);color:var(--muted);font-size:.85rem;line-height:1;min-height:var(--control-min-height);white-space:nowrap}
+    .scope, .tip{padding:16px}
+    .scope ul{margin:.35rem 0 .1rem 1.1rem}
+    .muted{color:var(--muted)}
+    details.cheatsheet{margin:16px 0}
+    details.cheatsheet summary{cursor:pointer;padding:12px 16px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));border:1px solid var(--border);color:var(--fg)}
+    .sheet{padding:16px 16px 4px}
+
+    /* Questions */
+    .q{padding:16px;margin:18px 0}
+    .q header{display:flex;justify-content:space-between;align-items:center;margin:0 0 12px}
+    .q h4{margin:0;font-size:18px}
+    .q .type{font-size:.8rem;color:var(--muted)}
+    .q .body{display:grid;gap:12px}
+    .choices{display:grid;gap:8px;margin-left:.2rem;padding:12px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,var(--glass),var(--glass-2))}
+    .choice{display:flex;gap:10px;align-items:center;padding:12px 12px 12px 46px;border:1px dashed transparent;border-radius:16px;position:relative;min-height:46px}
+  .choice{transition:all .18s ease;position:relative;padding:12px 12px 12px 46px;min-height:46px;border-radius:16px;border:1px dashed transparent}
+  .choice:hover{background:var(--choice-hover);transform:translateY(-3px);box-shadow:0 6px 18px rgba(2,6,23,.45)}
+  /* Hide native control but keep accessible */
+  .choice input{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;clip:rect(1px,1px,1px,1px);overflow:hidden}
+  /* Custom indicator */
+  .choice{--ind-size:18px;--ind-radius:50%}
+  .choice:has(input[type=checkbox]){--ind-radius:6px}
+  .choice::before{content:"";position:absolute;left:14px;top:50%;transform:translateY(-50%);width:var(--ind-size);height:var(--ind-size);border-radius:var(--ind-radius);border:2px solid var(--border);background:rgba(255,255,255,0.04)}
+  .choice::after{content:"";position:absolute;left:14px;top:50%;transform:translate(3px,-50%) scale(.2);transform-origin:center;border-radius:50%;width:calc(var(--ind-size) - 6px);height:calc(var(--ind-size) - 6px);background:linear-gradient(180deg,#5aaaff,#2d7df0);opacity:0;transition:transform .18s ease,opacity .18s ease}
+  .choice:has(input[type=checkbox])::after{content:"✓";width:auto;height:auto;background:transparent;color:white;font-weight:800;font-size:12px;left:calc(14px + 9px);transform:translate(-50%,-50%) scale(.2);text-shadow:0 1px 1px rgba(0,0,0,.35)}
+  .choice:has(input[type=checkbox]:checked)::before{background:linear-gradient(180deg,#3a8bff,#2d7df0);border-color:#2a7dd6}
+  .choice:has(input[type=radio]:checked)::before{background:linear-gradient(180deg,#3a8bff,#2d7df0);border-color:#2a7dd6}
+  .choice:has(input[type=radio]:checked)::after{opacity:1;transform:translate(3px,-50%) scale(1)}
+  .choice:has(input[type=checkbox]:checked)::after{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .choice:has(input:checked){background:linear-gradient(90deg, rgba(78,161,255,0.12), rgba(155,227,127,0.06));border:1px solid rgba(78,161,255,0.35);box-shadow:0 6px 18px rgba(2,6,23,.35)}
+  .choice:has(input:not(:checked)):hover{border:1px dashed rgba(255,255,255,0.12)}
+  .choice:has(input:focus-visible){outline:2px solid rgba(78,161,255,.7);outline-offset:2px}
+    .choice.correct{border-color:#1f3f2c;background:rgba(54,211,153,.07)}
+    .choice.wrong{border-color:#4a2525;background:rgba(255,107,107,.06)}
+    .explain{display:none;padding:12px;border-left:3px solid #2a6bb8;background:#0f1722;border-radius:8px}
+    .explain.show{display:block}
+  .q{transition:transform .12s ease, box-shadow .12s ease}
+  .q:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(2,6,23,.45)}
+    .q footer{display:flex;gap:8px;align-items:center}
+
+    /* Active tasks: classify (drag & drop) */
+    .dd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .bucket{border:1px dashed var(--border);border-radius:14px;padding:10px;min-height:72px;background:rgba(255,255,255,0.02)}
+    .bucket h5{margin:0 0 6px;font-size:.9rem;color:var(--muted)}
+    .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .6rem;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,0.04);cursor:grab;user-select:none;margin:4px}
+    .chip:active{cursor:grabbing}
+    .bucket.hover{border-color:rgba(78,161,255,0.55);background:rgba(78,161,255,0.06)}
+
+    /* Active tasks: segmented chart selector */
+    .mini-chart{position:relative;border:1px solid var(--border);border-radius:14px;padding:10px;background:linear-gradient(180deg,var(--glass),var(--glass-2))}
+    .segments{position:absolute;left:10px;right:10px;bottom:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .segment{appearance:none;border:1px solid var(--border);background:rgba(255,255,255,0.06);color:var(--muted);border-radius:10px;padding:.25rem .4rem;cursor:pointer}
+    .segment.selected{background:linear-gradient(90deg,var(--accent),#59b0ff);color:#fff;border-color:#2a7dd6}
+
+    /* Results */
+    .results{padding:16px;margin-top:10px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-top:1px solid var(--border);padding:8px 10px;text-align:left}
+    tr:hover td{background:rgba(255,255,255,.02)}
+
+    /* Accessibility */
+    .sr-only{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    @media print{
+      .panel button,.panel input,.panel .badge{display:none!important}
+      body{background:white;color:black}
+      .card{box-shadow:none;border-color:#ccc}
+    }
+
+    body[data-theme="light"]{
+      --bg-gradient-top:#f5f7fb;
+      --bg-gradient-bottom:#e6ebf5;
+      --fg:#1f2937;
+      --muted:#5a6b83;
+      --accent:#2563eb;
+      --accent-2:#16a34a;
+      --card:#ffffff;
+      --glass:rgba(255,255,255,0.92);
+      --glass-2:rgba(255,255,255,0.86);
+      --border:rgba(15,23,42,0.12);
+      --shadow:0 12px 30px rgba(15,23,42,0.12);
+      --choice-hover:linear-gradient(90deg, rgba(37,99,235,0.08), rgba(22,163,74,0.05));
+    }
+    body[data-theme="light"] .card{background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.9));border:1px solid rgba(15,23,42,0.1);box-shadow:var(--shadow);color:var(--fg)}
+    body[data-theme="light"] .lang-toggle{border:1px solid rgba(15,23,42,0.12);background:rgba(255,255,255,0.8)}
+    body[data-theme="light"] .lang-toggle a{color:#4b5563}
+    body[data-theme="light"] .theme-toggle{border-color:rgba(15,23,42,0.15);background:rgba(255,255,255,0.85);color:#4b5563}
+    body[data-theme="light"] .theme-toggle:hover{color:#1f2937;border-color:rgba(37,99,235,0.45)}
+    body[data-theme="light"] .answer-btn{background:rgba(255,255,255,0.9);color:#4b5563;border-color:rgba(15,23,42,0.16)}
+    body[data-theme="light"] .answer-btn:hover{color:#1f2937;border-color:rgba(37,99,235,0.35)}
+    body[data-theme="light"] .btn{border-color:rgba(15,23,42,0.12)}
+    body[data-theme="light"] .btn.ghost{background:rgba(255,255,255,0.7);color:#1f2937}
+    body[data-theme="light"] .btn.primary{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:#1d4ed8;color:#f8fafc}
+    body[data-theme="light"] .btn.success{background:#22c55e;border-color:#16a34a;color:#f0fdf4}
+    body[data-theme="light"] .btn.warn{background:#fde68a;border-color:#f59e0b;color:#92400e}
+    body[data-theme="light"] .choices{border-color:rgba(15,23,42,0.12);background:rgba(255,255,255,0.95)}
+    body[data-theme="light"] .choice:hover{box-shadow:0 6px 18px rgba(15,23,42,0.12)}
+    body[data-theme="light"] .choice::before{background:rgba(0,0,0,0.02);border-color:rgba(15,23,42,0.25)}
+    body[data-theme="light"] .choice.correct{border-color:rgba(34,197,94,0.45);background:rgba(34,197,94,0.15)}
+    body[data-theme="light"] .choice.wrong{border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.18)}
+    body[data-theme="light"] .explain{background:rgba(226,232,240,0.9);border-left:3px solid #2563eb;color:#1f2937}
+    body[data-theme="light"] .muted{color:#5a6b83}
+    body[data-theme="light"] .badge{border-color:rgba(15,23,42,0.15);background:rgba(255,255,255,0.75);color:#475569}
+    body[data-theme="light"] details.cheatsheet summary{background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,255,255,0.92));color:#1f2937}
+    body[data-theme="light"] .brand a{color:#1f2937}
+  </style>
+</head>
+<body data-theme="dark">
+  <!-- ====== SETTINGS (編集可) =============================================== -->
+  <script>
+    window.DRILL_SETTINGS = {
+  SKILL_NAME: "ECB/BIS 金融用語",
+  SKILL_SUBTITLE: "初心者のための基本用語マスター",
+  GOAL_DESCRIPTION: "主要な用語を定義し、自分の言葉で説明できる",
+  LEARNING_MODE_DEFAULT: true,
+  BRAND_NAME: "Toppy Microservices",
+  BRAND_LOGO: "/toppy_bimi.svg",
+  BRAND_URL: "/"
+};
+  </script>
+  <!-- ====================================================================== -->
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="/" aria-label="Toppy Microservices">
+            <img id="brand-logo" alt="Toppy Microservices ロゴ" src="/toppy_bimi.svg">
+            <span id="brand-name" class="name">Toppy Microservices</span>
+          </a>
+        </div>
+        <h1 id="title" data-i18n="title">[SKILL_NAME] 101: [SKILL_SUBTITLE]（学習ドリル）</h1>
+        <h3 id="subtitle" data-i18n="subtitle">[SKILL_NAME] を「[GOAL_DESCRIPTION]」まで引き上げるためのリーディング・ドリル</h3>
+      </div>
+      <div class="header-controls">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="ライトモードに切り替え" data-next="light">
+          <span class="theme-icon" aria-hidden="true">☀️</span>
+          <span class="theme-label">ライトモード</span>
+        </button>
+        <div class="lang-toggle" role="tablist" aria-label="Language switcher">
+          <a id="lang-ja" class="active" aria-current="page" href="quiz_finance_terms.html">日本語</a>
+          <a id="lang-en" href="quiz_finance_terms_en.html">English</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="クリックで学習/テスト切替">学習モード</button>
+        <span id="score-badge" aria-live="polite" title="ライブスコア">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="scope-h">
+      <h3 id="scope-h" data-i18n="scope_h">テストの範囲</h3>
+      <ul>
+  <li><strong>想定レベル</strong>: 金融は初心者だが、用語を覚えて資料を読み解けるようになりたい。</li>
+  <li><strong>対象トピック</strong>:
+    <ul>
+      <li>ECB / BIS / WDI / FRED の基礎</li>
+      <li>BSI（銀行統計）の「Outstanding（残高）」と部門区分</li>
+      <li>M3・ローン残高・政策金利・スプレッド・流動性</li>
+    </ul>
+  </li>
+  <li><strong>対象外</strong>: 上級デリバティブ、会計仕訳の詳細、バーゼル規制の数式導出。</li>
+</ul>
+    </section>
+
+    <section class="card panel" aria-labelledby="ops-h">
+      <h3 id="ops-h" data-i18n="ops_h">操作パネル</h3>
+      <div class="row">
+  <label class="switch" for="learningMode">
+    <input id="learningMode" type="checkbox" checked>
+    <span class="ui-toggle" aria-hidden="true"></span>
+    <span class="switch-label" data-i18n="learning_mode">学習モード（選択/入力した設問の解説を即表示）</span>
+  </label>
+      </div>
+      <div class="row">
+  <button class="btn ghost" id="showAll" data-i18n="show_all">解説 全表示</button>
+  <button class="btn ghost" id="hideAll" data-i18n="hide_all">解説 全非表示</button>
+  <button class="btn primary" id="regen" data-i18n="regen">結果テーブル再生成</button>
+  <button class="btn success" id="showAnswersScore">解答とスコアを表示</button>
+      </div>
+  <p class="tip muted" data-i18n="learning_tip"><strong>学習TIP:</strong> “分かった” を “自分の言葉で説明できる” 状態に引き上げることを目標にするべし。</p>
+    <p class="muted" id="usage-note">使い方: 1) 学習モードでは回答すると即座に解説が表示されます。2) 「解答とスコアを表示」で正解をハイライトし、現在のスコアを表示します。3) 「結果テーブル再生成」で回答一覧を更新します。</p>
+      <div class="results card" id="results" aria-live="polite" style="display:none"></div>
+    </section>
+
+    <details class="cheatsheet card">
+      <summary data-i18n="cheat_summary">Cheat Sheet: 最小パターン（任意セクション）</summary>
+      <div class="sheet">
+  <ul>
+    <li><strong>Outstanding</strong>: 期末残高＝ストック（状態量）。</li>
+    <li><strong>M3</strong>: “広いお金”。現金＋各種預金＋近似資産。</li>
+    <li><strong>Depth</strong>: 厚み＝規模。ローン残高 / 債券 Outstanding。</li>
+    <li><strong>Turnover</strong>: 売買の活発さ（株式市場で頻用）。</li>
+    <li><strong>DFR / MRO</strong>: ECB の主要政策金利。</li>
+    <li><strong>Liquidity</strong>: すぐ現金に変えられる度合い。</li>
+  </ul>
+</div>
+    </details>
+
+    <!-- ================== QUESTIONS ======================================= -->
+    <section id="questions">
+<!-- =============== FINANCE TERMS QUIZ =============== -->
+
+<!-- Q1 -->
+<article class="q card" data-id="Q1" data-type="mc" data-answer="b">
+  <header>
+    <h4 data-i18n="Q1_h">Q1: “Outstanding” の最も近い意味は？</h4>
+    <span class="type" data-i18n="Q1_type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <p>ECB BSI の「Outstanding amounts」における “Outstanding” は何を指す？</p>
+    <fieldset class="choices">
+  <label class="choice"><input type="radio" name="Q1" value="a"> <span data-i18n="Q1_a">A. 当月の新規取引の合計（フロー）</span></label>
+  <label class="choice"><input type="radio" name="Q1" value="b"> <span data-i18n="Q1_b">B. ある時点で未消化で残っている金額（ストック）</span></label>
+  <label class="choice"><input type="radio" name="Q1" value="c"> <span data-i18n="Q1_c">C. 政策金利の誘導目標値</span></label>
+    </fieldset>
+    <div class="explain" id="exp-Q1">
+      <strong>解説:</strong> Outstanding は “期末残高” ＝ ストック。取引フローとは区別される。
+      物理のアナロジーでは「状態量」に近い。
+    </div>
+  </div>
+</article>
+
+<!-- Q17 (Classify: Drag & Drop) -->
+<article class="q card" data-id="Q17" data-type="classify" data-answer="stock:a,c,e;flow:b,d,f">
+  <header>
+    <h4>Q17: 次の用語を “ストック(Stock)” と “フロー(Flow)” に分類せよ（ドラッグ&ドロップ）</h4>
+    <span class="type">Type: Classify (DnD)</span>
+  </header>
+  <div class="body">
+    <div class="dd-wrap">
+      <div class="bucket" data-group="stock" aria-label="Stock bucket">
+        <h5>ストック</h5>
+        <!-- ドロップで入れる -->
+      </div>
+      <div class="bucket" data-group="flow" aria-label="Flow bucket">
+        <h5>フロー</h5>
+      </div>
+    </div>
+    <div class="bucket pool" data-group="pool" aria-label="用語のプール">
+      <span class="chip" draggable="true" data-value="a">Outstanding 残高</span>
+      <span class="chip" draggable="true" data-value="b">月間新規取引（Transactions）</span>
+      <span class="chip" draggable="true" data-value="c">貸出残高（Loans outstanding）</span>
+      <span class="chip" draggable="true" data-value="d">今月の新規貸出額</span>
+      <span class="chip" draggable="true" data-value="e">M3 残高</span>
+      <span class="chip" draggable="true" data-value="f">純発行額（当月）</span>
+    </div>
+    <div class="explain" id="exp-Q17">
+      <strong>解説:</strong> ストックはある時点の「残高」。フローはある期間の「増減」。例えば M3 残高や貸出残高はストック、当月の新規取引や純発行はフロー。
+    </div>
+  </div>
+</article>
+
+<!-- Q18 (Chart segment select) -->
+<article class="q card" data-id="Q18" data-type="segment" data-answer="2">
+  <header>
+    <h4>Q18: 次の簡易チャートで “金融引き締めが強かった期間” を選べ</h4>
+    <span class="type">Type: Chart segment</span>
+  </header>
+  <div class="body">
+    <div class="mini-chart" style="height:180px">
+      <canvas id="miniChart" width="560" height="110" style="width:100%;height:110px"></canvas>
+      <div class="segments" role="group" aria-label="期間選択">
+        <button type="button" class="segment" data-idx="1">期間A</button>
+        <button type="button" class="segment" data-idx="2">期間B</button>
+        <button type="button" class="segment" data-idx="3">期間C</button>
+      </div>
+    </div>
+    <p class="muted" style="margin:.4rem 0 0">青＝政策金利、緑＝ローン残高の伸び（模式図）</p>
+    <div class="explain" id="exp-Q18">
+      <strong>解説:</strong> 引き締めは通常、政策金利の上昇と信用の伸びの鈍化が同時に観察できる期間。期間Bは青線が上昇し、緑線が低下傾向にあるため最も引き締め的。
+    </div>
+  </div>
+</article>
+
+<!-- Q2 -->
+<article class="q card" data-id="Q2" data-type="mc" data-answer="a">
+  <header>
+    <h4 data-i18n="Q2_h">Q2: ECB（European Central Bank）の役割は？</h4>
+    <span class="type" data-i18n="Q2_type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+  <label class="choice"><input type="radio" name="Q2" value="a"> <span data-i18n="Q2_a">A. ユーロ圏の金融政策（政策金利や流動性供給）を担う中央銀行</span></label>
+  <label class="choice"><input type="radio" name="Q2" value="b"> <span data-i18n="Q2_b">B. 上場企業の監査を専門とする国際機関</span></label>
+  <label class="choice"><input type="radio" name="Q2" value="c"> <span data-i18n="Q2_c">C. 各国の財政赤字の管理を担当する財務省</span></label>
+    </fieldset>
+    <div class="explain" id="exp-Q2">
+      <strong>解説:</strong> ECB はユーロ圏の中央銀行。MRO や DFR などの政策金利を決め、物価安定を目指す。
+    </div>
+  </div>
+</article>
+
+<!-- Q3 -->
+<article class="q card" data-id="Q3" data-type="mc" data-answer="c">
+  <header>
+    <h4 data-i18n="Q3_h">Q3: BSI は何の略で、主に何を扱う？</h4>
+    <span class="type" data-i18n="Q3_type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+  <label class="choice"><input type="radio" name="Q3" value="a"> <span data-i18n="Q3_a">A. Bond Spread Index。国債と社債のスプレッド指数</span></label>
+  <label class="choice"><input type="radio" name="Q3" value="b"> <span data-i18n="Q3_b">B. Banking Stability Indicator。金融安定化指標</span></label>
+  <label class="choice"><input type="radio" name="Q3" value="c"> <span data-i18n="Q3_c">C. Banking <em>Statistics</em> Items。銀行の貸借対照表統計</span></label>
+    </fieldset>
+    <div class="explain" id="exp-Q3">
+      <strong>解説:</strong> BSI（Banking Statistics）は、貸出・預金などの「残高（Outstanding）」を中心にカバーする ECB 統計。
+    </div>
+  </div>
+</article>
+
+<!-- Q4 -->
+<article class="q card" data-id="Q4" data-type="mc" data-answer="b">
+  <header>
+    <h4 data-i18n="Q4_h">Q4: “Currency and Deposits（通貨＋預金）” とは？</h4>
+    <span class="type" data-i18n="Q4_type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+  <label class="choice"><input type="radio" name="Q4" value="a"> <span data-i18n="Q4_a">A. 有価証券＋デリバティブ</span></label>
+  <label class="choice"><input type="radio" name="Q4" value="b"> <span data-i18n="Q4_b">B. 現金・当座・普通・定期など流動性の高い預金等の合計</span></label>
+  <label class="choice"><input type="radio" name="Q4" value="c"> <span data-i18n="Q4_c">C. 住宅ローンと企業向けローン</span></label>
+    </fieldset>
+    <div class="explain" id="exp-Q4">
+      <strong>解説:</strong> “通貨＋預金” はもっとも流動性の高い資産群。BSI の部門別残高で頻出。
+    </div>
+  </div>
+</article>
+
+<!-- Q5 (Multi-select) -->
+<article class="q card" data-id="Q5" data-type="ms" data-answer="a,c">
+  <header>
+    <h4>Q5: 次のうち “非金融法人（NFC）” に当てはまるのは？（複数選択）</h4>
+    <span class="type">Type: Multi-Select</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="checkbox" name="Q5" value="a"> A. 製造業の企業</label>
+      <label class="choice"><input type="checkbox" name="Q5" value="b"> B. 投資信託</label>
+      <label class="choice"><input type="checkbox" name="Q5" value="c"> C. サービス業の企業</label>
+      <label class="choice"><input type="checkbox" name="Q5" value="d"> D. 年金基金</label>
+    </fieldset>
+    <div class="explain" id="exp-Q5">
+      <strong>解説:</strong> NFC は金融以外の企業（製造・サービス等）。投信や年金は “その他の金融機関（OFI/ICPF）”。
+    </div>
+  </div>
+</article>
+
+<!-- Q6 -->
+<article class="q card" data-id="Q6" data-type="mc" data-answer="c">
+  <header>
+    <h4>Q6: M3 の説明として最適なのは？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q6" value="a"> A. 政府の財政赤字の合計</label>
+      <label class="choice"><input type="radio" name="Q6" value="b"> B. 銀行の自己資本（CET1）</label>
+      <label class="choice"><input type="radio" name="Q6" value="c"> C. 現金＋各種預金＋近似資産を含む “広いお金” の量</label>
+    </fieldset>
+    <div class="explain" id="exp-Q6">
+      <strong>解説:</strong> M3 はマネーストックの代表。長期・安定で景気との関連も研究される。
+    </div>
+  </div>
+</article>
+
+<!-- Q7 -->
+<article class="q card" data-id="Q7" data-type="mc" data-answer="a">
+  <header>
+    <h4>Q7: “ユーロシステムのバランスシート（総資産）” は何の proxy？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q7" value="a"> A. 中央銀行の流動性供給規模（マネタリーベースの近似）</label>
+      <label class="choice"><input type="radio" name="Q7" value="b"> B. 上場企業の利益率の平均</label>
+      <label class="choice"><input type="radio" name="Q7" value="c"> C. 家計の平均貯蓄率</label>
+    </fieldset>
+    <div class="explain" id="exp-Q7">
+      <strong>解説:</strong> ECB 総資産の拡大は緩和の強さの一つの目安。量的緩和期に顕著。
+    </div>
+  </div>
+</article>
+
+<!-- Q8 -->
+<article class="q card" data-id="Q8" data-type="mc" data-answer="b">
+  <header>
+    <h4>Q8: “Loans outstanding” は何を指す？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q8" value="a"> A. 当月に新規に貸した金額だけ</label>
+      <label class="choice"><input type="radio" name="Q8" value="b"> B. 期末時点でまだ返済されていない貸出残高の合計</label>
+      <label class="choice"><input type="radio" name="Q8" value="c"> C. デフォルトした貸出だけ</label>
+    </fieldset>
+    <div class="explain" id="exp-Q8">
+      <strong>解説:</strong> Outstanding は「累積して残っている金額」。新規フローとは別概念。
+    </div>
+  </div>
+</article>
+
+<!-- Q9 -->
+<article class="q card" data-id="Q9" data-type="mc" data-answer="c">
+  <header>
+    <h4>Q9: “Yield（利回り）” の簡潔な定義は？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q9" value="a"> A. 株価のボラティリティ</label>
+      <label class="choice"><input type="radio" name="Q9" value="b"> B. 名目GDP成長率</label>
+      <label class="choice"><input type="radio" name="Q9" value="c"> C. 債券などから得られる収益率</label>
+    </fieldset>
+    <div class="explain" id="exp-Q9">
+      <strong>解説:</strong> 例：10年国債利回り。市場金利や期待インフレの影響を受ける。
+    </div>
+  </div>
+</article>
+
+<!-- Q10 -->
+<article class="q card" data-id="Q10" data-type="mc" data-answer="b">
+  <header>
+    <h4>Q10: “クレジットスプレッド” の自然な定義は？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q10" value="a"> A. 政策金利 − 国債利回り</label>
+      <label class="choice"><input type="radio" name="Q10" value="b"> B. 企業債の利回り − 同期間の国債利回り</label>
+      <label class="choice"><input type="radio" name="Q10" value="c"> C. 預金金利 − 貸出金利</label>
+    </fieldset>
+    <div class="explain" id="exp-Q10">
+      <strong>解説:</strong> リスクが高いほど企業債の要求利回りが上がり、スプレッドが拡大する。
+    </div>
+  </div>
+</article>
+
+<!-- Q11 -->
+<article class="q card" data-id="Q11" data-type="mc" data-answer="a">
+  <header>
+    <h4>Q11: MIR は何の統計？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q11" value="a"> A. 銀行の貸出金利・預金金利の統計</label>
+      <label class="choice"><input type="radio" name="Q11" value="b"> B. 株式市場の回転率</label>
+      <label class="choice"><input type="radio" name="Q11" value="c"> C. 住宅価格指数</label>
+    </fieldset>
+    <div class="explain" id="exp-Q11">
+      <strong>解説:</strong> ECB の MIR は、家計・企業向けの貸出金利／預金金利を見るときに使う。
+    </div>
+  </div>
+</article>
+
+<!-- Q12 (Multi-select) -->
+<article class="q card" data-id="Q12" data-type="ms" data-answer="a,c">
+  <header>
+    <h4>Q12: “depth（市場の厚み）” の proxy として適切なものは？（複数選択）</h4>
+    <span class="type">Type: Multi-Select</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="checkbox" name="Q12" value="a"> A. 民間向けローン残高（ECB BSI）</label>
+      <label class="choice"><input type="checkbox" name="Q12" value="b"> B. 為替レートのスプレッドだけ</label>
+      <label class="choice"><input type="checkbox" name="Q12" value="c"> C. 債券 Outstanding（BIS）</label>
+      <label class="choice"><input type="checkbox" name="Q12" value="d"> D. 一社の時価総額のみ</label>
+    </fieldset>
+    <div class="explain" id="exp-Q12">
+      <strong>解説:</strong> 厚み＝規模や残高の大きさ。ECB のローン残高や BIS の債券 Outstanding は自然な代理変数。
+    </div>
+  </div>
+</article>
+
+<!-- Q13 -->
+<article class="q card" data-id="Q13" data-type="mc" data-answer="b">
+  <header>
+    <h4>Q13: “Turnover（回転率）” は通常どの市場で使う？</h4>
+    <span class="type">Type: Multiple Choice</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="radio" name="Q13" value="a"> A. 不動産市場</label>
+      <label class="choice"><input type="radio" name="Q13" value="b"> B. 株式市場（売買代金 ÷ 時価総額 など）</label>
+      <label class="choice"><input type="radio" name="Q13" value="c"> C. 雇用市場</label>
+    </fieldset>
+    <div class="explain" id="exp-Q13">
+      <strong>解説:</strong> WDI の “Stock market turnover ratio” が代表例。売買の活発さを表す。
+    </div>
+  </div>
+</article>
+
+<!-- Q14 (Multi-select) -->
+<article class="q card" data-id="Q14" data-type="ms" data-answer="a,c">
+  <header>
+    <h4>Q14: ECB の主要な政策金利に含まれるものは？（複数選択）</h4>
+    <span class="type">Type: Multi-Select</span>
+  </header>
+  <div class="body">
+    <fieldset class="choices">
+      <label class="choice"><input type="checkbox" name="Q14" value="a"> A. Deposit Facility Rate（DFR）</label>
+      <label class="choice"><input type="checkbox" name="Q14" value="b"> B. Federal Funds Rate（米国）</label>
+      <label class="choice"><input type="checkbox" name="Q14" value="c"> C. Main Refinancing Operations（MRO）</label>
+      <label class="choice"><input type="checkbox" name="Q14" value="d"> D. 国債利回り（市場で決まる）</label>
+    </fieldset>
+    <div class="explain" id="exp-Q14">
+      <strong>解説:</strong> ECB 固有は DFR や MRO。米国の FFR や市場の国債利回りとは区別する。
+    </div>
+  </div>
+</article>
+
+<!-- Q15 (Short Text: regex) -->
+<article class="q card" data-id="Q15" data-type="text" data-eval="regex" data-answer="^Q-?DEC$">
+  <header>
+    <h4>Q15: 四半期末の集計方式で “12月期の四半期区切り” を指す略称は？（厳密一致）</h4>
+    <span class="type">Type: Short Text</span>
+  </header>
+  <div class="body">
+    <p>ハイフン有り無しどちらでも可。</p>
+    <input type="text" inputmode="text" autocomplete="off" name="Q15" aria-label="Q15 入力" placeholder="例: Q-DEC">
+    <div class="explain" id="exp-Q15"><strong>解説:</strong> Q-DEC は 3/6/9/12 月の区切りで四半期末をとる方式。</div>
+  </div>
+</article>
+
+<!-- Q16 (Short Text: regex) -->
+<article class="q card" data-id="Q16" data-type="text" data-eval="regex" data-answer="すぐ.*現金.*変え|現金化.*しやす|convert.*cash">
+  <header>
+    <h4>Q16: “流動性（Liquidity）” を一言で。</h4>
+    <span class="type">Type: Short Text</span>
+  </header>
+  <div class="body">
+    <p>日本語で OK（例：「すぐ現金に変えられる度合い」）。</p>
+    <input type="text" inputmode="text" autocomplete="off" name="Q16" aria-label="Q16 入力" placeholder="ここに入力">
+    <div class="explain" id="exp-Q16"><strong>解説:</strong> 流動性は “現金化のしやすさ”。QTC の温度アナロジーでは “動きやすさ”。</div>
+  </div>
+</article>
+</section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers">解答とスコアを表示</button>
+      </div>
+    </div>
+
+    <!-- ================== FOOTER ========================================== -->
+    <footer class="muted" style="margin-top:24px">
+      <p data-i18n="footer_text">このページは <strong id="footer-skill">[SKILL_NAME]</strong> を “<em id="footer-goal">[GOAL_DESCRIPTION]</em>” レベルへ導くための <em>LEARNING FIRST</em> ドリルである。得点ではなく理解の深さを重視すること。</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+
+  <script>
+  (function(){
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const THEME_KEY = 'quizTheme';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Per-choice explanations (JA)
+    const CHOICE_EXPLANATIONS = {
+      Q1: {
+        a: 'フロー。期間中の新規取引額。残高（ストック）とは別。',
+        b: '正解。期末などの時点に残っている累積残高を指す。',
+        c: '政策金利のターゲットであり、Outstanding の概念とは無関係。'
+      },
+      Q2: {
+        a: '正解。ユーロ圏の中央銀行として政策金利や流動性供給を担う。',
+        b: '監査は監査法人や各国当局の役割で、ECB の主業務ではない。',
+        c: '財政赤字の管理は各国の財務省・政府の役割。'
+      },
+      Q3: {
+        a: 'スプレッド指数ではない。',
+        b: '金融安定の指標名に似ているが BSI とは別物。',
+        c: '正解。銀行統計（貸借対照表項目）で残高中心に扱う。'
+      },
+      Q4: {
+        a: '証券やデリバティブは含まない。',
+        b: '正解。現金と流動性の高い各種預金のまとまり。',
+        c: 'ローンは“貸出”であり通貨＋預金ではない。'
+      },
+      Q5: {
+        a: '正解。金融以外の企業（製造業）は NFC に該当。',
+        b: '投資信託は金融機関（OFI）に区分される。',
+        c: '正解。サービス業なども NFC。',
+        d: '年金基金は ICPF（保険・年金）に区分。'
+      },
+      Q6: {
+        a: '財政赤字の合計ではない。',
+        b: '自己資本（CET1）ではない。',
+        c: '正解。現金＋各種預金＋近似資産を含む広義のマネー。'
+      },
+      Q7: {
+        a: '正解。中央銀行の流動性供給規模（MB の近似）を見る目安。',
+        b: '企業の利益率とは関係しない。',
+        c: '家計の貯蓄率とは別概念。'
+      },
+      Q8: {
+        a: '当月の新規貸出だけではない。',
+        b: '正解。期末までに未返済の貸出残高の合計。',
+        c: 'デフォルト貸出だけを指すわけではない。'
+      },
+      Q9: {
+        a: 'ボラティリティ（変動率）のことではない。',
+        b: 'GDP 成長率ではない。',
+        c: '正解。債券等から得られる収益率（利回り）。'
+      },
+      Q10: {
+        a: '政策金利と国債利回りの差ではない。',
+        b: '正解。企業債の利回り − 同期間の国債利回り。',
+        c: '預金と貸出の金利差（NIM）ではない。'
+      },
+      Q11: {
+        a: '正解。家計・企業向けの貸出・預金金利の統計。',
+        b: '回転率は主に株式市場の指標。',
+        c: '住宅価格指数ではない。'
+      },
+      Q12: {
+        a: '正解。残高の大きさは厚みを表す。',
+        b: 'スプレッドだけでは厚みを表せない。',
+        c: '正解。債券 Outstanding は市場規模（厚み）の指標。',
+        d: '一社だけでは市場全体の厚みを代表できない。'
+      },
+      Q13: {
+        a: '不動産市場では一般的ではない。',
+        b: '正解。株式市場で売買の活発さを測る比率。',
+        c: '雇用市場の指標ではない。'
+      },
+      Q14: {
+        a: '正解。DFR は主要政策金利の一つ。',
+        b: '米国の政策金利（FFR）で ECB ではない。',
+        c: '正解。MRO は主要政策金利の一つ。',
+        d: '国債利回りは市場で決まる金利で政策金利ではない。'
+      }
+    };
+
+    // Rich notes (背景・全体像の理解用)
+    const DETAIL_NOTES = {
+      Q1: '<div class="muted"><p><strong>背景:</strong> Outstanding は期末残高という「状態」。フロー（月間新規取引）とは別軸です。</p><ul><li>会計ではストック（貸借対照表）に対応、フロー（損益/資金移動）と区別。</li><li>データセット: ECB BSI の "Outstanding amounts"。</li><li>実務: 新規と返済が同時に大きい月がありうるため、フロー≠残高変化。</li></ul></div>',
+      Q2: '<div class="muted"><p><strong>背景:</strong> ECB は物価安定を主目的とし、政策金利（MRO/DFR 等）とオペで流動性を調整。</p><ul><li>DFR は下限金利、MRO は主たる操作。</li><li>財政赤字の管理は政府の役割。</li></ul></div>',
+      Q3: '<div class="muted"><p><strong>背景:</strong> BSI は銀行のバランスシート統計。ストック中心で部門・商品別に残高を把握。</p><ul><li>貸出/預金/証券保有など。</li><li>金利と信用の関係を読む基盤データ。</li></ul></div>',
+      Q4: '<div class="muted"><p><strong>背景:</strong> 通貨＋預金は最も流動性が高い資産群。M3 の中核。</p></div>',
+      Q5: '<div class="muted"><p><strong>背景:</strong> セクター分類の基礎。NFC=非金融企業。投信/年金は金融部門。</p></div>',
+      Q6: '<div class="muted"><p><strong>背景:</strong> M3 は「広いお金」。金融環境の厚みを示す。</p></div>',
+      Q7: '<div class="muted"><p><strong>背景:</strong> ユーロシステム総資産は流動性供給の規模感。量的緩和で拡大。</p></div>',
+      Q8: '<div class="muted"><p><strong>背景:</strong> 貸出 Outstanding = 未返済残高。新規と返済の差で変化。</p></div>',
+      Q9: '<div class="muted"><p><strong>背景:</strong> 利回りは投資からの収益率。金利/物価/信用の期待を反映。</p></div>',
+      Q10:'<div class="muted"><p><strong>背景:</strong> クレジットスプレッドは信用リスクの体温計。</p><ul><li>拡大=タイト化/不確実性上昇</li><li>縮小=リスク許容度上昇/緩和</li></ul></div>',
+      Q11:'<div class="muted"><p><strong>背景:</strong> MIR は家計/企業向け金利の実勢。調達/運用コストを把握。</p></div>',
+      Q12:'<div class="muted"><p><strong>背景:</strong> 厚みは規模。残高（ストック）で測るのが自然。</p></div>',
+      Q13:'<div class="muted"><p><strong>背景:</strong> Turnover は株式市場の売買活発度。</p></div>',
+      Q14:'<div class="muted"><p><strong>背景:</strong> 主要政策金利=DFR/MRO 等。FFR は米国、国債利回りは市場金利。</p></div>',
+      Q15:'<div class="muted"><p><strong>参考:</strong> Q-DEC は四半期区切りの表記（3/6/9/12）。</p></div>',
+      Q16:'<div class="muted"><p><strong>背景:</strong> 流動性=現金化のしやすさ。価格インパクト小で売買できるかも含意。</p></div>'
+    };
+
+    function updateThemeToggle(mode){
+      const btn = $('#themeToggle');
+      if(!btn) return;
+      const isLight = mode === 'light';
+      const next = isLight ? 'dark' : 'light';
+      btn.dataset.next = next;
+      btn.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+      btn.setAttribute('aria-label', next === 'dark' ? 'ダークモードに切り替え' : 'ライトモードに切り替え');
+      const icon = next === 'dark' ? '🌙' : '☀️';
+      const label = next === 'dark' ? 'ダークモード' : 'ライトモード';
+      btn.innerHTML = '<span class="theme-icon" aria-hidden="true">' + icon + '</span><span class="theme-label">' + label + '</span>';
+    }
+
+    function setTheme(mode, persist=true){
+      const normalized = mode === 'light' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', normalized);
+      if(persist){
+        try{ localStorage.setItem(THEME_KEY, normalized); }catch(e){}
+      }
+      updateThemeToggle(normalized);
+    }
+
+    function applyInitialTheme(){
+      let stored = null;
+      try{ stored = localStorage.getItem(THEME_KEY); }catch(e){ stored = null; }
+      const initial = stored || (prefersDark.matches ? 'dark' : 'light');
+      setTheme(initial, false);
+    }
+
+    function toggleTheme(){
+      const current = document.body.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = current === 'light' ? 'dark' : 'light';
+      setTheme(next, true);
+    }
+
+    // Apply settings to head titles and headings
+    function applySettings(){
+      const S = window.DRILL_SETTINGS || {};
+      const name = S.SKILL_NAME || '[SKILL_NAME]';
+      const sub = S.SKILL_SUBTITLE || '[SKILL_SUBTITLE]';
+      const goal = S.GOAL_DESCRIPTION || '[GOAL_DESCRIPTION]';
+      document.title = `${name} 101: ${sub}（学習ドリル）`;
+      $('#title').textContent = `${name} 101: ${sub}（学習ドリル）`;
+      $('#subtitle').textContent = `${name} を「${goal}」まで引き上げるためのリーディング・ドリル`;
+      $('#footer-skill').textContent = name;
+      $('#footer-goal').textContent = goal;
+      // Brand
+  const bName = S.BRAND_NAME || 'Toppy Microservices';
+  const bLogo = S.BRAND_LOGO || '/toppy_bimi.svg';
+  const bUrl  = S.BRAND_URL  || '/';
+      $('#brand-name')?.textContent = bName;
+      const blink = $('#brand-link'); if(blink) blink.setAttribute('href', bUrl);
+      const img = $('#brand-logo'); if(img && bLogo){ img.src=bLogo; img.alt=bName; img.style.display='inline-block'; }
+      const fb = $('#footer-brand'); if(fb){ fb.innerHTML = `<strong>${bName}</strong>` + (bUrl && bUrl!=='#' ? ` – <a href="${bUrl}">${bUrl}</a>` : ''); }
+      const year = new Date().getFullYear(); $('#copyright')?.textContent = `© ${year} ${bName}. All rights reserved.`;
+      const lm = $('#learningMode');
+      lm.checked = S.LEARNING_MODE_DEFAULT !== false;
+      updateModeBadge();
+    }
+
+    function updateModeBadge(){
+      const on = $('#learningMode').checked;
+      const mb = $('#mode-badge');
+      if(!mb) return;
+      mb.textContent = on ? '学習モード' : 'テストモード';
+      mb.setAttribute('aria-pressed', on ? 'true' : 'false');
+      mb.setAttribute('title', on ? 'クリックでテストモードへ' : 'クリックで学習モードへ');
+    }
+
+    function showExplain(el, show=true){
+      const exp = el.querySelector('.explain');
+      if(!exp) return;
+      exp.classList.toggle('show', !!show);
+      // Inject per-choice explanations (once)
+      if(show && !exp.dataset.choicesInjected){
+        const qid = el.dataset.id;
+        const map = CHOICE_EXPLANATIONS[qid];
+        if(map){
+          const gold = (el.dataset.answer||'').split(',').map(s=>s.trim());
+          const box = document.createElement('div');
+          box.className = 'muted';
+          box.style.marginTop = '8px';
+          let html = '<div style="font-weight:600;margin:4px 0 6px">選択肢の説明</div><ul style="margin:0 0 0 1.1rem;line-height:1.5">';
+          ['a','b','c','d','e'].forEach(k=>{
+            if(map[k]){
+              const mark = gold.includes(k) ? '✅' : '✖';
+              html += '<li>'+mark+' '+k.toUpperCase()+'. '+map[k]+'</li>';
+            }
+          });
+          html += '</ul>';
+          box.innerHTML = html;
+          exp.appendChild(box);
+        }
+        exp.dataset.choicesInjected = '1';
+      }
+      // Rich figures (Q1/Q10) once
+      if(show && !exp.dataset.richInjected){
+        const id = el.dataset.id;
+        const svgQ1 = ()=>'<svg width="100%" height="70" viewBox="0 0 320 70" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stock vs Flow"><defs><linearGradient id="gj1" x1="0" x2="1"><stop offset="0" stop-color="rgba(78,161,255,0.3)"/><stop offset="1" stop-color="rgba(155,227,127,0.25)"/></linearGradient></defs><rect x="8" y="14" width="136" height="36" rx="8" fill="url(#gj1)" stroke="rgba(78,161,255,0.6)"/><text x="76" y="36" text-anchor="middle" fill="currentColor" font-size="12">Stock</text><path d="M176 32 h70" stroke="rgba(78,161,255,0.8)" stroke-width="3"/><polygon points="246,32 236,27 236,37" fill="rgba(78,161,255,0.8)"/><text x="206" y="24" fill="currentColor" font-size="12">Flow</text></svg>';
+        const svgQ10= ()=>'<svg width="100%" height="80" viewBox="0 0 360 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Credit spread"><line x1="40" y1="52" x2="320" y2="52" stroke="rgba(120,160,200,0.5)"/><polyline points="40,50 100,46 160,44 220,45 280,43 320,42" stroke="rgba(90,200,140,0.9)" fill="none" stroke-width="2"/><polyline points="40,36 100,32 160,28 220,30 280,28 320,27" stroke="rgba(80,140,255,0.95)" fill="none" stroke-width="2"/><path d="M160 44 v-12" stroke="rgba(255,255,255,0.7)" stroke-width="2"/><text x="170" y="38" fill="currentColor" font-size="12">spread</text><text x="8" y="30" fill="currentColor" font-size="12">Corp</text><text x="8" y="48" fill="currentColor" font-size="12">Gov</text></svg>';
+        let fig=''; if(id==='Q1') fig=svgQ1(); if(id==='Q10') fig=svgQ10();
+        if(fig){ const w=document.createElement('div'); w.className='muted'; w.style.marginTop='8px'; w.innerHTML=fig; exp.appendChild(w); }
+        exp.dataset.richInjected='1';
+      }
+
+      // Detailed notes once
+      if(show && !exp.dataset.notesInjected){
+        const id = el.dataset.id; const html = DETAIL_NOTES[id];
+        if(html){ const wrap=document.createElement('div'); wrap.innerHTML=html; exp.appendChild(wrap); }
+        exp.dataset.notesInjected='1';
+      }
+
+      const btn = el.querySelector('.answer-btn');
+      if(btn){
+        btn.textContent = exp.classList.contains('show') ? '解説を隠す' : '解答を表示';
+      }
+    }
+
+    // Evaluate a single question
+    function evaluateQuestion(q){
+      const id = q.dataset.id;
+      const type = q.dataset.type;
+      const ans = (q.dataset.answer||'').trim();
+      let ok = null, user=null;
+
+      if(type==='mc'){
+        const picked = q.querySelector('input[type=radio]:checked');
+        if(!picked){ ok = null; }
+        else { user = picked.value; ok = (user === ans); markChoices(q, [user], ans.split(',')); }
+      }
+      else if(type==='ms'){
+        const picked = q.querySelectorAll('input[type=checkbox]:checked');
+        user = Array.from(picked).map(i=>i.value).sort();
+        const gold = ans.split(',').map(s=>s.trim()).sort();
+        ok = JSON.stringify(user)===JSON.stringify(gold);
+        markChoices(q, user, gold);
+      }
+      else if(type==='classify'){
+        // expected format: "group1:a,c;group2:b,d"
+        const parse = s=>Object.fromEntries(s.split(';').map(p=>{const [g,l]=p.split(':'); return [g.trim(), (l?l.split(',').map(x=>x.trim()).filter(Boolean):[])];}));
+        const goldMap = parse(ans);
+        const groups = Object.keys(goldMap);
+        const userMap = {};
+        groups.forEach(g=>{
+          const box = q.querySelector('.bucket[data-group="'+g+'"]');
+          const vals = Array.from(box?.querySelectorAll('.chip')||[]).map(c=>c.dataset.value).filter(Boolean).sort();
+          userMap[g] = vals;
+        });
+        const eq = (a,b)=>JSON.stringify((a||[]).slice().sort())===JSON.stringify((b||[]).slice().sort());
+        ok = groups.every(g=>eq(userMap[g], goldMap[g]));
+        user = groups.map(g=>g+':'+(userMap[g]||[]).join(',')).join(' | ');
+      }
+      else if(type==='segment'){
+        const picked = q.dataset.segmentSelected || '';
+        user = picked;
+        ok = picked ? (picked===ans) : null;
+      }
+      else if(type==='text'){
+        const input = q.querySelector('input[type=text]');
+        user = (input?.value||'').trim();
+        const mode = (q.dataset.eval||'exact').toLowerCase();
+        if(mode==='regex'){
+          try{
+            const re = new RegExp(ans, 'i');
+            ok = re.test(user);
+          }catch(e){ ok = false; }
+        } else {
+          ok = (user === ans);
+        }
+      }
+
+      return {id, ok, user, type};
+    }
+
+    function markChoices(q, userValues, goldValues){
+      q.querySelectorAll('.choice').forEach(lbl=>{
+        lbl.classList.remove('correct','wrong');
+        const v = lbl.querySelector('input')?.value;
+        if(!v) return;
+        if(userValues?.includes(v)){
+          lbl.classList.add(goldValues.includes(v)?'correct':'wrong');
+        }
+      });
+    }
+
+    function renderResults(){
+      const rows = [];
+      $$('#questions .q').forEach(q=>{
+        const r = evaluateQuestion(q);
+        const langEn = $('#lang-en').classList.contains('active');
+        const state = r.ok===null ? (langEn? 'Unanswered':'未回答') : (r.ok? (langEn? 'Correct':'○') : (langEn? 'Wrong':'×'));
+        rows.push(`<tr><td>${r.id}</td><td>${r.type}</td><td>${escapeHtml(r.user??'')}</td><td>${state}</td></tr>`);
+      });
+      const langEn = $('#lang-en').classList.contains('active');
+      const html = `
+        <h4 style="margin:0 0 8px">${langEn? 'Results (learning view)': '集計（学習用）'}</h4>
+        <table aria-label="結果テーブル">
+          <thead><tr><th>${langEn? 'Q ID' : '設問ID'}</th><th>${langEn? 'Type' : '形式'}</th><th>${langEn? 'Answer' : '回答'}</th><th>${langEn? 'Result' : '結果'}</th></tr></thead>
+          <tbody>${rows.join('')}</tbody>
+        </table>`;
+      const box = $('#results');
+      box.innerHTML = html;
+      box.style.display = 'block';
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+    }
+
+  function attachHandlers(){
+      $('#themeToggle')?.addEventListener('click', ()=>{ toggleTheme(); updateLiveScore(); });
+      // Language toggle handlers and translation map
+      const S = window.DRILL_SETTINGS || {};
+      const translations = {
+        en: {
+          title: (S.SKILL_NAME || 'Skill') + ' 101: ' + (S.SKILL_SUBTITLE || 'Subtitle') + ' (Drill)',
+          subtitle: (S.SKILL_NAME || 'Skill') + ' – a reading drill to reach: ' + (S.GOAL_DESCRIPTION || 'Goal'),
+          scope_h: 'Scope',
+          ops_h: 'Controls',
+          learning_mode: 'Learning mode (show explanations on selection)',
+          show_all: 'Show all explanations',
+          hide_all: 'Hide all explanations',
+          regen: 'Regenerate results table',
+          learning_tip: '<strong>Learning tip:</strong> Aim to be able to explain concepts in your own words.',
+          cheat_summary: 'Cheat Sheet: quick reference',
+          footer_text: 'This page is a LEARNING-FIRST drill to take <strong>' + (S.SKILL_NAME || 'Skill') + '</strong> to the level <em>' + (S.GOAL_DESCRIPTION || 'Goal') + '</em>.',
+          // Question translations (sample)
+          Q1_h: 'Q1: What does “Outstanding” most closely mean?',
+          Q1_type: 'Type: Multiple Choice',
+          Q1_a: 'A. Sum of new transactions during the month (flow)',
+          Q1_b: 'B. Amount remaining outstanding at a point in time (stock)',
+          Q1_c: 'C. Policy interest rate target',
+          Q2_h: 'Q2: What is the role of the ECB (European Central Bank)?',
+          Q2_type: 'Type: Multiple Choice',
+          Q2_a: 'A. The central bank responsible for monetary policy in the euro area',
+          Q2_b: 'B. An international body specialising in audits of listed firms',
+          Q2_c: 'C. The ministry responsible for national fiscal deficits',
+          Q3_h: 'Q3: What does BSI stand for and what does it mainly cover?',
+          Q3_type: 'Type: Multiple Choice',
+          Q3_a: 'A. Bond Spread Index',
+          Q3_b: 'B. Banking Stability Indicator',
+          Q3_c: 'C. Banking Statistics (balance sheet items)',
+          Q4_h: 'Q4: What are “Currency and Deposits”?',
+          Q4_type: 'Type: Multiple Choice',
+          Q4_a: 'A. Securities and derivatives',
+          Q4_b: 'B. Cash and highly liquid deposits (current/savings/time)',
+          Q4_c: 'C. Mortgage and corporate loans',
+          mode_badge_test: 'Test mode',
+          mode_badge_learn: 'Learning mode'
+        }
+      };
+
+      function translatePage(lang){
+        if(!lang) return;
+        // UI strings (elements with data-i18n)
+        $$('[data-i18n]').forEach(el=>{
+          const key = el.getAttribute('data-i18n');
+          if(translations[lang] && translations[lang][key]){
+            if(el.tagName.toLowerCase()==='input' || el.tagName.toLowerCase()==='textarea') el.value = translations[lang][key];
+            else el.innerHTML = translations[lang][key];
+          }
+        });
+        // Mode badge
+        $('#mode-badge').textContent = (lang==='en' && !$('#learningMode').checked) ? translations.en.mode_badge_test : (lang==='en' ? translations.en.mode_badge_learn : ($('#learningMode').checked ? '学習モード' : 'テストモード'));
+        // Update title element (also update document.title)
+        if(lang==='en'){
+          document.title = translations.en.title;
+          $('#title').textContent = translations.en.title;
+          $('#subtitle').textContent = translations.en.subtitle;
+        } else {
+          applySettings(); // restore Japanese defaults from settings
+        }
+      }
+
+      // Hook language buttons
+      $('#lang-ja').addEventListener('click', ()=>{
+        $('#lang-ja').classList.add('active'); $('#lang-ja').setAttribute('aria-pressed','true');
+        $('#lang-en').classList.remove('active'); $('#lang-en').setAttribute('aria-pressed','false');
+        translatePage('ja');
+      });
+      $('#lang-en').addEventListener('click', ()=>{
+        $('#lang-en').classList.add('active'); $('#lang-en').setAttribute('aria-pressed','true');
+        $('#lang-ja').classList.remove('active'); $('#lang-ja').setAttribute('aria-pressed','false');
+        translatePage('en');
+      });
+
+      // Learning mode toggle
+      $('#learningMode').addEventListener('change', ()=>{
+        updateModeBadge();
+        if(!$('#learningMode').checked){ // hide all when switching to test mode
+          $$('.explain').forEach(e=>e.classList.remove('show'));
+        }
+        updateLiveScore();
+      });
+
+      // Header badge also toggles learning mode
+      const mb = $('#mode-badge');
+      if(mb){
+        const toggleMode = ()=>{
+          const lm = $('#learningMode');
+          lm.checked = !lm.checked;
+          lm.dispatchEvent(new Event('change'));
+        };
+        mb.addEventListener('click', toggleMode);
+        mb.addEventListener('keydown', (e)=>{
+          if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggleMode(); }
+        });
+      }
+
+  // Show/Hide all explanations
+      $('#showAll').addEventListener('click', ()=> { $$('.explain').forEach(e=>e.classList.add('show')); updateLiveScore(); });
+      $('#hideAll').addEventListener('click', ()=> { $$('.explain').forEach(e=>e.classList.remove('show')); updateLiveScore(); });
+  $('#regen').addEventListener('click', renderResults);
+  $('#showAnswersScore').addEventListener('click', showAnswersAndScore);
+  $('#bottomShowAnswers')?.addEventListener('click', ()=>{
+        showAnswersAndScore();
+        const dd = document.querySelector('details.cheatsheet');
+        if(dd){ dd.open = true; dd.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  });
+
+      // Per-question behavior
+      $$('#questions .q').forEach(q=>{
+        const type = q.dataset.type;
+        if(type==='mc'){
+          q.querySelectorAll('input[type=radio]').forEach(r=>{
+            r.addEventListener('change', ()=>{
+              evaluateQuestion(q);
+              if($('#learningMode').checked){ showExplain(q, true); }
+              updateLiveScore();
+            });
+          });
+        } else if(type==='ms'){
+          q.querySelectorAll('input[type=checkbox]').forEach(r=>{
+            r.addEventListener('change', ()=>{
+              evaluateQuestion(q);
+              if($('#learningMode').checked){ showExplain(q, true); }
+              updateLiveScore();
+            });
+          });
+        } else if(type==='text'){
+          const t = q.querySelector('input[type=text]');
+          t?.addEventListener('input', ()=>{
+            evaluateQuestion(q);
+            if($('#learningMode').checked && t.value.trim().length){ showExplain(q, true); }
+            updateLiveScore();
+          });
+        } else if(type==='classify'){
+          // drag & drop wiring
+          const chips = q.querySelectorAll('.chip');
+          chips.forEach(ch=>{
+            ch.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', ch.dataset.value||''); q._dragEl = ch; });
+          });
+          q.querySelectorAll('.bucket').forEach(b=>{
+            b.addEventListener('dragover', e=>{e.preventDefault(); b.classList.add('hover');});
+            b.addEventListener('dragleave', ()=>b.classList.remove('hover'));
+            b.addEventListener('drop', e=>{e.preventDefault(); b.classList.remove('hover'); if(q._dragEl){ b.appendChild(q._dragEl); evaluateQuestion(q); if($('#learningMode').checked){ showExplain(q,true);} updateLiveScore(); }});
+          });
+        } else if(type==='segment'){
+          q.querySelectorAll('.segment').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+              q.querySelectorAll('.segment').forEach(x=>x.classList.remove('selected'));
+              btn.classList.add('selected');
+              q.dataset.segmentSelected = btn.dataset.idx;
+              evaluateQuestion(q);
+              if($('#learningMode').checked){ showExplain(q,true); }
+              updateLiveScore();
+            });
+          });
+          // draw tiny illustrative chart (no external libs)
+          const cv = $('#miniChart');
+          if(cv && cv.getContext){
+            const ctx = cv.getContext('2d');
+            const W = cv.width, H = cv.height;
+            ctx.clearRect(0,0,W,H);
+            const margin = 24; const h=H-2*margin; const w=W-2*margin;
+            const x = i=>margin + (i/8)*w; // 9 points
+            const y = v=>margin + (1-v)*h;
+            // sample series: policy rate (blue), loan growth (green)
+            const rate = [0.2,0.22,0.25,0.28,0.35,0.5,0.55,0.52,0.48];
+            const loan = [0.55,0.56,0.58,0.57,0.53,0.48,0.44,0.43,0.45];
+            ctx.strokeStyle = 'rgba(80,140,255,0.9)'; ctx.lineWidth = 2;
+            ctx.beginPath(); rate.forEach((v,i)=>{ const px=x(i), py=y(v); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);}); ctx.stroke();
+            ctx.strokeStyle = 'rgba(100,220,150,0.9)'; ctx.lineWidth = 2;
+            ctx.beginPath(); loan.forEach((v,i)=>{ const px=x(i), py=y(v); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);}); ctx.stroke();
+          }
+        }
+      });
+    }
+
+    function injectAnswerButtons(){
+      $$('#questions .q').forEach(q=>{
+        if(q.querySelector('.answer-btn')) return;
+        let footer = q.querySelector('footer');
+        if(!footer){
+          footer = document.createElement('footer');
+          footer.className = 'row';
+          q.appendChild(footer);
+        }
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'answer-btn';
+        btn.textContent = '解答を表示';
+        btn.addEventListener('click', ()=>{
+          const exp = q.querySelector('.explain');
+          if(!exp) return;
+          const willShow = !exp.classList.contains('show');
+          showExplain(q, willShow);
+          if(willShow){
+            exp.scrollIntoView({behavior:'smooth', block:'nearest'});
+          }
+        });
+        footer.appendChild(btn);
+      });
+    }
+
+    // Helpers: answers & score
+    function isAnswered(q){
+      const t=q.dataset.type;
+      if(t==='mc') return !!q.querySelector('input[type=radio]:checked');
+      if(t==='ms') return q.querySelectorAll('input[type=checkbox]:checked').length>0;
+      if(t==='text'){
+        const v=q.querySelector('input[type=text]')?.value.trim();
+        return !!v;
+      }
+      if(t==='classify'){
+        const s=q.querySelector('.bucket[data-group="stock"]');
+        const f=q.querySelector('.bucket[data-group="flow"]');
+        return (s?.querySelectorAll('.chip').length||0) + (f?.querySelectorAll('.chip').length||0) > 0;
+      }
+      if(t==='segment'){
+        return !!q.dataset.segmentSelected;
+      }
+      return false;
+    }
+
+    // Live score (header badge)
+    function computeLiveScore(){
+      const qs = $$('#questions .q'); let total=0,answered=0,correct=0;
+      const eq=(a,b)=>JSON.stringify((a||[]).slice().sort())===JSON.stringify((b||[]).slice().sort());
+      qs.forEach(q=>{
+        total++;
+        const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); let ok=null;
+        if(type==='mc'){
+          const p=q.querySelector('input[type=radio]:checked')?.value; if(p){answered++; ok=(p===ans);} }
+        else if(type==='ms'){
+          const picked=Array.from(q.querySelectorAll('input[type=checkbox]:checked')).map(i=>i.value); if(picked.length){answered++; ok=eq(picked, ans.split(',').map(s=>s.trim()));} }
+        else if(type==='text'){
+          const v=q.querySelector('input[type=text]')?.value.trim(); if(v){answered++; const mode=(q.dataset.eval||'exact').toLowerCase(); ok=(mode==='regex')?(()=>{try{return new RegExp(ans,'i').test(v);}catch(e){return false;}})():(v===ans);} }
+        else if(type==='classify'){
+          const parse=s=>Object.fromEntries(s.split(';').map(p=>{const [g,l]=p.split(':'); return [g.trim(), (l?l.split(',').map(x=>x.trim()).filter(Boolean):[])];})); const gold=parse(ans); const groups=Object.keys(gold); let any=false; const all=groups.every(g=>{ const vals=Array.from(q.querySelector('.bucket[data-group="'+g+'"]')?.querySelectorAll('.chip')||[]).map(c=>c.dataset.value); if(vals.length) any=true; return eq(vals,gold[g]);}); if(any){answered++; ok=all;}
+        }
+        else if(type==='segment'){
+          const p=q.dataset.segmentSelected; if(p){answered++; ok=(p===ans);} }
+        if(ok===true) correct++;
+      });
+      return {total,answered,correct};
+    }
+    function updateLiveScore(){ const s=computeLiveScore(); const el=$('#score-badge'); if(el){ el.textContent = s.correct+' / '+s.total; el.title='回答済み '+s.answered+' / '+s.total; } }
+
+    function showAnswersAndScore(){
+      let total=0, correct=0, answered=0;
+      $$('#questions .q').forEach(q=>{
+        total++;
+        const r=evaluateQuestion(q);
+        if(isAnswered(q)) answered++;
+        if(r.ok===true) correct++;
+        // highlight correct choices
+        const gold=(q.dataset.answer||'').split(',').map(s=>s.trim());
+        if(q.dataset.type==='mc' || q.dataset.type==='ms'){
+          q.querySelectorAll('.choice').forEach(lbl=>{
+            const v=lbl.querySelector('input')?.value; if(!v) return;
+            if(gold.includes(v)) lbl.classList.add('correct');
+          });
+        } else if(q.dataset.type==='text'){
+          const exp=q.querySelector('.explain');
+          if(exp && !exp.dataset.hinted){
+            const hint=document.createElement('div');
+            hint.className='muted';
+            hint.innerHTML='<strong>解答ヒント:</strong> 正規表現: <code>'+escapeHtml(q.dataset.answer||'')+'</code>';
+            exp.appendChild(hint);
+            exp.dataset.hinted='1';
+          }
+        }
+        showExplain(q,true);
+      });
+      const box=$('#results');
+      box.innerHTML = '<h4 style="margin:0 0 8px">スコア</h4>'+
+        '<p>正答: <strong>'+correct+'</strong> / '+total+'（回答済み: '+answered+'）</p>';
+      box.style.display='block';
+    }
+
+    // Init
+    applyInitialTheme();
+    prefersDark.addEventListener?.('change', event=>{
+      let stored = null;
+      try{ stored = localStorage.getItem(THEME_KEY); }catch(e){ stored = null; }
+      if(stored) return;
+      setTheme(event.matches ? 'dark' : 'light', false);
+    });
+    applySettings();
+  injectAnswerButtons();
+  attachHandlers();
+  updateLiveScore();
+  })();
+  </script>
+</body>
+</html>
