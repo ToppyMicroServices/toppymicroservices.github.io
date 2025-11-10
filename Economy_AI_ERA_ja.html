@@ -1,338 +1,208 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mAI Economy — 窓口指導をコード化 - ToppyMicroServices</title>
-  <meta name="description" content="mAI Economy は歴史的な窓口指導を進化させ,QTC 理論と AI 信頼性研究に基づいた透明で監査可能なモデル型の信用配分ガイダンス層（政策 OS）です.">
-    <link rel="alternate" hreflang="ja" href="https://toppymicros.com/Economy_AI_ERA_ja.html">
-    <link rel="alternate" hreflang="en" href="https://toppymicros.com/Economy_AI_ERA.html">
-    <link rel="canonical" href="https://toppymicros.com/Economy_AI_ERA_ja.html">
-
-  <!-- Open Graph / Twitter -->
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="ToppyMicroServices OÜ">
-    <meta property="og:title" content="mAI Economy — 窓口指導をコード化">
-    <meta property="og:description" content="不透明だった歴史的な窓口指導を,AIの信頼性とThermo-credit (QTC)構造に基づく透明で監査可能な信用配分レイヤとして再構築.">
-    <meta property="og:locale" content="ja_JP">
-    <meta property="og:locale:alternate" content="en_US">
-  <meta property="og:url" content="https://toppymicros.com/Economy_AI_ERA_ja.html">
-  <meta property="og:image" content="https://toppymicros.com/216722720.png">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Typography -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;500;600;700&display=swap">
-
-  <!-- Styles: unified header + local layout -->
-  <style>
-    /* Dark-first site variables (match index.html) */
-    :root {
-      --bg: #0b1221;           /* dark navy (canonical) */
-      --fg: #e6e9f2;           /* near-white */
-      --muted: #a7b0c3;        /* muted fg */
-      --card: #121a2e;         /* card bg */
-      --accent: #5aa7ff;       /* blue */
-      --accent-2: #72e5b6;     /* teal */
-      --border: #1b2540;
-      --link: var(--accent);
-      --border-soft: #1b2540;
-    }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #ffffff; --fg: #0b1221; --muted: #5b667a; --card: #f7f9fc; --accent: #0056cc; --accent-2: #088a5b; --border: #e6e9f2;
-      }
-    }
-    html,body{
-      margin:0;
-      padding:0;
-      background:var(--bg);
-      color:var(--fg);
-      font:16px/1.6 "STIX Two Text","Times New Roman",serif;
-    }
-    strong,b{font-weight:700 !important}
-    header,main,footer{max-width:880px;margin:0 auto;padding:16px}
-    header{padding-top:20px}
-    a{color:var(--link);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .crumbs{font-size:14px;color:var(--muted);margin-bottom:8px}
-    .crumbs a{color:inherit}
-    h1{font-size:28px;margin:6px 0 14px}
-    h2{font-size:20px;margin:18px 0 10px}
-    h3{font-size:16px;margin:12px 0 8px}
-    .container.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0 10px}
-    .brand{display:flex;align-items:center;gap:8px;font-weight:600}
-    /* Reduced logo size for tighter headers */
-    .brand-logo{border-radius:6px;display:block;height:20px;width:auto}
-    .links{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
-    .btn{border:1px solid var(--border);padding:4px 10px;border-radius:8px;font-size:13px}
-    .muted{color:var(--muted);font-size:13px}
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding:3px 9px;
-      border-radius:999px;
-      font-size:11px;
-      border:1px solid var(--border-soft);
-      color:var(--muted);
-      gap:4px;
-    }
-    .hero-kicker{
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:0.16em;
-      color: var(--accent-2);
-    }
-    .hero-title{
-      margin:4px 0 8px;
-      font-size:26px;
-      line-height:1.25;
-    }
-    .lead{
-      font-size:15px;
-      color:var(--fg);
-      max-width:720px;
-      margin:0 0 12px;
-    }
-    p{
-      font-size:14px;
-      line-height:1.7;
-      color:var(--fg);
-      margin:0 0 10px;
-    }
-    ul{
-      padding-left:20px;
-      margin:0 0 10px;
-      font-size:14px;
-      color:var(--fg);
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr);
-      gap:18px;
-      margin-top:8px;
-    }
-    .card{
-      border:1px solid var(--border-soft);
-      border-radius:10px;
-      padding:12px 12px 10px;
-      background:transparent;
-    }
-    .label{
-      font-size:10px;
-      font-weight:600;
-      text-transform:uppercase;
-      letter-spacing:0.14em;
-      color: var(--accent);
-      margin-bottom:2px;
-    }
-    .inline-kpi{
-      font-size:12px;
-      color:var(--muted);
-    }
-    a.underline{text-decoration:underline}
-    .footer-note{
-      margin-top:24px;
-      font-size:11px;
-      color:var(--muted);
-    }
-    @media (max-width:720px){
-      .grid{grid-template-columns:1fr}
-      .hero-title{font-size:22px}
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>AI時代の経済・金融アーキテクチャ（試案） | ToppyMicroServices</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI時代のマクロ経済・金融政策をどのように設計し得るかについて,ToppyMicroServicesが提案する研究開発コンセプト.Thermo-Creditと信頼できるAI運用を組み合わせた,透明で検証可能な枠組みの試案.">
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
+
 <header>
-  <div class="container nav">
-    <div class="brand">
-      <a href="index.html"><img src="216722720.png" alt="ToppyMicroServices のロゴ" class="brand-logo"></a>
-      <a href="index.html">ToppyMicroServices OÜ</a>
-    </div>
-    <nav class="links">
-      <a href="index.html#vision">ビジョン</a>
-      <a href="index.html#research">リサーチ</a>
-      <a href="index.html#projects">プロジェクト</a>
-      <a href="index.html#applications">アプリケーション</a>
-      <a href="index.html#services">サービス</a>
-      <a href="index.html#about">会社情報</a>
-      <a href="index.html#contact" class="btn">お問い合わせ</a>
-      <a href="Economy_AI_ERA.html">English</a>
-      <span class="muted" aria-hidden="true">|</span>
-      <a href="Economy_AI_ERA.html" lang="en" hreflang="en">EN</a>
-      <span class="muted">日本語</span>
-    </nav>
-  </div>
-  <div class="crumbs">
-    <a href="index.html">ホーム</a> / <span>mAI Economy</span>
-  </div>
+  <h1>AI時代の経済・金融アーキテクチャ（試案）</h1>
+  <p>Window Guidance as Code / Thermo-Credit / 信頼できるAI運用</p>
 </header>
 
-  <main>
-  <div class="label">コンセプトノート</div>
-  <div class="hero-kicker">mAI Economy — 窓口指導をコード化</div>
-  <h1 class="hero-title">ブラックボックスではなく信用配分を支えるソフトな AI レイヤー</h1>
-    <p class="lead">
-      mAI Economyは,歴史的な「window guidance（窓口指導）」を手がかりに,透明で監査可能なモデル型の信用配分ガイダンスへと進化させるAIベースのpolicy control layerです.
-      中央銀行・監督当局・大手銀行が,硬直的な割当や不透明な裁量,検証されていないAI予測に頼ることなく,信用の構成（どの分野に,どの条件で資金が流れるか）を設計・評価できる環境を提供することを目的としています.
-    </p>
-    <p class="lead">
-  中核は新たなマクロ経済モデルではなく,<strong>政策OS</strong>として,<strong>①</strong> Kant的な制約とフィードバックに基づくAI信頼性研究（AuditLoop）を活用したAI手法,そして<strong>②</strong> バランスシート構造と証券化を扱うThermo-credit (QTC)経済理論という二本柱で成り立っています.
-    </p>
+<main>
 
-    <div class="badge">R&amp;D コンセプト — 投資助言でも規制命令ツールでもありません</div>
-
-    <h2>1. ボリュームは管理できても,構造は管理できていない</h2>
+  <section id="positioning">
+    <h2>このページについて</h2>
     <p>
-      伝統的な手段（政策金利,QE/QT,包括的な資本規制など）は信用残高の水準を調整できますが,セクター別エクスポージャーや満期構成,担保品質,オフバランス経路,証券化,リスク集中といった信用の内部構造を制御する力は限定的です.
-      日本の歴史的なwindow guidanceは信用配分の強力な誘導力を示しましたが,その運用は不透明でガバナンスが難しいものでした.
-    </p>
-    <p>
-      特に戦後日本では,こうした非公式な枠組みが実質的な融資枠やセクター別フローを方向付け,政策金利よりも直接的な「信用の舵取り」として機能していましたが,そのルールや判断プロセスは外部から見えにくいものでした.
-    </p>
-    <p>
-      今日では大型モデルやダッシュボードが存在しますが,多くは次のような偏りがあります.
+      このページは,AI時代において「信用の配分」と「規制・政策判断」を
+      どのように設計すべきかについての,
+      <strong>ToppyMicroServicesによる研究開発コンセプト</strong>です.
     </p>
     <ul>
-      <li><strong>説明責任のあるルール</strong>よりも結果予測を重視している.</li>
-      <li>銀行ごとの監督に集中し,システム全体の配分インセンティブを十分に扱えていない.</li>
-      <li>較正や監視,監査が不十分な,不安定なAIに依存している.</li>
+      <li>実運用中の製品や公式な政策提案ではありません.</li>
+      <li>特定の資産運用や与信判断を推奨するものではありません.</li>
+      <li>将来の議論・共同研究・実証実験のたたき台として公開しています.</li>
+    </ul>
+  </section>
+
+  <section id="background">
+    <h2>背景：なぜこのテーマか</h2>
+    <p>
+      大規模言語モデル（LLM）を含むAIは,経済分析・リスク管理・政策立案の現場に入りつつあります.
+      しかし同時に,次のような問題があります.
+    </p>
+    <ul>
+      <li>モデルや指標がブラックボックス化し,前提や限界が見えにくい.</li>
+      <li>AIの出力が,そのまま「正しそう」に見えてしまい,誤用されるリスク.</li>
+      <li>信用配分や規制運用が,暗黙の慣行や政治的判断に埋もれやすい.</li>
     </ul>
     <p>
-      mAI Economyは,このギャップを埋めるために,<strong>観測可能で,異議申し立て可能かつ規制上説明可能な「ガイダンス層」</strong>として,信用配分のコリドー（許容範囲）を提案することを目指します.
+      私たちが目指したいのは,
+      <strong>AIを“神託”として扱うことではなく,仕組みとログを公開しながら,人間の判断を支える道具として組み込むこと</strong>
+      です.
     </p>
+  </section>
 
-  <h2>2. 設計：「window guidance（窓口指導）」をコード化する</h2>
+  <section id="core-ideas">
+    <h2>Coreとなる考え方</h2>
+
+    <article id="reliable-ai">
+      <h3>1. 信頼できるAI：監視と調整のしくみを前提にする</h3>
+      <p>
+        AIやスコアリングモデルを,いきなり本番の判断に丸投げしない.
+        その前提として,上に「監視と調整のしくみ」を必ず載せる,という設計を取ります.
+      </p>
+      <ul>
+        <li>出力の偏りや急な変化を継続的にチェックする.</li>
+        <li>どのデータ・ルール・前提から,その結論に至ったかを遡って確認できるようにする.</li>
+        <li>担当者が「採用する／修正する／却下する」を判断しやすい形で提示する.</li>
+      </ul>
+      <p>
+        これは難しい言葉で言うと calibration や audit ですが,
+        要するに<strong>「AIの振る舞いを見張り,必要なら人間側でブレーキや補正をかけられるようにしておく安全装置」</strong>
+        です.
+      </p>
+    </article>
+
+    <article id="thermo-credit">
+      <h3>2. Thermo-Credit：信用の配分と余力を整理する座標</h3>
     <p>
-      本システムはコマンドセンターではなく制御レイヤーとして設計されており,果たす役割は次の3点です.
+      現代の信用貨幣制度では,私たちが日常で使っているお金の多くは,
+      商業銀行が融資を行うときに同時に作られる「銀行預金」として生まれます.
+      中央銀行が発行する現金や準備も重要ですが, 実体経済で使われるマネーの大部分は, この信用創造のプロセスに依存しています。
+      このため,マネーの「総量」だけを見ても十分ではなく, 実体経済・不動産・投機・政府など,どの分野に信用が流れ,
+      どれだけ安全な余力が残っているかを区別して捉える必要があります.
+      Thermo-Creditは,"マネーの量"と"信用の配分"を分けて評価するための枠組みです.
     </p>
+      <ul>
+        <li>
+          <strong>信用がどこに配分されているか</strong>：
+          実体投資,住宅ローン,消費者ローン,証券信用,政府向けなどに区分し,
+          そのバランス（偏り）をエントロピーという形で測る.
+        </li>
+        <li>
+          <strong>どれだけ「安全な余力」が残っているか</strong>：
+          CET1/RWA,HQLA,LCR,NSFRなど,
+          既にある規制指標から「まだどこまでリスク資産を増やせるか」を計算し,共通のスケールにまとめる.
+        </li>
+      </ul>
+      <p>
+        さらに,市場のスプレッドや出来高などから
+        <strong>流動性の状態</strong>を表す指標（T<sub>L</sub>）も組み合わせ,
+        「配分」「余力」「流れやすさ」をまとめて観察できる座標系を目指しています.
+      </p>
+      <p>
+        物理の熱力学の記号を借りていますが,
+        「自然法則を発見した」という主張ではなく,
+        <strong>矛盾のないかたちで記録・比較するための整理方法</strong>
+        として使っています.
+      </p>
+    </article>
+
+  </section>
+
+  <section id="use-cases">
+    <h2>想定しているユースケース（例）</h2>
+    <p>ここに挙げるのは,現時点で検討中の案であり,検証したいテーマです.</p>
+
+    <h3>1. 中央銀行・監督当局向け</h3>
     <ul>
-      <li><strong>政策目標</strong>（金融安定,気候変動,プロダクティビティ,住宅リスクなど）を測定可能な指標に変換する.</li>
-      <li>セクター,テナー,商品,証券化チャネルにまたがる<strong>配分ガイドライン</strong>に翻訳する.</li>
-      <li><strong>安定性と公正さの指標</strong>で結果をモニタリングし,説明責任とログを提供する.</li>
+      <li>
+        貸出配分やレバレッジ,流動性について,
+        厳しい一律規制ではなく
+        <strong>「この範囲に収まっていると望ましい」という上限と下限</strong>
+        をルールとして決める.
+      </li>
+      <li>
+        実際のデータがその範囲から外れたときに,理由と経路を説明できるようにし,
+        必要な是正措置を検討するための材料として使う.
+      </li>
+      <li>
+        特定セクター（例：投機的な不動産や過度な証券レバレッジ）の過熱を抑えつつ,
+        生産的投資や中小企業向け融資を守る誘導を検証する.
+      </li>
     </ul>
 
-    <div class="grid">
-      <div class="card">
-        <div class="label">アーキテクチャ</div>
-        <h3>データ &amp; 構造レイヤー</h3>
-        <p>
-          次の情報を統合したスキーマを用意します.
-        </p>
-        <ul>
-          <li>規制テキストや監督上の期待（バーゼル基準,国内規則,ガイダンス）.</li>
-          <li>銀行開示（セクター別融資,RWA ブレイクダウン,証券化エクスポージャー,流動性プロファイル）.</li>
-          <li>市場データ（スプレッド,金利カーブ,MBS/RMBS ボリューム,必要に応じた CDS）.</li>
-        </ul>
-        <p>
-          これらはサーモクレジット（QTC）指標（資本の「温度」,証券化の「チャネル」,オフバランスの φ 指標など）と整合するドメイングラフとして符号化されます.
-        </p>
-
-        <h3>モデル &amp; 制御レイヤー</h3>
-        <ul>
-          <li>バランスシートのストレスやミスアロケーションを表現するために,QTC由来のポテンシャルを用います.</li>
-          <li>ガイダンスルールが安定性とリスクに与える影響をフィードバック制御的に検証します.</li>
-          <li>AIコンポーネントは,較正・監視・監査が可能な部分に限定して統合されます.</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <div class="label">インターフェース</div>
-        <h3>政策スタジオ（当局向け）</h3>
-        <p>
-          CRE集中の抑制,中小企業融資の支援,FXミスマッチの軽減などの目標を設定し,信用・資本の代替的なコリドーを探索し,仮定を明示した影響推計を確認できます.
-        </p>
-
-        <h3>バンクコンソール（金融機関向け）</h3>
-        <p>
-          各銀行は自らのバランスシートをガイダンス・コリドーにマッピングし,乖離を把握し,不透明なスコアではなく<strong>説明可能な提案</strong>を受け取ることができます.
-        </p>
-
-        <h3>安定性 &amp; 公平性モニター</h3>
-        <p>
-          ガイダンスが比例的かつ非差別的で,法的マンデート内に収まっているかを監視します.
-          すべてのシナリオと推奨は事後レビューに備えてログ化されます.
-        </p>
-      </div>
-    </div>
-
-    <h2>3. 簡単には模倣できない理由（そして私たちが構築する理由）</h2>
-    <p>
-      mAI Economyは,表面的な「マクロAI」ではなく,深い構造スタックとして意図的に設計されています.
-      差別化要因は秘密のプロンプトではなく,次の統合にあります.
-    </p>
+    <h3>2. 銀行・金融機関向け</h3>
     <ul>
-      <li><strong>テーマ 1:</strong> Kant的な制約とフィードバックに基づくAI信頼性研究（AuditLoop）.</li>
-      <li><strong>テーマ 2:</strong> バランスシート力学,証券化,マクロ経済成果を結びつけるサーモクレジット（QTC）経済理論.</li>
-      <li><strong>専用データ &amp; スキーマ:</strong> 長期のデータセットと,規制・会計・証券化制度に沿ったドメイングラフ.</li>
-      <li><strong>デプロイモデル:</strong> 中央銀行／監督当局／グローバル銀行の環境内で稼働し,厳格なログとレビューを前提にした設計.</li>
-    </ul>
-    <p>
-      単一の層（例：QTCの図やプロンプト）だけをコピーしても不十分です.価値は,検証済みのパイプライン,指標,そして制度への適合にあります.
-    </p>
-
-    <h2>4. ガバナンス：mAI Economy が<em>行わない</em>こと</h2>
-    <p>
-      誤用や法的リスクを避けるため,明確な制約をもって構想しています.
-    </p>
-    <ul>
-      <li>いかなる機関にも拘束力のある融資命令を<strong>出しません</strong>.</li>
-      <li>人間や法定の意思決定を<strong>置き換えません</strong>.</li>
-      <li>個人向けの投資助言や商品推奨を<strong>提供しません</strong>.</li>
-      <li>不透明な割当や差別的な配分の抜け道には<strong>なりません</strong>.</li>
-    </ul>
-    <p>
-      代わりに提供するのは次のとおりです.
-    </p>
-    <ul>
-      <li>仮定を文書化したシナリオ分析ツール</li>
-      <li>議論と修正が可能な,説明性の高い指標と指針</li>
-      <li>内部監査・外部監査・議会監視に耐えるログ</li>
+      <li>
+        自行のバランスシートについて,
+        「どの分野にどれだけ信用を出しているか」と
+        「資本・流動性の余力」がひと目で分かるダッシュボードとして利用する.
+      </li>
+      <li>
+        内部モデルやAI与信の出力について,
+        外部に説明しやすい「監視と調整のしくみ」を重ねることで,
+        規制当局や社内ガバナンスへの説明責任を果たしやすくする.
+      </li>
     </ul>
 
-    <h2>5. 想定ユースケース</h2>
-    <h3>中央銀行／監督当局</h3>
+    <h3>3. 研究機関・シンクタンク向け</h3>
     <ul>
-      <li>投機的な不動産融資をクールダウンしつつ,生産性の高い中小企業融資を支援するソフトガイダンス・パッケージを設計する.</li>
-      <li>提案されたコリドーが銀行資本,証券化ボリューム,マクロボラティリティに与える影響を定量化する.</li>
-      <li>既存政策フレームと併存可能な透明な方法論ノートを公表する.</li>
+      <li>公開データと明示的な数式にもとづき,各国のクレジット構造やレジーム変化を比較する.</li>
+      <li>「もし別の誘導ルールだったらどうなっていたか」という反実仮想を,再現可能な形で試す.</li>
     </ul>
+  </section>
 
-    <h3>大手銀行／銀行グループ</h3>
-    <ul>
-      <li>異なる規制・マクロシナリオ下での内部融資目標をシミュレーションする.</li>
-      <li>新商品や証券化ストラクチャーがガイダンス・コリドーとどう相互作用するかを事前評価する.</li>
-      <li>取締役会や監督当局との対話に耐える,モデルベースで説明可能な根拠を文書化する.</li>
-    </ul>
+  <section id="governance">
+    <h2>前提とガバナンス</h2>
+    <ol>
+      <li>
+        <strong>AIは最終決定者ではない</strong><br>
+        この構想におけるAIは,提案や警告を行うための補助ツールです.
+        最終判断は,必ず責任を持つ人間が行う前提です.
+      </li>
+      <li>
+        <strong>ブラックボックスにしない</strong><br>
+        どのデータ・前提・ルールから指標や提案が生まれているかを追えるようにし,
+        第三者が検証可能であることを重視します.
+      </li>
+      <li>
+        <strong>恣意的・差別的な利用を許さない</strong><br>
+        セクター別の誘導は,金融安定や生産性向上といった正当な目的に限定されるべきであり,
+        個人属性や特定企業に対する不当な差別・優遇を正当化する道具として使わないように設計します.
+      </li>
+      <li>
+        <strong>注意</strong><br>
+        Thermo-Creditを含む本フレームワークは開発中であり,
+        指標,分類,計算方法については,批判・改善提案を歓迎します.
+      </li>
+    </ol>
+  </section>
 
-    <h3>研究・政策ラボ</h3>
-    <ul>
-      <li>「特定の年に構造化されたwindow guidanceが導入されていたら？」といった歴史的カウンターファクトを検証する.</li>
-      <li>ナイーブなマクロ手段と構造的ガイダンスを,安定性と配分結果の観点から比較する.</li>
-    </ul>
+<section id="collaboration">
+  <h2>お問い合わせ・フィードバック</h2>
+  <p>
+    本ページの内容は、AI時代の経済・金融アーキテクチャに関する試案・メモとして公開しているものです。
+    内容に関するご意見や技術的なコメントがあれば、静的なフィードバックとしてお寄せいただけると助かります。
+  </p>
+  <p>
+    とくに、次のような観点からの批判的なご指摘や補足情報を歓迎します。
+  </p>
+  <ul>
+    <li>マクロ・プルーデンスやシステミックリスク指標としての妥当性</li>
+    <li>中央銀行・監督当局の実務との整合性</li>
+    <li>AIの運用・モデルリスク管理の観点から見た懸念点</li>
+    <li>公開データや既存研究との重なり、矛盾している点</li>
+  </ul>
+  <p>
+    商用提案や共同プロジェクトをまだ積極募集しているわけではありませんが、
+    本試案に関連する専門的なコメントについては、
+    ToppyMicroServices公式サイト記載の連絡先からご連絡ください。
+  </p>
+</section>
 
-    <h2>6. Statusと次のStep</h2>
-    <p>
-      mAI EconomyはToppyMicroServices OÜが探索中のR&amp;D方向性であり,現在の取り組みは次を中心としています.
-    </p>
-    <ul>
-      <li>QTCフレームワークの形式化と透明な理論ノートの公開.</li>
-      <li>再現可能なデータセットと,可能な範囲でのオープンなデモコードの整備.</li>
-      <li>規制当局に受容されるアーキテクチャを前提とした,限定的パイロット向けのデプロイ形態の検討.</li>
-    </ul>
-    <p class="inline-kpi">
-      関心のある皆さまは,<a class="underline" href="mailto:info@toppymicros.com">info@toppymicros.com</a>までご連絡ください.
-    </p>
 
-    <div class="footer-note">
-      免責事項：本ページは探索的研究コンセプトを説明するものであり,投資助言を構成するものではなく,いかなる金融商品の推奨でもありません.
-      また,いかなる当局の公式ツールを意味するものでもありません.今後の実装には厳格な法的・倫理的・制度的レビューが必要となります.
-    </div>
-  </main>
-  <footer>
-    <div class="small-print">
-      © 2025 ToppyMicroServices OÜ — Registry code 16551297 — Karamelli tn 2, 11317 Tallinn, Estonia.
-    </div>
-  </footer>
+</main>
+
+<footer>
+  <p>&copy; ToppyMicroServices</p>
+</footer>
+
 </body>
 </html>
