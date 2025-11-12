@@ -63,6 +63,8 @@
   /* Reduced logo size for tighter headers */
   .brand-logo{border-radius:6px;display:block;height:20px;width:auto}
     .links{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+    .nav-toggle{display:none;align-items:center;gap:8px;border:1px solid var(--border);background:transparent;color:var(--fg);padding:6px 10px;border-radius:10px;font-size:14px}
+    .nav-toggle svg{display:block}
     .btn{border:1px solid var(--border);padding:4px 10px;border-radius:8px;font-size:13px}
     .muted{color:var(--muted);font-size:13px}
     .badge{
@@ -138,6 +140,20 @@
       .grid{grid-template-columns:1fr}
       .hero-title{font-size:22px}
     }
+    /* Mobile-friendly header/nav adjustments (iPhone widths) */
+    @media (max-width:540px){
+      .container.nav{flex-direction:column;align-items:stretch;gap:8px}
+      .nav-toggle{display:inline-flex}
+      /* collapsed by default */
+      .links{display:none;flex-direction:column;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
+      .links.open{display:flex}
+      .links a{display:inline-flex;align-items:center;padding:8px 10px;border-radius:8px;width:100%}
+      .btn{padding:8px 10px}
+      header,main,footer{padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
+      a{-webkit-tap-highlight-color: rgba(90,167,255,0.25)}
+    }
+    /* Focus visibility for keyboard users */
+    .nav-toggle:focus-visible, .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   </style>
 </head>
 
@@ -145,10 +161,14 @@
 <header>
   <div class="container nav">
     <div class="brand">
-      <a href="index.html"><img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo"></a>
+  <a href="index.html"><img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="20" height="20" decoding="async" fetchpriority="high"></a>
       <a href="index.html">ToppyMicroServices OÜ</a>
     </div>
-    <nav class="links">
+    <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="nav-label">Menu</span>
+    </button>
+    <nav class="links" id="primary-nav">
       <a href="index.html#vision">Vision</a>
       <a href="index.html#research">Research</a>
       <a href="index.html#projects">Projects</a>
@@ -344,4 +364,34 @@
     </div>
   </footer>
 </body>
+<script>
+(() => {
+  const btn = document.querySelector('.nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  if (!btn || !nav) return;
+  const openLabel = 'Close';
+  const closedLabel = 'Menu';
+  const labelEl = btn.querySelector('.nav-label');
+  const close = () => {
+    nav.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', closedLabel);
+    if (labelEl) labelEl.textContent = closedLabel;
+  };
+  btn.addEventListener('click', () => {
+    const opened = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    btn.setAttribute('aria-label', opened ? openLabel : closedLabel);
+    if (labelEl) labelEl.textContent = opened ? openLabel : closedLabel;
+  });
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('open')) {
+      if (!nav.contains(e.target) && !btn.contains(e.target)) close();
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+})();
+</script>
 </html>

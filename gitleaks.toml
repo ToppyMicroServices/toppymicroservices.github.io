@@ -1,0 +1,101 @@
+title = "ToppyMicroServices Gitleaks Ruleset"
+
+# Redact secrets in reports by default (CLI can also pass --redact)
+[rulesConfig]
+redact = true
+
+[allowlist]
+files = [
+  "README.md",
+  "**/*.md",
+]
+paths = [
+  "tests/fixtures/",
+  "education/QUIZ_TEMPLATE.md",
+]
+regexes = [
+  '''FAKE|DUMMY|EXAMPLE|PLACEHOLDER''',
+]
+
+#############################################
+# Provider-specific rules
+#############################################
+
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS Access Key ID (AKIA...)"
+regex = '''\bAKIA[0-9A-Z]{16}\b'''
+tags = ["aws", "key"]
+
+[[rules]]
+id = "aws-secret-access-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws(.{0,20})?(secret|access)[^\n]{0,40}?[\"']([0-9a-zA-Z\/+]{40})[\"']'''
+entropy = 3.5
+tags = ["aws", "secret"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token (ghp_ / github_pat_)"
+regex = '''\b(ghp|gho|ghu|ghs|ghr)_[0-9A-Za-z]{36,}\b|\bgithub_pat_[0-9A-Za-z_]{82,}'''
+tags = ["github", "token"]
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI API key (sk-...)"
+regex = '''\bsk-[A-Za-z0-9]{32,}\b'''
+tags = ["openai", "token"]
+
+[[rules]]
+id = "fred-api-key"
+description = "FRED API key (32-char hex)"
+regex = '''\b(?i)(FRED[_-]?API[_-]?KEY|fred[_-]?api[_-]?key)\b.{0,20}\b([0-9A-Fa-f]{32})\b|\b(?<![A-Za-z0-9])[0-9A-Fa-f]{32}(?![A-Za-z0-9])\b'''
+tags = ["fred", "token"]
+
+[[rules]]
+id = "slack-webhook"
+description = "Slack Incoming Webhook URL"
+regex = '''https:\/\/hooks.slack.com\/services\/[A-Z0-9]{9,}\/([A-Z0-9]{9,})\/[a-zA-Z0-9]{24,}'''
+tags = ["slack", "webhook"]
+
+[[rules]]
+id = "slack-bot-token"
+description = "Slack Bot/User OAuth Token"
+regex = '''\b(xox[baprs]-[0-9A-Za-z-]{10,}\-[0-9A-Za-z-]{10,}(?:\-[0-9A-Za-z-]{10,})?)\b'''
+tags = ["slack", "token"]
+
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe Secret Key (sk_live_ / sk_test_)"
+regex = '''\bsk_(live|test)_[0-9a-zA-Z]{24}\b'''
+tags = ["stripe", "secret"]
+
+[[rules]]
+id = "stripe-publishable-key"
+description = "Stripe Publishable Key (pk_live_ / pk_test_)"
+regex = '''\bpk_(live|test)_[0-9a-zA-Z]{24}\b'''
+tags = ["stripe", "key"]
+
+[[rules]]
+id = "google-api-key"
+description = "Google API Key (AIza...)"
+regex = '''\bAIza[0-9A-Za-z\-_]{35}\b'''
+tags = ["google", "api", "key"]
+
+#############################################
+# Generic catch-alls (use with care)
+#############################################
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API key like patterns"
+regex = '''(?i)(api[_-]?key|access[_-]?token|secret)[\s:=\"]{0,5}[A-Za-z0-9_\-]{16,}'''
+entropy = 3.5
+tags = ["generic", "secret"]
+
+[[rules]]
+id = "bearer-token"
+description = "Bearer-like long token"
+regex = '''(?i)bearer\s+[A-Za-z0-9\-\._~\+\/]{24,}'''
+entropy = 3.2
+tags = ["generic", "secret"]
