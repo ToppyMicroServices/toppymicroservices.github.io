@@ -57,7 +57,9 @@
     .container.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0 10px}
     .brand{display:flex;align-items:center;gap:8px;font-weight:600}
     .brand-logo{border-radius:6px;display:block;height:20px;width:auto}
-    .links{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+  .links{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+  .nav-toggle{display:none;align-items:center;gap:8px;border:1px solid var(--border);background:transparent;color:var(--fg);padding:6px 10px;border-radius:10px;font-size:14px}
+  .nav-toggle svg{display:block}
     .btn{border:1px solid var(--border);padding:4px 10px;border-radius:8px;font-size:13px}
     .muted{color:var(--muted);font-size:13px}
     .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;border:1px solid var(--border-soft);color:var(--muted);gap:4px}
@@ -75,16 +77,32 @@
     .footer-note{margin-top:24px;font-size:11px;color:var(--muted)}
     .small-print{font-size:12px;color:var(--muted)}
     @media (max-width:720px){.grid{grid-template-columns:1fr}.hero-title{font-size:22px}}
+    /* Mobile (iPhone) header/nav readability improvements */
+    @media (max-width:540px){
+      .container.nav{flex-direction:column;align-items:stretch;gap:8px}
+      .nav-toggle{display:inline-flex}
+      .links{display:none;flex-direction:column;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
+      .links.open{display:flex}
+      .links a{display:inline-flex;align-items:center;padding:8px 10px;border-radius:8px;width:100%}
+      .btn{padding:8px 10px}
+      header,main,footer{padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
+      a{-webkit-tap-highlight-color: rgba(90,167,255,0.25)}
+    }
+    .nav-toggle:focus-visible, .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   </style>
 </head>
 <body>
 <header>
   <div class="container nav">
     <div class="brand">
-      <a href="index.html"><img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo"></a>
+  <a href="index.html"><img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="20" height="20" decoding="async" fetchpriority="high"></a>
       <a href="index.html">ToppyMicroServices OÜ</a>
     </div>
-    <nav class="links">
+    <button class="nav-toggle" aria-controls="primary-nav-ja" aria-expanded="false" aria-label="メニュー">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="nav-label">メニュー</span>
+    </button>
+    <nav class="links" id="primary-nav-ja">
       <a href="index.html#vision">Vision</a>
       <a href="index.html#research">Research</a>
       <a href="index.html#projects">Projects</a>
@@ -159,13 +177,13 @@
     </article>
 
     <article id="thermo-credit">
-      <h3>2. Thermo-Credit：信用の配分と余力を整理する座標</h3>
+      <h3>2. Thermo-Credit：信用の配分と余力を整理</h3>
     <p>
-      現代の信用貨幣制度では,私たちが日常で使っているお金の多くは,
-      商業銀行が融資を行うときに同時に作られる「銀行預金」として生まれます.
+      現代の信用貨幣制度では,私たちが日常で使っているお金の多くは,商業銀行が融資を行うときに同時に作られる「銀行預金」として生まれます.
       中央銀行が発行する現金や準備も重要ですが, 実体経済で使われるマネーの大部分は, この信用創造のプロセスに依存しています。
       このため,マネーの「総量」だけを見ても十分ではなく, 実体経済・不動産・投機・政府など,どの分野に信用が流れ,
       どれだけ安全な余力が残っているかを区別して捉える必要があります.
+      
       Thermo-Creditは,"マネーの量"と"信用の配分"を分けて評価するための枠組みです.
     </p>
       <ul>
@@ -299,4 +317,35 @@
 </footer>
 
 </body>
+</html>
+<script>
+(() => {
+  const btn = document.querySelector('.nav-toggle');
+  const nav = document.getElementById('primary-nav-ja');
+  if (!btn || !nav) return;
+  const openLabel = '閉じる';
+  const closedLabel = 'メニュー';
+  const labelEl = btn.querySelector('.nav-label');
+  const close = () => {
+    nav.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', closedLabel);
+    if (labelEl) labelEl.textContent = closedLabel;
+  };
+  btn.addEventListener('click', () => {
+    const opened = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    btn.setAttribute('aria-label', opened ? openLabel : closedLabel);
+    if (labelEl) labelEl.textContent = opened ? openLabel : closedLabel;
+  });
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('open')) {
+      if (!nav.contains(e.target) && !btn.contains(e.target)) close();
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+})();
+</script>
 </html>
