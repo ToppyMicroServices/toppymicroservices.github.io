@@ -34,9 +34,9 @@ Primary site: https://toppymicroservices.github.io (CNAME → https://toppymicro
 
 Key standalone pages:
 - `Economy_AI_ERA.html` — mAI Economy / Window Guidance as Code (EN)
-- `Economy_AI_ERA_ja.html` — AI時代の経済・金融アーキテクチャ（試案） (JA)
+- `Economy_AI_ERA_ja.html` — AI-era economic/financial architecture (JA)
 - `theory.html` — Thermo-Credit (QTC ↔ Thermodynamics) theory summary (EN, equations via MathJax)
-- `education/quiz_finance_terms.html` — 金融用語クイズ (JA)
+- `education/quiz_finance_terms.html` — Finance terms quiz (JA)
 - `education/quiz_finance_terms_en.html` — Finance terms quiz (EN)
 
 Each bilingual concept page includes reciprocal `hreflang` links (`en`, `ja`, `x-default`) for SEO and proper language discovery.
