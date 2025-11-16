@@ -3,21 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI時代の経済・金融アーキテクチャ（試案） - ToppyMicroServices</title>
-  <meta name="description" content="AI時代のマクロ経済・金融政策をどのように設計し得るかについて,ToppyMicroServicesが提案する研究開発コンセプト.Thermo-Creditと信頼できるAI運用を組み合わせた,透明で検証可能な枠組みの試案.">
+  <title>AI時代のThermo-Credit設計メモ | ToppyMicroServices</title>
+  <meta name="description" content="Thermo-Credit指標と信頼できるAI運用を組み合わせ、窓口指導を透明なダッシュボードとして再構築する研究メモ。政策実験とPoCのたたき台。">
   <link rel="canonical" href="https://toppymicros.com/Economy_AI_ERA_ja.html">
   <link rel="alternate" hreflang="ja" href="https://toppymicros.com/Economy_AI_ERA_ja.html">
   <link rel="alternate" hreflang="en" href="https://toppymicros.com/Economy_AI_ERA.html">
   <link rel="alternate" hreflang="x-default" href="https://toppymicros.com/Economy_AI_ERA.html">
 
   <!-- Open Graph / Twitter -->
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="ToppyMicroServices OÜ">
-  <meta property="og:title" content="AI時代の経済・金融アーキテクチャ（試案）">
-  <meta property="og:description" content="Window Guidance as Code / Thermo-Credit / 信頼できるAI運用 — 透明で検証可能な枠組みの試案.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ToppyMicroServices — Thermo-Credit & AI Reliability">
+  <meta property="og:description" content="Open math + dashboards for credit allocation (Thermo-Credit) and AI reliability.">
   <meta property="og:url" content="https://toppymicros.com/Economy_AI_ERA_ja.html">
-  <meta property="og:image" content="https://toppymicros.com/216722720.png">
+  <meta property="og:image" content="https://toppymicros.com/og-brand-clean.png">
+  <meta property="og:site_name" content="ToppyMicroServices">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ToppyMicroServices — Thermo-Credit & AI Reliability">
+  <meta name="twitter:description" content="Open math + dashboards for credit allocation (Thermo-Credit) and AI reliability.">
+  <meta name="twitter:image" content="https://toppymicros.com/og-brand-clean.png">
 
   <!-- Typography -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;500;600;700&display=swap">
@@ -65,7 +68,8 @@
     .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;border:1px solid var(--border-soft);color:var(--muted);gap:4px}
     .hero-kicker{font-size:12px;text-transform:uppercase;letter-spacing:0.16em;color: var(--accent-2)}
     .hero-title{margin:4px 0 16px;font-size:26px;line-height:1.25}
-    .lead{font-size:15px;color:var(--fg);max-width:720px;margin:0 0 12px}
+  .lead{font-size:15px;color:var(--fg);max-width:720px;margin:0 0 12px}
+  .hero-subline{font-size:15px;color:var(--fg);font-weight:600;margin:0 0 12px}
     p{font-size:14px;line-height:1.7;color:var(--muted);margin:0 0 10px}
     ul{padding-left:20px;margin:0 0 10px;font-size:14px;color:var(--muted)}
     ol{padding-left:20px;margin:0 0 10px;font-size:14px;color:var(--muted)}
@@ -90,6 +94,8 @@
     }
     .nav-toggle:focus-visible, .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   </style>
+  <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+  <script defer src="/assets/global.js"></script>
 </head>
 <body>
 <header>
@@ -119,9 +125,10 @@
 </header>
 
 <main>
-  <div class="label">コンセプトノート</div>
+  <div class="label">Concept note</div>
   <div class="hero-kicker">AI Economy — Window Guidance as Code</div>
   <h1 class="hero-title">AI時代の経済・金融アーキテクチャ（試案）</h1>
+  <p class="hero-subline">熱力学の数式とダッシュボードで,信用配分とAI信頼性を“測って,見せて,運用に載せる”.</p>
 
   <section id="positioning">
     <h2>このページについて</h2>
@@ -150,19 +157,19 @@
     </ul>
     <p>
       私たちが目指したいのは,
-      <strong>AIを“神託”として扱うことではなく,仕組みとログを公開しながら,人間の判断を支える道具として組み込むこと</strong>
+      <strong>AIを“神託”として扱うのではなく,仕組みとログを公開しながら,人間の判断を支える道具として組み込むこと</strong>
       です.
     </p>
   </section>
 
   <section id="core-ideas">
-    <h2>Coreとなる考え方</h2>
+    <h2>基本となる考え方</h2>
 
     <article id="reliable-ai">
       <h3>1. 信頼できるAI：監視と調整のしくみを前提にする</h3>
       <p>
-        AIやスコアリングモデルを,いきなり本番の判断に丸投げしない.
-        その前提として,上に「監視と調整のしくみ」を必ず載せる,という設計を取ります.
+        AIやスコアリングモデルに,いきなり本番の判断を丸投げしない.
+        その前提として,その上に「監視と調整のしくみ」を必ず載せる,という設計を取ります.
       </p>
       <ul>
         <li>出力の偏りや急な変化を継続的にチェックする.</li>
@@ -170,7 +177,7 @@
         <li>担当者が「採用する／修正する／却下する」を判断しやすい形で提示する.</li>
       </ul>
       <p>
-        これは難しい言葉で言うと calibration や audit ですが,
+        これは専門用語で言えば calibration や audit に近い発想ですが,
         要するに<strong>「AIの振る舞いを見張り,必要なら人間側でブレーキや補正をかけられるようにしておく安全装置」</strong>
         です.
       </p>
@@ -180,11 +187,12 @@
       <h3>2. Thermo-Credit：信用の配分と余力を整理</h3>
     <p>
       現代の信用貨幣制度では,私たちが日常で使っているお金の多くは,商業銀行が融資を行うときに同時に作られる「銀行預金」として生まれます.
-      中央銀行が発行する現金や準備も重要ですが, 実体経済で使われるマネーの大部分は, この信用創造のプロセスに依存しています。
-      このため,マネーの「総量」だけを見ても十分ではなく, 実体経済・不動産・投機・政府など,どの分野に信用が流れ,
+      中央銀行が発行する現金や準備も重要ですが,実体経済で使われるマネーの大部分は,この信用創造のプロセスに依存しています.
+      このため,マネーの「総量」だけを見ても十分ではなく,実体経済・不動産・投機・政府など,どの分野に信用が流れ,
       どれだけ安全な余力が残っているかを区別して捉える必要があります.
       
-      Thermo-Creditは,"マネーの量"と"信用の配分"を分けて評価するための枠組みです.
+      Thermo-Creditは,この「信用」が経済の実態であることを前提とし,その信用を定量的に扱おうとする試みであり,
+      「マネーの量」と「信用の配分」を分けて評価するための枠組みです.
     </p>
       <ul>
         <li>
@@ -215,7 +223,7 @@
 
   <section id="use-cases">
     <h2>想定しているユースケース（例）</h2>
-    <p>ここに挙げるのは,現時点で検討中の案であり,検証したいテーマです.</p>
+    <p>ここに挙げるのは,現時点で検討中の案であり検証したいテーマです.</p>
 
     <h3>1. 中央銀行・監督当局向け</h3>
     <ul>
@@ -277,7 +285,7 @@
       <li>
         <strong>注意</strong><br>
         Thermo-Creditを含む本フレームワークは開発中であり,
-        指標,分類,計算方法については,批判・改善提案を歓迎します.
+        指標・分類・計算方法については,批判や改善提案を歓迎します.
       </li>
     </ol>
   </section>
@@ -285,28 +293,28 @@
 <section id="collaboration">
   <h2>お問い合わせ・フィードバック</h2>
   <p>
-    本ページの内容は、AI時代の経済・金融アーキテクチャに関する試案・メモとして公開しているものです。
-    内容に関するご意見や技術的なコメントがあれば、静的なフィードバックとしてお寄せいただけると助かります。
+    本ページの内容は,AI時代の経済・金融アーキテクチャに関する試案・メモとして公開しているものです.
+    内容に関するご意見や技術的なコメントがあれば,静的なフィードバックとしてお寄せいただけると助かります.
   </p>
   <p>
-    とくに、次のような観点からの批判的なご指摘や補足情報を歓迎します。
+    とくに,次のような観点からの批判的なご指摘や補足情報を歓迎します.
   </p>
   <ul>
     <li>マクロ・プルーデンスやシステミックリスク指標としての妥当性</li>
     <li>中央銀行・監督当局の実務との整合性</li>
     <li>AIの運用・モデルリスク管理の観点から見た懸念点</li>
-    <li>公開データや既存研究との重なり、矛盾している点</li>
+    <li>公開データや既存研究との重なり,矛盾している点</li>
   </ul>
   <p>
-    商用提案や共同プロジェクトをまだ積極募集しているわけではありませんが、
-    本試案に関連する専門的なコメントについては、
-    ToppyMicroServices公式サイト記載の連絡先からご連絡ください。
+    商用提案や共同プロジェクトをまだ積極募集しているわけではありませんが,
+    本試案に関連する専門的なコメントについては,
+    ToppyMicroServices公式サイト記載の連絡先からご連絡ください.
   </p>
 </section>
 
 
   <div class="footer-note">
-    免責事項: 本ページは研究開発中の概念メモです。投資助言を構成するものではなく、特定の金融商品等の勧誘・推奨を行うものではありません。また、いかなる当局の公式ツールを記述するものでもありません。
+    免責事項: 本ページは研究開発中の概念メモです.投資助言を構成するものではなく,特定の金融商品等の勧誘・推奨を行うものではありません.また,いかなる当局の公式ツールを記述するものでもありません.
   </div>
 </main>
 
