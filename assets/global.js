@@ -1,4 +1,5 @@
 (function(){
+  const CTA_ENABLED = false;
   const CTA_ID = 'global-poc-cta';
   const CTA_TEXT = 'PoC/相談';
   const CTA_SUBJECT = encodeURIComponent('PoC / Consultation — Thermo-Credit & AI reliability');
@@ -10,7 +11,7 @@
   };
 
   function injectStyles(){
-    if(document.getElementById('global-poc-style')) return;
+    if(!CTA_ENABLED || document.getElementById('global-poc-style')) return;
     const style = document.createElement('style');
     style.id = 'global-poc-style';
     style.textContent = `
@@ -65,7 +66,7 @@
   }
 
   function renderCTA(){
-    if(document.getElementById(CTA_ID)) return;
+    if(!CTA_ENABLED || document.getElementById(CTA_ID)) return;
     const bar = document.createElement('div');
     bar.id = CTA_ID;
     bar.innerHTML = `
@@ -139,8 +140,10 @@
   }
 
   function init(){
-    injectStyles();
-    renderCTA();
+    if(CTA_ENABLED){
+      injectStyles();
+      renderCTA();
+    }
     setupCTAEvents();
     setupDwellTracking();
   }
