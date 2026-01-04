@@ -19,4 +19,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: --verbose --no-progress -- ./ -x "https://t.co/*"
+          args: >
+            --verbose
+            --no-progress
+            --exclude "mailto:*"
+            --exclude-path "2025_11_Thermo_Credit/report.html"
+            --exclude-path "./2025_11_Thermo_Credit/report.html"
+            --exclude-path "./2025_11_Thermo_Credit"
+            -- ./ -x "https://t.co/*"
