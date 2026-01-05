@@ -121,4 +121,4 @@ Email: **info@toppymicros.com**
 - Restored Targets & roadmap (product track).
 
 ---
-© 2025 ToppyMicroServices OÜ — Registry code 16551297 — Tallinn, Estonia.
+© 2026 ToppyMicroServices OÜ — Registry code 16551297 — Tallinn, Estonia.
