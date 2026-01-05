@@ -106,4 +106,4 @@ This changelog records major structural or publication-related updates to the si
 - 2025-10: Initial public site structure and deployment workflow.
 
 ---
-© 2025 ToppyMicroServices OÜ — Registry code 16551297 — Tallinn, Estonia.
+© 2026 ToppyMicroServices OÜ — Registry code 16551297 — Tallinn, Estonia.
