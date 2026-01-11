@@ -33,6 +33,8 @@ The website serves three purposes:
 - To publish proof artifacts (research notes, evaluation methods, and dashboards) that demonstrate these principles in practice
 - To describe the scope of public-facing services
 
+Current public services include ultra-lean company architecture, AI-first operations and automation, vendor-neutral evaluation and reliability, and dmarc4all (DMARC/SPF/DKIM policy design and reporting setup).
+
 ## Public Pages
 The site consists of a small number of standalone pages. Some pages describe services or policies, while others are published as proof artifacts supporting the company design philosophy.
 
