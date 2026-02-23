@@ -1,21 +1,41 @@
 # Security Policy
 
-## Supported Versions
+This repository hosts the public website for ToppyMicroServices OÜ.
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+For the full coordinated disclosure policy, see:
+- https://toppymicros.com/security-policy.html
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Machine-readable policy:
+- https://toppymicros.com/.well-known/security.txt
+
+## Scope
+
+In scope:
+- Public assets under `toppymicros.com`
+- Public GitHub repositories under `ToppyMicroServices`
+
+Out of scope (non-exhaustive):
+- Best-practice suggestions without a demonstrable exploit path
+- Self-XSS and browser/devtools-only issues
+- Volumetric denial of service
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Please report vulnerabilities to:
+- security@toppymicros.com
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Include:
+1. Affected asset and vulnerability summary
+2. Reproduction steps / PoC
+3. Impact assessment
+4. Optional remediation guidance
+
+## Response Targets
+
+- Acknowledgement target: within 5 business days
+- Remediation target: generally 30 days; complex issues may require up to 60 days
+
+## Safe Harbor
+
+If you act in good faith and follow the policy, we will not pursue legal action for your research activities.
+

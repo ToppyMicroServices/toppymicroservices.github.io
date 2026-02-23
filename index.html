@@ -6,21 +6,14 @@
   <title>ToppyMicroServices — Designing ultra-lean, AI-first companies</title>
   <meta name="description" content="ToppyMicroServices designs ultra-lean, AI-first companies from scratch — built for clarity, independence, and minimal overhead. We ship open research, tools, and dashboards." />
   <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#0b1221">
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
   <link rel="canonical" href="https://toppymicros.com/" />
 
-  <!-- Icons -->
-  <link rel="icon" href="https://www.toppymicros.com/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" href="https://www.toppymicros.com/favicon-32.png" sizes="32x32">
-  <link rel="apple-touch-icon" href="https://www.toppymicros.com/apple-touch-icon.png" sizes="180x180">
-  
-  <!-- 
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-  -->
 
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ToppyMicroServices — Ultra-lean, AI-first company design" />
   <meta property="og:description" content="Designing ultra-lean, AI-first companies from scratch — built for clarity and independence." />
@@ -32,7 +25,6 @@
   <meta name="twitter:description" content="Designing ultra-lean, AI-first companies from scratch — built for clarity and independence." />
   <meta name="twitter:image" content="https://toppymicros.com/og-brand-clean.png" />
 
-  <!-- Organization Schema.org -->
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -71,6 +63,12 @@
       "name": "Thermo-Credit Monitor (QTC) — Open credit dynamics dashboard",
       "url": "https://toppymicros.com/2025_11_Thermo_Credit/report.html",
       "description": "Monthly public report of thermo-credit indicators (S_M, T_L, PLD, X_C)."
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "YOLOZU — Python package",
+      "url": "https://pypi.org/project/yolozu/1.0.0/",
+      "description": "YOLOZU v1.0.0 release (PyPI) with archival records on Zenodo (software + manual)."
     }
   ]
 }
@@ -85,6 +83,8 @@
       --accent: #5aa7ff;       /* blue */
       --accent-2: #72e5b6;     /* teal */
       --border: #1b2540;
+      --glow-1: rgba(90,167,255,0.18);
+      --glow-2: rgba(114,229,182,0.14);
       --maxw: 880px;
       --navh: 64px; /* header height for scroll offset */
     }
@@ -97,14 +97,30 @@
         --accent: #0056cc;
         --accent-2: #088a5b;
         --border: #e6e9f2;
+        --glow-1: rgba(0,86,204,0.10);
+        --glow-2: rgba(8,138,91,0.10);
       }
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, system-ui, sans-serif;
+      background:
+        radial-gradient(1000px 600px at 18% -10%, var(--glow-1), transparent 60%),
+        radial-gradient(900px 500px at 88% 0%, var(--glow-2), transparent 55%),
+        var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    a:focus-visible, .btn:focus-visible, .gh-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
 
@@ -115,11 +131,19 @@
     .brand-logo { height: 28px; width: auto; border-radius: 6px; opacity: .95; }
     .nav a { color: var(--fg); opacity: .9; }
     .nav .links { display: flex; gap: 14px; align-items: center; font-size: 13px; }
-    .btn { display: inline-block; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--fg); font-weight: 600; }
-    .btn:hover { border-color: var(--accent); }
-    .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #0b1221; border: none; }
+    @media (max-width: 760px) {
+      :root { --navh: 104px; }
+      .nav { flex-wrap: wrap; }
+      .nav .links { flex-wrap: wrap; width: 100%; gap: 12px; }
+    }
+
+    .btn { display: inline-block; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--fg); font-weight: 600; transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+    .btn:hover { border-color: var(--accent); text-decoration: none; }
+    .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #0b1221; border: none; box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+    @media (hover:hover) { .btn:hover { transform: translateY(-1px); } }
 
     .section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:8px; }
+    .section-head h2 { margin: 0; }
     .title-actions { display:flex; align-items:center; gap:14px; }
     .btn.sm { padding: 8px 12px; font-weight: 600; }
     .btn.quiet { background: transparent; border: 1px solid var(--border); color: var(--muted); }
@@ -131,15 +155,17 @@
       width:32px; height:32px; border-radius:8px;
       border:1px solid var(--border); background: var(--card);
       text-decoration:none;
+      transition: border-color .18s ease, transform .18s ease;
     }
     .gh-link:hover{ border-color: var(--accent); }
     .gh-link svg{ width:18px; height:18px; fill: var(--fg); opacity:.9; }
 
     /* Hero */
     .hero { padding: 56px 0 24px; }
-  .hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 12px; line-height: 1.2; }
-  .hero p.lead { font-size: clamp(16px, 2vw, 18px); color: var(--muted); margin: 0 0 12px; }
-  .hero .hero-subline { font-size: clamp(15px, 2vw, 17px); color: var(--fg); margin: 0 0 24px; font-weight: 500; }
+    .hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 12px; line-height: 1.2; }
+    .hero p.lead { font-size: clamp(16px, 2vw, 18px); color: var(--muted); margin: 0 0 12px; }
+    .hero .hero-subline { font-size: clamp(15px, 2vw, 17px); color: var(--fg); margin: 0 0 18px; font-weight: 500; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
     .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .badge { border: 1px solid var(--border); background: var(--card); padding: 6px 10px; border-radius: 999px; font-size: 13px; color: var(--muted); }
 
@@ -201,65 +227,39 @@
     .card { grid-column: span 12; padding: 16px; border: 1px solid var(--border); background: var(--card); border-radius: 14px; }
     .card h3 { margin: 0 0 6px; font-size: 18px; }
     .card p { margin: 0; color: var(--muted); }
+    .card p + p { margin-top: 8px; }
     @media (min-width: 700px) { .card { grid-column: span 4; } }
+    @media (hover:hover) {
+      .card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+      .card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 12px 36px rgba(0,0,0,.18); }
+    }
 
     ul.clean { list-style: none; padding-left: 0; margin: 0; }
     ul.clean li { padding: 10px 0; border-bottom: 1px dashed var(--border); }
     ul.clean li:last-child { border-bottom: none; }
 
-    /* Visual Roadmap */
-    .roadmap { margin-top: 8px; }
-    .roadmap-grid { 
-      display: grid; 
-      grid-template-columns: repeat(1, 1fr); 
-      gap: 12px; 
-      position: relative; 
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.95em;
+      padding: 0.12em 0.35em;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      background: color-mix(in hsl, var(--card) 70%, var(--bg) 30%);
+      white-space: nowrap;
     }
-    @media (min-width: 700px) {
-      .roadmap-grid { grid-template-columns: repeat(5, 1fr); gap: 14px; }
-    }
-    .rm-item { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      padding: 12px; 
-      position: relative; 
-    }
-    .rm-phase { 
-      font-weight: 700; 
-      letter-spacing: .2px; 
-      margin: 0 0 6px; 
-      font-size: 14px; 
-      color: var(--fg);
-    }
-    .rm-body { 
-      font-size: 14px; 
-      color: var(--muted);
-    }
-    /* connectors (desktop) */
-    @media (min-width: 700px) {
-      .rm-item::before { 
-        content: ""; 
-        position: absolute; 
-        top: -8px; 
-        left: 12px; 
-        right: 12px; 
-        height: 2px; 
-        background: var(--border); 
-      }
-      .rm-item::after {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 10px; height: 10px; border-radius: 999px;
-        background: var(--accent);
-        box-shadow: 0 0 0 2px var(--bg);
-      }
-      .roadmap-grid > .rm-item:first-child::before { left: 50%; }
-      .roadmap-grid > .rm-item:last-child::before { right: 50%; }
-    }
+
+    .muted { color: var(--muted); }
+    .link-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .mt-6 { margin-top: 6px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-10 { margin-top: 10px; }
+
+    .section-lead { margin: 0 0 12px; color: var(--muted); }
+    .note { margin-top: 10px; color: var(--muted); font-size: 14px; }
+    .kicker { margin: 0 0 6px; font-size: 18px; }
+    .tight { margin: 0; }
+    .subsection { padding-top: 12px; border-top: none; }
     /* Footer */
     footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; padding: 24px 0 40px; }
 
@@ -300,7 +300,7 @@
   <a href="#main" class="sr-only">Skip to content</a>
 
   <header>
-    <div class="container nav" role="navigation" aria-label="Main">
+    <nav class="container nav" aria-label="Main">
       <a href="#main" class="brand" aria-label="Home">
         <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" fetchpriority="high">
         <span>ToppyMicroServices OÜ</span>
@@ -319,7 +319,7 @@
           </svg>
         </a>
       </div>
-    </div>
+    </nav>
   </header>
 
   <main id="main" class="container">
@@ -327,22 +327,46 @@
       <h1>Designing ultra-lean, AI-first companies from scratch.</h1>
       <p class="lead">We treat company building as system design: minimize headcount, capital lock-in, and organizational waste — using AI-first operations and Estonia’s digital infrastructure.</p>
       <p class="hero-subline">Built for clarity and independence. Shipped as open research, tools, and dashboards.</p>
+      <figure class="motto" aria-label="Motto">
+        <blockquote><strong>Ultra-lean by construction.</strong> Reliability by measurement.</blockquote>
+        <figcaption>We ship open proof artifacts: evaluation, dashboards, and reproducible reports.</figcaption>
+      </figure>
+      <div class="hero-actions" aria-label="Primary actions">
+        <a class="btn primary" href="#contact">Contact</a>
+        <a class="btn quiet" href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">AuditLoop paper</a>
+        <a class="btn quiet" href="2025_11_Thermo_Credit/report.html" target="_blank" rel="noopener noreferrer">Thermo-credit report</a>
+      </div>
+      <div class="badge-row" aria-label="Key areas">
+        <span class="badge">Evaluation &amp; governance</span>
+        <span class="badge">AI reliability</span>
+        <span class="badge">Thermo-credit dashboards</span>
+      </div>
     </section>
 
 
-    <section id="news" aria-label="News & Updates">
+    <section id="news" aria-label="News &amp; Updates">
       <h2>News</h2>
       <ul class="clean">
         <li>
+          <div><strong>Feb 2026</strong> — Released <strong>YOLOZU v1.0.0</strong> (PyPI) and archived software/manual on Zenodo.</div>
+          <div class="link-row mt-6">
+            <a href="https://pypi.org/project/yolozu/1.0.0/" target="_blank" rel="noopener noreferrer">PyPI</a>
+            <a href="https://doi.org/10.5281/zenodo.18744756" target="_blank" rel="noopener noreferrer">Zenodo software (concept)</a>
+            <a href="https://doi.org/10.5281/zenodo.18744757" target="_blank" rel="noopener noreferrer">Zenodo software (version)</a>
+            <a href="https://doi.org/10.5281/zenodo.18744926" target="_blank" rel="noopener noreferrer">Zenodo manual (concept)</a>
+            <a href="https://doi.org/10.5281/zenodo.18744927" target="_blank" rel="noopener noreferrer">Zenodo manual (version)</a>
+          </div>
+        </li>
+        <li>
           <div><strong>Jan 2026</strong> — Added dmarc4all email authentication service (DMARC/SPF/DKIM policy design &amp; reporting setup).</div>
-          <div style="margin-top:6px; display:flex; gap:10px; flex-wrap:wrap">
+          <div class="link-row mt-6">
             <a href="https://dmarc4all.toppymicros.com" target="_blank" rel="noopener noreferrer">dmarc4all</a>
             <a href="#services">Services</a>
           </div>
         </li>
         <li>
-          <div><strong>Dec 2025</strong> — Updated the Kantian stability &amp; miscalibration preprint <span style="color:var(--muted)">(arXiv replacement accepted; scheduled: <strong>2025-12-16 10:00 JST</strong>)</span></div>
-          <div style="margin-top:6px; display:flex; gap:10px; flex-wrap:wrap">
+          <div><strong>Dec 2025</strong> — Updated the Kantian stability &amp; miscalibration preprint <span class="muted">(arXiv replacement accepted)</span></div>
+          <div class="link-row mt-6">
             <a href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">arXiv</a>
             <a href="https://doi.org/10.5281/zenodo.17358362" target="_blank" rel="noopener noreferrer">Zenodo (concept)</a>
             <a href="https://doi.org/10.5281/zenodo.17448625" target="_blank" rel="noopener noreferrer">Zenodo (version)</a>
@@ -353,7 +377,7 @@
 
     <section id="vision" aria-label="Company Design Vision">
       <div class="section-head">
-        <h2 style="margin:0">Company Design Vision — Ultra-lean by construction</h2>
+        <h2>Company Design Vision — Ultra-lean by construction</h2>
         <div class="title-actions">
           <a class="btn quiet sm" href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">arXiv</a>
           <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.17358362" target="_blank" rel="noopener noreferrer">Zenodo (latest)</a>
@@ -362,33 +386,33 @@
         </div>
       </div>
 
-      <p class="lead" style="margin-top:8px">Our core mission is to design companies that stay small by design: minimizing headcount, capital lock-in, and organizational drag. Research and tools below serve as proof points of this operating philosophy.</p>
+      <p class="lead">Our core mission is to design companies that stay small by design: minimizing headcount, capital lock-in, and organizational drag. Research and tools below serve as proof points of this operating philosophy.</p>
 
-      <p class="lead" style="margin-top:8px">As proof of this approach, we apply boundary-first, feedback-based evaluation to contain hallucination and maintain calibrated confidence. This principle underpins AuditLoop.</p>
+      <p class="lead">As proof of this approach, we apply boundary-first, feedback-based evaluation to contain hallucination and maintain calibrated confidence. This principle underpins AuditLoop.</p>
 
-      <p style="margin-top:10px; color: var(--muted); font-size: 14px">Note (Dec 2025): an arXiv replacement has been accepted and is scheduled to be announced on <strong>2025-12-16 10:00 JST</strong>. The latest archived release is always available via the Zenodo concept DOI.</p>
+      <p class="note">Note (Dec 2025): an arXiv replacement has been accepted. The latest archived release is always available via the Zenodo concept DOI.</p>
 
-      <h3 style="margin:0 0 6px"><strong>AuditLoop</strong> — Stability & Governance for LLMs</h3>
-      <p style="margin:0">We commercialize a reliability & governance layer for LLM applications: closed-loop evaluation and optimization with audit-ready reports, mapped to the EU AI Act, ISO/IEC 42001, and the NIST AI RMF.</p>
+      <h3 class="kicker"><strong>AuditLoop</strong> — Stability &amp; Governance for LLMs</h3>
+      <p class="tight">We commercialize a reliability &amp; governance layer for LLM applications: closed-loop evaluation and optimization with audit-ready reports, mapped to the EU AI Act, ISO/IEC 42001, and the NIST AI RMF.</p>
 
       <div class="grid" aria-label="Business lines">
         <div class="card">
-          <h3>A. Reliability & Governance SaaS</h3>
+          <h3>A. Reliability &amp; Governance SaaS</h3>
           <p>Automatically measures <abbr title="Expected Calibration Error">ECE</abbr>/Brier/<abbr title="Population Stability Index">PSI</abbr>, LoopGain and variance shrinkage, citation consistency, and justified refusal F1 — feeding dashboards and audit reports.</p>
-          <p style="margin-top:8px; color: var(--muted)">Value: provides audit-ready evidence aligned with the EU AI Act (transparency, evaluation, record-keeping), ISO/IEC 42001, and the NIST AI RMF.</p>
+          <p>Value: provides audit-ready evidence aligned with the EU AI Act (transparency, evaluation, record-keeping), ISO/IEC 42001, and the NIST AI RMF.</p>
         </div>
         <div class="card">
           <h3>B. Closed-loop Optimization Middleware</h3>
           <p>Auto-corrects production inference via a Prompt-Critique-Revision loop. Maintains token-budget parity while reducing hallucinations and dispersion.</p>
-          <p style="margin-top:8px; color: var(--muted)">Value: stabilizes quality KPIs (variance shrinkage) while keeping cost overruns in check.</p>
+          <p>Value: stabilizes quality KPIs (variance shrinkage) while keeping cost overruns in check.</p>
         </div>
         <div class="card">
-          <h3>C. Benchmarks & Conformity Reports</h3>
+          <h3>C. Benchmarks &amp; Conformity Reports</h3>
           <p>Assigns “stability scores” for RAG/FAQ/procedural workloads. Delivers PDF/JSON reports usable for procurement and audits. Supports RAG evaluation (RAGAS-style metrics).</p>
         </div>
       </div>
 
-      <section aria-label="Why now" style="padding-top:12px; border-top:none">
+      <section class="subsection" aria-label="Why now">
         <h3>Why now (external demand)</h3>
         <ul class="clean">
           <li>EU AI Act: GPAI transparency obligations by ~Aug 2025; high-risk phases roll out through 2026. Strong demand for evaluation, logging, and accountability.</li>
@@ -399,69 +423,80 @@
     </section>
 
 
-    <section id="proof" aria-label="Proof: Research & Tools">
-      <h2>Proof — Research & Tools</h2>
-      <p style="margin:0 0 12px; color: var(--muted)">Selected research and tools that serve as proof artifacts of our ultra-lean, AI-first company design.</p>
+    <section id="proof" aria-label="Proof: Research &amp; Tools">
+      <h2>Proof — Research &amp; Tools</h2>
+      <p class="section-lead">Selected research and tools that serve as proof artifacts of our ultra-lean, AI-first company design.</p>
       <div class="card" aria-label="Research status">
-        <h3 style="margin:0 0 6px">Theme 1 — AI reliability &amp; Kantian feedback</h3>
+        <h3>Theme 1 — AI reliability &amp; Kantian feedback</h3>
         <p>Our current paper reports preliminary results. Next we extend to larger-scale experiments (multi-provider RAG, calibration drift, closed-loop stability under budget constraints) using Colab-based, reproducible runs.</p>
-        <p style="margin-top:8px"><a class="btn" href="mailto:info@toppymicros.com?subject=Research%20collaboration">Discuss research collaboration</a></p>
+        <p><a class="btn" href="mailto:info@toppymicros.com?subject=Research%20collaboration">Discuss research collaboration</a></p>
       </div>
       <div class="card" aria-label="QTC research">
-        <h3 style="margin:0 0 6px">Theme 2 — Thermo-credit (QTC) economic theory</h3>
+        <h3>Theme 2 — Thermo-credit (QTC) economic theory</h3>
         <p>We develop and test a thermodynamic analogy for credit, liquidity, and monetary aggregates (QTC). This strand remains exploratory and is documented separately for clarity.</p>
-        <p style="margin-top:8px"><a class="btn quiet sm" href="theory.html">Read the theory note</a></p>
+        <p><a class="btn quiet sm" href="theory.html">Read the theory note</a></p>
       </div>
     </section>
-<section id="artifacts" aria-label="Open Artifacts">
-  <h2>Artifacts — Open Proof & Implementations</h2>
-  <div class="grid">
-    <div class="card">
-      <h3 style="margin:0 0 6px">AuditLoop — Vendor-neutral evaluation & reliability layer</h3>
-      <p>Independent evaluation and reliability layer for LLM systems, serving as a proof artifact of our ultra-lean, AI-first company design philosophy.</p>
-      <p style="margin-top:8px"><a class="btn quiet" href="#vision">Learn more</a></p>
-    </div>
-    <div class="card">
-      <h3 style="margin:0 0 6px">Thermo-Credit Monitor (QTC)</h3>
-      <p>Public monthly indicators modeling credit dynamics via a thermodynamic analogy: <code>S_M = k · M_in · H(q)</code>, <code>T_L</code>, loop dissipation (PLD), and <code>X_C</code>. Interactive charts with PNG fallbacks.</p>
-      <p style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap">
-        <a class="btn" href="2025_11_Thermo_Credit/report.html" target="_blank" rel="noopener noreferrer">Open report</a>
-        <a class="btn quiet" href="https://github.com/ToppyMicroServices/2025_11_Thermo_Credit" target="_blank" rel="noopener noreferrer">View repo</a>
-      </p>
-    </div>
-  </div>
-</section>
+    <section id="artifacts" aria-label="Open Artifacts">
+      <h2>Artifacts — Open Proof &amp; Implementations</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>AuditLoop — Vendor-neutral evaluation &amp; reliability layer</h3>
+          <p>Independent evaluation and reliability layer for LLM systems, serving as a proof artifact of our ultra-lean, AI-first company design philosophy.</p>
+          <p><a class="btn quiet" href="#vision">Learn more</a></p>
+        </div>
+        <div class="card">
+          <h3>Thermo-Credit Monitor (QTC)</h3>
+          <p>Public monthly indicators modeling credit dynamics via a thermodynamic analogy: <code>S_M = k · M_in · H(q)</code>, <code>T_L</code>, loop dissipation (PLD), and <code>X_C</code>. Interactive charts with PNG fallbacks.</p>
+          <div class="link-row mt-8">
+            <a class="btn" href="2025_11_Thermo_Credit/report.html" target="_blank" rel="noopener noreferrer">Open report</a>
+            <a class="btn quiet" href="https://github.com/ToppyMicroServices/2025_11_Thermo_Credit" target="_blank" rel="noopener noreferrer">View repo</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>YOLOZU (v1.0.0)</h3>
+          <p>YOLOZU is published on PyPI and archived on Zenodo (software + manual). Use Zenodo concept DOIs for stable “latest” links.</p>
+          <div class="link-row mt-8">
+            <a class="btn" href="https://pypi.org/project/yolozu/1.0.0/" target="_blank" rel="noopener noreferrer">PyPI (v1.0.0)</a>
+            <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.18744756" target="_blank" rel="noopener noreferrer">Software (concept)</a>
+            <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.18744757" target="_blank" rel="noopener noreferrer">Software (version)</a>
+            <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.18744926" target="_blank" rel="noopener noreferrer">Manual (concept)</a>
+            <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.18744927" target="_blank" rel="noopener noreferrer">Manual (version)</a>
+          </div>
+        </div>
+      </div>
+    </section>
     <section id="applications" aria-label="Applications / Case Studies">
       <h2>Applications (Case Studies)</h2>
       <div class="card">
-        <h3 style="margin:0 0 6px">Case Study: Identity-Neutral Matching (Blind Screening)</h3>
+        <h3>Case Study: Identity-Neutral Matching (Blind Screening)</h3>
         <p><strong>Problem.</strong> Early-stage hiring decisions can be noisy and biased when personally identifying information (PII) leaks into the loop.</p>
         <p><strong>Approach.</strong> Apply our closed-loop trust engineering (Prompt-Critique-Revision) with privacy controls to evaluate requirements-skills outside of PII, logging provenance for audit.</p>
-        <p style="margin-top:8px; color: var(--muted)">Compliance fit: EU AI Act (evaluation, logging), NIST AI RMF, ISO/IEC 42001; plus GDPR/ISO/IEC 27701 for privacy governance.</p>
-        <p style="margin-top:8px">Scope: reference implementation and audit reports. We are <em>not</em> a recruiting agency.</p>
-        <p style="margin-top:8px"><a class="btn" href="mailto:info@toppymicros.com?subject=Case%20Study%20Inquiry%20-%20Identity-Neutral%20Matching">Discuss this case study</a></p>
+        <p>Compliance fit: EU AI Act (evaluation, logging), NIST AI RMF, ISO/IEC 42001; plus GDPR/ISO/IEC 27701 for privacy governance.</p>
+        <p>Scope: reference implementation and audit reports. We are <em>not</em> a recruiting agency.</p>
+        <p><a class="btn" href="mailto:info@toppymicros.com?subject=Case%20Study%20Inquiry%20-%20Identity-Neutral%20Matching">Discuss this case study</a></p>
       </div>
     </section>
 
     <section id="services" aria-label="Services">
       <h2>Services</h2>
-      <p style="margin:0 0 12px; color: var(--muted)">We work at the level of design, evaluation, and operating principles. Regulated or domain-sensitive applications (e.g. medical/clinical) are out of scope.</p>
+      <p class="section-lead">We work at the level of design, evaluation, and operating principles. Regulated or domain-sensitive applications (e.g. medical/clinical) are out of scope.</p>
       <div class="grid">
         <div class="card">
           <h3>Ultra-lean Company Architecture</h3>
           <p>Design reviews and blueprints to run a company with minimal headcount, capital lock-in, and overhead — roles, workflows, and decision boundaries.</p>
         </div>
         <div class="card">
-          <h3>AI-first Operations & Automation</h3>
+          <h3>AI-first Operations &amp; Automation</h3>
           <p>Asynchronous, documentation-driven operating systems: AI-assisted drafting, evaluation, and reporting pipelines with clear guardrails and auditability.</p>
         </div>
         <div class="card">
           <h3>dmarc4all — Email Authentication Assurance</h3>
           <p>DMARC policy design, alignment checks, and reporting setup to strengthen email authentication and reduce spoofing risk.</p>
-          <p style="margin-top:8px"><a class="btn quiet" href="https://dmarc4all.toppymicros.com" target="_blank" rel="noopener noreferrer">Visit dmarc4all</a></p>
+          <p><a class="btn quiet" href="https://dmarc4all.toppymicros.com" target="_blank" rel="noopener noreferrer">Visit dmarc4all</a></p>
         </div>
         <div class="card">
-          <h3>Vendor-neutral Evaluation & Reliability</h3>
+          <h3>Vendor-neutral Evaluation &amp; Reliability</h3>
           <p>Independent evaluation design, failure-mode analysis, and reliability reviews for AI systems — focused on measurable evidence, not implementation.</p>
         </div>
       </div>
@@ -474,7 +509,7 @@
 
     <section id="contact" aria-label="Contact">
       <h2>Contact</h2>
-  <p>Email: <a href="mailto:info@toppymicros.com">info@toppymicros.com</a></p>
+      <p>Email: <a href="mailto:info@toppymicros.com">info@toppymicros.com</a></p>
     </section>
 
   </main>
@@ -482,11 +517,16 @@
   <footer>
     <div class="container">
       <div class="footer-row">
-  <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async">
         <div>© 2026 ToppyMicroServices OÜ</div>
       </div>
-      <div style="margin-top:8px">Legal address: Karamelli tn 2, 11317 Tallinn, Harju County, Estonia</div>
-      <div style="margin-top:8px">Registry code: 16551297</div>
+      <div class="mt-8">Legal address: Karamelli tn 2, 11317 Tallinn, Harju County, Estonia</div>
+      <div class="mt-8">Registry code: 16551297</div>
+      <div class="mt-8 link-row" aria-label="Legal links">
+        <a href="security-policy.html">Security Policy</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-legal-notice.html">Terms / Legal Notice</a>
+      </div>
     </div>
   </footer>
 </body>
