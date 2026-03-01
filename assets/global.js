@@ -4,11 +4,54 @@
   const CTA_TEXT = 'PoC/相談';
   const CTA_SUBJECT = encodeURIComponent('PoC / Consultation — Thermo-Credit & AI reliability');
   const CTA_HREF = `mailto:okutomi@pm.me?subject=${CTA_SUBJECT}`;
+  const RELEASES = {
+    yolozu: {
+      version: '1.0.0',
+      pypiBaseUrl: 'https://pypi.org/project/yolozu/'
+    }
+  };
   const DWELL_TARGETS = {
     '/': { event: 'Home dwell (30s)', delay: 30000 },
     '/index.html': { event: 'Home dwell (30s)', delay: 30000 },
     '/2025_11_Thermo_Credit/report.html': { event: 'QTC report dwell (45s)', delay: 45000 }
   };
+
+  function applyYolozuReleasePlaceholders(){
+    const cfg = RELEASES.yolozu;
+    if(!cfg?.version) return;
+    const versionText = `v${cfg.version}`;
+
+    document.querySelectorAll('[data-yolozu-version]').forEach(el => {
+      el.textContent = versionText;
+    });
+
+    document.querySelectorAll('a[data-yolozu-pypi-link]').forEach(link => {
+      link.setAttribute('href', `${cfg.pypiBaseUrl}${cfg.version}/`);
+    });
+
+    const jsonLdScript = document.querySelector('script[data-yolozu-jsonld]');
+    if(!jsonLdScript?.textContent) return;
+    try {
+      const data = JSON.parse(jsonLdScript.textContent);
+      const parts = Array.isArray(data?.hasPart) ? data.hasPart : [];
+      for(const part of parts){
+        if(!part || typeof part !== 'object') continue;
+        if(typeof part.name === 'string' && part.name.includes('YOLOZU')){
+          part.url = `${cfg.pypiBaseUrl}${cfg.version}/`;
+          if(typeof part.description === 'string'){
+            if(!part.description.includes(versionText)){
+              part.description = part.description.replace(/^YOLOZU(\s+v[0-9]+\.[0-9]+\.[0-9]+)?/i, `YOLOZU ${versionText}`);
+            }
+          } else {
+            part.description = `YOLOZU ${versionText} release (PyPI) with archival records on Zenodo (software + manual).`;
+          }
+        }
+      }
+      jsonLdScript.textContent = JSON.stringify(data, null, 2);
+    } catch (_err) {
+      // ignore malformed JSON-LD
+    }
+  }
 
   function injectStyles(){
     if(!CTA_ENABLED || document.getElementById('global-poc-style')) return;
@@ -144,6 +187,7 @@
       injectStyles();
       renderCTA();
     }
+    applyYolozuReleasePlaceholders();
     setupCTAEvents();
     setupDwellTracking();
   }
