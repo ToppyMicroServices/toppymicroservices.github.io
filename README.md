@@ -104,9 +104,7 @@ For inquiries: **info@toppymicros.com**
 ## Changelog
 This changelog records major structural or publication-related updates to the site.
 
-Note: the YOLOZU version shown on the homepage is set in `/assets/global.js` (`RELEASES.yolozu.version`).
-
-- 2026-02: Added YOLOZU v1.0.0 release links (PyPI + Zenodo software/manual records) to the homepage.
+- 2026-02: Added YOLOZU release links (PyPI + Zenodo software/manual records) to the homepage.
 - 2025-11: Added bilingual AI Economy proof-artifact pages and Thermo-Credit theory summary.
 - 2025-10: Initial public site structure and deployment workflow.
 
