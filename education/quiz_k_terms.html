@@ -60,8 +60,8 @@
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
         <div class="lang-toggle" aria-label="Language switcher">
-          <a href="quiz_k_terms.html" class="active" aria-current="page">English</a>
-          <a href="quiz_k_terms_ja.html">日本語</a>
+          <a href="quiz_k_terms.html" class="active" aria-current="page" aria-label="English" data-lang="en">🇺🇸</a>
+          <a href="quiz_k_terms_ja.html" aria-label="日本語" data-lang="ja">🇯🇵</a>
         </div>
         <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
         <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
@@ -372,6 +372,21 @@
     function applyInitialTheme(){let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(e){} const init=s||(prefersDark.matches?'dark':'light'); setTheme(init,false);}    
     function toggleTheme(){const c=document.body.getAttribute('data-theme')==='light'?'light':'dark'; setTheme(c==='light'?'dark':'light',true);}    
     function applySettings(){const S=window.DRILL_SETTINGS||{}; const name=S.SKILL_NAME; const sub=S.SKILL_SUBTITLE; const goal=S.GOAL_DESCRIPTION; $('#title').textContent=`${name} Drill: ${sub}`; $('#subtitle').textContent=`Practice mapping from K# markers to definitions`; $('#footer-skill').textContent=name; $('#footer-goal').textContent=goal; const img=$('#brand-logo'); if(img&&S.BRAND_LOGO){img.src=S.BRAND_LOGO; img.style.display='inline-block'; img.alt=S.BRAND_NAME;} $('#brand-name').textContent=S.BRAND_NAME; $('#brand-link').href=S.BRAND_URL; $('#footer-brand').innerHTML=`<strong>${S.BRAND_NAME}</strong>`;}    
+    function mapDifficulty(q){const raw=(q.dataset.difficulty||'').trim(); if(/^L[1-5]$/.test(raw)) return raw; const t=(q.dataset.type||'').toLowerCase(); if(t==='mc') return 'L2'; if(t==='ms') return 'L3'; if(t==='text') return 'L3'; return 'L3';}
+    function injectDifficultyBadges(){
+      $$('#questions .q').forEach(q=>{
+        if(!(q instanceof HTMLElement)) return;
+        if(q.querySelector('.difficulty-badge')) return;
+        const type=q.querySelector('.type');
+        if(!(type instanceof HTMLElement)) return;
+        const badge=document.createElement('span');
+        badge.className='difficulty-badge';
+        badge.textContent=mapDifficulty(q);
+        badge.setAttribute('title','Difficulty');
+        type.append(' ');
+        type.appendChild(badge);
+      });
+    }
   function updateModeBadge(){const on=$('#learningMode')?.checked; const mb=$('#mode-badge'); if(!mb) return; mb.textContent=on?'Learning Mode':'Test Mode'; mb.setAttribute('aria-pressed',on?'true':'false'); renderLearningMarkers();}
   function renderLearningMarkers(){const on=$('#learningMode')?.checked; $$('#questions .q').forEach(q=>{const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); let gold=[]; if(type==='mc'){gold=[ans];} else if(type==='ms'){gold=ans.split(',').map(s=>s.trim());} q.querySelectorAll('.choices label.choice').forEach(l=>{const input=l.querySelector('input'); if(!input) return; const v=input.value; let m=l.querySelector('.correct-marker'); if(on && gold.includes(v)){ if(!m){ m=document.createElement('span'); m.className='correct-marker'; m.style.marginLeft='6px'; m.style.fontSize='11px'; m.style.color='var(--accent,#5aa7ff)'; m.textContent='✓'; l.appendChild(m);} } else { if(m) m.remove(); } }); }); }
     function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
@@ -550,7 +565,7 @@
       });
     }
     $$('#questions .q').forEach(q=>{const t=q.dataset.type; if(t==='mc'){q.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode')?.checked){showExplain(q,true);} updateLiveScore();}));} else if(t==='ms'){q.querySelectorAll('input[type=checkbox]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode')?.checked){showExplain(q,true);} updateLiveScore();}));} else if(t==='text'){const i=q.querySelector('input[type=text]'); i?.addEventListener('input',()=>{evaluateQuestion(q); if($('#learningMode')?.checked && i.value.trim().length){showExplain(q,true);} updateLiveScore();});}});
-    applyInitialTheme(); prefersDark.addEventListener?.('change',e=>{let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(_){s=null;} if(s) return; setTheme(e.matches?'dark':'light',false);}); applySettings(); if(!$('#learningMode')){const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} updateModeBadge(); updateLiveScore();
+    applyInitialTheme(); prefersDark.addEventListener?.('change',e=>{let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(_){s=null;} if(s) return; setTheme(e.matches?'dark':'light',false);}); applySettings(); injectDifficultyBadges(); if(!$('#learningMode')){const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} updateModeBadge(); updateLiveScore();
   })();
   </script>
 </body>

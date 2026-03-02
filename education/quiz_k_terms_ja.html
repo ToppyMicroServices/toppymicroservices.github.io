@@ -60,8 +60,8 @@
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 ライト</button>
         <div class="lang-toggle" aria-label="言語切替">
-          <a href="quiz_k_terms_ja.html" class="active" aria-current="page">日本語</a>
-          <a href="quiz_k_terms.html">English</a>
+          <a href="quiz_k_terms.html" aria-label="English" data-lang="en">🇺🇸</a>
+          <a href="quiz_k_terms_ja.html" class="active" aria-current="page" aria-label="日本語" data-lang="ja">🇯🇵</a>
         </div>
         <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="学習/テスト切替">学習モード</button>
         <span id="score-badge" aria-live="polite" title="ライブスコア">0 / 0</span>
@@ -371,6 +371,21 @@
     function applyInitialTheme(){let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(e){} const init=s||(prefersDark.matches?'dark':'light'); setTheme(init,false);}    
     function toggleTheme(){const c=document.body.getAttribute('data-theme')==='light'?'light':'dark'; setTheme(c==='light'?'dark':'light',true);}    
     function applySettings(){const S=window.DRILL_SETTINGS||{}; const name=S.SKILL_NAME; const goal=S.GOAL_DESCRIPTION; $('#footer-skill').textContent=name; $('#footer-goal').textContent=goal; const img=$('#brand-logo'); if(img&&S.BRAND_LOGO){img.src=S.BRAND_LOGO; img.style.display='inline-block'; img.alt=S.BRAND_NAME;} $('#brand-name').textContent=S.BRAND_NAME; $('#brand-link').href=S.BRAND_URL; $('#footer-brand').innerHTML=`<strong>${S.BRAND_NAME}</strong>`;}    
+    function mapDifficulty(q){const raw=(q.dataset.difficulty||'').trim(); if(/^L[1-5]$/.test(raw)) return raw; const t=(q.dataset.type||'').toLowerCase(); if(t==='mc') return 'L2'; if(t==='ms') return 'L3'; if(t==='text') return 'L3'; return 'L3';}
+    function injectDifficultyBadges(){
+      $$('#questions .q').forEach(q=>{
+        if(!(q instanceof HTMLElement)) return;
+        if(q.querySelector('.difficulty-badge')) return;
+        const type=q.querySelector('.type');
+        if(!(type instanceof HTMLElement)) return;
+        const badge=document.createElement('span');
+        badge.className='difficulty-badge';
+        badge.textContent=mapDifficulty(q);
+        badge.setAttribute('title','難易度');
+        type.append(' ');
+        type.appendChild(badge);
+      });
+    }
     function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
   function evaluateQuestion(q){const id=q.dataset.id; const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); let ok=null,user=null; if(type==='mc'){const p=q.querySelector('input[type=radio]:checked'); if(!p){ok=null;} else {user=p.value; ok=(user===ans);} } else if(type==='ms'){const picked=q.querySelectorAll('input[type=checkbox]:checked'); user=Array.from(picked).map(i=>i.value).sort(); if(!user.length){ok=null;} else {const gold=ans.split(',').map(s=>s.trim()).sort(); ok=JSON.stringify(user)===JSON.stringify(gold);} } else if(type==='text'){const t=q.querySelector('input[type=text]'); user=(t?.value||'').trim(); const mode=(q.dataset.eval||'exact').toLowerCase(); if(!user){ok=null;} else if(mode==='regex'){try{ok=new RegExp(ans,'i').test(user);}catch(e){ok=false;}} else {ok=(user===ans);} } const exp=q.querySelector('.explain'); const explainHtml=exp?exp.innerHTML.trim():''; return {id,type,ok,user,explainHtml};}
     function isAnswered(q){const t=q.dataset.type; if(t==='mc') return !!q.querySelector('input[type=radio]:checked'); if(t==='ms') return q.querySelectorAll('input[type=checkbox]:checked').length>0; if(t==='text'){const v=q.querySelector('input[type=text]')?.value.trim(); return !!v;} return false;}
@@ -562,7 +577,7 @@
       });
     }
     $$('#questions .q').forEach(q=>{const t=q.dataset.type; if(t==='mc'){q.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode')?.checked){showExplain(q,true);} updateLiveScore();}));} else if(t==='ms'){q.querySelectorAll('input[type=checkbox]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode')?.checked){showExplain(q,true);} updateLiveScore();}));} else if(t==='text'){const i=q.querySelector('input[type=text]'); i?.addEventListener('input',()=>{evaluateQuestion(q); if($('#learningMode')?.checked && i.value.trim().length){showExplain(q,true);} updateLiveScore();});}});
-    applyInitialTheme(); prefersDark.addEventListener?.('change',e=>{let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(_){s=null;} if(s) return; setTheme(e.matches?'dark':'light',false);}); applySettings(); if(!$('#learningMode')){const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} updateModeBadge(); updateLiveScore();
+    applyInitialTheme(); prefersDark.addEventListener?.('change',e=>{let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(_){s=null;} if(s) return; setTheme(e.matches?'dark':'light',false);}); applySettings(); injectDifficultyBadges(); if(!$('#learningMode')){const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} updateModeBadge(); updateLiveScore();
   })();
   </script>
 </body>

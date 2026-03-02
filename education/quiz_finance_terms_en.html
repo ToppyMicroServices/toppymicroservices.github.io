@@ -137,8 +137,8 @@
   body[data-theme="light"] .brand a{color:#1f2937}
   </style>
   </head>
-  <body data-theme="dark">
-  <script>
+      --bg-gradient-top:#12161a;
+      --bg-gradient-bottom:#141b22;
     window.DRILL_SETTINGS = {
       SKILL_NAME: "ECB/BIS Finance Terms",
       SKILL_SUBTITLE: "Beginner Keyword Quiz",
@@ -167,8 +167,8 @@
           <span class="theme-label">Light Mode</span>
         </button>
         <div class="lang-toggle" aria-label="Language switcher">
-          <a href="quiz_finance_terms.html">日本語</a>
-          <a href="quiz_finance_terms_en.html" class="active" aria-current="page">English</a>
+          <a href="quiz_finance_terms.html" aria-label="日本語" data-lang="ja">🇯🇵</a>
+          <a href="quiz_finance_terms_en.html" class="active" aria-current="page" aria-label="English" data-lang="en">🇺🇸</a>
         </div>
         <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Click to toggle Learning/Test">Learning Mode</button>
         <span id="score-badge" aria-live="polite" title="Live score">0 / 0</span>
@@ -1155,6 +1155,31 @@
         return {total,correct,answered,questionDetails};
       }
 
+      function mapDifficulty(q){
+        const raw=(q.dataset.difficulty||'').trim();
+        if(/^L[1-5]$/.test(raw)) return raw;
+        const t=(q.dataset.type||'').toLowerCase();
+        if(t==='mc') return 'L2';
+        if(t==='ms') return 'L3';
+        if(t==='text') return 'L3';
+        return 'L3';
+      }
+
+      function injectDifficultyBadges(){
+        $$('#questions .q').forEach(q=>{
+          if(!(q instanceof HTMLElement)) return;
+          if(q.querySelector('.difficulty-badge')) return;
+          const type=q.querySelector('.type');
+          if(!(type instanceof HTMLElement)) return;
+          const badge=document.createElement('span');
+          badge.className='difficulty-badge';
+          badge.textContent=mapDifficulty(q);
+          badge.setAttribute('title','Difficulty');
+          type.append(' ');
+          type.appendChild(badge);
+        });
+      }
+
       applyInitialTheme();
       prefersDark.addEventListener?.('change',event=>{
         let stored=null;
@@ -1162,6 +1187,7 @@
         if(stored) return;
         setTheme(event.matches?'dark':'light',false);
       });
+      injectDifficultyBadges();
       updateModeBadge();
       injectAnswerButtons();
       updateLiveScore();

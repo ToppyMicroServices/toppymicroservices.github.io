@@ -61,27 +61,81 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   }
 
   function initLanguageToggle(){
-    const input = document.getElementById('langToggle');
-    if(!(input instanceof HTMLInputElement)) return;
-
-    const enUrl = input.dataset.en;
-    const jaUrl = input.dataset.ja;
-    if(!enUrl || !jaUrl) return;
-
     const currentLang = locale.startsWith('ja') ? 'ja' : 'en';
     const stored = getStringPref(PREF_KEYS.language, '');
     const desired = stored === 'ja' || stored === 'en' ? stored : '';
+
+    // Legacy checkbox toggle (kept for backward compatibility)
+    const input = document.getElementById('langToggle');
+    if(input instanceof HTMLInputElement){
+      const enUrl = input.dataset.en;
+      const jaUrl = input.dataset.ja;
+      if(!enUrl || !jaUrl) return;
+
+      if(desired && desired !== currentLang){
+        window.location.href = desired === 'ja' ? jaUrl : enUrl;
+        return;
+      }
+
+      input.checked = currentLang === 'ja';
+      input.addEventListener('change', () => {
+        const next = input.checked ? 'ja' : 'en';
+        setStringPref(PREF_KEYS.language, next);
+        window.location.href = next === 'ja' ? jaUrl : enUrl;
+      });
+      return;
+    }
+
+    // Flag link toggle
+    const toggle = document.querySelector('.lang-toggle');
+    if(!(toggle instanceof HTMLElement)) return;
+    const enLink = toggle.querySelector('[data-lang="en"]');
+    const jaLink = toggle.querySelector('[data-lang="ja"]');
+    if(!(enLink instanceof HTMLAnchorElement) || !(jaLink instanceof HTMLAnchorElement)) return;
+
+    const enUrl = enLink.getAttribute('href');
+    const jaUrl = jaLink.getAttribute('href');
+    if(!enUrl || !jaUrl) return;
 
     if(desired && desired !== currentLang){
       window.location.href = desired === 'ja' ? jaUrl : enUrl;
       return;
     }
 
-    input.checked = currentLang === 'ja';
-    input.addEventListener('change', () => {
-      const next = input.checked ? 'ja' : 'en';
-      setStringPref(PREF_KEYS.language, next);
-      window.location.href = next === 'ja' ? jaUrl : enUrl;
+    // Ensure active styling matches the current document
+    enLink.classList.toggle('active', currentLang === 'en');
+    jaLink.classList.toggle('active', currentLang === 'ja');
+    if(currentLang === 'en') enLink.setAttribute('aria-current','page'); else enLink.removeAttribute('aria-current');
+    if(currentLang === 'ja') jaLink.setAttribute('aria-current','page'); else jaLink.removeAttribute('aria-current');
+
+    enLink.addEventListener('click', () => setStringPref(PREF_KEYS.language, 'en'));
+    jaLink.addEventListener('click', () => setStringPref(PREF_KEYS.language, 'ja'));
+  }
+
+  function mapDifficulty(q){
+    const raw = (q.dataset.difficulty || '').trim();
+    if(/^L[1-5]$/.test(raw)) return raw;
+    const t = (q.dataset.type || '').toLowerCase();
+    if(t === 'mc') return 'L2';
+    if(t === 'ms') return 'L3';
+    if(t === 'text') return 'L3';
+    return 'L3';
+  }
+
+  function injectDifficultyBadges(){
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      if(q.querySelector('.difficulty-badge')) return;
+      const header = q.querySelector('header');
+      const type = q.querySelector('.type');
+      if(!header || !(type instanceof HTMLElement)) return;
+
+      const badge = document.createElement('span');
+      badge.className = 'difficulty-badge';
+      badge.textContent = mapDifficulty(q);
+      badge.setAttribute('title', 'Difficulty');
+      type.append(' ');
+      type.appendChild(badge);
     });
   }
 
@@ -227,6 +281,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
   applySettings();
   initLanguageToggle();
+  injectDifficultyBadges();
   initRevealControls();
   bindAnswerChangeEvents();
   if(!$('#learningMode')){ const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} 

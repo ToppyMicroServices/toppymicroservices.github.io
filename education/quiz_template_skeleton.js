@@ -51,6 +51,31 @@ window.DRILL_SETTINGS = {
   function applySettings(){const S=window.DRILL_SETTINGS||{}; const name=S.SKILL_NAME; const sub=S.SKILL_SUBTITLE; const goal=S.GOAL_DESCRIPTION; $('#title').textContent=(name?name+' ':'')+(sub?('— '+sub):''); $('#subtitle').textContent=goal||''; $('#footer-skill').textContent=name||'Skill'; $('#footer-goal').textContent=goal||''; const img=$('#brand-logo'); if(img&&S.BRAND_LOGO){img.src=S.BRAND_LOGO; img.style.display='inline-block'; img.alt=S.BRAND_NAME||'';} $('#brand-name').textContent=S.BRAND_NAME||''; $('#brand-link').href=S.BRAND_URL||'/'; $('#footer-brand').innerHTML='<strong>'+(S.BRAND_NAME||'')+'</strong>';}    
   function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
 
+  function mapDifficulty(q){
+    const raw=(q.dataset.difficulty||'').trim();
+    if(/^L[1-5]$/.test(raw)) return raw;
+    const t=(q.dataset.type||'').toLowerCase();
+    if(t==='mc') return 'L2';
+    if(t==='ms') return 'L3';
+    if(t==='text') return 'L3';
+    return 'L3';
+  }
+
+  function injectDifficultyBadges(){
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      if(q.querySelector('.difficulty-badge')) return;
+      const type=q.querySelector('.type');
+      if(!(type instanceof HTMLElement)) return;
+      const badge=document.createElement('span');
+      badge.className='difficulty-badge';
+      badge.textContent=mapDifficulty(q);
+      badge.setAttribute('title','Difficulty');
+      type.append(' ');
+      type.appendChild(badge);
+    });
+  }
+
   function isAnswered(q){const t=q.dataset.type; if(t==='mc') return !!q.querySelector('input[type=radio]:checked'); if(t==='ms') return q.querySelectorAll('input[type=checkbox]:checked').length>0; if(t==='text'){const v=q.querySelector('input[type=text]')?.value.trim(); return !!v;} return false;}
 
   function cleanLabelText(text){ return (text||'').replace(/\s+/g,' ').trim(); }
@@ -185,6 +210,7 @@ window.DRILL_SETTINGS = {
   applyInitialTheme();
   try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
   applySettings();
+  injectDifficultyBadges();
   initRevealControls();
   bindAnswerChangeEvents();
   if(!$('#learningMode')){ const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} 

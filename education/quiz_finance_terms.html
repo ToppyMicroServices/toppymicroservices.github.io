@@ -32,8 +32,8 @@
   <link rel="stylesheet" href="quiz.css" />
   <style>
     :root{
-      --bg-gradient-top:#0b0f14;
-      --bg-gradient-bottom:#0d141c;
+      --bg-gradient-top:#12161a;
+      --bg-gradient-bottom:#141b22;
       --fg:#e7eef6;
       --muted:#8aa0b5;
       --accent:#4ea1ff;
@@ -239,8 +239,8 @@
           <span class="theme-label">ライトモード</span>
         </button>
         <div class="lang-toggle" role="tablist" aria-label="Language switcher">
-          <a id="lang-ja" class="active" aria-current="page" href="quiz_finance_terms.html">日本語</a>
-          <a id="lang-en" href="quiz_finance_terms_en.html">English</a>
+          <a id="lang-en" href="quiz_finance_terms_en.html" aria-label="English" data-lang="en">🇺🇸</a>
+          <a id="lang-ja" class="active" aria-current="page" href="quiz_finance_terms.html" aria-label="日本語" data-lang="ja">🇯🇵</a>
         </div>
         <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="クリックで学習/テスト切替">学習モード</button>
         <span id="score-badge" aria-live="polite" title="ライブスコア">0 / 0</span>
@@ -1507,6 +1507,31 @@
       return {total,correct,answered,questionDetails};
     }
 
+    function mapDifficulty(q){
+      const raw=(q.dataset.difficulty||'').trim();
+      if(/^L[1-5]$/.test(raw)) return raw;
+      const t=(q.dataset.type||'').toLowerCase();
+      if(t==='mc') return 'L2';
+      if(t==='ms') return 'L3';
+      if(t==='text') return 'L3';
+      return 'L3';
+    }
+
+    function injectDifficultyBadges(){
+      $$('#questions .q').forEach(q=>{
+        if(!(q instanceof HTMLElement)) return;
+        if(q.querySelector('.difficulty-badge')) return;
+        const type=q.querySelector('.type');
+        if(!(type instanceof HTMLElement)) return;
+        const badge=document.createElement('span');
+        badge.className='difficulty-badge';
+        badge.textContent=mapDifficulty(q);
+        badge.setAttribute('title','難易度');
+        type.append(' ');
+        type.appendChild(badge);
+      });
+    }
+
     // Init
     applyInitialTheme();
     prefersDark.addEventListener?.('change', event=>{
@@ -1516,6 +1541,7 @@
       setTheme(event.matches ? 'dark' : 'light', false);
     });
     applySettings();
+    injectDifficultyBadges();
   injectAnswerButtons();
   attachHandlers();
   updateLiveScore();
