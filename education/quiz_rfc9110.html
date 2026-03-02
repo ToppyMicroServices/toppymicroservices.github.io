@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9110 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9110 drill: HTTP semantics, methods, status codes, caching, headers." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9110.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9110.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9110_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9110",
+      SKILL_SUBTITLE: "HTTP Semantics",
+      GOAL_DESCRIPTION: "Reason about HTTP methods, status codes, caching, and header meaning",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9110 Quiz</h1>
+        <h2 id="subtitle">Build correct HTTP semantics</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9110.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc9110_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: choose correct methods and headers, and interpret responses consistently.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q1: Which topic is HTTP semantics rather than HTTP transport details</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. The meaning of GET being safe and cacheable under defined conditions</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. How HTTP/2 frames are encoded on the wire</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. How QUIC packets are retransmitted over UDP</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> semantics, transport, method meaning. Semantics describe what a request means and what a response means, regardless of whether it is carried by HTTP/1.1, HTTP/2, or HTTP/3.
+            <strong>Correct (A):</strong> Safety, idempotency, cacheability, and status code meaning are semantic concepts.
+            <strong>Options:</strong><br>
+            - A (correct): This is about meaning and allowed effects.
+            - B (incorrect): Framing is a transport mapping detail.
+            - C (incorrect): QUIC packet behavior is transport protocol detail, not HTTP semantics.
+            <strong>Related:</strong> Keeping semantics stable across versions is why tools like proxies can reason about methods and caching independent of the underlying transport.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q2: Which method is defined as safe in HTTP semantics</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. GET</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. POST</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. DELETE</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> safe method. A safe method is intended to be read-only and not cause state change on the origin server.
+            <strong>Correct (A):</strong> GET is defined as safe. It should not have side effects beyond logging and similar incidental effects.
+            <strong>Options:</strong><br>
+            - A (correct): GET retrieves a representation and is safe.
+            - B (incorrect): POST is not safe. It is generally used to create or process resources and can change server state.
+            - C (incorrect): DELETE is not safe. It removes a resource and changes state.
+            <strong>Related:</strong> Safe is not the same as cacheable. Some safe responses are cacheable depending on headers.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q3: Which methods are idempotent (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. PUT</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. POST</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. DELETE</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. CONNECT</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
+            <strong>Correct (A,C):</strong> PUT and DELETE are defined as idempotent. Retrying them is generally safe at the semantic level, even though the first attempt might partially fail in practice.
+            <strong>Options:</strong><br>
+            - A (correct): PUT replaces the target state with the provided representation, so repeating should converge to the same result.
+            - B (incorrect): POST is not idempotent by default. Repeating might create multiple resources or trigger repeated processing.
+            - C (correct): DELETE is idempotent. Deleting twice results in the same end state: the resource is gone.
+            - D (incorrect): CONNECT establishes a tunnel and is not generally treated as idempotent.
+            <strong>Related:</strong> Idempotency is central for retries, load balancers, and safe recovery from network errors.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q4: What does a 3xx status code generally indicate</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Client error</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Redirection</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Server error</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> status code class. The first digit indicates a broad category of response semantics.
+            <strong>Correct (B):</strong> 3xx responses are redirections: the client may need to take additional action or use another URI.
+            <strong>Options:</strong><br>
+            - A (incorrect): 4xx are client errors.
+            - B (correct): 3xx indicates redirection semantics.
+            - C (incorrect): 5xx are server errors.
+            <strong>Related:</strong> Redirection is not only 301 and 302. 304 Not Modified is also a 3xx related to cache validation.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q5: What does Cache-Control: no-store mean</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The response can be cached but must be revalidated every time</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only shared caches are forbidden from storing the response</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Caches should not store the response in any form</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> cache, store, revalidate. Cache-Control directives influence whether responses may be stored and under what conditions they may be reused.
+            <strong>Correct (C):</strong> no-store is the strongest instruction: do not store the response.
+            <strong>Options:</strong><br>
+            - A (incorrect): That is closer to no-cache behavior, where storage is allowed but reuse requires validation.
+            - B (incorrect): no-store applies broadly. If you want a shared-cache-specific rule, other directives like private are relevant.
+            - C (correct): no-store tells caches not to keep a copy.
+            <strong>Related:</strong> Use no-store for highly sensitive data where persistence in browser caches or proxies is unacceptable.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1">
+        <header><h4>Q6: Which header field indicates the media type of the representation</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> representation, media type. The media type tells the recipient how to interpret the payload bytes.
+            <strong>Correct:</strong> Content-Type. It describes the format of the representation data.
+            <strong>Why others are wrong:</strong> Content-Length is the size, Accept is a request preference, and Host identifies the target authority. None of those declare payload type.
+            <strong>Related:</strong> Media type parameters like charset can affect decoding and security behavior.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9110</strong> to “<em id="footer-goal">Correct HTTP semantics</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

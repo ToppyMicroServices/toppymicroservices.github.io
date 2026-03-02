@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9114 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9114 drill. HTTP/3がQUIC上でどう動くか, 何を解決するかを理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9114_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9114.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9114_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9114",
+      SKILL_SUBTITLE: "HTTP/3",
+      GOAL_DESCRIPTION: "HTTP/3がQUICへどうmappingされ, 損失や移動でどう振る舞うかを理解する",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9114 Quiz</h1>
+        <h2 id="subtitle">HTTP/3 on QUIC</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc9114.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9114_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9114" target="_blank" rel="noopener noreferrer">RFC 9114: HTTP/3</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC Transport Protocol</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: packet lossやmobility下でHTTP/3がどう違うか説明できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q1: HTTP/3が動作するtransport protocolはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. QUIC</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. TCP</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. SCTP</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> HTTP/3, QUIC. HTTP/3はHTTP意味論をQUIC streamへmappingしたもの.
+            <strong>Correct (A):</strong> HTTP/3はQUIC上で動く.
+            <strong>Options:</strong><br>
+            - A (correct): QUICはstreamと暗号統合, migrationを提供.
+            - B (incorrect): TCPはHTTP/1.1や一般的なHTTP/2で使われる.
+            - C (incorrect): SCTPはHTTP/3の基盤ではない.
+            <strong>Related:</strong> QUICは多くの環境でUDP上に実装される.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q2: HTTP/2 over TCPと比べてHTTP/3が減らすことを狙う問題はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. DNS lookupの遅延</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS暗号化の必要性</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. packet loss時のtransport level head-of-line blocking</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> head-of-line blocking, TCP, QUIC stream. TCPの損失回復は1本のbyte streamに依存し, 1つの損失が全streamの進行に影響し得る.
+            <strong>Correct (C):</strong> HTTP/3はQUICにより, stream間の足止めを減らすことを狙う.
+            <strong>Options:</strong><br>
+            - A (incorrect): DNSはHTTP versionとは別.
+            - B (incorrect): HTTP/3もTLS 1.3相当の保護を使う.
+            - C (correct): これが移行の主要動機の1つ.
+            <strong>Related:</strong> アプリ側のスケジューリング次第で待ちが出ることはあるが, transportの性質は改善する.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: HTTP/3でのheader圧縮の仕組みはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. requestの認証を行う</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. QUIC向けにheader fieldを圧縮する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. congestion controlを提供する</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> header compression, QPACK, QUIC. headerは多いので圧縮が有効だが, decode待ちがhead-of-lineを作ると逆効果になる.
+            <strong>Correct (B):</strong> HTTP/3はQPACKを使い, QUIC stream特性に合わせてheader圧縮を行う.
+            <strong>Options:</strong><br>
+            - A (incorrect): 認証は別の層の話.
+            - B (correct): header圧縮が目的.
+            - C (incorrect): congestion controlは主にQUICの機能.
+            <strong>Related:</strong> HTTP/2はHPACK. HTTP/3はQPACKで, ordered delivery依存を減らす.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: QUICがnetwork pathの変更後もconnectionを継続できる性質は何と呼ぶ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Connection migration</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. TLS renegotiation</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. HTTP pipelining</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> connection migration, path, connection ID. QUICは5-tupleに縛られない識別でmobilityを実現する.
+            <strong>Correct (A):</strong> これがconnection migration.
+            <strong>Options:</strong><br>
+            - A (correct): path変更後も継続.
+            - B (incorrect): TLS 1.3にはrenegotiationがない.
+            - C (incorrect): pipeliningはHTTP/1.1の概念.
+            <strong>Related:</strong> mobile端末のネットワーク切替でも, requestをやり直さず続行しやすい.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L3">
+        <header><h4>Q5: 0-RTT early dataについて一般に正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. 攻撃者にreplayされ得る</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. non-idempotent requestでも常に安全</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. 繰り返しに耐える操作に限定すべき</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. GETの意味を変える必要がある</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> 0-RTT, early data, replay. 早期送信はlatencyを減らすが, replay耐性はアプリ側の前提になる.
+            <strong>Correct (A,C):</strong> replayが主なトレードオフ. replayされても害が少ない操作に限定する.
+            <strong>Options:</strong><br>
+            - A (correct): replayの可能性がある.
+            - B (incorrect): 例えば決済などは危険.
+            - C (correct): idempotentやreplay-safeな操作向け.
+            - D (incorrect): 意味論は変わらない. 変わるのはtransportのリスク特性.
+            <strong>Related:</strong> HTTP/3はQUICでTLS 1.3相当のearly dataを扱うため, 同様の注意が必要.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^quic$" data-difficulty="L1">
+        <header><h4>Q6: HTTP/3が使うtransport protocol名は何</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> QUIC. HTTP/3はTCPではなくQUICのstreamを使う.
+            <strong>Correct:</strong> QUIC.
+            <strong>Why others are wrong:</strong> TCPはHTTP/2の一般的基盤だが, HTTP/3はQUICに特化する.
+            <strong>Related:</strong> QUICはsecurityとtransport特性を統合し, 損失や移動時の挙動が変わる.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9114</strong> to “<em id="footer-goal">HTTP/3 literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

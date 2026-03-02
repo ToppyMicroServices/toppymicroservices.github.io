@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9000 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9000 drill. QUIC transportのstream, connection ID, flow controlなどの基本概念を押さえる." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9000_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9000.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9000_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9000",
+      SKILL_SUBTITLE: "QUIC Transport",
+      GOAL_DESCRIPTION: "QUICのstream, connectionの識別, flow controlを高レベルで理解する",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9000 Quiz</h1>
+        <h2 id="subtitle">QUIC transportの基本</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc9000.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9000_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC: A UDP-Based Multiplexed and Secure Transport</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: HTTP/3を読む前に, QUICの部品を理解する.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: QUICを高レベルに説明したものとして最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. HTTP/1.1の平文message形式</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. UDP上に構築されたsecureでmultiplexedなtransport protocol</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. DNS name解決の置き換え</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> transport, multiplexed, secure, UDP. QUICはstreamと信頼性, 暗号統合を提供する.
+            <strong>Correct (B):</strong> UDPを基盤にしつつ, 複数streamの多重化と暗号化を組み込んだtransport.
+            <strong>Options:</strong><br>
+            - A (incorrect): HTTP/1.1とは別.
+            - B (correct): RFC 9000の性格.
+            - C (incorrect): DNSとは別.
+            <strong>Related:</strong> HTTP/3はQUIC上にHTTPを載せる.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: QUIC connection IDの主な目的として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. address変更後もconnectionを継続しやすくする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS certificateを置き換える</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. requestの完全URIを符号化する</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> connection ID, migration. connection IDはIPとportの組から独立にconnectionを識別する手段.
+            <strong>Correct (A):</strong> path変更でも同一connectionとして継続でき, LBでのルーティングにも使われる.
+            <strong>Options:</strong><br>
+            - A (correct): mobilityやハンドオフに効く.
+            - B (incorrect): 認証はTLSの役割.
+            - C (incorrect): URIはアプリ層の概念.
+            <strong>Related:</strong> 一部環境ではconnection IDでpacketをLBへルーティングする.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q3: QUICで, あるrequestが他のrequestをtransport順序で塞ぎにくくする仕組みはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP status code</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. DNS cache</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 1つのconnection内で独立streamを多重化する</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> stream, multiplexing. QUICは複数streamを同時に運び, 進行を独立にできる.
+            <strong>Correct (C):</strong> stream多重化がHTTP/3の基盤.
+            <strong>Options:</strong><br>
+            - A (incorrect): HTTPの意味論.
+            - B (incorrect): DNSの話.
+            - C (correct): transportの機能.
+            <strong>Related:</strong> QUICはTCPのような単一byte streamではない.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+        <header><h4>Q4: QUIC flow controlについて正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. streamごとのdata量を制限できる</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. connection全体のdata量を制限できる</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. receiverが過負荷にならないためのbackpressureになる</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. アプリの認証を置き換える</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> flow control, backpressure. flow controlはreceiver capacityを守るためのcredit制御.
+            <strong>Correct (A,B,C):</strong> stream単位とconnection単位があり, receiver資源を保護する.
+            <strong>Options:</strong><br>
+            - A (correct): 1streamの暴走を防ぐ.
+            - B (correct): 全体のbuffer上限を守る.
+            - C (correct): 目的はresource usage制御.
+            - D (incorrect): 認証とは別.
+            <strong>Related:</strong> flow controlとcongestion controlは別. congestion controlはnetwork capacity側.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q5: QUICがサポートするstream typeはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. bidirectionalとunidirectional</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. connection全体で1本のbyte streamのみ</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 信頼性なしのdatagramのみ</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> bidirectional stream, unidirectional stream. プロトコル設計に応じて方向性を選べる.
+            <strong>Correct (A):</strong> 両方が存在.
+            <strong>Options:</strong><br>
+            - A (correct): 用途に応じて使い分け.
+            - B (incorrect): それはTCPの性質.
+            - C (incorrect): QUIC streamは信頼性を持つ. datagramは拡張.
+            <strong>Related:</strong> HTTP/3はunidirectionalなcontrol streamとbidirectionalなrequest streamを併用する.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^udp$" data-difficulty="L1">
+        <header><h4>Q6: QUICが基盤として使うIP transport protocolは何</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> UDP. QUICはUDP packetを基盤にし, user-space進化とTCP ossification回避を狙う.
+            <strong>Correct:</strong> UDP.
+            <strong>Why others are wrong:</strong> QUICはTCPではない. SCTPも基盤ではない.
+            <strong>Related:</strong> UDP上でも, QUICは信頼性やcongestion controlをプロトコルとして提供する.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9000</strong> to “<em id="footer-goal">QUIC transport literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

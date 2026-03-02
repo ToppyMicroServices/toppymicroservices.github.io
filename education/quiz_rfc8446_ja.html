@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 8446 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 8446 drill. TLS 1.3のhandshake, forward secrecy, 0-RTT replayリスク, key scheduleの基本を理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc8446_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc8446.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc8446_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 8446",
+      SKILL_SUBTITLE: "TLS 1.3",
+      GOAL_DESCRIPTION: "TLS 1.3の性質と, 0-RTTのreplayなどの注意点を説明できるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 8446 Quiz</h1>
+        <h2 id="subtitle">TLS 1.3のセキュリティ特性</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc8446.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc8446_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: TLS 1.3が保証することと, 保証しないことを切り分ける.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q1: TLS 1.3の基礎設計目標として代表的な性質はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. static RSA key exchangeで高速化する</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. cachingのためapplication dataを平文にする</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. ephemeral key exchangeでforward secrecyを得る</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> forward secrecy, ephemeral key exchange. 後から長期鍵が漏れても, 過去通信が復号されにくい性質.
+            <strong>Correct (C):</strong> TLS 1.3はephemeral (EC)DHEやPSK系の設計で強い性質を狙う.
+            <strong>Options:</strong><br>
+            - A (incorrect): static RSA key exchangeはTLS 1.3で廃止.
+            - B (incorrect): TLSの目的に反する.
+            - C (correct): forward secrecyは中核.
+            <strong>Related:</strong> 盗聴保存されたトラフィックへの後追い復号を難しくする.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: 0-RTT early dataの主なリスクはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. replay attack</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. certificateの期限切れ</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 1-RTTより強いforward secrecyを常に得る</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> 0-RTT, early data, replay. handshake完了前にdataを送れるが, threat modelが変わる.
+            <strong>Correct (A):</strong> early dataは状況によってreplayされ得るため, アプリ側で対処が必要.
+            <strong>Options:</strong><br>
+            - A (correct): replayが中核リスク.
+            - B (incorrect): 0-RTTとは無関係.
+            - C (incorrect): 逆. replay観点で弱くなる.
+            <strong>Related:</strong> 0-RTTはidempotent操作などreplay-safeな用途に限定するのが一般的.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q3: TLS 1.3のkey scheduleは一般に何に基づく</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. shared secretをBase64でencodeする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. HKDF-based key schedule</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 1つのsession keyを接続中ずっと再利用する</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> key schedule, HKDF. handshake進行に応じて複数secretを派生させる設計.
+            <strong>Correct (B):</strong> TLS 1.3はHKDFで段階ごとのsecretを導出し, 方向別のtraffic keyを持つ.
+            <strong>Options:</strong><br>
+            - A (incorrect): Base64はエンコードでKDFではない.
+            - B (correct): HKDFがKDF.
+            - C (incorrect): secretは段階で更新され, 方向別に分かれる.
+            <strong>Related:</strong> handshake secretとapplication secretを分離すると, 漏えい時の影響範囲を抑えられる.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q4: ServerHello以降, 多くのhandshake messageはどう扱われる</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. middlebox互換のため平文のまま</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 圧縮されるが暗号化されない</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. handshake traffic keyで暗号化される</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> handshake traffic keys, encryption. TLS 1.3は以前より多くのhandshakeを暗号化する.
+            <strong>Correct (C):</strong> secretが確立した後のhandshake messageは保護される.
+            <strong>Options:</strong><br>
+            - A (incorrect): TLS 1.3は平文露出を減らす.
+            - B (incorrect): 圧縮が主役ではない.
+            - C (correct): handshake messageは暗号化される.
+            <strong>Related:</strong> handshake暗号化はprivacy改善とossification抑制に効く.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q5: TLSがin transit dataに提供する基本保護はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. confidentialityとintegrity</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. アプリの認可を自動化する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 全てのmodeでreplayを完全に防ぐことを保証する</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> confidentiality, integrity, replay. TLSは盗聴と改ざんを防ぐ.
+            <strong>Correct (A):</strong> encryptionと認証で, 秘密性と完全性を提供.
+            <strong>Options:</strong><br>
+            - A (correct): 基本保護.
+            - B (incorrect): 認可はアプリ側.
+            - C (incorrect): early dataにはreplayの注意があり, アプリ側の対策が必要.
+            <strong>Related:</strong> server認証はcertificateで行われることが多いが, trust判断はポリシー次第.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^(ec)?dhe$" data-difficulty="L2">
+        <header><h4>Q6: TLS 1.3でforward secrecyを得るためのephemeral key exchangeを1つ挙げよ</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type DHE or ECDHE" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> DHE, ECDHE, forward secrecy. Diffie-Hellman系のephemeral key exchange.
+            <strong>Correct:</strong> DHEまたはECDHE.
+            <strong>Why others are wrong:</strong> static RSA key exchangeはTLS 1.3で廃止. PSKは再開に使えるが, forward secrecyは追加要素に依存する.
+            <strong>Related:</strong> key exchangeの選択は性能と暗号俊敏性に影響する.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 8446</strong> to “<em id="footer-goal">TLS 1.3 literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

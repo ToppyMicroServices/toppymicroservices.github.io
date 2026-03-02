@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 8174 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 8174 drill. MUST/SHOULD/MAYの解釈を大文字小文字の曖昧性から守り, 仕様をテスト可能にする." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc8174_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc8174.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc8174_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 8174",
+      SKILL_SUBTITLE: "BCP 14の大文字小文字の更新",
+      GOAL_DESCRIPTION: "MUST/SHOULD/MAYを正しく読み, 曖昧さのない要件を書く",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 8174 Quiz</h1>
+        <h2 id="subtitle">MUST/SHOULD/MAYの曖昧性を解消する</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc8174.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc8174_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8174" target="_blank" rel="noopener noreferrer">RFC 8174: Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc2119" target="_blank" rel="noopener noreferrer">RFC 2119: Key words for use in RFCs to Indicate Requirement Levels</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: 実装者が迷わず, 要件をテスト可能に読む.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: 仕様に "Clients must validate certificates" とあり, BCP 14の解釈が明示されていない. 起きやすい問題はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 全ての読者がmustを必ず規範的MUSTとして読む</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. mustが要件か単なる英語かで読者が割れる</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 文として無効なので必ず削除が必要</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.<br>
+            <strong>Correct (B):</strong> BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい.<br>
+            <strong>Options:</strong><br>
+            - A (incorrect): 小文字mustを必ず規範語として読む根拠は, 文書が明示しない限り成立しない.<br>
+            - B (correct): これが最も起きやすい問題. 同じ仕様を読んでも結論が分岐する.<br>
+            - C (incorrect): 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.<br>
+            <strong>Related:</strong> セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: 仕様でMUSTを "must" と書いても規範的に読ませたい. 最も良い手はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. BCP 14のボイラープレートで解釈を明示し, 大文字小文字だけに依存しない</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 小文字だけで統一すれば親切なので問題ない</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 規範語を使わず, 例だけで伝える</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> MUST, 規範語, BCP 14ボイラープレート, 大文字小文字. MUSTとmustを同じ意味で扱うなら, そのルールを文書で宣言する必要がある.<br>
+            <strong>Correct (A):</strong> BCP 14は, ボイラープレートと明示的な解釈で曖昧性を無くす方針. 大文字か小文字かだけで信号にしないのが安全.<br>
+            <strong>Options:</strong><br>
+            - A (correct): 読者と実装者に, mustをMUSTとして読む根拠を与える. 仕様レビューもやりやすい.<br>
+            - B (incorrect): 小文字だけだと, 規範語なのか普通の英語なのかが読者依存になりやすい.<br>
+            - C (incorrect): 例は補助になるが, 適合要件が消えると相互運用性が壊れやすい.<br>
+            <strong>Related:</strong> 要件は "テストできる条件" まで落とすのが実装者に優しい.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+        <header><h4>Q3: 実装者の曖昧性を減らす実践はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. 文書内でBCP 14キーワードの解釈を定義する</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. 規範と参考をラベル無しで混ぜる</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. MUSTをテストできる条件として書く</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. SHOULDには理由と例外条件を書く</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> 曖昧性, BCP 14キーワード, MUST, SHOULD. RFC 8174の狙いは, キーワードの読み方を明示して, 要件を一意に読むこと.<br>
+            <strong>Correct (A,C,D):</strong> どれも読みのブレを減らし, 適合判定を可能にする.<br>
+            <strong>Options:</strong><br>
+            - A (correct): MUST/SHOULD/MAYの意味の前提を固定できる.<br>
+            - B (incorrect): 何が要件で何が説明かが不明になり, 実装差が増える.<br>
+            - C (correct): MUSTがテスト可能なら, 実装とレビューが収束しやすい.<br>
+            - D (correct): SHOULDは例外を許す. 例外が曖昧だと, SHOULDが実質MAYになる.<br>
+            <strong>Related:</strong> レビューでは, "このMUSTはどう試験する" と "このSHOULDの例外は何" を確認する.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q4: "Clients must validate certificates" とだけ書かれ, BCP 14の宣言が無い. 何が起きやすい</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 自動的にRFC 2119のMUSTと同じになる</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 文として無効なので削除が必要</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. mustが要件か説明かで読者が割れる</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> must (小文字), 規範か記述か, BCP 14宣言. RFC 8174が問題にするのは, キーワードの扱いが読者依存になる点.<br>
+            <strong>Correct (C):</strong> mustをMUSTとして読む人と, 強い表現の英語として読む人が混ざると, 実装結果が分裂する.<br>
+            <strong>Options:</strong><br>
+            - A (incorrect): 自動ではない. 文書が解釈ルールを宣言して初めて, mustをMUSTとして扱える.<br>
+            - B (incorrect): 文は残せる. ただし規範なのかを明確化すべき.<br>
+            - C (correct): 曖昧性が発生しやすく, 相互運用性や安全性に直撃する.<br>
+            <strong>Related:</strong> 証明書検証のような安全要件は, MUSTで明確にし, 例外を許すなら条件付きで書く.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q5: 規範セクションでBCP 14らしい表現はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. サーバは速いと嬉しい</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. サーバは不正な入力を拒否しなければならない</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. サーバはたぶん不正な入力を拒否するかもしれない</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> BCP 14, 規範セクション, MUST. RFC 8174とRFC 2119の文脈では, MUSTのようなキーワードで適合要件を表現する.<br>
+            <strong>Correct (B):</strong> "拒否" は観測可能でテスト可能. "しなければならない" はMUST相当の必須要件として読める.<br>
+            <strong>Options:</strong><br>
+            - A (incorrect): 主観的でテスト不能. 要件にならない.<br>
+            - B (correct): 必須要件として読みやすく, 適合判定に落とせる.<br>
+            - C (incorrect): ぼかし表現が多く, 実装者が何を守れば良いか分からない.<br>
+            <strong>Related:</strong> 柔軟性が欲しいなら, SHOULDにして例外条件を明示する.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-answer="MUST" data-difficulty="L1">
+        <header><h4>Q6: 規範語を1つ選ぶ. 相互運用性のために必須なら, 実装は___実装する必要がある</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one keyword (e.g., MUST)" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> 相互運用性, 規範語, MUST. BCP 14でMUSTは, 例外を許さない必須要件を意味する.<br>
+            <strong>Correct:</strong> MUSTが適切. "必須" を宣言しているなら, SHOULDやMAYでは弱すぎる.<br>
+            <strong>Why others are wrong:</strong> SHOULDは正当な例外を許す. MAYは任意. "相互運用性のために必須" ならMUSTが筋.<br>
+            <strong>Related:</strong> MUSTを書くときは, 何が "相互運用性" を壊すのか, 具体例で示すと実装が揃う.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 8174</strong> to “<em id="footer-goal">Interpret MUST/SHOULD/MAY correctly</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

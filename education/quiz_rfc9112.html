@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9112 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9112 drill: HTTP/1.1 message syntax, framing, connection management." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9112.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9112.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9112_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9112",
+      SKILL_SUBTITLE: "HTTP/1.1",
+      GOAL_DESCRIPTION: "Correctly frame messages and manage connections in HTTP/1.1",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9112 Quiz</h1>
+        <h2 id="subtitle">HTTP/1.1 framing and connection rules</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9112.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc9112_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9112" target="_blank" rel="noopener noreferrer">RFC 9112: HTTP/1.1</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: avoid parsing and proxy bugs around message framing and hop-by-hop headers.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
+        <header><h4>Q1: In HTTP/1.1, how does a recipient detect the end of the header section</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. The presence of a Content-Length header</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. A single LF line ending</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. An empty line that is a CRLF on its own</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> header section, empty line, CRLF. HTTP/1.1 uses a blank line to separate headers from the optional message body.
+            <strong>Correct (C):</strong> The header section ends at the empty line, which is a CRLF on its own, after the last header field line.
+            <strong>Options:</strong><br>
+            - A (incorrect): Content-Length is about body framing. It does not terminate the header section.
+            - B (incorrect): HTTP/1.1 defines CRLF as the line ending. Accepting LF-only can cause interoperability and security problems.
+            - C (correct): The CRLF empty line is the defined delimiter.
+            <strong>Related:</strong> When parsers disagree on where headers end, intermediaries can be vulnerable to request smuggling.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q2: How can an HTTP/1.1 recipient determine message body length</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Only by Content-Length</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Only by closing the connection</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. By rules that consider Transfer-Encoding, Content-Length, and connection close</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1 has multiple framing mechanisms, and the correct one depends on the presence and ordering of headers.
+            <strong>Correct (C):</strong> Recipients apply a precedence order: Transfer-Encoding (especially chunked) affects framing, Content-Length can be used when valid, and connection close can delimit in some cases.
+            <strong>Options:</strong><br>
+            - A (incorrect): Transfer-Encoding can override Content-Length for framing. Relying only on Content-Length is unsafe.
+            - B (incorrect): Connection close is a last-resort delimiter and breaks persistent connections.
+            - C (correct): The framing algorithm combines these signals.
+            <strong>Related:</strong> Inconsistent framing interpretation between intermediaries is a common root cause of request smuggling.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: When Transfer-Encoding: chunked is used, how does the body end</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. When the socket read returns zero bytes</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. With a zero-length chunk followed by CRLF</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. When a Content-Length trailer appears</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> chunked coding, chunk size, terminator. Chunked transfer coding frames the body as a series of chunks.
+            <strong>Correct (B):</strong> The end of a chunked body is indicated by a chunk with size 0, followed by a final CRLF and optional trailer fields.
+            <strong>Options:</strong><br>
+            - A (incorrect): Connection close is not the normal terminator for chunked coding and should not be relied upon.
+            - B (correct): The 0-size chunk is the explicit terminator.
+            - C (incorrect): Content-Length is not used as a trailer to end a chunked body.
+            <strong>Related:</strong> Trailers exist, but they are separate header fields after the terminating chunk.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
+        <header><h4>Q4: Which request-target forms exist in HTTP/1.1 (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. origin-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. absolute-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. authority-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. asterisk-form</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> request-target, origin-form, absolute-form, authority-form, asterisk-form. Different forms are used depending on whether the client is talking to an origin server, proxy, or using CONNECT/OPTIONS.
+            <strong>Correct (A,B,C,D):</strong> All four forms are defined and used in specific situations.
+            <strong>Options:</strong><br>
+            - A (correct): Common for origin servers, like /path?query.
+            - B (correct): Used when making requests to proxies, like http://example.com/path.
+            - C (correct): Used with CONNECT to establish a tunnel to host:port.
+            - D (correct): Used with OPTIONS * to query server-wide options.
+            <strong>Related:</strong> Proxies must carefully preserve semantics and not accidentally rewrite request-target incorrectly.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q5: What is the default connection behavior in HTTP/1.1</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Connections are always closed after each response</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Connections are never reused across requests</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Connections are persistent unless explicitly closed</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> persistent connection, Connection: close. HTTP/1.1 is designed to reuse TCP connections for efficiency.
+            <strong>Correct (C):</strong> Connections are persistent by default, and either side can signal that it will close the connection.
+            <strong>Options:</strong><br>
+            - A (incorrect): That is closer to HTTP/1.0 behavior and is inefficient.
+            - B (incorrect): Reuse is a core feature to reduce latency and overhead.
+            - C (correct): This is the standard default.
+            <strong>Related:</strong> Framing must be correct to safely reuse connections. Otherwise, boundaries can be ambiguous.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1">
+        <header><h4>Q6: HTTP/1.1 uses which line ending for start-lines and header fields</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> CRLF. HTTP/1.1 messages are defined in terms of CRLF as the line terminator.
+            <strong>Correct:</strong> CRLF. It is carriage return followed by line feed.
+            <strong>Why others are wrong:</strong> LF-only is common in Unix text files but is not the defined delimiter for HTTP/1.1 message syntax.
+            <strong>Related:</strong> Robust implementations may accept some variations, but emit correct CRLF to maximize interoperability.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9112</strong> to “<em id="footer-goal">Correct HTTP/1.1 framing</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

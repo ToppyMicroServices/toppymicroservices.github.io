@@ -1,4 +1,4 @@
-window.DRILL_SETTINGS = {
+window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   SKILL_NAME: "Your Skill Name",
   SKILL_SUBTITLE: "Your Drill Subtitle",
   GOAL_DESCRIPTION: "Describe the learning goal",

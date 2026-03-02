@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9000 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9000 drill: QUIC transport concepts like streams, connection IDs, flow control, packets." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9000.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9000.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9000_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9000",
+      SKILL_SUBTITLE: "QUIC Transport",
+      GOAL_DESCRIPTION: "Understand QUIC streams, connection identity, and flow control at a high level",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9000 Quiz</h1>
+        <h2 id="subtitle">QUIC transport fundamentals</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9000.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc9000_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC: A UDP-Based Multiplexed and Secure Transport</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: understand QUIC building blocks before reading HTTP/3 details.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: What is QUIC at a high level</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. A plaintext message format for HTTP/1.1</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. A secure, multiplexed transport protocol built on UDP</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. A replacement for DNS name resolution</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> transport, multiplexed, secure, UDP. QUIC provides streams and reliability features with integrated security.
+            <strong>Correct (B):</strong> QUIC is a transport protocol that uses UDP as its substrate, supports multiplexed streams, and integrates TLS 1.3 style security.
+            <strong>Options:</strong><br>
+            - A (incorrect): HTTP/1.1 is defined separately and does not require QUIC.
+            - B (correct): This matches the RFC 9000 description.
+            - C (incorrect): DNS is unrelated to QUIC.
+            <strong>Related:</strong> HTTP/3 uses QUIC as its transport.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: What is a primary purpose of a QUIC connection ID</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Allow connection continuity across address changes</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Replace TLS certificates</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Encode the full URI of the request</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> connection ID, migration. A connection ID helps identify a connection independently of the IP and port tuple.
+            <strong>Correct (A):</strong> Connection IDs help keep a connection stable even when the network path changes and can also support load balancing.
+            <strong>Options:</strong><br>
+            - A (correct): This enables mobility and smoother handoffs.
+            - B (incorrect): Certificates and authentication are part of TLS, not connection ID.
+            - C (incorrect): URIs belong to application protocols like HTTP, not to transport identifiers.
+            <strong>Related:</strong> Some deployments use connection IDs to route packets through load balancers without exposing client addresses.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q3: Which QUIC feature helps prevent one request from blocking another due to transport ordering</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP status codes</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. DNS caching</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Independent streams multiplexed within one connection</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> streams, multiplexing. QUIC carries multiple streams that can progress independently.
+            <strong>Correct (C):</strong> Stream multiplexing is a fundamental transport building block for protocols like HTTP/3.
+            <strong>Options:</strong><br>
+            - A (incorrect): Status codes are HTTP semantics.
+            - B (incorrect): DNS caching is unrelated.
+            - C (correct): Streams allow independent application flows.
+            <strong>Related:</strong> This is one reason QUIC is attractive for web traffic with many concurrent resources.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+        <header><h4>Q4: Which statements about QUIC flow control are true (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. It can limit data per stream</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. It can limit data across the entire connection</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It provides backpressure so a receiver is not overwhelmed</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. It replaces application authentication</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> flow control, backpressure. Flow control is about limiting how much data the sender may transmit before the receiver grants more credit.
+            <strong>Correct (A,B,C):</strong> QUIC uses flow control at multiple levels and it protects receivers.
+            <strong>Options:</strong><br>
+            - A (correct): Per-stream flow control prevents one stream from consuming all receiver memory.
+            - B (correct): Connection-level flow control caps overall buffered data.
+            - C (correct): This is the purpose: controlled resource usage.
+            - D (incorrect): Authentication is handled by TLS and application logic, not flow control.
+            <strong>Related:</strong> Flow control is different from congestion control. Congestion control is about network capacity, not receiver capacity.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q5: What types of streams does QUIC support</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Bidirectional and unidirectional streams</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only one byte stream for the entire connection</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Only datagram frames with no reliability</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> bidirectional stream, unidirectional stream. QUIC supports different stream directions depending on protocol needs.
+            <strong>Correct (A):</strong> Both stream types exist.
+            <strong>Options:</strong><br>
+            - A (correct): Many application protocols map different message flows onto different stream types.
+            - B (incorrect): That describes TCP, not QUIC.
+            - C (incorrect): QUIC is reliable for its streams. Datagram support is an extension, not the baseline stream model.
+            <strong>Related:</strong> HTTP/3 uses multiple unidirectional control streams plus bidirectional request streams.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^udp$" data-difficulty="L1">
+        <header><h4>Q6: QUIC is designed to run over which IP transport protocol</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> UDP. QUIC uses UDP packets as its substrate to enable user-space evolution and avoid TCP ossification.
+            <strong>Correct:</strong> UDP.
+            <strong>Why others are wrong:</strong> QUIC is not TCP-based. SCTP is also not the base here.
+            <strong>Related:</strong> Running over UDP does not mean QUIC is unreliable. QUIC implements reliability and congestion control at the protocol layer.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9000</strong> to “<em id="footer-goal">QUIC transport literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

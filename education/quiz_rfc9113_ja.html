@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9113 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9113 drill. HTTP/2のstream, frame, flow control, connectionの振る舞いを理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9113_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9113.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9113_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9113",
+      SKILL_SUBTITLE: "HTTP/2",
+      GOAL_DESCRIPTION: "streamとframe, flow control, connectionの基本を押さえる",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9113 Quiz</h1>
+        <h2 id="subtitle">HTTP/2のmultiplexingを理解する</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc9113.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9113_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9113" target="_blank" rel="noopener noreferrer">RFC 9113: HTTP/2</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: streamのlifecycle, flow control, shutdownを説明できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: HTTP/2がHTTP/1.1に対して追加した大きな能力はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. methodの意味を変更する</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 1つのconnection上で複数streamを多重化する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSを置き換える新暗号プロトコルを導入する</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.<br>
+            <strong>Correct (B):</strong> multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らす.<br>
+            <strong>Options:</strong><br>
+            - A (incorrect): 意味論はRFC 9110で定義され, HTTP/2で変わらない.<br>
+            - B (correct): これがtransport面での主要な変化.
+            - C (incorrect): HTTP/2は通常TLS上で動くが, TLSを置き換えない.<br>
+            <strong>Related:</strong> ただしTCP上なので, transportレイヤのhead-of-lineは残る.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q2: HTTP/2のwire上の基本単位はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. CRLFで終わるtext line</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. HTTP/1.1のchunk</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. binary frame</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> frame, binary framing layer. HTTP/2はframeの列として通信し, frame headerで種別や長さを表す.<br>
+            <strong>Correct (C):</strong> frameがheaders, data, settingsなどを運ぶ.
+            <strong>Options:</strong><br>
+            - A (incorrect): それはHTTP/1.1.
+            - B (incorrect): chunkedはHTTP/1.1の転送方式.
+            - C (correct): HTTP/2はbinary frame.
+            <strong>Related:</strong> 意味論は同じでも, framing layerが違うと実装の落とし穴が変わる.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q3: HTTP/2のstream IDの奇偶ルールとして正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. client開始が奇数, server開始が偶数</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. client開始が偶数, server開始が奇数</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 奇偶に意味はない</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> stream ID, initiator. stream IDは順序と開始者を示し, protocol error検出に役立つ.<br>
+            <strong>Correct (A):</strong> clientは奇数, serverは偶数を使う.
+            <strong>Options:</strong><br>
+            - A (correct): 定義通り.
+            - B (incorrect): 逆.
+            - C (incorrect): 奇偶は意味を持つ.
+            <strong>Related:</strong> stream IDの単調増加も重要で, 再利用や不正frameを検出する.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3">
+        <header><h4>Q4: HTTP/2 flow controlについて正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. in-flightなDATA量を制限する</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. header frameにもDATAと同様に適用される</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. stream levelとconnection levelの両方がある</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. WINDOW_UPDATEでwindowを増やす</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> flow control, window, DATA, WINDOW_UPDATE. flow controlは受信側が過負荷にならないよう, 送信をcreditで制限する仕組み.<br>
+            <strong>Correct (A,C,D):</strong> DATA向けのwindowがあり, stream単位とconnection全体の両方で管理される. windowを増やすのがWINDOW_UPDATE.
+            <strong>Options:</strong><br>
+            - A (correct): windowがDATA送信量を制御する.
+            - B (incorrect): 主にDATAが対象で, headerは別の取り扱いになる.
+            - C (correct): 2種類のwindowがある.
+            - D (correct): WINDOW_UPDATEで増加.
+            <strong>Related:</strong> window設定ミスはstallに見え, ネットワーク障害と誤診しやすい.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q5: SETTINGS frameの目的はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. application payloadを運ぶ</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. connectionの設定パラメータを伝える</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. DATA frameをackする</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> SETTINGS, connection parameters. frame sizeやconcurrent streamsなどの上限や好みを共有する.
+            <strong>Correct (B):</strong> SETTINGSはcontrolとしてconnectionを調整する.
+            <strong>Options:</strong><br>
+            - A (incorrect): payloadはDATA.
+            - B (correct): 設定通知.
+            - C (incorrect): ackは別の仕組み.
+            <strong>Related:</strong> SETTINGSの未尊重はprotocol errorになり得る. 受信側はackする必要がある.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^goaway$" data-difficulty="L1">
+        <header><h4>Q6: HTTP/2 connectionのgraceful shutdownを示すframe名はどれ</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the frame name" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> GOAWAY. GOAWAYは新規streamを受け付けないことと, 処理済みのlast streamを通知する.
+            <strong>Correct:</strong> GOAWAY.
+            <strong>Why others are wrong:</strong> RST_STREAMは1つのstreamだけをresetする. SETTINGSは設定通知でshutdownではない.
+            <strong>Related:</strong> 未処理stream上のrequestは, methodのidempotencyを考慮してretry判断する.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9113</strong> to “<em id="footer-goal">HTTP/2 transport literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

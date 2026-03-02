@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 3986 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 3986 drill: URI generic syntax, components, percent-encoding, normalization." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc3986.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc3986.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc3986_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 3986",
+      SKILL_SUBTITLE: "URI Generic Syntax",
+      GOAL_DESCRIPTION: "Parse, construct, and normalize URIs without breaking meaning",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 3986 Quiz</h1>
+        <h2 id="subtitle">Understand URI components and encoding</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc3986.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc3986_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc3986" target="_blank" rel="noopener noreferrer">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: avoid subtle bugs when comparing, joining, or encoding URIs.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
+        <header><h4>Q1: In a URI, what delimiter indicates the start of an authority component when it is present</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. #</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. ?</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. //</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> authority, delimiter, scheme. In the generic URI syntax, the authority component is preceded by "//" and is followed by path, query, or fragment delimiters.<br>
+            <strong>Correct (C):</strong> "//" signals that the following part is an authority, which can include userinfo, host, and port.<br>
+            <strong>Options:</strong><br>
+            - A (incorrect): # introduces the fragment component, not authority.<br>
+            - B (incorrect): ? introduces the query component.
+            - C (correct): // is the authority introducer in the generic syntax.<br>
+            <strong>Related:</strong> Not all schemes use an authority. For example, some schemes use an opaque path without //.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: In the URI https://user:pass@example.com:8443/a?x=1#frag what is the authority component</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. user:pass@example.com:8443</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. /a</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> authority, userinfo, host, port. The authority component is the part after // up to the next /, ?, or # and it can include userinfo and port.<br>
+            <strong>Correct (A):</strong> In this example the authority includes userinfo (user:pass), host (example.com), and port (8443).<br>
+            <strong>Options:</strong><br>
+            - A (correct): This matches the RFC 3986 structure [userinfo@]host[:port].<br>
+            - B (incorrect): This is only the host subcomponent, not the entire authority here.<br>
+            - C (incorrect): /a is path, not authority.<br>
+            <strong>Related:</strong> Userinfo is discouraged in many contexts for security reasons, but it is part of the grammar.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+        <header><h4>Q3: Which characters are reserved in RFC 3986 (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. ?</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. #</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. &amp;</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. ~</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> reserved, unreserved, gen-delims, sub-delims. Reserved characters have special meaning as delimiters in some URI components and may need percent-encoding when used as data.<br>
+            <strong>Correct (A,B,C):</strong> ?, # are gen-delims. &amp; is a sub-delims character. ~ is unreserved, so it is typically safe without encoding.<br>
+            <strong>Options:</strong><br>
+            - A (correct): ? separates path from query in generic syntax.<br>
+            - B (correct): # introduces the fragment component.<br>
+            - C (correct): &amp; is reserved as a sub-delims character and often has application-specific meaning inside the query.<br>
+            - D (incorrect): ~ is in the unreserved set in RFC 3986 and is not reserved.<br>
+            <strong>Related:</strong> Do not confuse reserved vs unsafe. Reserved means it might be a delimiter, so encoding depends on component and intent.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q4: When should you percent-encode a character in a URI</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Always encode all non-ASCII characters in every component</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Never encode reserved characters because they are required delimiters</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Encode when the character is not allowed in that component or when you need a reserved character to be treated as data</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> percent-encoding, component, delimiter vs data. Percent-encoding is a mechanism to represent octets using %HH so that the URI remains syntactically valid and unambiguous.<br>
+            <strong>Correct (C):</strong> Encoding is context-dependent. If a reserved character would be interpreted as a delimiter but you need it as data, encode it. If a character is not permitted in a component, encode it or use an appropriate encoding scheme for that context.<br>
+            <strong>Options:</strong><br>
+            - A (incorrect): RFC 3986 defines a generic syntax and percent-encoding of octets, but handling of non-ASCII depends on scheme and IRI processing. Blanket rules can break round-tripping.<br>
+            - B (incorrect): Reserved characters can appear as data, but then they should be percent-encoded to avoid delimiter interpretation.<br>
+            - C (correct): This captures the core rule and the reason behind it.<br>
+            <strong>Related:</strong> Many bugs happen when code decodes too early and loses the ability to distinguish delimiter vs data.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q5: Which normalization is generally safe for comparison without changing meaning</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Lowercase the scheme and host</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Lowercase the entire path</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Remove the fragment for all uses including client-side navigation</label>
+          </fieldset>
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> normalization, scheme, host, path, fragment. Normalization is changing the textual form while attempting to preserve the same reference.<br>
+            <strong>Correct (A):</strong> Scheme and host are case-insensitive in generic URI processing, so lowercasing them is a common, safe normalization step.<br>
+            <strong>Options:</strong><br>
+            - A (correct): Does not change the reference for typical URI processing, because scheme and host are case-insensitive.<br>
+            - B (incorrect): Path case-sensitivity is scheme and server dependent. Lowercasing can change what resource is referenced.<br>
+            - C (incorrect): Fragments are not sent to the server, but they can be meaningful to clients. Removing them may change client behavior and is not universally safe.
+            <strong>Related:</strong> Be careful: even seemingly harmless normalization can break signed URLs, caches, and routing.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^fragment$" data-difficulty="L1">
+        <header><h4>Q6: In a URI, the part after # is called the ___ component</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <div class="explain"><strong>Explanation:</strong><br>
+            <strong>Terms:</strong> fragment component. In RFC 3986 the fragment is the part after # and it identifies a secondary resource or client-side reference.<br>
+            <strong>Correct:</strong> fragment. That is the RFC name for that component.<br>
+            <strong>Why others are wrong:</strong> Query is introduced by ?, path is the hierarchical component after the authority, and scheme is before :. Confusing these leads to incorrect parsing and incorrect URL handling.<br>
+            <strong>Related:</strong> Fragments are typically processed by the user agent and are not transmitted in an HTTP request.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 3986</strong> to “<em id="footer-goal">Use URIs correctly</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
