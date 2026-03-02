@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "component": "education-quiz",
+  "template": "quiz_template_skeleton",
+  "files": {
+    "html": "education/quiz_template_skeleton.html",
+    "cssBase": "education/quiz.css",
+    "cssTemplate": "education/quiz_template_skeleton.css",
+    "jsTemplate": "education/quiz_template_skeleton.js"
+  },
+  "ui": {
+    "toggles": [
+      {
+        "id": "toggleExplainOnAnswer",
+        "label": "回答直後に解説を表示 / Show explanation immediately",
+        "default": false,
+        "storage": {
+          "type": "localStorage",
+          "key": "quizExplainOnAnswer"
+        },
+        "behavior": "When enabled, show the .explain block for questions that have been answered."
+      },
+      {
+        "id": "toggleShowAllAnswers",
+        "label": "すべての回答を表示 / Show all answers",
+        "default": false,
+        "storage": {
+          "type": "localStorage",
+          "key": "quizShowAllAnswers"
+        },
+        "behavior": "When enabled, show explanations for all questions and render/update the results table (answers + score) in the results panel."
+      }
+    ],
+    "resultsPanel": {
+      "defaultId": "results-bottom",
+      "buttonId": "bottomShowAnswers",
+      "buttonBehavior": "Clicking the button turns on 'Show all answers' and renders the results panel."
+    }
+  },
+  "events": {
+    "answerChange": "Recomputes live score; updates reveal state; refreshes results panel if 'Show all answers' is enabled."
+  }
+}

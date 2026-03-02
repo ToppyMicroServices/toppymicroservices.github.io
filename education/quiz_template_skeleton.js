@@ -13,10 +13,37 @@ window.DRILL_SETTINGS = {
   const ESCAPE_MAP={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"};
   const escapeHtml=str=>(str??'').replace(/[&<>"']/g,ch=>ESCAPE_MAP[ch]||ch);
   const locale=(document.documentElement.lang||'').toLowerCase();
+  const PREF_KEYS = {
+    explainOnAnswer: 'quizExplainOnAnswer',
+    showAllAnswers: 'quizShowAllAnswers'
+  };
   const DETAIL_TEXT=locale.startsWith('ja')?
     { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
     { detailHeading:'Detailed Breakdown', detailDescription:'Responses, correct answers, scores, and explanations for every question.', columns:{question:'Question',response:'Your Answer',correct:'Correct Answer',score:'Result',explanation:'Explanation'}, status:{correct:'Correct',incorrect:'Incorrect',unanswered:'Unanswered'}, noAnswer:'Not answered', notAvailable:'N/A', none:'None' };
   const THEME_KEY='quizTheme'; const prefersDark=window.matchMedia('(prefers-color-scheme: dark)');
+
+  function readBoolPref(key, defaultValue=false){
+    try {
+      const raw = localStorage.getItem(key);
+      if(raw === null) return defaultValue;
+      return raw === '1' || raw === 'true';
+    } catch (_e) {
+      return defaultValue;
+    }
+  }
+  function writeBoolPref(key, value){
+    try {
+      localStorage.setItem(key, value ? '1' : '0');
+    } catch (_e) {}
+  }
+
+  function getRevealControls(){
+    return {
+      explainOnAnswer: document.getElementById('toggleExplainOnAnswer'),
+      showAllAnswers: document.getElementById('toggleShowAllAnswers')
+    };
+  }
+
   function updateThemeToggle(mode){const b=$('#themeToggle'); if(!b) return; const L=mode==='light'; b.textContent=L?'🌙 Dark':'🌞 Light'; b.setAttribute('aria-pressed',L?'true':'false');}
   function setTheme(m,persist=true){const n=m==='light'?'light':'dark'; document.body.setAttribute('data-theme',n); if(persist){try{localStorage.setItem(THEME_KEY,n);}catch(e){}} updateThemeToggle(n);}    
   function applyInitialTheme(){let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(e){} const init=s||(prefersDark.matches?'dark':'light'); setTheme(init,false);}    
@@ -43,11 +70,21 @@ window.DRILL_SETTINGS = {
 
   function resolveResultsBox(targetId){ if(targetId){ const el=document.getElementById(targetId); if(el) return el; } return document.getElementById('results-bottom') || document.querySelector('.results'); }
 
+  function setResultsVisible(visible, targetId){
+    const box = resolveResultsBox(targetId);
+    if(!box) return;
+    if(visible){
+      box.style.display = 'block';
+      return;
+    }
+    box.style.display = 'none';
+    box.innerHTML = '';
+  }
+
   function showAnswersAndScore(targetId){
     let total=0,correct=0,answered=0; const rows=[];
     $$('#questions .q').forEach(q=>{
       total++; const result=evaluateQuestion(q); if(isAnswered(q)) answered++; if(result.ok===true) correct++;
-      showExplain(q,true);
       const qTitle=q.querySelector('h4')?.textContent.trim()||result.id;
       const expHtml=q.querySelector('.explain')?.innerHTML.trim()||'';
       const status=scoreLabel(result.ok);
@@ -79,17 +116,80 @@ window.DRILL_SETTINGS = {
     }
   }
 
+  function applyRevealState(targetId){
+    const { explainOnAnswer, showAllAnswers } = getRevealControls();
+    const explain = !!explainOnAnswer?.checked;
+    const showAll = !!showAllAnswers?.checked;
+
+    $$('#questions .q').forEach(q => {
+      showExplain(q, showAll || (explain && isAnswered(q)));
+    });
+
+    if(showAll){
+      showAnswersAndScore(targetId);
+    } else {
+      setResultsVisible(false, targetId);
+    }
+  }
+
+  function initRevealControls(){
+    const { explainOnAnswer, showAllAnswers } = getRevealControls();
+    if(explainOnAnswer){
+      explainOnAnswer.checked = readBoolPref(PREF_KEYS.explainOnAnswer, false);
+      explainOnAnswer.addEventListener('change', () => {
+        writeBoolPref(PREF_KEYS.explainOnAnswer, !!explainOnAnswer.checked);
+        applyRevealState();
+      });
+    }
+    if(showAllAnswers){
+      showAllAnswers.checked = readBoolPref(PREF_KEYS.showAllAnswers, false);
+      showAllAnswers.addEventListener('change', () => {
+        writeBoolPref(PREF_KEYS.showAllAnswers, !!showAllAnswers.checked);
+        applyRevealState();
+      });
+    }
+  }
+
+  function bindAnswerChangeEvents(){
+    const inputs = $$('#questions input');
+    const handler = () => {
+      updateLiveScore();
+      applyRevealState();
+    };
+    inputs.forEach(input => {
+      const type = (input.getAttribute('type') || '').toLowerCase();
+      if(type === 'text'){
+        input.addEventListener('input', handler);
+        input.addEventListener('change', handler);
+      } else {
+        input.addEventListener('change', handler);
+      }
+    });
+  }
+
   // Handlers
   $('#themeToggle')?.addEventListener('click',()=>{toggleTheme(); updateLiveScore();});
   $('#mode-badge').addEventListener('click',()=>{let lm=$('#learningMode'); if(!lm){ lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} lm.checked=!lm.checked; const mb=$('#mode-badge'); mb.textContent=lm.checked?'Learning Mode':'Test Mode'; mb.setAttribute('aria-pressed',lm.checked?'true':'false'); updateLiveScore();});
   const bottomBtn=$('#bottomShowAnswers');
-  if(bottomBtn){ bottomBtn.addEventListener('click',()=>{ showAnswersAndScore(bottomBtn.dataset.resultsTarget); }); }
+  if(bottomBtn){
+    bottomBtn.addEventListener('click',()=>{
+      const { showAllAnswers } = getRevealControls();
+      if(showAllAnswers){
+        showAllAnswers.checked = true;
+        writeBoolPref(PREF_KEYS.showAllAnswers, true);
+      }
+      applyRevealState(bottomBtn.dataset.resultsTarget);
+    });
+  }
 
   applyInitialTheme();
   try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
   applySettings();
+  initRevealControls();
+  bindAnswerChangeEvents();
   if(!$('#learningMode')){ const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} 
   const mb=$('#mode-badge'); if(mb){ mb.textContent='Learning Mode'; mb.setAttribute('aria-pressed','true'); }
   updateLiveScore();
+  applyRevealState();
   const y=new Date().getFullYear(); const b=window.DRILL_SETTINGS?.BRAND_NAME||'ToppyMicroServices'; const c=$('#copyright'); if(c){ c.textContent='© '+y+' '+b+'. All rights reserved.'; }
 })();
