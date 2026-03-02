@@ -11,6 +11,15 @@
   "contentAuthoring": {
     "inputs": {
       "theme": "Given by the quiz author (required)",
+      "language": {
+        "primary": "en",
+        "supported": [
+          "en",
+          "ja"
+        ],
+        "japaneseStyle": "Japanese content should NOT be a literal translation. Translate the intent, then rewrite into natural Japanese.",
+        "note": "If a quiz is provided in two pages (EN/JA), language switching may be implemented as a page redirect with a persistent localStorage preference."
+      },
       "difficulty": {
         "levels": {
           "L0": "Beginner (初心者)",
@@ -29,6 +38,14 @@
         "Given by the quiz author (optional; use when provided)"
       ]
     },
+    "questionPhilosophy": {
+      "aiEraFocus": "Prefer questions that build framework-level skill: writing/reviewing specs, handling exceptions/trade-offs, making requirements testable, and collaborating with AI (e.g., asking for a spec rewrite or review).",
+      "avoid": [
+        "Pure memorization of definitions without application",
+        "Questions whose correctness depends mainly on subjective preference",
+        "Normative language questions that omit definitions and leave key terms ambiguous"
+      ]
+    },
     "requirements": [
       "Follow the given theme and reference URLs when writing answers/explanations; do not introduce contradictions.",
       "Include the key words/terms that appear in the question statement inside the explanation text (not only in the prompt).",
@@ -42,7 +59,11 @@
         "Why the correct answer is correct",
         "Why each distractor/incorrect option is incorrect",
         "Related topics/examples (when relevant)"
-      ]
+      ],
+      "readability": {
+        "formatting": "Use line breaks and (when helpful) bullet lists to keep explanations scannable.",
+        "emphasis": "Make definitions explicit before reasoning (definition-first)."
+      }
     }
   },
   "ui": {
