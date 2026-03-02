@@ -230,7 +230,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   function initRevealControls(){
     const { explainOnAnswer, showAllAnswers } = getRevealControls();
     if(explainOnAnswer){
-      explainOnAnswer.checked = readBoolPref(PREF_KEYS.explainOnAnswer, false);
+      explainOnAnswer.checked = readBoolPref(PREF_KEYS.explainOnAnswer, true);
       explainOnAnswer.addEventListener('change', () => {
         writeBoolPref(PREF_KEYS.explainOnAnswer, !!explainOnAnswer.checked);
         applyRevealState();
