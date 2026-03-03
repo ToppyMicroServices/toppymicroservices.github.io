@@ -51,6 +51,39 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   function applySettings(){const S=window.DRILL_SETTINGS||{}; const name=S.SKILL_NAME; const sub=S.SKILL_SUBTITLE; const goal=S.GOAL_DESCRIPTION; $('#title').textContent=(name?name+' ':'')+(sub?('— '+sub):''); $('#subtitle').textContent=goal||''; $('#footer-skill').textContent=name||'Skill'; $('#footer-goal').textContent=goal||''; const img=$('#brand-logo'); if(img&&S.BRAND_LOGO){img.src=S.BRAND_LOGO; img.style.display='inline-block'; img.alt=S.BRAND_NAME||'';} $('#brand-name').textContent=S.BRAND_NAME||''; $('#brand-link').href=S.BRAND_URL||'/'; $('#footer-brand').innerHTML='<strong>'+(S.BRAND_NAME||'')+'</strong>';}    
   function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
 
+  function normalizeExplainHtml(html){
+    let out = String(html ?? '');
+    out = out.replace(/\r\n/g, '\n');
+
+    if(locale.startsWith('ja')){
+      out = out
+        .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
+        .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
+        .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
+        .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
+        .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
+    }
+
+    // Convert simple Markdown bold to HTML bold.
+    // This is intentionally minimal and only targets **...**.
+    out = out.replace(/\*\*([^*\n][^*\n]*?)\*\*/g, '<strong>$1</strong>');
+
+    // Ensure headings and lists are readable even if authored as plain text.
+    out = out.replace(/(<strong>(Options|選択肢):<\/strong>)\s*/g, '$1\n');
+
+    // If list items were written on one line, split before "- A (" patterns.
+    out = out.replace(/\s-\s([A-Z]\s*\()/g, '\n- $1');
+
+    return out;
+  }
+
+  function normalizeAllExplanations(){
+    $$('#questions .explain').forEach(exp => {
+      if(!(exp instanceof HTMLElement)) return;
+      exp.innerHTML = normalizeExplainHtml(exp.innerHTML);
+    });
+  }
+
   function mapDifficulty(q){
     const raw=(q.dataset.difficulty||'').trim();
     if(/^L[1-5]$/.test(raw)) return raw;
@@ -210,6 +243,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   applyInitialTheme();
   try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
   applySettings();
+  normalizeAllExplanations();
   injectDifficultyBadges();
   initRevealControls();
   bindAnswerChangeEvents();

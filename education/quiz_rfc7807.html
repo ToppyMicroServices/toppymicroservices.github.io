@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7807 Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7807 drill. Practice Problem Details for HTTP APIs with consistent error payloads." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc7807.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc7807.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc7807_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 7807",
+      SKILL_SUBTITLE: "Problem Details",
+      GOAL_DESCRIPTION: "Represent API errors consistently with problem+json fields",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 7807 Quiz</h1>
+        <h2 id="subtitle">Problem Details for HTTP APIs</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc7807.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc7807_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7807" target="_blank" rel="noopener noreferrer">RFC 7807: Problem Details for HTTP APIs</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: know required and optional members, and use content types correctly.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: What is the media type for a JSON Problem Details response</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. application/json</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. application/problem+json</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. text/problem+json</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> media type, Problem Details
+<strong>Correct (B):</strong> The specification defines a dedicated media type to signal the semantics of the payload
+<strong>Options:</strong>
+- A (incorrect): It can work but does not convey the Problem Details semantics
+- B (correct): Standard for JSON problem details
+- C (incorrect): Not defined
+<strong>Related:</strong> There is also application/problem+xml for XML
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2">
+        <header><h4>Q2: Which are standard members of a Problem Details object (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. type</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. title</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. status</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. detail</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. instance</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="f"> F. stackTrace</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> members, extensibility
+<strong>Correct (A,B,C,D,E):</strong> These are the defined standard members
+<strong>Options:</strong>
+- F (incorrect): Not a standard member, and is often unsafe to expose
+<strong>Related:</strong> You can add extension members, but keep them stable and documented
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q3: What is the intended meaning of type</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. A numeric error code that must match the HTTP status</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. The server hostname that produced the error</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. A URI reference that identifies the problem type</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> URI reference, problem type
+<strong>Correct (C):</strong> type is an identifier, often a documentation URL or about:blank
+<strong>Options:</strong>
+- A (incorrect): status is the HTTP status code
+- B (incorrect): host is not the meaning of type
+- C (correct): This enables stable categorization of errors
+<strong>Related:</strong> about:blank means the problem type is implied by the HTTP status
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q4: When you include status in the payload, it should generally</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Match the HTTP response status code semantics</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Be a string like "NOT_FOUND"</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Be used only for 2xx responses</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> status member
+<strong>Correct (A):</strong> It is a convenience for clients, not a separate status channel
+<strong>Options:</strong>
+- A (correct): Keep it consistent with the HTTP status line
+- B (incorrect): status is numeric in the standard members
+- C (incorrect): Problem details is for error conditions, not success
+<strong>Related:</strong> If intermediaries rewrite status codes, be careful about consistency
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^title$" data-difficulty="L1">
+        <header><h4>Q5: Which member is a short human readable summary of the problem (one word)</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the member name" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct:</strong> title
+<strong>Related:</strong> detail is for a longer explanation specific to this occurrence
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q6: Why is it useful to standardize error shapes across endpoints</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. It makes TLS optional</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Clients can handle errors consistently without per endpoint parsing rules</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. It prevents all 5xx errors</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> interoperability, client UX
+<strong>Correct (B):</strong> A predictable schema reduces boilerplate and improves observability
+<strong>Options:</strong>
+- A (incorrect): Not related
+- B (correct): This is the main benefit
+- C (incorrect): It does not prevent errors
+<strong>Related:</strong> Avoid leaking sensitive internal details in detail and extensions
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 7807</strong> to “<em id="footer-goal">API error modeling</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7541 Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7541 drill. Practice HPACK header compression concepts used by HTTP/2." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc7541.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc7541.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc7541_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 7541",
+      SKILL_SUBTITLE: "HPACK",
+      GOAL_DESCRIPTION: "Understand header compression primitives and pitfalls for HTTP/2",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 7541 Quiz</h1>
+        <h2 id="subtitle">HPACK (HTTP/2 Header Compression)</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc7541.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc7541_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7541" target="_blank" rel="noopener noreferrer">RFC 7541: HPACK</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9113" target="_blank" rel="noopener noreferrer">RFC 9113: HTTP/2</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: explain static vs dynamic tables, indexing, and security considerations.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: What is the main purpose of HPACK in HTTP/2</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Encrypt headers end to end</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Reduce header size using compression with indexed representations</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Guarantee server authenticity without TLS</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> header compression, static table, dynamic table, indexing
+<strong>Correct (B):</strong> HPACK compresses header fields, often by referring to entries in a static or dynamic table
+<strong>Options:</strong>
+- A (incorrect): Encryption is provided by TLS, not HPACK
+- B (correct): This is the core design goal
+- C (incorrect): Authenticity is not guaranteed by HPACK
+<strong>Related:</strong> HTTP/3 uses QPACK instead of HPACK because transport properties differ
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q2: Which table is shared state that changes over time on a connection</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. The static table</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. The DNS cache</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. The dynamic table</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> dynamic table, connection state
+<strong>Correct (C):</strong> The dynamic table is updated by header blocks as requests and responses flow
+<strong>Options:</strong>
+- A (incorrect): The static table is fixed by the specification
+- B (incorrect): Unrelated to HPACK
+- C (correct): The dynamic table evolves per connection
+<strong>Related:</strong> Wrong dynamic table state leads to decompression failures and protocol errors
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3">
+        <header><h4>Q3: Which header values are commonly treated as sensitive and should avoid indexing (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Authorization</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Accept</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Cookie</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. Set-Cookie</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> sensitive header field, never indexed, side channel
+<strong>Correct (A,C,D):</strong> Credentials and session identifiers are high value targets and can amplify compression side channels
+<strong>Options:</strong>
+- A (correct): Often contains secrets
+- B (incorrect): Usually low sensitivity
+- C (correct): Often contains session identifiers
+- D (correct): Often sets session identifiers
+<strong>Related:</strong> Compression plus attacker influence can leak information, so treat secrets carefully
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: What limits the maximum size of the HPACK dynamic table for a peer</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. A negotiated setting for header table size</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. The HTTP status code</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. The URI scheme</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> SETTINGS, dynamic table size
+<strong>Correct (A):</strong> Peers advertise limits and the encoder must respect them
+<strong>Options:</strong>
+- A (correct): This prevents unbounded memory usage
+- B (incorrect): Unrelated
+- C (incorrect): Unrelated
+<strong>Related:</strong> Encoders can also send dynamic table size updates within header blocks
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^huffman$" data-difficulty="L2">
+        <header><h4>Q5: HPACK can encode strings with which common prefix free coding (one word)</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> Huffman coding
+<strong>Correct:</strong> Huffman
+<strong>Related:</strong> HPACK defines a specific Huffman code table for efficiency
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q6: A classic risk when compressing secrets together with attacker influenced data is</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Increased DNS TTL</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Loss of TLS authentication</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Side channel leakage via compression behavior</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> compression side channel, attacker chosen input
+<strong>Correct (C):</strong> Size and compression ratio can leak information about secrets in some threat models
+<strong>Options:</strong>
+- A (incorrect): Unrelated
+- B (incorrect): TLS authentication is separate
+- C (correct): This is a known category of risk
+<strong>Related:</strong> Treat cookies and credentials as sensitive and consider never indexed encodings
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 7541</strong> to “<em id="footer-goal">HPACK literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

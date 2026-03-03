@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 6797 Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 6797 drill. Practice HSTS behavior, directives, and deployment caveats." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc6797.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc6797.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc6797_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 6797",
+      SKILL_SUBTITLE: "HSTS",
+      GOAL_DESCRIPTION: "Understand Strict-Transport-Security and how to deploy it safely",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 6797 Quiz</h1>
+        <h2 id="subtitle">HTTP Strict Transport Security</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc6797.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc6797_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6797" target="_blank" rel="noopener noreferrer">RFC 6797: HTTP Strict Transport Security</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: know directives, the first visit limitation, and safe rollout strategy.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: Which header enables HSTS policy in browsers</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Transport-Security</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Strict-Transport-Security</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Secure-Only</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (B):</strong> The policy is communicated via Strict-Transport-Security over HTTPS
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+        <header><h4>Q2: Which are common HSTS directives (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. max-age</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. includeSubDomains</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. preload</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. allowInsecure</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A,B,C):</strong> max-age is required, includeSubDomains and preload are commonly used
+<strong>Options:</strong>
+- D (incorrect): Not a directive
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q3: A limitation of HSTS is that it cannot fully protect</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Requests after the policy is cached</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Requests to subdomains when includeSubDomains is set</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. The very first visit if the browser has no policy yet</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> trust on first use
+<strong>Correct (C):</strong> If the first request is HTTP, an active attacker can interfere before the policy is learned
+<strong>Related:</strong> Preload lists help mitigate the first visit problem for eligible domains
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: What is the unit of max-age in HSTS</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Seconds</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Minutes</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Days</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A):</strong> max-age is an integer number of seconds
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^includesubdomains$" data-difficulty="L2">
+        <header><h4>Q5: What directive applies the policy to all subdomains (one token)</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the directive" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct:</strong> includeSubDomains
+<strong>Related:</strong> Use with care, because it affects the entire subtree
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q6: A safe rollout strategy for HSTS often starts with</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Setting a very large max-age and includeSubDomains immediately</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Setting a small max-age, monitoring, then gradually increasing</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Sending the header over HTTP because it is faster</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> lock in risk
+<strong>Correct (B):</strong> A mistake can lock users out, so staged rollout is safer
+<strong>Options:</strong>
+- A (incorrect): High risk if any subdomain is not ready
+- B (correct): Start small, then increase
+- C (incorrect): The header must be delivered over a secure connection to be meaningful
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 6797</strong> to “<em id="footer-goal">HSTS deployment literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

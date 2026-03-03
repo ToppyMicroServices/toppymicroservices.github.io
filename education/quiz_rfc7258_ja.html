@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7258 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7258 drill. pervasive monitoringをattackとして扱う考え方と, protocol設計への含意を理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc7258_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc7258.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc7258_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 7258",
+      SKILL_SUBTITLE: "Pervasive Monitoring Is an Attack",
+      GOAL_DESCRIPTION: "大規模な受動監視をattackerとして前提に置き, protocol設計で露出を減らす発想を説明できるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 7258 Quiz</h1>
+        <h2 id="subtitle">Pervasive Monitoring Is an Attack</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc7258.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc7258_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7258" target="_blank" rel="noopener noreferrer">RFC 7258: Pervasive Monitoring Is an Attack</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: threat modelの表明を, 設計上の意思決定へ落とし込む.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: pervasive monitoringをattackとして扱うとは, 何を意味する</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 監視は全ての地域で違法だと主張する</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 大規模な受動監視者が存在すると仮定し, protocolで露出を減らす</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. debugを妨げるのでencryptionは禁止する</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (B):</strong> 法的主張ではなくthreat modelの立場
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+        <header><h4>Q2: pervasive monitoringへの露出を減らしやすい設計選択はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. data in transitをdefaultで暗号化する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. feasibleならcleartext metadataを最小化する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. exposed fieldでossificationしにくくする</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. 相関を簡単にするため新しいcleartext identifierを増やす</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A,B,C):</strong> 受動観測を役に立ちにくくし, 大規模化を難しくする
+<strong>Options:</strong>
+- D (incorrect): linkabilityを上げる
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q3: よくある誤解として, encryptionは</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 認証を自動化する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 全metadataを消す</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. あらゆるsecurity問題を解決する</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (C):</strong> encryptionは有効だが, endpoint compromiseやtraffic analysisなど多くの脅威は残る
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: protocolがcacheのためuser identifierをcleartextで送っている. RFC 7258の発想で妥当な次の一手はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. identifierを避ける, 暗号化する, linkabilityの低いtokenへ置き換えることを検討する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. analyticsのためidentifierを増やす</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 大規模に収集できないと仮定する</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A):</strong> 大規模な相関価値を下げる方向へ見直す
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q5: 文書の意図として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 全監視機器を禁止する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. IETFに対し, pervasive monitoringをsecurity considerationsと設計で考慮するよう促す</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 全systemへonion routing実装を義務付ける</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (B):</strong> PMをattacker classとして扱うことで, 仕様作成の前提を揃える
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^metadata$" data-difficulty="L2">
+        <header><h4>Q6: payloadが暗号化されても, 大規模相関を可能にし得る露出データを一般に何と呼ぶ (1語)</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct:</strong> metadata
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 7258</strong> to “<em id="footer-goal">PM threat modeling</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

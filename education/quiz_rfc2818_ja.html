@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 2818 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 2818 drill. https scheme, default port, TLSが提供する性質を整理する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc2818_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc2818.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc2818_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 2818",
+      SKILL_SUBTITLE: "HTTP over TLS (HTTPS)",
+      GOAL_DESCRIPTION: "https URLが意味する接続動作と, securityの期待値を説明できるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 2818 Quiz</h1>
+        <h2 id="subtitle">HTTP over TLS (HTTPS)</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc2818.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc2818_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc2818" target="_blank" rel="noopener noreferrer">RFC 2818: HTTP Over TLS</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: https URLから, portとTLS前提の期待値を導けるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: schemeがhttpsのURLが意味することとして最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. そのhostは永久にhttpを提供できない</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTPをTLS上で運び, server identityの検証を期待する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. payloadはBase64で符号化されるが暗号化はされない</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (B):</strong> HTTPSはHTTP over TLSで, 通常はcertificateに基づくserver認証を行う
+<strong>Options:</strong>
+- A (incorrect): 同一hostがhttpとhttpsを提供するのは普通
+- C (incorrect): Base64はsecurityではない
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q2: https URLのdefault portはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 443</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 80</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 22</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A):</strong> port指定がないhttpsは443へ対応付く
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+        <header><h4>Q3: TLSがHTTP messageに対して提供する性質として正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. passive observerに対するconfidentiality</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. wire上のtamperingに対するintegrity</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. certificateに基づくserver authentication</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. application level authorizationの保証</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A,B,C):</strong> TLSはchannelを守るが, 誰が何を許可されるかは決めない
+<strong>Options:</strong>
+- D (incorrect): authorizationはapp側の責務
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q4: user inputからabsolute URLを組み立てる. credentialやtokenが関わるなら有効な対策はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 統一のためhttpsをhttpへ置換する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. hostを削って常にlocalhostへ向ける</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. httpsを明示的に要求し, downgrade pathを避ける</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (C):</strong> security sensitiveなflowはhttps強制が基本
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q5: https schemeについて正しい説明はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. httpとは異なるdistinctなURI scheme</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. serverは必ずBasic認証を使う必要がある</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 他originへのredirectを禁止する</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A):</strong> scheme差はoriginやdefault portの差につながる
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^443$" data-difficulty="L1">
+        <header><h4>Q6: httpsのdefault port番号は何</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a number" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct:</strong> 443
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 2818</strong> to “<em id="footer-goal">HTTPS basics</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7239 Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7239 drill. Practice the Forwarded header for preserving client and proxy information." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc7239.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc7239.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc7239_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 7239",
+      SKILL_SUBTITLE: "Forwarded",
+      GOAL_DESCRIPTION: "Understand standardized proxy forwarding metadata and its risks",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 7239 Quiz</h1>
+        <h2 id="subtitle">Forwarded header</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc7239.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc7239_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7239" target="_blank" rel="noopener noreferrer">RFC 7239: Forwarded HTTP Extension</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: correctly parse and validate Forwarded values, and avoid trust pitfalls.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q1: In one sentence, the Forwarded header is used to</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Convey original client and proxy related information across intermediaries</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Replace TLS for HTTP encryption</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Guarantee that an IP address is authentic without any trust boundary</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> proxy, intermediary, metadata
+<strong>Correct (A):</strong> Forwarded carries information like client identity and protocol as observed by proxies
+<strong>Options:</strong>
+- A (correct): This is the intended function
+- B (incorrect): Encryption is not its role
+- C (incorrect): It is only as trustworthy as your proxy trust boundary
+<strong>Related:</strong> Always define which proxies are trusted to add or overwrite these headers
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
+        <header><h4>Q2: Which are common Forwarded parameters (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. for</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. by</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. proto</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. host</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> parameter, token, quoted string
+<strong>Correct (A,B,C,D):</strong> These are the commonly used standardized parameters
+<strong>Related:</strong> Values can be quoted, and may include obfuscated identifiers
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: How are multiple proxies represented in Forwarded</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Use one header per hop and forbid commas</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Use a comma separated list of forwarded elements</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Embed JSON in the header value</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> list syntax, forwarded element
+<strong>Correct (B):</strong> Each element corresponds to one proxy hop, and elements are separated by commas
+<strong>Options:</strong>
+- A (incorrect): Commas are part of the list syntax
+- B (correct): Standard HTTP list pattern
+- C (incorrect): Not the specified format
+<strong>Related:</strong> Parsing must handle quoting and whitespace
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q4: A key operational risk with Forwarded is</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. It forces HTTP/2 downgrade</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. It disables HSTS automatically</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Spoofing if you trust it from untrusted sources</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> trust boundary, spoofing
+<strong>Correct (C):</strong> Attackers can add or modify forwarding headers unless you strip and re add them at a trusted edge
+<strong>Options:</strong>
+- A (incorrect): Unrelated
+- B (incorrect): Unrelated
+- C (correct): This is the main practical pitfall
+<strong>Related:</strong> Similar trust concerns exist for X-Forwarded-For
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^for$" data-difficulty="L1">
+        <header><h4>Q5: Which parameter name typically identifies the client that initiated the request (one token)</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the parameter" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> for parameter
+<strong>Correct:</strong> for
+<strong>Related:</strong> Values can be IP literals or obfuscated identifiers depending on policy
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q6: Why might a deployment choose obfuscated values like unknown for the for parameter</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. To reduce user identification and exposure of internal addressing</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. To make compression more efficient</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. To bypass authentication</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Terms:</strong> privacy, data minimization
+<strong>Correct (A):</strong> The header can leak user identifiers or internal topology, so deployments may intentionally reduce precision
+<strong>Options:</strong>
+- A (correct): Privacy and topology hiding
+- B (incorrect): Not the reason
+- C (incorrect): Not a security feature
+<strong>Related:</strong> Logging and analytics pipelines also need an explicit policy for these values
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 7239</strong> to “<em id="footer-goal">Forwarded header literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

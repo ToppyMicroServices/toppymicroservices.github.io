@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7258 Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7258 drill. Practice the idea that pervasive monitoring is an attack and what it means for protocol design." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc7258.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc7258.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc7258_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 7258",
+      SKILL_SUBTITLE: "Pervasive Monitoring Is an Attack",
+      GOAL_DESCRIPTION: "Understand what it means to treat large scale passive monitoring as an attacker",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 7258 Quiz</h1>
+        <h2 id="subtitle">Pervasive Monitoring Is an Attack</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc7258.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc7258_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7258" target="_blank" rel="noopener noreferrer">RFC 7258: Pervasive Monitoring Is an Attack</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: translate a threat model statement into concrete protocol and deployment decisions.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: Treating pervasive monitoring as an attack primarily means</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Monitoring is illegal everywhere</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Protocol designers should assume large scale passive observers exist and reduce exposure</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Encryption is forbidden because it blocks debugging</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (B):</strong> It is a threat model position, not a legal claim
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+        <header><h4>Q2: Design choices that generally reduce exposure to pervasive monitoring include (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Encrypt by default for data in transit</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Minimize cleartext metadata when feasible</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Avoid protocol ossification on exposed fields when possible</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Add new cleartext identifiers for easier correlation</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A,B,C):</strong> The goal is to make passive observation less useful and harder to scale
+<strong>Options:</strong>
+- D (incorrect): That increases linkability
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q3: A common misunderstanding is that encryption</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Makes authentication automatic</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Eliminates all metadata</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Solves every security problem</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (C):</strong> Encryption helps, but many threats remain, including endpoint compromise and traffic analysis
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: Your protocol sends user identifiers in cleartext to allow caching. Under the RFC 7258 mindset, what is a reasonable next step</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Re evaluate whether the identifier can be avoided, encrypted, or replaced with a less linkable token</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Add more identifiers to improve analytics</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Assume observers cannot collect traffic at scale</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (A):</strong> Pervasive monitoring focuses on large scale correlation value of metadata
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q5: Which statement best captures the document's intent</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Ban all monitoring equipment</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Encourage the IETF community to consider pervasive monitoring in security considerations and protocol design</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Require every system to implement onion routing</label>
+          </fieldset>
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct (B):</strong> It frames PM as an attacker class to be considered
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^metadata$" data-difficulty="L2">
+        <header><h4>Q6: What kind of data can remain exposed and still enable large scale correlation even when payload is encrypted (one word)</h4><span class="type">Short Text</span></header>
+        <div class="body">
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <div class="explain">
+<strong>Explanation:</strong>
+<strong>Correct:</strong> metadata
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 7258</strong> to “<em id="footer-goal">PM threat modeling</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
