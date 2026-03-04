@@ -83,14 +83,21 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. ?</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. //</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> authority, delimiter, scheme. In the generic URI syntax, the authority component is preceded by "//" and is followed by path, query, or fragment delimiters.<br>
-            <strong>Correct (C):</strong> "//" signals that the following part is an authority, which can include userinfo, host, and port.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): # introduces the fragment component, not authority.<br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** authority, delimiter, scheme. In the generic URI syntax, the authority component is preceded by "//" and is followed by path, query, or fragment delimiters.
+
+            **Correct (C):** "//" signals that the following part is an authority, which can include userinfo, host, and port.
+
+            **Options:**
+
+            - A (incorrect): # introduces the fragment component, not authority.
+
             - B (incorrect): ? introduces the query component.
-            - C (correct): // is the authority introducer in the generic syntax.<br>
-            <strong>Related:</strong> Not all schemes use an authority. For example, some schemes use an opaque path without //.
+            - C (correct): // is the authority introducer in the generic syntax.
+
+            **Related:** Not all schemes use an authority. For example, some schemes use an opaque path without //.
           </div>
         </div>
       </article>
@@ -103,14 +110,22 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. /a</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> authority, userinfo, host, port. The authority component is the part after // up to the next /, ?, or # and it can include userinfo and port.<br>
-            <strong>Correct (A):</strong> In this example the authority includes userinfo (user:pass), host (example.com), and port (8443).<br>
-            <strong>Options:</strong><br>
-            - A (correct): This matches the RFC 3986 structure [userinfo@]host[:port].<br>
-            - B (incorrect): This is only the host subcomponent, not the entire authority here.<br>
-            - C (incorrect): /a is path, not authority.<br>
-            <strong>Related:</strong> Userinfo is discouraged in many contexts for security reasons, but it is part of the grammar.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** authority, userinfo, host, port. The authority component is the part after // up to the next /, ?, or # and it can include userinfo and port.
+
+            **Correct (A):** In this example the authority includes userinfo (user:pass), host (example.com), and port (8443).
+
+            **Options:**
+
+            - A (correct): This matches the RFC 3986 structure [userinfo@]host[:port].
+
+            - B (incorrect): This is only the host subcomponent, not the entire authority here.
+
+            - C (incorrect): /a is path, not authority.
+
+            **Related:** Userinfo is discouraged in many contexts for security reasons, but it is part of the grammar.
           </div>
         </div>
       </article>
@@ -124,15 +139,24 @@
             <label class="choice"><input type="checkbox" name="Q3" value="c"> C. &amp;</label>
             <label class="choice"><input type="checkbox" name="Q3" value="d"> D. ~</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> reserved, unreserved, gen-delims, sub-delims. Reserved characters have special meaning as delimiters in some URI components and may need percent-encoding when used as data.<br>
-            <strong>Correct (A,B,C):</strong> ?, # are gen-delims. &amp; is a sub-delims character. ~ is unreserved, so it is typically safe without encoding.<br>
-            <strong>Options:</strong><br>
-            - A (correct): ? separates path from query in generic syntax.<br>
-            - B (correct): # introduces the fragment component.<br>
-            - C (correct): &amp; is reserved as a sub-delims character and often has application-specific meaning inside the query.<br>
-            - D (incorrect): ~ is in the unreserved set in RFC 3986 and is not reserved.<br>
-            <strong>Related:</strong> Do not confuse reserved vs unsafe. Reserved means it might be a delimiter, so encoding depends on component and intent.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** reserved, unreserved, gen-delims, sub-delims. Reserved characters have special meaning as delimiters in some URI components and may need percent-encoding when used as data.
+
+            **Correct (A,B,C):** ?, # are gen-delims. &amp; is a sub-delims character. ~ is unreserved, so it is typically safe without encoding.
+
+            **Options:**
+
+            - A (correct): ? separates path from query in generic syntax.
+
+            - B (correct): # introduces the fragment component.
+
+            - C (correct): &amp; is reserved as a sub-delims character and often has application-specific meaning inside the query.
+
+            - D (incorrect): ~ is in the unreserved set in RFC 3986 and is not reserved.
+
+            **Related:** Do not confuse reserved vs unsafe. Reserved means it might be a delimiter, so encoding depends on component and intent.
           </div>
         </div>
       </article>
@@ -145,14 +169,22 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Never encode reserved characters because they are required delimiters</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Encode when the character is not allowed in that component or when you need a reserved character to be treated as data</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> percent-encoding, component, delimiter vs data. Percent-encoding is a mechanism to represent octets using %HH so that the URI remains syntactically valid and unambiguous.<br>
-            <strong>Correct (C):</strong> Encoding is context-dependent. If a reserved character would be interpreted as a delimiter but you need it as data, encode it. If a character is not permitted in a component, encode it or use an appropriate encoding scheme for that context.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): RFC 3986 defines a generic syntax and percent-encoding of octets, but handling of non-ASCII depends on scheme and IRI processing. Blanket rules can break round-tripping.<br>
-            - B (incorrect): Reserved characters can appear as data, but then they should be percent-encoded to avoid delimiter interpretation.<br>
-            - C (correct): This captures the core rule and the reason behind it.<br>
-            <strong>Related:</strong> Many bugs happen when code decodes too early and loses the ability to distinguish delimiter vs data.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** percent-encoding, component, delimiter vs data. Percent-encoding is a mechanism to represent octets using %HH so that the URI remains syntactically valid and unambiguous.
+
+            **Correct (C):** Encoding is context-dependent. If a reserved character would be interpreted as a delimiter but you need it as data, encode it. If a character is not permitted in a component, encode it or use an appropriate encoding scheme for that context.
+
+            **Options:**
+
+            - A (incorrect): RFC 3986 defines a generic syntax and percent-encoding of octets, but handling of non-ASCII depends on scheme and IRI processing. Blanket rules can break round-tripping.
+
+            - B (incorrect): Reserved characters can appear as data, but then they should be percent-encoded to avoid delimiter interpretation.
+
+            - C (correct): This captures the core rule and the reason behind it.
+
+            **Related:** Many bugs happen when code decodes too early and loses the ability to distinguish delimiter vs data.
           </div>
         </div>
       </article>
@@ -165,14 +197,21 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Lowercase the entire path</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Remove the fragment for all uses including client-side navigation</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> normalization, scheme, host, path, fragment. Normalization is changing the textual form while attempting to preserve the same reference.<br>
-            <strong>Correct (A):</strong> Scheme and host are case-insensitive in generic URI processing, so lowercasing them is a common, safe normalization step.<br>
-            <strong>Options:</strong><br>
-            - A (correct): Does not change the reference for typical URI processing, because scheme and host are case-insensitive.<br>
-            - B (incorrect): Path case-sensitivity is scheme and server dependent. Lowercasing can change what resource is referenced.<br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** normalization, scheme, host, path, fragment. Normalization is changing the textual form while attempting to preserve the same reference.
+
+            **Correct (A):** Scheme and host are case-insensitive in generic URI processing, so lowercasing them is a common, safe normalization step.
+
+            **Options:**
+
+            - A (correct): Does not change the reference for typical URI processing, because scheme and host are case-insensitive.
+
+            - B (incorrect): Path case-sensitivity is scheme and server dependent. Lowercasing can change what resource is referenced.
+
             - C (incorrect): Fragments are not sent to the server, but they can be meaningful to clients. Removing them may change client behavior and is not universally safe.
-            <strong>Related:</strong> Be careful: even seemingly harmless normalization can break signed URLs, caches, and routing.
+            **Related:** Be careful: even seemingly harmless normalization can break signed URLs, caches, and routing.
           </div>
         </div>
       </article>
@@ -181,11 +220,16 @@
         <header><h4>Q6: In a URI, the part after # is called the ___ component</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> fragment component. In RFC 3986 the fragment is the part after # and it identifies a secondary resource or client-side reference.<br>
-            <strong>Correct:</strong> fragment. That is the RFC name for that component.<br>
-            <strong>Why others are wrong:</strong> Query is introduced by ?, path is the hierarchical component after the authority, and scheme is before :. Confusing these leads to incorrect parsing and incorrect URL handling.<br>
-            <strong>Related:</strong> Fragments are typically processed by the user agent and are not transmitted in an HTTP request.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** fragment component. In RFC 3986 the fragment is the part after # and it identifies a secondary resource or client-side reference.
+
+            **Correct:** fragment. That is the RFC name for that component.
+
+            **Why others are wrong:** Query is introduced by ?, path is the hierarchical component after the authority, and scheme is before :. Confusing these leads to incorrect parsing and incorrect URL handling.
+
+            **Related:** Fragments are typically processed by the user agent and are not transmitted in an HTTP request.
           </div>
         </div>
       </article>

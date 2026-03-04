@@ -83,14 +83,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. Plaintext application data to enable caching</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. Forward secrecy via ephemeral key exchange</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> forward secrecy, ephemeral key exchange. Forward secrecy means compromising long-term keys later does not decrypt past sessions.
-            <strong>Correct (C):</strong> TLS 1.3 is built around ephemeral (EC)DHE and PSK modes that provide strong security properties.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** forward secrecy, ephemeral key exchange. Forward secrecy means compromising long-term keys later does not decrypt past sessions.
+            **Correct (C):** TLS 1.3 is built around ephemeral (EC)DHE and PSK modes that provide strong security properties.
+            **Options:**
+
             - A (incorrect): Static RSA key exchange is removed in TLS 1.3.
             - B (incorrect): TLS is designed to protect confidentiality and integrity. Plaintext application data is contrary to its purpose.
             - C (correct): Forward secrecy is a core property.
-            <strong>Related:</strong> Forward secrecy is especially important when traffic is recorded for later decryption attempts.
+            **Related:** Forward secrecy is especially important when traffic is recorded for later decryption attempts.
           </div>
         </div>
       </article>
@@ -103,14 +106,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Certificate expiration</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Stronger forward secrecy than 1-RTT</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> 0-RTT, early data, replay. 0-RTT allows sending application data before handshake completion, which changes threat assumptions.
-            <strong>Correct (A):</strong> Early data can be replayed in some situations, so servers and applications must treat it carefully.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** 0-RTT, early data, replay. 0-RTT allows sending application data before handshake completion, which changes threat assumptions.
+            **Correct (A):** Early data can be replayed in some situations, so servers and applications must treat it carefully.
+            **Options:**
+
             - A (correct): Replay is the main risk.
             - B (incorrect): Certificate expiration is unrelated to 0-RTT.
             - C (incorrect): This is backwards. 0-RTT has weaker properties in the replay dimension.
-            <strong>Related:</strong> A common policy is to accept 0-RTT only for idempotent operations.
+            **Related:** A common policy is to accept 0-RTT only for idempotent operations.
           </div>
         </div>
       </article>
@@ -123,14 +129,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. An HKDF-based key schedule</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Reusing a single session key for the entire connection lifetime</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> key schedule, HKDF. A key schedule defines how traffic keys and secrets evolve as the handshake progresses.
-            <strong>Correct (B):</strong> TLS 1.3 uses an HKDF-based key schedule to derive multiple secrets for different stages and directions.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** key schedule, HKDF. A key schedule defines how traffic keys and secrets evolve as the handshake progresses.
+            **Correct (B):** TLS 1.3 uses an HKDF-based key schedule to derive multiple secrets for different stages and directions.
+            **Options:**
+
             - A (incorrect): Base64 is an encoding, not a key derivation method.
             - B (correct): HKDF is the standard KDF used for TLS 1.3 secrets.
             - C (incorrect): TLS rotates secrets as the handshake advances and uses separate keys per direction.
-            <strong>Related:</strong> Separating handshake and application traffic secrets helps limit damage if something leaks.
+            **Related:** Separating handshake and application traffic secrets helps limit damage if something leaks.
           </div>
         </div>
       </article>
@@ -143,14 +152,17 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. They are compressed but not encrypted</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. They are encrypted using handshake traffic keys</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> handshake traffic keys, encryption. TLS 1.3 encrypts much more of the handshake than earlier versions.
-            <strong>Correct (C):</strong> Once the endpoints have negotiated secrets, subsequent handshake messages are protected.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** handshake traffic keys, encryption. TLS 1.3 encrypts much more of the handshake than earlier versions.
+            **Correct (C):** Once the endpoints have negotiated secrets, subsequent handshake messages are protected.
+            **Options:**
+
             - A (incorrect): TLS 1.3 intentionally reduces plaintext handshake exposure.
             - B (incorrect): Compression is not the primary mechanism here.
             - C (correct): Handshake messages are encrypted.
-            <strong>Related:</strong> Encrypted handshake improves privacy and reduces ossification pressure.
+            **Related:** Encrypted handshake improves privacy and reduces ossification pressure.
           </div>
         </div>
       </article>
@@ -163,14 +175,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Automatic access control for the application</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Guaranteed prevention of all replay in every mode</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> confidentiality, integrity, replay. TLS is a security protocol that protects traffic against eavesdropping and modification.
-            <strong>Correct (A):</strong> TLS provides encryption and message authentication to protect data in transit.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** confidentiality, integrity, replay. TLS is a security protocol that protects traffic against eavesdropping and modification.
+            **Correct (A):** TLS provides encryption and message authentication to protect data in transit.
+            **Options:**
+
             - A (correct): These are baseline protections.
             - B (incorrect): TLS does not decide application authorization logic.
             - C (incorrect): Some modes like early data have replay considerations that applications must address.
-            <strong>Related:</strong> Authentication of the server is typically provided by certificates, but trust decisions remain an application and policy concern.
+            **Related:** Authentication of the server is typically provided by certificates, but trust decisions remain an application and policy concern.
           </div>
         </div>
       </article>
@@ -179,11 +194,13 @@
         <header><h4>Q6: Name a common ephemeral key exchange used for forward secrecy in TLS 1.3</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type DHE or ECDHE" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> DHE, ECDHE, forward secrecy. These are Diffie-Hellman based ephemeral key exchanges.
-            <strong>Correct:</strong> DHE or ECDHE. Both represent ephemeral DH variants used for forward secrecy.
-            <strong>Why others are wrong:</strong> Static RSA key exchange is removed in TLS 1.3. PSK is different: it can resume sessions, but forward secrecy depends on additional mechanisms.
-            <strong>Related:</strong> The key exchange choice impacts performance and cryptographic agility.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** DHE, ECDHE, forward secrecy. These are Diffie-Hellman based ephemeral key exchanges.
+            **Correct:** DHE or ECDHE. Both represent ephemeral DH variants used for forward secrecy.
+            **Why others are wrong:** Static RSA key exchange is removed in TLS 1.3. PSK is different: it can resume sessions, but forward secrecy depends on additional mechanisms.
+            **Related:** The key exchange choice impacts performance and cryptographic agility.
           </div>
         </div>
       </article>

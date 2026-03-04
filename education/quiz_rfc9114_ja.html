@@ -84,14 +84,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. TCP</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. SCTP</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> HTTP/3, QUIC. HTTP/3はHTTP意味論をQUIC streamへmappingしたもの.
-            <strong>Correct (A):</strong> HTTP/3はQUIC上で動く.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** HTTP/3, QUIC. HTTP/3はHTTP意味論をQUIC streamへmappingしたもの.
+            **Correct (A):** HTTP/3はQUIC上で動く.
+            **Options:**
+
             - A (correct): QUICはstreamと暗号統合, migrationを提供.
             - B (incorrect): TCPはHTTP/1.1や一般的なHTTP/2で使われる.
             - C (incorrect): SCTPはHTTP/3の基盤ではない.
-            <strong>Related:</strong> QUICは多くの環境でUDP上に実装される.
+            **Related:** QUICは多くの環境でUDP上に実装される.
           </div>
         </div>
       </article>
@@ -104,14 +107,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS暗号化の必要性</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. packet loss時のtransport level head-of-line blocking</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> head-of-line blocking, TCP, QUIC stream. TCPの損失回復は1本のbyte streamに依存し, 1つの損失が全streamの進行に影響し得る.
-            <strong>Correct (C):</strong> HTTP/3はQUICにより, stream間の足止めを減らすことを狙う.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** head-of-line blocking, TCP, QUIC stream. TCPの損失回復は1本のbyte streamに依存し, 1つの損失が全streamの進行に影響し得る.
+            **Correct (C):** HTTP/3はQUICにより, stream間の足止めを減らすことを狙う.
+            **Options:**
+
             - A (incorrect): DNSはHTTP versionとは別.
             - B (incorrect): HTTP/3もTLS 1.3相当の保護を使う.
             - C (correct): これが移行の主要動機の1つ.
-            <strong>Related:</strong> アプリ側のスケジューリング次第で待ちが出ることはあるが, transportの性質は改善する.
+            **Related:** アプリ側のスケジューリング次第で待ちが出ることはあるが, transportの性質は改善する.
           </div>
         </div>
       </article>
@@ -124,14 +130,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. QUIC向けにheader fieldを圧縮する</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. congestion controlを提供する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> header compression, QPACK, QUIC. headerは多いので圧縮が有効だが, decode待ちがhead-of-lineを作ると逆効果になる.
-            <strong>Correct (B):</strong> HTTP/3はQPACKを使い, QUIC stream特性に合わせてheader圧縮を行う.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** header compression, QPACK, QUIC. headerは多いので圧縮が有効だが, decode待ちがhead-of-lineを作ると逆効果になる.
+            **Correct (B):** HTTP/3はQPACKを使い, QUIC stream特性に合わせてheader圧縮を行う.
+            **Options:**
+
             - A (incorrect): 認証は別の層の話.
             - B (correct): header圧縮が目的.
             - C (incorrect): congestion controlは主にQUICの機能.
-            <strong>Related:</strong> HTTP/2はHPACK. HTTP/3はQPACKで, ordered delivery依存を減らす.
+            **Related:** HTTP/2はHPACK. HTTP/3はQPACKで, ordered delivery依存を減らす.
           </div>
         </div>
       </article>
@@ -144,14 +153,17 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. TLS renegotiation</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. HTTP pipelining</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> connection migration, path, connection ID. QUICは5-tupleに縛られない識別でmobilityを実現する.
-            <strong>Correct (A):</strong> これがconnection migration.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** connection migration, path, connection ID. QUICは5-tupleに縛られない識別でmobilityを実現する.
+            **Correct (A):** これがconnection migration.
+            **Options:**
+
             - A (correct): path変更後も継続.
             - B (incorrect): TLS 1.3にはrenegotiationがない.
             - C (incorrect): pipeliningはHTTP/1.1の概念.
-            <strong>Related:</strong> mobile端末のネットワーク切替でも, requestをやり直さず続行しやすい.
+            **Related:** mobile端末のネットワーク切替でも, requestをやり直さず続行しやすい.
           </div>
         </div>
       </article>
@@ -165,15 +177,18 @@
             <label class="choice"><input type="checkbox" name="Q5" value="c"> C. 繰り返しに耐える操作に限定すべき</label>
             <label class="choice"><input type="checkbox" name="Q5" value="d"> D. GETの意味を変える必要がある</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> 0-RTT, early data, replay. 早期送信はlatencyを減らすが, replay耐性はアプリ側の前提になる.
-            <strong>Correct (A,C):</strong> replayが主なトレードオフ. replayされても害が少ない操作に限定する.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** 0-RTT, early data, replay. 早期送信はlatencyを減らすが, replay耐性はアプリ側の前提になる.
+            **Correct (A,C):** replayが主なトレードオフ. replayされても害が少ない操作に限定する.
+            **Options:**
+
             - A (correct): replayの可能性がある.
             - B (incorrect): 例えば決済などは危険.
             - C (correct): idempotentやreplay-safeな操作向け.
             - D (incorrect): 意味論は変わらない. 変わるのはtransportのリスク特性.
-            <strong>Related:</strong> HTTP/3はQUICでTLS 1.3相当のearly dataを扱うため, 同様の注意が必要.
+            **Related:** HTTP/3はQUICでTLS 1.3相当のearly dataを扱うため, 同様の注意が必要.
           </div>
         </div>
       </article>
@@ -182,11 +197,13 @@
         <header><h4>Q6: HTTP/3が使うtransport protocol名は何</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> QUIC. HTTP/3はTCPではなくQUICのstreamを使う.
-            <strong>Correct:</strong> QUIC.
-            <strong>Why others are wrong:</strong> TCPはHTTP/2の一般的基盤だが, HTTP/3はQUICに特化する.
-            <strong>Related:</strong> QUICはsecurityとtransport特性を統合し, 損失や移動時の挙動が変わる.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** QUIC. HTTP/3はTCPではなくQUICのstreamを使う.
+            **Correct:** QUIC.
+            **Why others are wrong:** TCPはHTTP/2の一般的基盤だが, HTTP/3はQUICに特化する.
+            **Related:** QUICはsecurityとtransport特性を統合し, 損失や移動時の挙動が変わる.
           </div>
         </div>
       </article>

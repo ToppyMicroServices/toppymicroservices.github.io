@@ -84,14 +84,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. UDP上に構築されたsecureでmultiplexedなtransport protocol</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. DNS name解決の置き換え</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> transport, multiplexed, secure, UDP. QUICはstreamと信頼性, 暗号統合を提供する.
-            <strong>Correct (B):</strong> UDPを基盤にしつつ, 複数streamの多重化と暗号化を組み込んだtransport.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** transport, multiplexed, secure, UDP. QUICはstreamと信頼性, 暗号統合を提供する.
+            **Correct (B):** UDPを基盤にしつつ, 複数streamの多重化と暗号化を組み込んだtransport.
+            **Options:**
+
             - A (incorrect): HTTP/1.1とは別.
             - B (correct): RFC 9000の性格.
             - C (incorrect): DNSとは別.
-            <strong>Related:</strong> HTTP/3はQUIC上にHTTPを載せる.
+            **Related:** HTTP/3はQUIC上にHTTPを載せる.
           </div>
         </div>
       </article>
@@ -104,14 +107,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS certificateを置き換える</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. requestの完全URIを符号化する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> connection ID, migration. connection IDはIPとportの組から独立にconnectionを識別する手段.
-            <strong>Correct (A):</strong> path変更でも同一connectionとして継続でき, LBでのルーティングにも使われる.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** connection ID, migration. connection IDはIPとportの組から独立にconnectionを識別する手段.
+            **Correct (A):** path変更でも同一connectionとして継続でき, LBでのルーティングにも使われる.
+            **Options:**
+
             - A (correct): mobilityやハンドオフに効く.
             - B (incorrect): 認証はTLSの役割.
             - C (incorrect): URIはアプリ層の概念.
-            <strong>Related:</strong> 一部環境ではconnection IDでpacketをLBへルーティングする.
+            **Related:** 一部環境ではconnection IDでpacketをLBへルーティングする.
           </div>
         </div>
       </article>
@@ -124,14 +130,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. DNS cache</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. 1つのconnection内で独立streamを多重化する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> stream, multiplexing. QUICは複数streamを同時に運び, 進行を独立にできる.
-            <strong>Correct (C):</strong> stream多重化がHTTP/3の基盤.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** stream, multiplexing. QUICは複数streamを同時に運び, 進行を独立にできる.
+            **Correct (C):** stream多重化がHTTP/3の基盤.
+            **Options:**
+
             - A (incorrect): HTTPの意味論.
             - B (incorrect): DNSの話.
             - C (correct): transportの機能.
-            <strong>Related:</strong> QUICはTCPのような単一byte streamではない.
+            **Related:** QUICはTCPのような単一byte streamではない.
           </div>
         </div>
       </article>
@@ -145,15 +154,18 @@
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. receiverが過負荷にならないためのbackpressureになる</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. アプリの認証を置き換える</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> flow control, backpressure. flow controlはreceiver capacityを守るためのcredit制御.
-            <strong>Correct (A,B,C):</strong> stream単位とconnection単位があり, receiver資源を保護する.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** flow control, backpressure. flow controlはreceiver capacityを守るためのcredit制御.
+            **Correct (A,B,C):** stream単位とconnection単位があり, receiver資源を保護する.
+            **Options:**
+
             - A (correct): 1streamの暴走を防ぐ.
             - B (correct): 全体のbuffer上限を守る.
             - C (correct): 目的はresource usage制御.
             - D (incorrect): 認証とは別.
-            <strong>Related:</strong> flow controlとcongestion controlは別. congestion controlはnetwork capacity側.
+            **Related:** flow controlとcongestion controlは別. congestion controlはnetwork capacity側.
           </div>
         </div>
       </article>
@@ -166,14 +178,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. connection全体で1本のbyte streamのみ</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. 信頼性なしのdatagramのみ</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> bidirectional stream, unidirectional stream. プロトコル設計に応じて方向性を選べる.
-            <strong>Correct (A):</strong> 両方が存在.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** bidirectional stream, unidirectional stream. プロトコル設計に応じて方向性を選べる.
+            **Correct (A):** 両方が存在.
+            **Options:**
+
             - A (correct): 用途に応じて使い分け.
             - B (incorrect): それはTCPの性質.
             - C (incorrect): QUIC streamは信頼性を持つ. datagramは拡張.
-            <strong>Related:</strong> HTTP/3はunidirectionalなcontrol streamとbidirectionalなrequest streamを併用する.
+            **Related:** HTTP/3はunidirectionalなcontrol streamとbidirectionalなrequest streamを併用する.
           </div>
         </div>
       </article>
@@ -182,11 +197,13 @@
         <header><h4>Q6: QUICが基盤として使うIP transport protocolは何</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> UDP. QUICはUDP packetを基盤にし, user-space進化とTCP ossification回避を狙う.
-            <strong>Correct:</strong> UDP.
-            <strong>Why others are wrong:</strong> QUICはTCPではない. SCTPも基盤ではない.
-            <strong>Related:</strong> UDP上でも, QUICは信頼性やcongestion controlをプロトコルとして提供する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** UDP. QUICはUDP packetを基盤にし, user-space進化とTCP ossification回避を狙う.
+            **Correct:** UDP.
+            **Why others are wrong:** QUICはTCPではない. SCTPも基盤ではない.
+            **Related:** UDP上でも, QUICは信頼性やcongestion controlをプロトコルとして提供する.
           </div>
         </div>
       </article>

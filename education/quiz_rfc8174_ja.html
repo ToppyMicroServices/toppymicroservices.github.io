@@ -84,14 +84,22 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. mustが要件か単なる英語かで読者が割れる</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. 文として無効なので必ず削除が必要</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.<br>
-            <strong>Correct (B):</strong> BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): 小文字mustを必ず規範語として読む根拠は, 文書が明示しない限り成立しない.<br>
-            - B (correct): これが最も起きやすい問題. 同じ仕様を読んでも結論が分岐する.<br>
-            - C (incorrect): 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.<br>
-            <strong>Related:</strong> セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.
+
+            **Correct (B):** BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい.
+
+            **Options:**
+
+            - A (incorrect): 小文字mustを必ず規範語として読む根拠は, 文書が明示しない限り成立しない.
+
+            - B (correct): これが最も起きやすい問題. 同じ仕様を読んでも結論が分岐する.
+
+            - C (incorrect): 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.
+
+            **Related:** セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する.
           </div>
         </div>
       </article>
@@ -104,14 +112,22 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. 小文字だけで統一すれば親切なので問題ない</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. 規範語を使わず, 例だけで伝える</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> MUST, 規範語, BCP 14ボイラープレート, 大文字小文字. MUSTとmustを同じ意味で扱うなら, そのルールを文書で宣言する必要がある.<br>
-            <strong>Correct (A):</strong> BCP 14は, ボイラープレートと明示的な解釈で曖昧性を無くす方針. 大文字か小文字かだけで信号にしないのが安全.<br>
-            <strong>Options:</strong><br>
-            - A (correct): 読者と実装者に, mustをMUSTとして読む根拠を与える. 仕様レビューもやりやすい.<br>
-            - B (incorrect): 小文字だけだと, 規範語なのか普通の英語なのかが読者依存になりやすい.<br>
-            - C (incorrect): 例は補助になるが, 適合要件が消えると相互運用性が壊れやすい.<br>
-            <strong>Related:</strong> 要件は "テストできる条件" まで落とすのが実装者に優しい.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** MUST, 規範語, BCP 14ボイラープレート, 大文字小文字. MUSTとmustを同じ意味で扱うなら, そのルールを文書で宣言する必要がある.
+
+            **Correct (A):** BCP 14は, ボイラープレートと明示的な解釈で曖昧性を無くす方針. 大文字か小文字かだけで信号にしないのが安全.
+
+            **Options:**
+
+            - A (correct): 読者と実装者に, mustをMUSTとして読む根拠を与える. 仕様レビューもやりやすい.
+
+            - B (incorrect): 小文字だけだと, 規範語なのか普通の英語なのかが読者依存になりやすい.
+
+            - C (incorrect): 例は補助になるが, 適合要件が消えると相互運用性が壊れやすい.
+
+            **Related:** 要件は "テストできる条件" まで落とすのが実装者に優しい.
           </div>
         </div>
       </article>
@@ -125,15 +141,24 @@
             <label class="choice"><input type="checkbox" name="Q3" value="c"> C. MUSTをテストできる条件として書く</label>
             <label class="choice"><input type="checkbox" name="Q3" value="d"> D. SHOULDには理由と例外条件を書く</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> 曖昧性, BCP 14キーワード, MUST, SHOULD. RFC 8174の狙いは, キーワードの読み方を明示して, 要件を一意に読むこと.<br>
-            <strong>Correct (A,C,D):</strong> どれも読みのブレを減らし, 適合判定を可能にする.<br>
-            <strong>Options:</strong><br>
-            - A (correct): MUST/SHOULD/MAYの意味の前提を固定できる.<br>
-            - B (incorrect): 何が要件で何が説明かが不明になり, 実装差が増える.<br>
-            - C (correct): MUSTがテスト可能なら, 実装とレビューが収束しやすい.<br>
-            - D (correct): SHOULDは例外を許す. 例外が曖昧だと, SHOULDが実質MAYになる.<br>
-            <strong>Related:</strong> レビューでは, "このMUSTはどう試験する" と "このSHOULDの例外は何" を確認する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** 曖昧性, BCP 14キーワード, MUST, SHOULD. RFC 8174の狙いは, キーワードの読み方を明示して, 要件を一意に読むこと.
+
+            **Correct (A,C,D):** どれも読みのブレを減らし, 適合判定を可能にする.
+
+            **Options:**
+
+            - A (correct): MUST/SHOULD/MAYの意味の前提を固定できる.
+
+            - B (incorrect): 何が要件で何が説明かが不明になり, 実装差が増える.
+
+            - C (correct): MUSTがテスト可能なら, 実装とレビューが収束しやすい.
+
+            - D (correct): SHOULDは例外を許す. 例外が曖昧だと, SHOULDが実質MAYになる.
+
+            **Related:** レビューでは, "このMUSTはどう試験する" と "このSHOULDの例外は何" を確認する.
           </div>
         </div>
       </article>
@@ -146,14 +171,22 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. 文として無効なので削除が必要</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. mustが要件か説明かで読者が割れる</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> must (小文字), 規範か記述か, BCP 14宣言. RFC 8174が問題にするのは, キーワードの扱いが読者依存になる点.<br>
-            <strong>Correct (C):</strong> mustをMUSTとして読む人と, 強い表現の英語として読む人が混ざると, 実装結果が分裂する.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): 自動ではない. 文書が解釈ルールを宣言して初めて, mustをMUSTとして扱える.<br>
-            - B (incorrect): 文は残せる. ただし規範なのかを明確化すべき.<br>
-            - C (correct): 曖昧性が発生しやすく, 相互運用性や安全性に直撃する.<br>
-            <strong>Related:</strong> 証明書検証のような安全要件は, MUSTで明確にし, 例外を許すなら条件付きで書く.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** must (小文字), 規範か記述か, BCP 14宣言. RFC 8174が問題にするのは, キーワードの扱いが読者依存になる点.
+
+            **Correct (C):** mustをMUSTとして読む人と, 強い表現の英語として読む人が混ざると, 実装結果が分裂する.
+
+            **Options:**
+
+            - A (incorrect): 自動ではない. 文書が解釈ルールを宣言して初めて, mustをMUSTとして扱える.
+
+            - B (incorrect): 文は残せる. ただし規範なのかを明確化すべき.
+
+            - C (correct): 曖昧性が発生しやすく, 相互運用性や安全性に直撃する.
+
+            **Related:** 証明書検証のような安全要件は, MUSTで明確にし, 例外を許すなら条件付きで書く.
           </div>
         </div>
       </article>
@@ -166,14 +199,22 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. サーバは不正な入力を拒否しなければならない</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. サーバはたぶん不正な入力を拒否するかもしれない</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> BCP 14, 規範セクション, MUST. RFC 8174とRFC 2119の文脈では, MUSTのようなキーワードで適合要件を表現する.<br>
-            <strong>Correct (B):</strong> "拒否" は観測可能でテスト可能. "しなければならない" はMUST相当の必須要件として読める.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): 主観的でテスト不能. 要件にならない.<br>
-            - B (correct): 必須要件として読みやすく, 適合判定に落とせる.<br>
-            - C (incorrect): ぼかし表現が多く, 実装者が何を守れば良いか分からない.<br>
-            <strong>Related:</strong> 柔軟性が欲しいなら, SHOULDにして例外条件を明示する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** BCP 14, 規範セクション, MUST. RFC 8174とRFC 2119の文脈では, MUSTのようなキーワードで適合要件を表現する.
+
+            **Correct (B):** "拒否" は観測可能でテスト可能. "しなければならない" はMUST相当の必須要件として読める.
+
+            **Options:**
+
+            - A (incorrect): 主観的でテスト不能. 要件にならない.
+
+            - B (correct): 必須要件として読みやすく, 適合判定に落とせる.
+
+            - C (incorrect): ぼかし表現が多く, 実装者が何を守れば良いか分からない.
+
+            **Related:** 柔軟性が欲しいなら, SHOULDにして例外条件を明示する.
           </div>
         </div>
       </article>
@@ -182,11 +223,16 @@
         <header><h4>Q6: 規範語を1つ選ぶ. 相互運用性のために必須なら, 実装は___実装する必要がある</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one keyword (e.g., MUST)" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> 相互運用性, 規範語, MUST. BCP 14でMUSTは, 例外を許さない必須要件を意味する.<br>
-            <strong>Correct:</strong> MUSTが適切. "必須" を宣言しているなら, SHOULDやMAYでは弱すぎる.<br>
-            <strong>Why others are wrong:</strong> SHOULDは正当な例外を許す. MAYは任意. "相互運用性のために必須" ならMUSTが筋.<br>
-            <strong>Related:</strong> MUSTを書くときは, 何が "相互運用性" を壊すのか, 具体例で示すと実装が揃う.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** 相互運用性, 規範語, MUST. BCP 14でMUSTは, 例外を許さない必須要件を意味する.
+
+            **Correct:** MUSTが適切. "必須" を宣言しているなら, SHOULDやMAYでは弱すぎる.
+
+            **Why others are wrong:** SHOULDは正当な例外を許す. MAYは任意. "相互運用性のために必須" ならMUSTが筋.
+
+            **Related:** MUSTを書くときは, 何が "相互運用性" を壊すのか, 具体例で示すと実装が揃う.
           </div>
         </div>
       </article>

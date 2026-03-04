@@ -83,14 +83,22 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. ?</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. //</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> authority, delimiter, scheme. generic syntaxでは, authorityは"//"に続いて現れ, その後にpath, query, fragmentへ進む.<br>
-            <strong>Correct (C):</strong> "//"がauthorityの開始を示す. authorityは userinfo, host, port を含み得る.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): #はfragmentの開始.<br>
-            - B (incorrect): ?はqueryの開始.<br>
-            - C (correct): //がauthority introducer.<br>
-            <strong>Related:</strong> 全てのschemeがauthorityを使うわけではない. 例えばschemeによっては//を使わないopaqueな形式もある.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** authority, delimiter, scheme. generic syntaxでは, authorityは"//"に続いて現れ, その後にpath, query, fragmentへ進む.
+
+            **Correct (C):** "//"がauthorityの開始を示す. authorityは userinfo, host, port を含み得る.
+
+            **Options:**
+
+            - A (incorrect): #はfragmentの開始.
+
+            - B (incorrect): ?はqueryの開始.
+
+            - C (correct): //がauthority introducer.
+
+            **Related:** 全てのschemeがauthorityを使うわけではない. 例えばschemeによっては//を使わないopaqueな形式もある.
           </div>
         </div>
       </article>
@@ -103,14 +111,22 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. /a</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> authority, userinfo, host, port. authorityは"//"の直後から次の/, ?, #までで, userinfoやportを含み得る.<br>
-            <strong>Correct (A):</strong> この例では userinfoが user:pass, hostが example.com, portが 8443 なので, authority全体は user:pass@example.com:8443 になる.<br>
-            <strong>Options:</strong><br>
-            - A (correct): [userinfo@]host[:port]に一致.<br>
-            - B (incorrect): host部分だけで, authority全体ではない.<br>
-            - C (incorrect): /aはpath.<br>
-            <strong>Related:</strong> userinfoはセキュリティ上の理由で推奨されないことが多いが, 文法としては存在する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** authority, userinfo, host, port. authorityは"//"の直後から次の/, ?, #までで, userinfoやportを含み得る.
+
+            **Correct (A):** この例では userinfoが user:pass, hostが example.com, portが 8443 なので, authority全体は user:pass@example.com:8443 になる.
+
+            **Options:**
+
+            - A (correct): [userinfo@]host[:port]に一致.
+
+            - B (incorrect): host部分だけで, authority全体ではない.
+
+            - C (incorrect): /aはpath.
+
+            **Related:** userinfoはセキュリティ上の理由で推奨されないことが多いが, 文法としては存在する.
           </div>
         </div>
       </article>
@@ -124,15 +140,24 @@
             <label class="choice"><input type="checkbox" name="Q3" value="c"> C. &amp;</label>
             <label class="choice"><input type="checkbox" name="Q3" value="d"> D. ~</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> reserved, unreserved, gen-delims, sub-delims. reservedは, コンポーネントによって区切りとして意味を持ち得るため, データとして使うならpercent-encodingが必要になることがある.<br>
-            <strong>Correct (A,B,C):</strong> ?, # はgen-delims, &amp; はsub-delims. ~ はunreservedで, 通常はエンコード不要.<br>
-            <strong>Options:</strong><br>
-            - A (correct): ?はpathとqueryの区切りとして使われる.<br>
-            - B (correct): #はfragmentの開始.<br>
-            - C (correct): &amp; はsub-delimsで, query内ではアプリ側の区切りとして使われがち.<br>
-            - D (incorrect): ~はunreservedなのでreservedではない.<br>
-            <strong>Related:</strong> reservedは"危険"ではなく"区切りとして解釈され得る"という意味. どこでエンコードすべきかはコンテキスト依存.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** reserved, unreserved, gen-delims, sub-delims. reservedは, コンポーネントによって区切りとして意味を持ち得るため, データとして使うならpercent-encodingが必要になることがある.
+
+            **Correct (A,B,C):** ?, # はgen-delims, &amp; はsub-delims. ~ はunreservedで, 通常はエンコード不要.
+
+            **Options:**
+
+            - A (correct): ?はpathとqueryの区切りとして使われる.
+
+            - B (correct): #はfragmentの開始.
+
+            - C (correct): &amp; はsub-delimsで, query内ではアプリ側の区切りとして使われがち.
+
+            - D (incorrect): ~はunreservedなのでreservedではない.
+
+            **Related:** reservedは"危険"ではなく"区切りとして解釈され得る"という意味. どこでエンコードすべきかはコンテキスト依存.
           </div>
         </div>
       </article>
@@ -145,14 +170,21 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. reservedは必須の区切りなので, データとして現れても決してエンコードしない</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. そのコンポーネントで許されない文字や, reservedをデータとして扱いたい場合にエンコードする</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> percent-encoding, component, delimiter vs data. percent-encodingは%HHでoctetを表し, 構文を壊さず曖昧性を無くす仕組み.<br>
-            <strong>Correct (C):</strong> 文字がそのコンポーネントで許可されない場合や, reservedが区切りではなくデータとして必要な場合にエンコードする.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): schemeやIRI処理などで扱いが変わる. 一律ルールはround-tripを壊し得る.<br>
-            - B (incorrect): reservedはデータとして出したいこともある. その場合はエンコードして区切り解釈を避ける.<br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** percent-encoding, component, delimiter vs data. percent-encodingは%HHでoctetを表し, 構文を壊さず曖昧性を無くす仕組み.
+
+            **Correct (C):** 文字がそのコンポーネントで許可されない場合や, reservedが区切りではなくデータとして必要な場合にエンコードする.
+
+            **Options:**
+
+            - A (incorrect): schemeやIRI処理などで扱いが変わる. 一律ルールはround-tripを壊し得る.
+
+            - B (incorrect): reservedはデータとして出したいこともある. その場合はエンコードして区切り解釈を避ける.
+
             - C (correct): 目的が"構文的に正しい"と"意図した意味"を両立させること.
-            <strong>Related:</strong> 早すぎるdecodeは, 区切りとデータの区別を失ってバグの原因になる.
+            **Related:** 早すぎるdecodeは, 区切りとデータの区別を失ってバグの原因になる.
           </div>
         </div>
       </article>
@@ -165,14 +197,21 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. path全体を小文字化する</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. fragmentを常に削除して比較する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> normalization, scheme, host, path, fragment. 正規化は表記を変えつつ同じ参照を維持しようとする操作.<br>
-            <strong>Correct (A):</strong> schemeとhostは一般に大文字小文字を区別しないので, 小文字化はよくある安全な手順.<br>
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** normalization, scheme, host, path, fragment. 正規化は表記を変えつつ同じ参照を維持しようとする操作.
+
+            **Correct (A):** schemeとhostは一般に大文字小文字を区別しないので, 小文字化はよくある安全な手順.
+
+            **Options:**
+
             - A (correct): 多くの処理で意味が変わらない.
-            - B (incorrect): pathの大文字小文字はschemeやサーバ実装依存で, 変えると別リソースになる可能性がある.<br>
-            - C (incorrect): fragmentはサーバへ送られないが, クライアント側で意味を持つので常に削除は安全ではない.<br>
-            <strong>Related:</strong> 署名付きURL, キャッシュキー, ルーティングは正規化の影響を強く受ける.
+            - B (incorrect): pathの大文字小文字はschemeやサーバ実装依存で, 変えると別リソースになる可能性がある.
+
+            - C (incorrect): fragmentはサーバへ送られないが, クライアント側で意味を持つので常に削除は安全ではない.
+
+            **Related:** 署名付きURL, キャッシュキー, ルーティングは正規化の影響を強く受ける.
           </div>
         </div>
       </article>
@@ -181,11 +220,16 @@
         <header><h4>Q6: URIで#の後ろの部分は___コンポーネントと呼ばれる</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> fragment component. RFC 3986では, #の後ろはfragmentで, 二次リソースやクライアント側参照を指す.<br>
-            <strong>Correct:</strong> fragment.<br>
-            <strong>Why others are wrong:</strong> queryは?で始まり, pathはauthorityの後の階層部分, schemeは:の前. これを取り違えるとパースが崩れる.<br>
-            <strong>Related:</strong> fragmentは通常HTTPリクエストとしてサーバへ送信されない.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** fragment component. RFC 3986では, #の後ろはfragmentで, 二次リソースやクライアント側参照を指す.
+
+            **Correct:** fragment.
+
+            **Why others are wrong:** queryは?で始まり, pathはauthorityの後の階層部分, schemeは:の前. これを取り違えるとパースが崩れる.
+
+            **Related:** fragmentは通常HTTPリクエストとしてサーバへ送信されない.
           </div>
         </div>
       </article>

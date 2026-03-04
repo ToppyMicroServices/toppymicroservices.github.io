@@ -83,14 +83,21 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. 1つのconnection上で複数streamを多重化する</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSを置き換える新暗号プロトコルを導入する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.<br>
-            <strong>Correct (B):</strong> multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らす.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): 意味論はRFC 9110で定義され, HTTP/2で変わらない.<br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.
+
+            **Correct (B):** multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らす.
+
+            **Options:**
+
+            - A (incorrect): 意味論はRFC 9110で定義され, HTTP/2で変わらない.
+
             - B (correct): これがtransport面での主要な変化.
-            - C (incorrect): HTTP/2は通常TLS上で動くが, TLSを置き換えない.<br>
-            <strong>Related:</strong> ただしTCP上なので, transportレイヤのhead-of-lineは残る.
+            - C (incorrect): HTTP/2は通常TLS上で動くが, TLSを置き換えない.
+
+            **Related:** ただしTCP上なので, transportレイヤのhead-of-lineは残る.
           </div>
         </div>
       </article>
@@ -103,14 +110,18 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. HTTP/1.1のchunk</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. binary frame</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> frame, binary framing layer. HTTP/2はframeの列として通信し, frame headerで種別や長さを表す.<br>
-            <strong>Correct (C):</strong> frameがheaders, data, settingsなどを運ぶ.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** frame, binary framing layer. HTTP/2はframeの列として通信し, frame headerで種別や長さを表す.
+
+            **Correct (C):** frameがheaders, data, settingsなどを運ぶ.
+            **Options:**
+
             - A (incorrect): それはHTTP/1.1.
             - B (incorrect): chunkedはHTTP/1.1の転送方式.
             - C (correct): HTTP/2はbinary frame.
-            <strong>Related:</strong> 意味論は同じでも, framing layerが違うと実装の落とし穴が変わる.
+            **Related:** 意味論は同じでも, framing layerが違うと実装の落とし穴が変わる.
           </div>
         </div>
       </article>
@@ -123,14 +134,18 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. client開始が偶数, server開始が奇数</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. 奇偶に意味はない</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> stream ID, initiator. stream IDは順序と開始者を示し, protocol error検出に役立つ.<br>
-            <strong>Correct (A):</strong> clientは奇数, serverは偶数を使う.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** stream ID, initiator. stream IDは順序と開始者を示し, protocol error検出に役立つ.
+
+            **Correct (A):** clientは奇数, serverは偶数を使う.
+            **Options:**
+
             - A (correct): 定義通り.
             - B (incorrect): 逆.
             - C (incorrect): 奇偶は意味を持つ.
-            <strong>Related:</strong> stream IDの単調増加も重要で, 再利用や不正frameを検出する.
+            **Related:** stream IDの単調増加も重要で, 再利用や不正frameを検出する.
           </div>
         </div>
       </article>
@@ -144,15 +159,19 @@
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. stream levelとconnection levelの両方がある</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. WINDOW_UPDATEでwindowを増やす</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> flow control, window, DATA, WINDOW_UPDATE. flow controlは受信側が過負荷にならないよう, 送信をcreditで制限する仕組み.<br>
-            <strong>Correct (A,C,D):</strong> DATA向けのwindowがあり, stream単位とconnection全体の両方で管理される. windowを増やすのがWINDOW_UPDATE.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** flow control, window, DATA, WINDOW_UPDATE. flow controlは受信側が過負荷にならないよう, 送信をcreditで制限する仕組み.
+
+            **Correct (A,C,D):** DATA向けのwindowがあり, stream単位とconnection全体の両方で管理される. windowを増やすのがWINDOW_UPDATE.
+            **Options:**
+
             - A (correct): windowがDATA送信量を制御する.
             - B (incorrect): 主にDATAが対象で, headerは別の取り扱いになる.
             - C (correct): 2種類のwindowがある.
             - D (correct): WINDOW_UPDATEで増加.
-            <strong>Related:</strong> window設定ミスはstallに見え, ネットワーク障害と誤診しやすい.
+            **Related:** window設定ミスはstallに見え, ネットワーク障害と誤診しやすい.
           </div>
         </div>
       </article>
@@ -165,14 +184,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. connectionの設定パラメータを伝える</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. DATA frameをackする</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> SETTINGS, connection parameters. frame sizeやconcurrent streamsなどの上限や好みを共有する.
-            <strong>Correct (B):</strong> SETTINGSはcontrolとしてconnectionを調整する.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** SETTINGS, connection parameters. frame sizeやconcurrent streamsなどの上限や好みを共有する.
+            **Correct (B):** SETTINGSはcontrolとしてconnectionを調整する.
+            **Options:**
+
             - A (incorrect): payloadはDATA.
             - B (correct): 設定通知.
             - C (incorrect): ackは別の仕組み.
-            <strong>Related:</strong> SETTINGSの未尊重はprotocol errorになり得る. 受信側はackする必要がある.
+            **Related:** SETTINGSの未尊重はprotocol errorになり得る. 受信側はackする必要がある.
           </div>
         </div>
       </article>
@@ -181,11 +203,13 @@
         <header><h4>Q6: HTTP/2 connectionのgraceful shutdownを示すframe名はどれ</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the frame name" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> GOAWAY. GOAWAYは新規streamを受け付けないことと, 処理済みのlast streamを通知する.
-            <strong>Correct:</strong> GOAWAY.
-            <strong>Why others are wrong:</strong> RST_STREAMは1つのstreamだけをresetする. SETTINGSは設定通知でshutdownではない.
-            <strong>Related:</strong> 未処理stream上のrequestは, methodのidempotencyを考慮してretry判断する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** GOAWAY. GOAWAYは新規streamを受け付けないことと, 処理済みのlast streamを通知する.
+            **Correct:** GOAWAY.
+            **Why others are wrong:** RST_STREAMは1つのstreamだけをresetする. SETTINGSは設定通知でshutdownではない.
+            **Related:** 未処理stream上のrequestは, methodのidempotencyを考慮してretry判断する.
           </div>
         </div>
       </article>

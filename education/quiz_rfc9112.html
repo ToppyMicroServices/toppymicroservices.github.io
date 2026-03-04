@@ -83,14 +83,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. A single LF line ending</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. An empty line that is a CRLF on its own</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> header section, empty line, CRLF. HTTP/1.1 uses a blank line to separate headers from the optional message body.
-            <strong>Correct (C):</strong> The header section ends at the empty line, which is a CRLF on its own, after the last header field line.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** header section, empty line, CRLF. HTTP/1.1 uses a blank line to separate headers from the optional message body.
+            **Correct (C):** The header section ends at the empty line, which is a CRLF on its own, after the last header field line.
+            **Options:**
+
             - A (incorrect): Content-Length is about body framing. It does not terminate the header section.
             - B (incorrect): HTTP/1.1 defines CRLF as the line ending. Accepting LF-only can cause interoperability and security problems.
             - C (correct): The CRLF empty line is the defined delimiter.
-            <strong>Related:</strong> When parsers disagree on where headers end, intermediaries can be vulnerable to request smuggling.
+            **Related:** When parsers disagree on where headers end, intermediaries can be vulnerable to request smuggling.
           </div>
         </div>
       </article>
@@ -103,14 +106,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Only by closing the connection</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. By rules that consider Transfer-Encoding, Content-Length, and connection close</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1 has multiple framing mechanisms, and the correct one depends on the presence and ordering of headers.
-            <strong>Correct (C):</strong> Recipients apply a precedence order: Transfer-Encoding (especially chunked) affects framing, Content-Length can be used when valid, and connection close can delimit in some cases.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1 has multiple framing mechanisms, and the correct one depends on the presence and ordering of headers.
+            **Correct (C):** Recipients apply a precedence order: Transfer-Encoding (especially chunked) affects framing, Content-Length can be used when valid, and connection close can delimit in some cases.
+            **Options:**
+
             - A (incorrect): Transfer-Encoding can override Content-Length for framing. Relying only on Content-Length is unsafe.
             - B (incorrect): Connection close is a last-resort delimiter and breaks persistent connections.
             - C (correct): The framing algorithm combines these signals.
-            <strong>Related:</strong> Inconsistent framing interpretation between intermediaries is a common root cause of request smuggling.
+            **Related:** Inconsistent framing interpretation between intermediaries is a common root cause of request smuggling.
           </div>
         </div>
       </article>
@@ -123,14 +129,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. With a zero-length chunk followed by CRLF</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. When a Content-Length trailer appears</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> chunked coding, chunk size, terminator. Chunked transfer coding frames the body as a series of chunks.
-            <strong>Correct (B):</strong> The end of a chunked body is indicated by a chunk with size 0, followed by a final CRLF and optional trailer fields.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** chunked coding, chunk size, terminator. Chunked transfer coding frames the body as a series of chunks.
+            **Correct (B):** The end of a chunked body is indicated by a chunk with size 0, followed by a final CRLF and optional trailer fields.
+            **Options:**
+
             - A (incorrect): Connection close is not the normal terminator for chunked coding and should not be relied upon.
             - B (correct): The 0-size chunk is the explicit terminator.
             - C (incorrect): Content-Length is not used as a trailer to end a chunked body.
-            <strong>Related:</strong> Trailers exist, but they are separate header fields after the terminating chunk.
+            **Related:** Trailers exist, but they are separate header fields after the terminating chunk.
           </div>
         </div>
       </article>
@@ -144,15 +153,18 @@
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. authority-form</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. asterisk-form</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> request-target, origin-form, absolute-form, authority-form, asterisk-form. Different forms are used depending on whether the client is talking to an origin server, proxy, or using CONNECT/OPTIONS.
-            <strong>Correct (A,B,C,D):</strong> All four forms are defined and used in specific situations.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** request-target, origin-form, absolute-form, authority-form, asterisk-form. Different forms are used depending on whether the client is talking to an origin server, proxy, or using CONNECT/OPTIONS.
+            **Correct (A,B,C,D):** All four forms are defined and used in specific situations.
+            **Options:**
+
             - A (correct): Common for origin servers, like /path?query.
             - B (correct): Used when making requests to proxies, like http://example.com/path.
             - C (correct): Used with CONNECT to establish a tunnel to host:port.
             - D (correct): Used with OPTIONS * to query server-wide options.
-            <strong>Related:</strong> Proxies must carefully preserve semantics and not accidentally rewrite request-target incorrectly.
+            **Related:** Proxies must carefully preserve semantics and not accidentally rewrite request-target incorrectly.
           </div>
         </div>
       </article>
@@ -165,14 +177,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Connections are never reused across requests</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Connections are persistent unless explicitly closed</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> persistent connection, Connection: close. HTTP/1.1 is designed to reuse TCP connections for efficiency.
-            <strong>Correct (C):</strong> Connections are persistent by default, and either side can signal that it will close the connection.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** persistent connection, Connection: close. HTTP/1.1 is designed to reuse TCP connections for efficiency.
+            **Correct (C):** Connections are persistent by default, and either side can signal that it will close the connection.
+            **Options:**
+
             - A (incorrect): That is closer to HTTP/1.0 behavior and is inefficient.
             - B (incorrect): Reuse is a core feature to reduce latency and overhead.
             - C (correct): This is the standard default.
-            <strong>Related:</strong> Framing must be correct to safely reuse connections. Otherwise, boundaries can be ambiguous.
+            **Related:** Framing must be correct to safely reuse connections. Otherwise, boundaries can be ambiguous.
           </div>
         </div>
       </article>
@@ -181,11 +196,13 @@
         <header><h4>Q6: HTTP/1.1 uses which line ending for start-lines and header fields</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> CRLF. HTTP/1.1 messages are defined in terms of CRLF as the line terminator.
-            <strong>Correct:</strong> CRLF. It is carriage return followed by line feed.
-            <strong>Why others are wrong:</strong> LF-only is common in Unix text files but is not the defined delimiter for HTTP/1.1 message syntax.
-            <strong>Related:</strong> Robust implementations may accept some variations, but emit correct CRLF to maximize interoperability.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** CRLF. HTTP/1.1 messages are defined in terms of CRLF as the line terminator.
+            **Correct:** CRLF. It is carriage return followed by line feed.
+            **Why others are wrong:** LF-only is common in Unix text files but is not the defined delimiter for HTTP/1.1 message syntax.
+            **Related:** Robust implementations may accept some variations, but emit correct CRLF to maximize interoperability.
           </div>
         </div>
       </article>

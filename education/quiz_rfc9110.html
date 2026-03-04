@@ -83,14 +83,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. How HTTP/2 frames are encoded on the wire</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. How QUIC packets are retransmitted over UDP</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> semantics, transport, method meaning. Semantics describe what a request means and what a response means, regardless of whether it is carried by HTTP/1.1, HTTP/2, or HTTP/3.
-            <strong>Correct (A):</strong> Safety, idempotency, cacheability, and status code meaning are semantic concepts.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** semantics, transport, method meaning. Semantics describe what a request means and what a response means, regardless of whether it is carried by HTTP/1.1, HTTP/2, or HTTP/3.
+            **Correct (A):** Safety, idempotency, cacheability, and status code meaning are semantic concepts.
+            **Options:**
+
             - A (correct): This is about meaning and allowed effects.
             - B (incorrect): Framing is a transport mapping detail.
             - C (incorrect): QUIC packet behavior is transport protocol detail, not HTTP semantics.
-            <strong>Related:</strong> Keeping semantics stable across versions is why tools like proxies can reason about methods and caching independent of the underlying transport.
+            **Related:** Keeping semantics stable across versions is why tools like proxies can reason about methods and caching independent of the underlying transport.
           </div>
         </div>
       </article>
@@ -103,14 +106,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. POST</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. DELETE</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> safe method. A safe method is intended to be read-only and not cause state change on the origin server.
-            <strong>Correct (A):</strong> GET is defined as safe. It should not have side effects beyond logging and similar incidental effects.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** safe method. A safe method is intended to be read-only and not cause state change on the origin server.
+            **Correct (A):** GET is defined as safe. It should not have side effects beyond logging and similar incidental effects.
+            **Options:**
+
             - A (correct): GET retrieves a representation and is safe.
             - B (incorrect): POST is not safe. It is generally used to create or process resources and can change server state.
             - C (incorrect): DELETE is not safe. It removes a resource and changes state.
-            <strong>Related:</strong> Safe is not the same as cacheable. Some safe responses are cacheable depending on headers.
+            **Related:** Safe is not the same as cacheable. Some safe responses are cacheable depending on headers.
           </div>
         </div>
       </article>
@@ -124,15 +130,18 @@
             <label class="choice"><input type="checkbox" name="Q3" value="c"> C. DELETE</label>
             <label class="choice"><input type="checkbox" name="Q3" value="d"> D. CONNECT</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
-            <strong>Correct (A,C):</strong> PUT and DELETE are defined as idempotent. Retrying them is generally safe at the semantic level, even though the first attempt might partially fail in practice.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
+            **Correct (A,C):** PUT and DELETE are defined as idempotent. Retrying them is generally safe at the semantic level, even though the first attempt might partially fail in practice.
+            **Options:**
+
             - A (correct): PUT replaces the target state with the provided representation, so repeating should converge to the same result.
             - B (incorrect): POST is not idempotent by default. Repeating might create multiple resources or trigger repeated processing.
             - C (correct): DELETE is idempotent. Deleting twice results in the same end state: the resource is gone.
             - D (incorrect): CONNECT establishes a tunnel and is not generally treated as idempotent.
-            <strong>Related:</strong> Idempotency is central for retries, load balancers, and safe recovery from network errors.
+            **Related:** Idempotency is central for retries, load balancers, and safe recovery from network errors.
           </div>
         </div>
       </article>
@@ -145,14 +154,17 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Redirection</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Server error</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> status code class. The first digit indicates a broad category of response semantics.
-            <strong>Correct (B):</strong> 3xx responses are redirections: the client may need to take additional action or use another URI.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** status code class. The first digit indicates a broad category of response semantics.
+            **Correct (B):** 3xx responses are redirections: the client may need to take additional action or use another URI.
+            **Options:**
+
             - A (incorrect): 4xx are client errors.
             - B (correct): 3xx indicates redirection semantics.
             - C (incorrect): 5xx are server errors.
-            <strong>Related:</strong> Redirection is not only 301 and 302. 304 Not Modified is also a 3xx related to cache validation.
+            **Related:** Redirection is not only 301 and 302. 304 Not Modified is also a 3xx related to cache validation.
           </div>
         </div>
       </article>
@@ -165,14 +177,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Only shared caches are forbidden from storing the response</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Caches should not store the response in any form</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> cache, store, revalidate. Cache-Control directives influence whether responses may be stored and under what conditions they may be reused.
-            <strong>Correct (C):</strong> no-store is the strongest instruction: do not store the response.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** cache, store, revalidate. Cache-Control directives influence whether responses may be stored and under what conditions they may be reused.
+            **Correct (C):** no-store is the strongest instruction: do not store the response.
+            **Options:**
+
             - A (incorrect): That is closer to no-cache behavior, where storage is allowed but reuse requires validation.
             - B (incorrect): no-store applies broadly. If you want a shared-cache-specific rule, other directives like private are relevant.
             - C (correct): no-store tells caches not to keep a copy.
-            <strong>Related:</strong> Use no-store for highly sensitive data where persistence in browser caches or proxies is unacceptable.
+            **Related:** Use no-store for highly sensitive data where persistence in browser caches or proxies is unacceptable.
           </div>
         </div>
       </article>
@@ -181,11 +196,13 @@
         <header><h4>Q6: Which header field indicates the media type of the representation</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> representation, media type. The media type tells the recipient how to interpret the payload bytes.
-            <strong>Correct:</strong> Content-Type. It describes the format of the representation data.
-            <strong>Why others are wrong:</strong> Content-Length is the size, Accept is a request preference, and Host identifies the target authority. None of those declare payload type.
-            <strong>Related:</strong> Media type parameters like charset can affect decoding and security behavior.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** representation, media type. The media type tells the recipient how to interpret the payload bytes.
+            **Correct:** Content-Type. It describes the format of the representation data.
+            **Why others are wrong:** Content-Length is the size, Accept is a request preference, and Host identifies the target authority. None of those declare payload type.
+            **Related:** Media type parameters like charset can affect decoding and security behavior.
           </div>
         </div>
       </article>

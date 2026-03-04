@@ -83,14 +83,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. It multiplexes multiple streams over one connection</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. It replaces TLS with a new cryptographic protocol</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> multiplexing, stream, connection. HTTP/2 introduces a binary framing layer where independent streams can share one connection.
-            <strong>Correct (B):</strong> Multiplexing reduces head-of-line blocking at the HTTP application layer compared to HTTP/1.1 pipelining.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** multiplexing, stream, connection. HTTP/2 introduces a binary framing layer where independent streams can share one connection.
+            **Correct (B):** Multiplexing reduces head-of-line blocking at the HTTP application layer compared to HTTP/1.1 pipelining.
+            **Options:**
+
             - A (incorrect): HTTP semantics remain defined by RFC 9110.
             - B (correct): This is the major transport-level change.
             - C (incorrect): HTTP/2 typically runs over TLS, but it does not replace TLS.
-            <strong>Related:</strong> HTTP/2 improves efficiency but still runs over TCP, so transport-level head-of-line can still exist.
+            **Related:** HTTP/2 improves efficiency but still runs over TCP, so transport-level head-of-line can still exist.
           </div>
         </div>
       </article>
@@ -103,14 +106,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. HTTP/1.1 chunks</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Binary frames</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> frame, binary framing layer. HTTP/2 encodes data as a sequence of frames with a standard header.
-            <strong>Correct (C):</strong> Frames carry headers, data, settings, and control signals.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** frame, binary framing layer. HTTP/2 encodes data as a sequence of frames with a standard header.
+            **Correct (C):** Frames carry headers, data, settings, and control signals.
+            **Options:**
+
             - A (incorrect): CRLF lines are HTTP/1.1 syntax.
             - B (incorrect): Chunked transfer coding is an HTTP/1.1 framing mechanism.
             - C (correct): Frames are the basis of HTTP/2 transport.
-            <strong>Related:</strong> Application semantics are expressed via sequences of frames on streams.
+            **Related:** Application semantics are expressed via sequences of frames on streams.
           </div>
         </div>
       </article>
@@ -123,14 +129,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Client-initiated streams are even and server-initiated streams are odd</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Stream IDs have no parity meaning</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> stream ID, initiator. Stream IDs indicate order and who created the stream.
-            <strong>Correct (A):</strong> Clients use odd-numbered stream IDs. Servers use even-numbered stream IDs.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** stream ID, initiator. Stream IDs indicate order and who created the stream.
+            **Correct (A):** Clients use odd-numbered stream IDs. Servers use even-numbered stream IDs.
+            **Options:**
+
             - A (correct): This rule helps endpoints detect protocol errors.
             - B (incorrect): This reverses the defined rule.
             - C (incorrect): Parity is meaningful in HTTP/2.
-            <strong>Related:</strong> Stream ID ordering is also used to prevent reuse and to detect invalid frames on closed streams.
+            **Related:** Stream ID ordering is also used to prevent reuse and to detect invalid frames on closed streams.
           </div>
         </div>
       </article>
@@ -144,15 +153,18 @@
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It exists at both the stream and connection level</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. WINDOW_UPDATE is used to increase the available window</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> flow control, window, DATA, WINDOW_UPDATE. Flow control protects endpoints from being overwhelmed by too much incoming data.
-            <strong>Correct (A,C,D):</strong> Flow control is a window-based mechanism for DATA and it is tracked per stream and for the overall connection.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** flow control, window, DATA, WINDOW_UPDATE. Flow control protects endpoints from being overwhelmed by too much incoming data.
+            **Correct (A,C,D):** Flow control is a window-based mechanism for DATA and it is tracked per stream and for the overall connection.
+            **Options:**
+
             - A (correct): The window limits how much DATA can be sent before receiving updates.
             - B (incorrect): Flow control is primarily about DATA. Header frames are managed differently.
             - C (correct): Both per-stream and connection-level windows exist.
             - D (correct): WINDOW_UPDATE increases the flow-control window.
-            <strong>Related:</strong> Misconfigured windows can cause stalls that look like network problems but are actually protocol backpressure.
+            **Related:** Misconfigured windows can cause stalls that look like network problems but are actually protocol backpressure.
           </div>
         </div>
       </article>
@@ -165,14 +177,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. It communicates configuration parameters for the connection</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. It acknowledges received DATA frames</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> SETTINGS, connection parameters. Endpoints use SETTINGS to advertise limits and preferences like frame size and concurrent streams.
-            <strong>Correct (B):</strong> SETTINGS is a control mechanism to tune and constrain the connection.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** SETTINGS, connection parameters. Endpoints use SETTINGS to advertise limits and preferences like frame size and concurrent streams.
+            **Correct (B):** SETTINGS is a control mechanism to tune and constrain the connection.
+            **Options:**
+
             - A (incorrect): DATA frames carry payload.
             - B (correct): SETTINGS carries connection configuration.
             - C (incorrect): HTTP/2 uses different signals for acknowledgments and flow control.
-            <strong>Related:</strong> Peers must acknowledge SETTINGS. Failing to respect them can be a protocol error.
+            **Related:** Peers must acknowledge SETTINGS. Failing to respect them can be a protocol error.
           </div>
         </div>
       </article>
@@ -181,11 +196,13 @@
         <header><h4>Q6: Which frame signals graceful shutdown of an HTTP/2 connection</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the frame name" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> GOAWAY. GOAWAY tells the peer that the sender will not accept new streams and indicates the last stream it processed.
-            <strong>Correct:</strong> GOAWAY. It supports graceful draining.
-            <strong>Why others are wrong:</strong> RST_STREAM resets one stream, not the whole connection. SETTINGS configures behavior but does not shut down.
-            <strong>Related:</strong> Clients should retry requests on streams that were not processed, depending on method idempotency.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** GOAWAY. GOAWAY tells the peer that the sender will not accept new streams and indicates the last stream it processed.
+            **Correct:** GOAWAY. It supports graceful draining.
+            **Why others are wrong:** RST_STREAM resets one stream, not the whole connection. SETTINGS configures behavior but does not shut down.
+            **Related:** Clients should retry requests on streams that were not processed, depending on method idempotency.
           </div>
         </div>
       </article>

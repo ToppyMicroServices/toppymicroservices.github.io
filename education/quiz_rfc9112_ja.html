@@ -83,14 +83,21 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. LFだけの改行</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. CRLFだけの空行</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> header section, empty line, CRLF. HTTP/1.1では, headerの終端とbodyの開始は空行で区切られる.<br>
-            <strong>Correct (C):</strong> 最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了する.<br>
-            <strong>Options:</strong><br>
-            - A (incorrect): Content-Lengthはbodyの長さのヒントで, header sectionの終端ではない.<br>
-            - B (incorrect): HTTP/1.1はCRLFを行終端として定義している. LF-onlyは互換性や安全性の問題になり得る.<br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** header section, empty line, CRLF. HTTP/1.1では, headerの終端とbodyの開始は空行で区切られる.
+
+            **Correct (C):** 最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了する.
+
+            **Options:**
+
+            - A (incorrect): Content-Lengthはbodyの長さのヒントで, header sectionの終端ではない.
+
+            - B (incorrect): HTTP/1.1はCRLFを行終端として定義している. LF-onlyは互換性や安全性の問題になり得る.
+
             - C (correct): 空行が区切りになる.
-            <strong>Related:</strong> 終端解釈のズレはrequest smugglingの原因になり得る.
+            **Related:** 終端解釈のズレはrequest smugglingの原因になり得る.
           </div>
         </div>
       </article>
@@ -103,14 +110,19 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. connection closeだけで決まる</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Transfer-Encoding, Content-Length, connection closeを考慮した規則で決まる</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1は複数のframing手段を持ち, headerの組み合わせと優先順位で決まる.<br>
-            <strong>Correct (C):</strong> Transfer-Encodingがある場合の扱い, Content-Lengthの妥当性, そして場合によってはconnection closeで区切る, という順序規則がある.<br>
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1は複数のframing手段を持ち, headerの組み合わせと優先順位で決まる.
+
+            **Correct (C):** Transfer-Encodingがある場合の扱い, Content-Lengthの妥当性, そして場合によってはconnection closeで区切る, という順序規則がある.
+
+            **Options:**
+
             - A (incorrect): Transfer-Encodingがframingを支配するケースがある. Content-Length単独依存は危険.
             - B (incorrect): closeは最後の手段で, persistent connectionを壊す.
             - C (correct): 規則に従って一意に決める.
-            <strong>Related:</strong> 中間者とendpointで解釈が違うとrequest smugglingが起きる.
+            **Related:** 中間者とendpointで解釈が違うとrequest smugglingが起きる.
           </div>
         </div>
       </article>
@@ -123,14 +135,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. サイズ0のchunkとそれに続くCRLF</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Content-Length trailerが現れたとき</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> chunked coding, terminator. chunked transfer codingはchunkの連続でbodyを表現する.
-            <strong>Correct (B):</strong> 終端はサイズ0のchunkで示され, その後に最終CRLFとoptionalなtrailer fieldが続く.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** chunked coding, terminator. chunked transfer codingはchunkの連続でbodyを表現する.
+            **Correct (B):** 終端はサイズ0のchunkで示され, その後に最終CRLFとoptionalなtrailer fieldが続く.
+            **Options:**
+
             - A (incorrect): closeはchunkedの通常の終端ではない.
             - B (correct): 0-size chunkが明示終端.
             - C (incorrect): Content-Lengthをtrailerとして使って終端する仕組みではない.
-            <strong>Related:</strong> trailerは終端chunkの後に現れるheader field群.
+            **Related:** trailerは終端chunkの後に現れるheader field群.
           </div>
         </div>
       </article>
@@ -144,15 +159,18 @@
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. authority-form</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. asterisk-form</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> request-target, origin-form, absolute-form, authority-form, asterisk-form. 接続先がoriginかproxyか, CONNECTかOPTIONSかで使う形が変わる.
-            <strong>Correct (A,B,C,D):</strong> 4つ全てが定義されており, それぞれ用途がある.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** request-target, origin-form, absolute-form, authority-form, asterisk-form. 接続先がoriginかproxyか, CONNECTかOPTIONSかで使う形が変わる.
+            **Correct (A,B,C,D):** 4つ全てが定義されており, それぞれ用途がある.
+            **Options:**
+
             - A (correct): 通常のorigin向けは/path?query.
             - B (correct): proxy向けに完全URIを書くことがある.
             - C (correct): CONNECTでhost:portを指定.
             - D (correct): OPTIONS * でサーバ全体のoptionsを問う.
-            <strong>Related:</strong> proxyはrequest-targetの取り扱いを誤ると, 意図しない宛先へ転送してしまう.
+            **Related:** proxyはrequest-targetの取り扱いを誤ると, 意図しない宛先へ転送してしまう.
           </div>
         </div>
       </article>
@@ -165,14 +183,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. requestごとに必ず新しいconnectionを作る</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. 明示的に閉じない限りpersistent</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> persistent connection, Connection: close. HTTP/1.1は効率のためにTCP connectionの再利用を基本とする.
-            <strong>Correct (C):</strong> デフォルトはpersistentで, どちらかがcloseを示すまで継続する.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** persistent connection, Connection: close. HTTP/1.1は効率のためにTCP connectionの再利用を基本とする.
+            **Correct (C):** デフォルトはpersistentで, どちらかがcloseを示すまで継続する.
+            **Options:**
+
             - A (incorrect): それは非効率で, HTTP/1.0的な挙動.
             - B (incorrect): 再利用がコア機能.
             - C (correct): これが標準のデフォルト.
-            <strong>Related:</strong> persistentにするにはframingが正しくなければならない. 境界が曖昧だと再利用が危険になる.
+            **Related:** persistentにするにはframingが正しくなければならない. 境界が曖昧だと再利用が危険になる.
           </div>
         </div>
       </article>
@@ -181,11 +202,13 @@
         <header><h4>Q6: HTTP/1.1のstart-lineとheader fieldはどの行終端を使う</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> CRLF. HTTP/1.1の行終端はCRLFとして定義される.
-            <strong>Correct:</strong> CRLF.
-            <strong>Why others are wrong:</strong> LF-onlyはテキストファイルでは一般的でも, HTTP/1.1の定義上の区切りではない.
-            <strong>Related:</strong> 実装は寛容に受理することがあっても, 送信は正しいCRLFで出すのが相互運用性に有利.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** CRLF. HTTP/1.1の行終端はCRLFとして定義される.
+            **Correct:** CRLF.
+            **Why others are wrong:** LF-onlyはテキストファイルでは一般的でも, HTTP/1.1の定義上の区切りではない.
+            **Related:** 実装は寛容に受理することがあっても, 送信は正しいCRLFで出すのが相互運用性に有利.
           </div>
         </div>
       </article>

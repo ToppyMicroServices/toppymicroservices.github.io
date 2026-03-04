@@ -83,14 +83,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. cachingのためapplication dataを平文にする</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. ephemeral key exchangeでforward secrecyを得る</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> forward secrecy, ephemeral key exchange. 後から長期鍵が漏れても, 過去通信が復号されにくい性質.
-            <strong>Correct (C):</strong> TLS 1.3はephemeral (EC)DHEやPSK系の設計で強い性質を狙う.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** forward secrecy, ephemeral key exchange. 後から長期鍵が漏れても, 過去通信が復号されにくい性質.
+            **Correct (C):** TLS 1.3はephemeral (EC)DHEやPSK系の設計で強い性質を狙う.
+            **Options:**
+
             - A (incorrect): static RSA key exchangeはTLS 1.3で廃止.
             - B (incorrect): TLSの目的に反する.
             - C (correct): forward secrecyは中核.
-            <strong>Related:</strong> 盗聴保存されたトラフィックへの後追い復号を難しくする.
+            **Related:** 盗聴保存されたトラフィックへの後追い復号を難しくする.
           </div>
         </div>
       </article>
@@ -103,14 +106,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. certificateの期限切れ</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. 1-RTTより強いforward secrecyを常に得る</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> 0-RTT, early data, replay. handshake完了前にdataを送れるが, threat modelが変わる.
-            <strong>Correct (A):</strong> early dataは状況によってreplayされ得るため, アプリ側で対処が必要.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** 0-RTT, early data, replay. handshake完了前にdataを送れるが, threat modelが変わる.
+            **Correct (A):** early dataは状況によってreplayされ得るため, アプリ側で対処が必要.
+            **Options:**
+
             - A (correct): replayが中核リスク.
             - B (incorrect): 0-RTTとは無関係.
             - C (incorrect): 逆. replay観点で弱くなる.
-            <strong>Related:</strong> 0-RTTはidempotent操作などreplay-safeな用途に限定するのが一般的.
+            **Related:** 0-RTTはidempotent操作などreplay-safeな用途に限定するのが一般的.
           </div>
         </div>
       </article>
@@ -123,14 +129,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. HKDF-based key schedule</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. 1つのsession keyを接続中ずっと再利用する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> key schedule, HKDF. handshake進行に応じて複数secretを派生させる設計.
-            <strong>Correct (B):</strong> TLS 1.3はHKDFで段階ごとのsecretを導出し, 方向別のtraffic keyを持つ.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** key schedule, HKDF. handshake進行に応じて複数secretを派生させる設計.
+            **Correct (B):** TLS 1.3はHKDFで段階ごとのsecretを導出し, 方向別のtraffic keyを持つ.
+            **Options:**
+
             - A (incorrect): Base64はエンコードでKDFではない.
             - B (correct): HKDFがKDF.
             - C (incorrect): secretは段階で更新され, 方向別に分かれる.
-            <strong>Related:</strong> handshake secretとapplication secretを分離すると, 漏えい時の影響範囲を抑えられる.
+            **Related:** handshake secretとapplication secretを分離すると, 漏えい時の影響範囲を抑えられる.
           </div>
         </div>
       </article>
@@ -143,14 +152,17 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. 圧縮されるが暗号化されない</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. handshake traffic keyで暗号化される</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> handshake traffic keys, encryption. TLS 1.3は以前より多くのhandshakeを暗号化する.
-            <strong>Correct (C):</strong> secretが確立した後のhandshake messageは保護される.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** handshake traffic keys, encryption. TLS 1.3は以前より多くのhandshakeを暗号化する.
+            **Correct (C):** secretが確立した後のhandshake messageは保護される.
+            **Options:**
+
             - A (incorrect): TLS 1.3は平文露出を減らす.
             - B (incorrect): 圧縮が主役ではない.
             - C (correct): handshake messageは暗号化される.
-            <strong>Related:</strong> handshake暗号化はprivacy改善とossification抑制に効く.
+            **Related:** handshake暗号化はprivacy改善とossification抑制に効く.
           </div>
         </div>
       </article>
@@ -163,14 +175,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. アプリの認可を自動化する</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. 全てのmodeでreplayを完全に防ぐことを保証する</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> confidentiality, integrity, replay. TLSは盗聴と改ざんを防ぐ.
-            <strong>Correct (A):</strong> encryptionと認証で, 秘密性と完全性を提供.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** confidentiality, integrity, replay. TLSは盗聴と改ざんを防ぐ.
+            **Correct (A):** encryptionと認証で, 秘密性と完全性を提供.
+            **Options:**
+
             - A (correct): 基本保護.
             - B (incorrect): 認可はアプリ側.
             - C (incorrect): early dataにはreplayの注意があり, アプリ側の対策が必要.
-            <strong>Related:</strong> server認証はcertificateで行われることが多いが, trust判断はポリシー次第.
+            **Related:** server認証はcertificateで行われることが多いが, trust判断はポリシー次第.
           </div>
         </div>
       </article>
@@ -179,11 +194,13 @@
         <header><h4>Q6: TLS 1.3でforward secrecyを得るためのephemeral key exchangeを1つ挙げよ</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type DHE or ECDHE" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> DHE, ECDHE, forward secrecy. Diffie-Hellman系のephemeral key exchange.
-            <strong>Correct:</strong> DHEまたはECDHE.
-            <strong>Why others are wrong:</strong> static RSA key exchangeはTLS 1.3で廃止. PSKは再開に使えるが, forward secrecyは追加要素に依存する.
-            <strong>Related:</strong> key exchangeの選択は性能と暗号俊敏性に影響する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** DHE, ECDHE, forward secrecy. Diffie-Hellman系のephemeral key exchange.
+            **Correct:** DHEまたはECDHE.
+            **Why others are wrong:** static RSA key exchangeはTLS 1.3で廃止. PSKは再開に使えるが, forward secrecyは追加要素に依存する.
+            **Related:** key exchangeの選択は性能と暗号俊敏性に影響する.
           </div>
         </div>
       </article>

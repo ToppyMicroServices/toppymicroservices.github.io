@@ -83,14 +83,21 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTP/2フレームのwire上のエンコード</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. QUICパケットの再送制御</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> semantics, transport, methodの意味. 意味論は, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味"の話.<br>
-            <strong>Correct (A):</strong> safe, idempotent, cacheable, status codeの意味は意味論の中心.<br>
-            <strong>Options:</strong><br>
-            - A (correct): methodの意味と許される副作用の話.<br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** semantics, transport, methodの意味. 意味論は, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味"の話.
+
+            **Correct (A):** safe, idempotent, cacheable, status codeの意味は意味論の中心.
+
+            **Options:**
+
+            - A (correct): methodの意味と許される副作用の話.
+
             - B (incorrect): framingはtransport mappingの話.
-            - C (incorrect): QUICのpacket挙動はtransportの話.<br>
-            <strong>Related:</strong> 意味論が分離されているから, プロキシやキャッシュは下位transportと独立に判断できる.
+            - C (incorrect): QUICのpacket挙動はtransportの話.
+
+            **Related:** 意味論が分離されているから, プロキシやキャッシュは下位transportと独立に判断できる.
           </div>
         </div>
       </article>
@@ -103,14 +110,20 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. POST</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. DELETE</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> safe method. safeは, origin serverの状態変化を意図しないread-only操作であること.<br>
-            <strong>Correct (A):</strong> GETはsafe. ログなどの付随効果はあり得るが, リソース状態を変える意図は持たない.<br>
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** safe method. safeは, origin serverの状態変化を意図しないread-only操作であること.
+
+            **Correct (A):** GETはsafe. ログなどの付随効果はあり得るが, リソース状態を変える意図は持たない.
+
+            **Options:**
+
             - A (correct): GETは取得でありsafe.
             - B (incorrect): POSTは一般に状態変化を伴いsafeではない.
-            - C (incorrect): DELETEは削除でありsafeではない.<br>
-            <strong>Related:</strong> safeとcacheableは別概念. cache可能かはheaderなどの条件に依存する.
+            - C (incorrect): DELETEは削除でありsafeではない.
+
+            **Related:** safeとcacheableは別概念. cache可能かはheaderなどの条件に依存する.
           </div>
         </div>
       </article>
@@ -124,15 +137,24 @@
             <label class="choice"><input type="checkbox" name="Q3" value="c"> C. DELETE</label>
             <label class="choice"><input type="checkbox" name="Q3" value="d"> D. CONNECT</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.<br>
-            <strong>Correct (A,C):</strong> PUTとDELETEはidempotentとして定義される. 実運用では部分失敗もあり得るが, 意味論上は再試行が想定される.<br>
-            <strong>Options:</strong><br>
-            - A (correct): PUTは置き換えなので繰り返しても収束する.<br>
-            - B (incorrect): POSTは通常idempotentではなく, 繰り返すと重複作成や二重処理になり得る.<br>
-            - C (correct): DELETEは最終的に"無い"状態へ収束する.<br>
-            - D (incorrect): CONNECTはトンネル確立で, 一般にidempotent扱いではない.<br>
-            <strong>Related:</strong> idempotencyはretry, LB, ネットワーク障害時の復旧設計で重要.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.
+
+            **Correct (A,C):** PUTとDELETEはidempotentとして定義される. 実運用では部分失敗もあり得るが, 意味論上は再試行が想定される.
+
+            **Options:**
+
+            - A (correct): PUTは置き換えなので繰り返しても収束する.
+
+            - B (incorrect): POSTは通常idempotentではなく, 繰り返すと重複作成や二重処理になり得る.
+
+            - C (correct): DELETEは最終的に"無い"状態へ収束する.
+
+            - D (incorrect): CONNECTはトンネル確立で, 一般にidempotent扱いではない.
+
+            **Related:** idempotencyはretry, LB, ネットワーク障害時の復旧設計で重要.
           </div>
         </div>
       </article>
@@ -145,14 +167,18 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. redirection</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. server error</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> status code class. 先頭の数字は意味論上の大分類を示す.
-            <strong>Correct (B):</strong> 3xxはredirectionで, クライアントが追加の動作や別URIの使用を求められる.<br>
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** status code class. 先頭の数字は意味論上の大分類を示す.
+            **Correct (B):** 3xxはredirectionで, クライアントが追加の動作や別URIの使用を求められる.
+
+            **Options:**
+
             - A (incorrect): 4xxがclient error.
             - B (correct): 3xxがredirection.
             - C (incorrect): 5xxがserver error.
-            <strong>Related:</strong> 304 Not Modifiedも3xxで, cache validationの文脈で使われる.
+            **Related:** 304 Not Modifiedも3xxで, cache validationの文脈で使われる.
           </div>
         </div>
       </article>
@@ -165,14 +191,17 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. shared cacheだけが保存を禁止される</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. cacheは応答をいかなる形でも保存しない</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> cache, store, revalidate. Cache-Controlは保存や再利用条件を制御する.
-            <strong>Correct (C):</strong> no-storeは強い指示で, 保存しないことを求める.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** cache, store, revalidate. Cache-Controlは保存や再利用条件を制御する.
+            **Correct (C):** no-storeは強い指示で, 保存しないことを求める.
+            **Options:**
+
             - A (incorrect): これはno-cacheに近い. no-cacheは保存はできるが再利用時に検証が必要.
             - B (incorrect): no-storeは原則として広く適用される. shared cache限定ならprivateなど別の指示が関係.
             - C (correct): 応答を保持しない.
-            <strong>Related:</strong> 秘匿性の高いデータにはno-storeを使い, ブラウザcacheやプロキシに残らないようにする.
+            **Related:** 秘匿性の高いデータにはno-storeを使い, ブラウザcacheやプロキシに残らないようにする.
           </div>
         </div>
       </article>
@@ -181,11 +210,15 @@
         <header><h4>Q6: representationのmedia typeを示すheader fieldはどれ</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> representation, media type. media typeはpayloadの解釈方法を受信側に伝える.<br>
-            <strong>Correct:</strong> Content-Type.
-            <strong>Why others are wrong:</strong> Content-Lengthはサイズ, Acceptは希望, Hostはauthority. payloadの型を宣言しない.<br>
-            <strong>Related:</strong> charsetなどのparameterはデコードや安全性に影響する.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** representation, media type. media typeはpayloadの解釈方法を受信側に伝える.
+
+            **Correct:** Content-Type.
+            **Why others are wrong:** Content-Lengthはサイズ, Acceptは希望, Hostはauthority. payloadの型を宣言しない.
+
+            **Related:** charsetなどのparameterはデコードや安全性に影響する.
           </div>
         </div>
       </article>

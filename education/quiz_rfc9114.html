@@ -84,14 +84,17 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. TCP</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. SCTP</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> HTTP/3, QUIC. HTTP/3 is the mapping of HTTP semantics onto QUIC streams.
-            <strong>Correct (A):</strong> RFC 9114 defines HTTP/3 as running on QUIC.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** HTTP/3, QUIC. HTTP/3 is the mapping of HTTP semantics onto QUIC streams.
+            **Correct (A):** RFC 9114 defines HTTP/3 as running on QUIC.
+            **Options:**
+
             - A (correct): QUIC provides streams, encryption integration, and connection migration.
             - B (incorrect): TCP is used by HTTP/1.1 and usually HTTP/2, not HTTP/3.
             - C (incorrect): SCTP is not the basis of HTTP/3.
-            <strong>Related:</strong> QUIC itself commonly uses UDP as its substrate.
+            **Related:** QUIC itself commonly uses UDP as its substrate.
           </div>
         </div>
       </article>
@@ -104,14 +107,17 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. The need for TLS encryption</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Transport-level head-of-line blocking when packets are lost</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> head-of-line blocking, TCP, QUIC streams. TCP loss recovery can stall delivery for all multiplexed streams. QUIC avoids this by handling loss and streams differently.
-            <strong>Correct (C):</strong> HTTP/3 aims to avoid the cross-stream stall that occurs when HTTP/2 multiplexes over one TCP byte stream.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** head-of-line blocking, TCP, QUIC streams. TCP loss recovery can stall delivery for all multiplexed streams. QUIC avoids this by handling loss and streams differently.
+            **Correct (C):** HTTP/3 aims to avoid the cross-stream stall that occurs when HTTP/2 multiplexes over one TCP byte stream.
+            **Options:**
+
             - A (incorrect): DNS is separate from HTTP version.
             - B (incorrect): HTTP/3 still uses TLS 1.3 semantics integrated with QUIC.
             - C (correct): This is a primary motivation for moving to QUIC.
-            <strong>Related:</strong> Application-level head-of-line can still happen due to server-side scheduling, but transport behavior is improved.
+            **Related:** Application-level head-of-line can still happen due to server-side scheduling, but transport behavior is improved.
           </div>
         </div>
       </article>
@@ -124,14 +130,17 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. It compresses header fields in a way suitable for QUIC</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. It provides congestion control for HTTP streams</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> header compression, QPACK, QUIC. HTTP uses many header fields, so compression reduces overhead, but it must not reintroduce head-of-line blocking.
-            <strong>Correct (B):</strong> QPACK is the header compression mechanism used with HTTP/3.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** header compression, QPACK, QUIC. HTTP uses many header fields, so compression reduces overhead, but it must not reintroduce head-of-line blocking.
+            **Correct (B):** QPACK is the header compression mechanism used with HTTP/3.
+            **Options:**
+
             - A (incorrect): Authentication is not the role of header compression.
             - B (correct): It compresses headers while working with QUIC stream delivery characteristics.
             - C (incorrect): Congestion control is a transport function, primarily in QUIC.
-            <strong>Related:</strong> HTTP/2 uses HPACK. HTTP/3 uses QPACK to avoid coupling header decoding to ordered delivery.
+            **Related:** HTTP/2 uses HPACK. HTTP/3 uses QPACK to avoid coupling header decoding to ordered delivery.
           </div>
         </div>
       </article>
@@ -144,14 +153,17 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. TLS renegotiation</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. HTTP pipelining</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> connection migration, path, connection ID. QUIC identifies connections independently of the 5-tuple (IP and port), enabling mobility.
-            <strong>Correct (A):</strong> Connection migration is the ability to continue a connection across a path change.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** connection migration, path, connection ID. QUIC identifies connections independently of the 5-tuple (IP and port), enabling mobility.
+            **Correct (A):** Connection migration is the ability to continue a connection across a path change.
+            **Options:**
+
             - A (correct): This is a key QUIC feature.
             - B (incorrect): TLS 1.3 removed renegotiation and QUIC integrates TLS differently.
             - C (incorrect): Pipelining is an HTTP/1.1 concept.
-            <strong>Related:</strong> Migration helps mobile clients switching networks without restarting all requests.
+            **Related:** Migration helps mobile clients switching networks without restarting all requests.
           </div>
         </div>
       </article>
@@ -165,15 +177,18 @@
             <label class="choice"><input type="checkbox" name="Q5" value="c"> C. It should be limited to requests that are safe to repeat</label>
             <label class="choice"><input type="checkbox" name="Q5" value="d"> D. It requires HTTP semantics to change the meaning of GET</label>
           </fieldset>
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> 0-RTT, early data, replay. Early data can reduce latency but has replay risks depending on application context.
-            <strong>Correct (A,C):</strong> Replay is the main security tradeoff. Applications should restrict early data to operations that are safe under replay.
-            <strong>Options:</strong><br>
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** 0-RTT, early data, replay. Early data can reduce latency but has replay risks depending on application context.
+            **Correct (A,C):** Replay is the main security tradeoff. Applications should restrict early data to operations that are safe under replay.
+            **Options:**
+
             - A (correct): An attacker may replay early data, so servers must account for it.
             - B (incorrect): Non-idempotent requests like money transfer are not safe under replay.
             - C (correct): Use early data for idempotent or otherwise replay-safe operations.
             - D (incorrect): HTTP semantics do not change. The transport security property changes the risk profile.
-            <strong>Related:</strong> HTTP/3 inherits this consideration from TLS 1.3 early data used in QUIC.
+            **Related:** HTTP/3 inherits this consideration from TLS 1.3 early data used in QUIC.
           </div>
         </div>
       </article>
@@ -182,11 +197,13 @@
         <header><h4>Q6: The transport protocol used by HTTP/3 is called</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain"><strong>Explanation:</strong><br>
-            <strong>Terms:</strong> QUIC. HTTP/3 uses QUIC streams rather than TCP.
-            <strong>Correct:</strong> QUIC.
-            <strong>Why others are wrong:</strong> TCP is used for HTTP/2 in common deployments, but HTTP/3 specifically targets QUIC.
-            <strong>Related:</strong> QUIC integrates security and transport features, which is why HTTP/3 differs operationally under loss.
+          <div class="explain">
+            **Explanation:**
+
+            **Terms:** QUIC. HTTP/3 uses QUIC streams rather than TCP.
+            **Correct:** QUIC.
+            **Why others are wrong:** TCP is used for HTTP/2 in common deployments, but HTTP/3 specifically targets QUIC.
+            **Related:** QUIC integrates security and transport features, which is why HTTP/3 differs operationally under loss.
           </div>
         </div>
       </article>
