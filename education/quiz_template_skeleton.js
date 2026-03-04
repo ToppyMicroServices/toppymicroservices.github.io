@@ -13,14 +13,33 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   const ESCAPE_MAP={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"};
   const escapeHtml=str=>(str??'').replace(/[&<>"']/g,ch=>ESCAPE_MAP[ch]||ch);
   const locale=(document.documentElement.lang||'').toLowerCase();
-  const PREF_KEYS = {
-    explainOnAnswer: 'quizExplainOnAnswer',
-    showAllAnswers: 'quizShowAllAnswers'
-  };
-  const DETAIL_TEXT=locale.startsWith('ja')?
-    { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
-    { detailHeading:'Detailed Breakdown', detailDescription:'Responses, correct answers, scores, and explanations for every question.', columns:{question:'Question',response:'Your Answer',correct:'Correct Answer',score:'Result',explanation:'Explanation'}, status:{correct:'Correct',incorrect:'Incorrect',unanswered:'Unanswered'}, noAnswer:'Not answered', notAvailable:'N/A', none:'None' };
-  const THEME_KEY='quizTheme'; const prefersDark=window.matchMedia('(prefers-color-scheme: dark)');
+	  const PREF_KEYS = {
+	    explainOnAnswer: 'quizExplainOnAnswer',
+	    showAllAnswers: 'quizShowAllAnswers'
+	  };
+	  const UI_TEXT = locale.startsWith('ja') ? {
+	    learningMode: '学習モード',
+	    testMode: 'テストモード',
+	    toggleModeTitle: '学習/テスト切替',
+	    showExplainImmediately: '回答直後に解説を表示',
+	    showAllAnswers: 'すべての解答を表示',
+	    showAnswersAndScore: '解答とスコアを表示',
+	    referencesHeading: '参照（URL）',
+	    languageSwitcher: '言語切替'
+	  } : {
+	    learningMode: 'Learning Mode',
+	    testMode: 'Test Mode',
+	    toggleModeTitle: 'Toggle learning/test mode',
+	    showExplainImmediately: 'Show explanation immediately',
+	    showAllAnswers: 'Show all answers',
+	    showAnswersAndScore: 'Show Answers & Score',
+	    referencesHeading: 'References (URLs)',
+	    languageSwitcher: 'Language switcher'
+	  };
+	  const DETAIL_TEXT=locale.startsWith('ja')?
+	    { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
+	    { detailHeading:'Detailed Breakdown', detailDescription:'Responses, correct answers, scores, and explanations for every question.', columns:{question:'Question',response:'Your Answer',correct:'Correct Answer',score:'Result',explanation:'Explanation'}, status:{correct:'Correct',incorrect:'Incorrect',unanswered:'Unanswered'}, noAnswer:'Not answered', notAvailable:'N/A', none:'None' };
+	  const THEME_KEY='quizTheme'; const prefersDark=window.matchMedia('(prefers-color-scheme: dark)');
 
   function readBoolPref(key, defaultValue=false){
     try {
@@ -49,37 +68,37 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   function applyInitialTheme(){let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(e){} const init=s||(prefersDark.matches?'dark':'light'); setTheme(init,false);}    
   function toggleTheme(){const c=document.body.getAttribute('data-theme')==='light'?'light':'dark'; setTheme(c==='light'?'dark':'light',true);}    
   function applySettings(){const S=window.DRILL_SETTINGS||{}; const name=S.SKILL_NAME; const sub=S.SKILL_SUBTITLE; const goal=S.GOAL_DESCRIPTION; $('#title').textContent=(name?name+' ':'')+(sub?('— '+sub):''); $('#subtitle').textContent=goal||''; $('#footer-skill').textContent=name||'Skill'; $('#footer-goal').textContent=goal||''; const img=$('#brand-logo'); if(img&&S.BRAND_LOGO){img.src=S.BRAND_LOGO; img.style.display='inline-block'; img.alt=S.BRAND_NAME||'';} $('#brand-name').textContent=S.BRAND_NAME||''; $('#brand-link').href=S.BRAND_URL||'/'; $('#footer-brand').innerHTML='<strong>'+(S.BRAND_NAME||'')+'</strong>';}    
-  function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
+	  function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
 
-  function normalizeExplainHtml(html){
-    let out = String(html ?? '');
-    out = out.replace(/\r\n/g, '\n');
-    out = out.replace(/<br\s*\/?>/gi, '\n');
+	  function normalizeExplainHtml(html){
+	    let out = String(html ?? '');
+	    out = out.replace(/\r\n/g, '\n');
+	    out = out.replace(/<br\s*\/?>/gi, '\n');
 
-    if(locale.startsWith('ja')){
-      out = out
-        .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
-        .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
-        .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>背景（なぜこの問題）:<\/strong>')
-        .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
-        .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
-        .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
-        .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
-        .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
-    }
+	    // Convert simple Markdown bold to HTML bold.
+	    // This is intentionally minimal and only targets **...**.
+	    out = out.replace(/\*\*([^*\n][^*\n]*?)\*\*/g, '<strong>$1</strong>');
 
-    // Convert simple Markdown bold to HTML bold.
-    // This is intentionally minimal and only targets **...**.
-    out = out.replace(/\*\*([^*\n][^*\n]*?)\*\*/g, '<strong>$1</strong>');
+	    // Convert simple Markdown inline code to HTML code.
+	    // This is intentionally minimal and only targets `...` (single line).
+	    out = out.replace(/`([^`\n]+?)`/g, (_m, inner) => '<code>' + escapeHtml(inner) + '</code>');
 
-    // Convert simple Markdown inline code to HTML code.
-    // This is intentionally minimal and only targets `...` (single line).
-    out = out.replace(/`([^`\n]+?)`/g, (_m, inner) => '<code>' + escapeHtml(inner) + '</code>');
+	    if(locale.startsWith('ja')){
+	      out = out
+	        .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
+	        .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
+	        .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>背景（なぜこの問題）:<\/strong>')
+	        .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
+	        .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
+	        .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
+	        .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
+	        .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
+	    }
 
-    // Ensure section headings start on their own lines (even if authored inline).
-    out = out
-      .replace(/\s*(<strong>(?:Explanation|解説)(?::)?<\/strong>)/g, '\n$1')
-      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）):<\/strong>)/g, '\n\n$1')
+	    // Ensure section headings start on their own lines (even if authored inline).
+	    out = out
+	      .replace(/\s*(<strong>(?:Explanation|解説)(?::)?<\/strong>)/g, '\n$1')
+	      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Terms|用語):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Correct|正解)[^<]*?:<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Options|選択肢):<\/strong>)/g, '\n\n$1')
@@ -285,11 +304,11 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     return Array.from(terms).slice(0, 10);
   }
 
-  function buildContextLine(q, correctSummary){
-    const titleRaw = q.querySelector('h4')?.textContent || '';
-    const title = titleRaw.toLowerCase();
-    const rfc = getRfcNumber();
-    const subtitle = String(window.DRILL_SETTINGS?.SKILL_SUBTITLE || '').trim();
+	  function buildContextLine(q, correctSummary){
+	    const titleRaw = q.querySelector('h4')?.textContent || '';
+	    const title = titleRaw.toLowerCase();
+	    const rfc = getRfcNumber();
+	    const subtitle = String(window.DRILL_SETTINGS?.SKILL_SUBTITLE || '').trim();
 
     const en = (() => {
       if(title.includes('default port') || title.includes('port')){
@@ -344,21 +363,21 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       }
       if(title.includes('cache') || title.includes('cach') || title.includes('idempotent')){
         return "この問題は、HTTPの意味論がリトライやキャッシュ挙動を左右し、誤解が正しさ/プライバシーのバグになるため選んでいます。";
-      }
-      if(title.includes('websocket') || title.includes('upgrade') || title.includes('connect')){
-        return "この問題は、HTTPバージョンごとにWebSocketの成立手順が異なり、混同するとプロキシ/CDN配下で壊れるため選んでいます。";
-      }
-      if(title.includes('forwarded') || title.includes('proxy')){
-        return "この問題は、転送メタデータがtrust boundaryを跨ぎ、誤るとクライアント識別の**偽装**につながるため選んでいます。";
-      }
-      if(title.includes('quic') || title.includes('stream') || title.includes('flow control') || title.includes('connection id')){
-        return "この問題は、stream/flow control/connection identityなどの輸送層の部品がHTTP/3理解の土台になるため選んでいます。";
-      }
-      if(subtitle){
-        return "この問題は、**" + subtitle + "** の中核概念を相互運用性の観点で定着させるため選んでいます。";
-      }
-      return "この問題は、相互運用性のために取り違えやすい定義を定着させる目的で選んでいます。";
-    })();
+	      }
+	      if(title.includes('websocket') || title.includes('upgrade') || title.includes('connect')){
+	        return "この問題は、HTTPバージョンごとにWebSocketの成立手順が異なり、混同するとプロキシ/CDN配下で壊れるため選んでいます。";
+	      }
+	      if(title.includes('forwarded') || title.includes('proxy')){
+	        return "この問題は、転送メタデータが**信頼境界**をまたぎ、誤るとクライアント識別の**偽装**につながるため選んでいます。";
+	      }
+	      if(title.includes('quic') || title.includes('stream') || title.includes('flow control') || title.includes('connection id')){
+	        return "この問題は、輸送層の部品（**ストリーム**、**フロー制御**、**コネクションID** など）がHTTP/3の理解の土台になるため選んでいます。";
+	      }
+	      if(subtitle){
+	        return "この問題は、**" + subtitle + "** の中核概念を相互運用性の観点で定着させるため選んでいます。";
+	      }
+	      return "この問題は、相互運用性のために取り違えやすい定義を定着させる目的で選んでいます。";
+	    })();
 
     return locale.startsWith('ja')
       ? '<strong>背景（なぜこの問題）:</strong> ' + ja
@@ -877,20 +896,51 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         applyRevealState();
       });
     }
-    if(showAllAnswers){
-      showAllAnswers.checked = readBoolPref(PREF_KEYS.showAllAnswers, false);
-      showAllAnswers.addEventListener('change', () => {
-        writeBoolPref(PREF_KEYS.showAllAnswers, !!showAllAnswers.checked);
-        applyRevealState();
-      });
-    }
-  }
+	    if(showAllAnswers){
+	      showAllAnswers.checked = readBoolPref(PREF_KEYS.showAllAnswers, false);
+	      showAllAnswers.addEventListener('change', () => {
+	        writeBoolPref(PREF_KEYS.showAllAnswers, !!showAllAnswers.checked);
+	        applyRevealState();
+	      });
+	    }
+	  }
 
-  function bindAnswerChangeEvents(){
-    const inputs = $$('#questions input');
-    const handler = () => {
-      updateLiveScore();
-      applyRevealState();
+	  function localizeStaticUiText(){
+	    if(!locale.startsWith('ja')) return;
+
+	    const explainLabel = document.querySelector('label.switch[for="toggleExplainOnAnswer"] .switch-label');
+	    if(explainLabel && /Show explanation immediately/i.test(explainLabel.textContent || '')){
+	      explainLabel.textContent = UI_TEXT.showExplainImmediately;
+	    }
+	    const showAllLabel = document.querySelector('label.switch[for="toggleShowAllAnswers"] .switch-label');
+	    if(showAllLabel && /Show all answers/i.test(showAllLabel.textContent || '')){
+	      showAllLabel.textContent = UI_TEXT.showAllAnswers;
+	    }
+
+	    const bottom = document.getElementById('bottomShowAnswers');
+	    if(bottom && /Show Answers/i.test(bottom.textContent || '')){
+	      bottom.textContent = UI_TEXT.showAnswersAndScore;
+	    }
+
+	    const refsHeading = document.getElementById('refs-h') || document.getElementById('scope-h');
+	    if(refsHeading && (refsHeading.textContent || '').trim() === 'References (URLs)'){
+	      refsHeading.textContent = UI_TEXT.referencesHeading;
+	    }
+
+	    const langToggle = document.querySelector('.lang-toggle');
+	    if(langToggle){
+	      const aria = langToggle.getAttribute('aria-label') || '';
+	      if(!aria || aria === 'Language switcher'){
+	        langToggle.setAttribute('aria-label', UI_TEXT.languageSwitcher);
+	      }
+	    }
+	  }
+
+	  function bindAnswerChangeEvents(){
+	    const inputs = $$('#questions input');
+	    const handler = () => {
+	      updateLiveScore();
+	      applyRevealState();
     };
     inputs.forEach(input => {
       const type = (input.getAttribute('type') || '').toLowerCase();
@@ -903,14 +953,30 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     });
   }
 
-  // Handlers
-  $('#themeToggle')?.addEventListener('click',()=>{toggleTheme(); updateLiveScore();});
-  $('#mode-badge').addEventListener('click',()=>{let lm=$('#learningMode'); if(!lm){ lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} lm.checked=!lm.checked; const mb=$('#mode-badge'); mb.textContent=lm.checked?'Learning Mode':'Test Mode'; mb.setAttribute('aria-pressed',lm.checked?'true':'false'); updateLiveScore();});
-  const bottomBtn=$('#bottomShowAnswers');
-  if(bottomBtn){
-    bottomBtn.addEventListener('click',()=>{
-      const { showAllAnswers } = getRevealControls();
-      if(showAllAnswers){
+	  // Handlers
+	  $('#themeToggle')?.addEventListener('click',()=>{toggleTheme(); updateLiveScore();});
+	  $('#mode-badge')?.addEventListener('click',()=>{
+	    let lm=$('#learningMode');
+	    if(!lm){
+	      lm=document.createElement('input');
+	      lm.type='checkbox';
+	      lm.id='learningMode';
+	      lm.checked=true;
+	      lm.style.display='none';
+	      document.body.appendChild(lm);
+	    }
+	    lm.checked=!lm.checked;
+	    const mb=$('#mode-badge');
+	    mb.textContent=lm.checked?UI_TEXT.learningMode:UI_TEXT.testMode;
+	    mb.title=UI_TEXT.toggleModeTitle;
+	    mb.setAttribute('aria-pressed',lm.checked?'true':'false');
+	    updateLiveScore();
+	  });
+	  const bottomBtn=$('#bottomShowAnswers');
+	  if(bottomBtn){
+	    bottomBtn.addEventListener('click',()=>{
+	      const { showAllAnswers } = getRevealControls();
+	      if(showAllAnswers){
         showAllAnswers.checked = true;
         writeBoolPref(PREF_KEYS.showAllAnswers, true);
       }
@@ -918,19 +984,25 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     });
   }
 
-  applyInitialTheme();
-  try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
-  applySettings();
-  injectRfcHubLink();
-  injectRfcCheatSheet();
-  normalizeAllExplanations();
-  injectKeywordsBlock();
-  injectDifficultyBadges();
-  initRevealControls();
-  bindAnswerChangeEvents();
-  if(!$('#learningMode')){ const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} 
-  const mb=$('#mode-badge'); if(mb){ mb.textContent='Learning Mode'; mb.setAttribute('aria-pressed','true'); }
-  updateLiveScore();
-  applyRevealState();
-  const y=new Date().getFullYear(); const b=window.DRILL_SETTINGS?.BRAND_NAME||'ToppyMicroServices'; const c=$('#copyright'); if(c){ c.textContent='© '+y+' '+b+'. All rights reserved.'; }
-})();
+	  applyInitialTheme();
+	  try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
+	  applySettings();
+	  localizeStaticUiText();
+	  injectRfcHubLink();
+	  injectRfcCheatSheet();
+	  normalizeAllExplanations();
+	  injectKeywordsBlock();
+	  injectDifficultyBadges();
+	  initRevealControls();
+	  bindAnswerChangeEvents();
+	  if(!$('#learningMode')){ const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} 
+	  const mb=$('#mode-badge');
+	  if(mb){
+	    mb.textContent=UI_TEXT.learningMode;
+	    mb.title=UI_TEXT.toggleModeTitle;
+	    mb.setAttribute('aria-pressed','true');
+	  }
+	  updateLiveScore();
+	  applyRevealState();
+	  const y=new Date().getFullYear(); const b=window.DRILL_SETTINGS?.BRAND_NAME||'ToppyMicroServices'; const c=$('#copyright'); if(c){ c.textContent='© '+y+' '+b+'. All rights reserved.'; }
+	})();
