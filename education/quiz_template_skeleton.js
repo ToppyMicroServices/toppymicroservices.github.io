@@ -628,10 +628,11 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     if(!(scope instanceof HTMLElement)) return;
     if(scope.querySelector('.rfc-hub-link')) return;
 
-    const p = document.createElement('p');
-    p.className = 'muted rfc-hub-link';
-    const label = locale.startsWith('ja') ? 'RFCクイズ一覧' : 'RFC quiz hub';
-    p.innerHTML = '↩ <a href="rfc_quizzes.html">' + escapeHtml(label) + '</a>';
+	    const p = document.createElement('p');
+	    p.className = 'muted rfc-hub-link';
+	    const hubHref = locale.startsWith('ja') ? 'rfc_quizzes_ja.html' : 'rfc_quizzes.html';
+	    const label = locale.startsWith('ja') ? 'RFCクイズ一覧' : 'RFC quiz hub';
+	    p.innerHTML = '↩ <a href="' + escapeHtml(hubHref) + '">' + escapeHtml(label) + '</a>';
 
     const refsList = scope.querySelector('ul');
     if(refsList && refsList.parentElement === scope){

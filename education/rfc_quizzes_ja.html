@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RFC Quizzes | ToppyMicroServices</title>
-  <meta name="description" content="RFC quiz hub: links to RFC drills (HTTP, TLS, QUIC, WebSocket, URI, cookies) with English/Japanese versions." />
-  <link rel="canonical" href="https://toppymicros.com/education/rfc_quizzes.html" />
+  <title>RFCクイズ一覧 | ToppyMicroServices</title>
+  <meta name="description" content="RFCクイズのリンク集（HTTP / TLS / QUIC / WebSocket / URI / Cookie）。英語版・日本語版あり。" />
+  <link rel="canonical" href="https://toppymicros.com/education/rfc_quizzes_ja.html" />
 
   <link rel="alternate" hreflang="en" href="rfc_quizzes.html" />
   <link rel="alternate" hreflang="ja" href="rfc_quizzes_ja.html" />
@@ -49,14 +49,14 @@
             <span class="name">ToppyMicroServices</span>
           </a>
         </div>
-        <h1>RFC Quizzes</h1>
-        <h2>HTTP / TLS / QUIC / Web / URI — drills with explanations</h2>
+        <h1>RFCクイズ一覧</h1>
+        <h2>HTTP / TLS / QUIC / Web / URI — 解説つきドリル</h2>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
-        <div class="lang-toggle" aria-label="Language switcher">
-          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="rfc_quizzes.html">🇺🇸</a>
-          <a aria-label="日本語" data-lang="ja" href="rfc_quizzes_ja.html">🇯🇵</a>
+        <div class="lang-toggle" aria-label="言語切替">
+          <a aria-label="English" data-lang="en" href="rfc_quizzes.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="rfc_quizzes_ja.html">🇯🇵</a>
         </div>
         <a class="badge" href="../index.html">Home</a>
       </div>
@@ -65,11 +65,11 @@
     <section class="card panel" aria-label="Hub controls">
       <div class="hub-top">
         <div>
-          <p>Pick a quiz (English or Japanese). Use search to filter by RFC number, title, or keyword.</p>
+          <p>クイズを選んでください（英語/日本語）。検索でRFC番号・タイトル・キーワードで絞り込めます。</p>
         </div>
         <div class="search" aria-label="Search RFC quizzes">
-          <label class="sr-only" for="filterInput">Search</label>
-          <input id="filterInput" type="search" inputmode="search" placeholder="Search: 9110, TLS, cookies, WebSocket, URI..." autocomplete="off" />
+          <label class="sr-only" for="filterInput">検索</label>
+          <input id="filterInput" type="search" inputmode="search" placeholder="検索: 9110, TLS, cookies, WebSocket, URI..." autocomplete="off" />
           <span class="badge" id="countBadge" aria-live="polite">0</span>
         </div>
       </div>
@@ -156,14 +156,14 @@
         list.innerHTML='';
         const shown = QUIZZES.filter(item => {
           if(!q) return true;
-	          const hay = [
-	            String(item.rfc),
-	            item.title,
-	            item.titleJa,
-	            item.goal,
-	            item.goalJa,
-	            (item.tags||[]).join(' ')
-	          ].join(' ').toLowerCase();
+          const hay = [
+            String(item.rfc),
+            item.title,
+            item.titleJa,
+            item.goal,
+            item.goalJa,
+            (item.tags||[]).join(' ')
+          ].join(' ').toLowerCase();
           return hay.includes(q);
         });
 
@@ -171,7 +171,7 @@
 
         if(!shown.length){
           const empty = makeEl('div', { class: 'card empty' });
-          empty.textContent = "No matches. Try another keyword (e.g., “TLS”, “HTTP/2”, “cookies”, “9110”).";
+          empty.textContent = "一致するクイズがありません。別のキーワードを試してください（例: “TLS”, “HTTP/2”, “cookies”, “9110”）。";
           list.appendChild(empty);
           return;
         }
@@ -180,11 +180,12 @@
           const card = makeEl('article', { class: 'card item' });
           const h = makeEl('h3');
           const a = makeEl('a', { href: item.en });
-          a.textContent = "RFC " + item.rfc + " — " + item.title;
+          const title = item.titleJa || item.title;
+          a.textContent = "RFC " + item.rfc + " — " + title;
           h.appendChild(a);
           card.appendChild(h);
 
-          const p = makeEl('p', { class: 'muted', text: item.goal });
+          const p = makeEl('p', { class: 'muted', text: item.goalJa || item.goal });
           card.appendChild(p);
 
           const meta = makeEl('div', { class: 'meta' });
@@ -192,10 +193,10 @@
           card.appendChild(meta);
 
           const links = makeEl('div', { class: 'links' });
-          const en = makeEl('a', { href: item.en, 'aria-label': "Open English quiz for RFC " + item.rfc });
-          en.textContent = "🇺🇸 English";
-          const ja = makeEl('a', { href: item.ja, 'aria-label': "Open Japanese quiz for RFC " + item.rfc });
-          ja.textContent = "🇯🇵 日本語";
+          const en = makeEl('a', { href: item.en, 'aria-label': \"RFC \" + item.rfc + \" の英語版クイズを開く\" });
+          en.textContent = \"🇺🇸 English\";
+          const ja = makeEl('a', { href: item.ja, 'aria-label': \"RFC \" + item.rfc + \" の日本語版クイズを開く\" });
+          ja.textContent = \"🇯🇵 日本語\";
           links.appendChild(en);
           links.appendChild(ja);
           card.appendChild(links);
@@ -216,3 +217,4 @@
   </script>
 </body>
 </html>
+
