@@ -9,6 +9,14 @@
     "jsTemplate": "education/quiz_template_skeleton.js"
   },
   "contentAuthoring": {
+    "purpose": {
+      "primary": "Help developers build durable engineering skill in an AI-first era.",
+      "notGoals": [
+        "Certification / exam prep",
+        "Rote memorization of commands, flags, or options"
+      ],
+      "intent": "When developers use AI to implement or review a related theme, this quiz organizes the prerequisite concepts, keywords, frameworks, and pitfalls they should already understand."
+    },
     "inputs": {
       "theme": "Given by the quiz author (required)",
       "language": {
@@ -33,7 +41,11 @@
       },
       "questionCount": {
         "default": 10,
-        "note": "If not specified, generate 10 questions."
+        "rules": {
+          "newReferenceUrlOrSmallTheme": 10,
+          "largeTheme": 25
+        },
+        "note": "Default is 10. If adding a new reference URL or a new small theme, generate 10 questions. For a large theme, generate 25 questions."
       },
       "referenceUrls": [
         "Given by the quiz author (optional; use when provided)"
@@ -41,6 +53,11 @@
     },
     "questionPhilosophy": {
       "aiEraFocus": "Prefer questions that build framework-level skill: writing/reviewing specs, handling exceptions/trade-offs, making requirements testable, and collaborating with AI (e.g., asking for a spec rewrite or review).",
+      "policy": [
+        "Do not primarily test memorization of commands/flags/options; AI can look these up.",
+        "Instead test: concepts, design philosophy, thinking frameworks, key terms, metric meanings, common misconceptions, and typical errors that appear in real development.",
+        "Assume the explanation is part of the curriculum: optimize for learning-by-reading."
+      ],
       "avoid": [
         "Pure memorization of definitions without application",
         "Questions whose correctness depends mainly on subjective preference",
@@ -50,22 +67,28 @@
     "requirements": [
       "Follow the given theme and reference URLs when writing answers/explanations; do not introduce contradictions.",
       "Include the key words/terms that appear in the question statement inside the explanation text (not only in the prompt).",
+      "Include a short 'Context (why chosen)' / '問題を出した背景' in the explanation.",
       "For multiple-choice and multi-select questions, provide explanations for every option word/phrase: define what it means and why it is correct/incorrect.",
       "For Japanese text, use '.' and ',' instead of Japanese punctuation '。' and '、'.",
       "Choices must not end with sentence-final punctuation (., 。).",
-      "If there are related topics that help learning, give concrete examples (briefly) to connect the concept to adjacent topics."
+      "If there are related topics that help learning, give concrete examples (briefly) to connect the concept to adjacent topics.",
+      "Important keywords that the learner should remember must be emphasized with **bold**.",
+      "Explanations must not be one-line summaries; they should be detailed enough to follow and learn from."
     ],
     "explanationBlock": {
       "selector": ".explain",
       "expectedStructure": [
         "Definition/meaning of the question terms",
+        "Context (why chosen) / 問題を出した背景",
         "Why the correct answer is correct",
         "Why each distractor/incorrect option is incorrect",
         "Related topics/examples (when relevant)"
       ],
       "readability": {
         "formatting": "Use line breaks and (when helpful) bullet lists to keep explanations scannable.",
-        "emphasis": "Make definitions explicit before reasoning (definition-first)."
+        "emphasis": "Make definitions explicit before reasoning (definition-first).",
+        "depth": "Prefer learning-first explanations: explain each option carefully (not a single line) so the reader can follow the reasoning.",
+        "markdown": "Author explanations with Markdown-like syntax that the template can safely normalize (e.g., **bold**, `inline code`). Avoid unsupported constructs that would break HTML."
       }
     }
   },

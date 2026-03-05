@@ -83,22 +83,23 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    // This is intentionally minimal and only targets `...` (single line).
 	    out = out.replace(/`([^`\n]+?)`/g, (_m, inner) => '<code>' + escapeHtml(inner) + '</code>');
 
-	    if(locale.startsWith('ja')){
-	      out = out
-	        .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
-	        .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
-	        .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>背景（なぜこの問題）:<\/strong>')
-	        .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
-	        .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
-	        .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
-	        .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
-	        .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
-	    }
+      if(locale.startsWith('ja')){
+        out = out
+          .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
+          .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
+          .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
+          .replace(/<strong>背景（なぜこの問題）:<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
+          .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
+          .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
+          .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
+          .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
+          .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
+      }
 
 	    // Ensure section headings start on their own lines (even if authored inline).
 	    out = out
 	      .replace(/\s*(<strong>(?:Explanation|解説)(?::)?<\/strong>)/g, '\n$1')
-	      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）):<\/strong>)/g, '\n\n$1')
+	      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Terms|用語):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Correct|正解)[^<]*?:<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Options|選択肢):<\/strong>)/g, '\n\n$1')
@@ -119,6 +120,79 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     out = out.trim();
 
     return out;
+  }
+
+  function escapeRegExp(str){
+    return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function uniqueKeywords(list){
+    const seen = new Set();
+    const out = [];
+    for(const raw of (list || [])){
+      const k = String(raw || '').trim();
+      if(!k) continue;
+      const key = k.toLowerCase();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      out.push(k);
+    }
+    return out;
+  }
+
+  function getDefaultImportantKeywords(){
+    // Minimal, RFC-focused set. (Other keywords come from Terms/inference.)
+    return [
+      'MUST NOT','SHALL NOT','NOT RECOMMENDED','SHOULD NOT',
+      'MUST','SHALL','SHOULD','RECOMMENDED','MAY','OPTIONAL',
+      'TLS','HTTPS','HTTP/2','HTTP/3','QUIC','WebSocket','URI',
+      'Set-Cookie','SameSite','CSRF','HSTS','SNI','0-RTT'
+    ];
+  }
+
+  function boldifyKeywordsInHtml(html, keywords){
+    const list = uniqueKeywords(keywords)
+      .filter(k => k.length >= 2)
+      .sort((a,b) => b.length - a.length)
+      .slice(0, 18);
+    if(!list.length) return html;
+
+    const keywordSet = new Set(list.map(k => k.toLowerCase()));
+    const re = new RegExp('(' + list.map(escapeRegExp).join('|') + ')', 'gi');
+
+    const root = document.createElement('div');
+    root.innerHTML = String(html || '');
+
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while(walker.nextNode()) textNodes.push(walker.currentNode);
+
+    for(const node of textNodes){
+      const parent = node.parentElement;
+      if(!parent) continue;
+      // Skip already-emphasized or code/link contexts.
+      if(parent.closest('strong, code, a, pre, script, style')) continue;
+      const text = node.nodeValue || '';
+      if(!re.test(text)) continue;
+
+      const parts = text.split(re);
+      if(parts.length <= 1) continue;
+
+      const frag = document.createDocumentFragment();
+      for(const part of parts){
+        if(!part) continue;
+        if(keywordSet.has(part.toLowerCase())){
+          const strong = document.createElement('strong');
+          strong.textContent = part;
+          frag.appendChild(strong);
+        } else {
+          frag.appendChild(document.createTextNode(part));
+        }
+      }
+      node.parentNode?.replaceChild(frag, node);
+    }
+
+    return root.innerHTML;
   }
 
   function getRfcNumber(){
@@ -379,9 +453,9 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	      return "この問題は、相互運用性のために取り違えやすい定義を定着させる目的で選んでいます。";
 	    })();
 
-    return locale.startsWith('ja')
-      ? '<strong>背景（なぜこの問題）:</strong> ' + ja
-      : '<strong>Context (why chosen):</strong> ' + en;
+      return locale.startsWith('ja')
+        ? '<strong>問題を出した背景:</strong> ' + ja
+        : '<strong>Context (why chosen):</strong> ' + en;
   }
 
   function getCorrectSummaryFromExplain(html){
@@ -541,7 +615,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       lines.unshift(locale.startsWith('ja') ? '<strong>解説:</strong>' : '<strong>Explanation:</strong>');
     }
 
-    const hasContext = lines.some(l => /<strong>(?:Context \(why chosen\)|背景（なぜこの問題）):<\/strong>/i.test(l));
+      const hasContext = lines.some(l => /<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>/i.test(l));
     if(!hasContext){
       const correctSummary = getCorrectSummaryFromExplain(lines.join('\n'));
       const ctxLine = buildContextLine(q, correctSummary);
@@ -558,7 +632,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         const terms = inferred.map(t => '<strong>' + escapeHtml(t) + '</strong>').join(', ');
         const line = heading + ' ' + terms;
         // Insert after Context when present, otherwise after Explanation.
-        const ctxIdx = lines.findIndex(l => /<strong>(?:Context \(why chosen\)|背景（なぜこの問題）):<\/strong>/i.test(l));
+          const ctxIdx = lines.findIndex(l => /<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>/i.test(l));
         const base = ctxIdx >= 0 ? ctxIdx : (expIdx >= 0 ? expIdx : 0);
         lines.splice(base + 1, 0, '', line);
       }
@@ -630,7 +704,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 
 	    const p = document.createElement('p');
 	    p.className = 'muted rfc-hub-link';
-	    const hubHref = locale.startsWith('ja') ? 'rfc_quizzes_ja.html' : 'rfc_quizzes.html';
+      const hubHref = locale.startsWith('ja') ? 'rfc_quize_ja.html' : 'rfc_quize.html';
 	    const label = locale.startsWith('ja') ? 'RFCクイズ一覧' : 'RFC quiz hub';
 	    p.innerHTML = '↩ <a href="' + escapeHtml(hubHref) + '">' + escapeHtml(label) + '</a>';
 
@@ -776,7 +850,15 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       let out = normalizeExplainHtml(exp.innerHTML);
       if(rfc){
         out = enrichRfcExplain(q, out);
-        out = normalizeExplainHtml(out);
+          out = normalizeExplainHtml(out);
+          const terms = extractTermsFromExplainHtml(out);
+          const inferred = terms.length ? terms : inferQuestionTerms(q);
+          const keywords = uniqueKeywords([
+            ...getDefaultImportantKeywords(),
+            ...inferred
+          ]);
+          out = boldifyKeywordsInHtml(out, keywords);
+          out = normalizeExplainHtml(out);
       }
       exp.innerHTML = out;
     });

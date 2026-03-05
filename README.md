@@ -57,6 +57,24 @@ This repository includes simple, client-side interactive quizzes for finance ter
 
 These quizzes are educational utilities and are independent from the core service offerings.
 
+### Quiz authoring policy (required)
+These quizzes are not designed for certifications or rote memorization. Their purpose is to help developers build durable engineering skill in an AI-first era.
+
+**Purpose**
+- Organize what developers should already understand when using AI to implement or review related themes.
+- Prioritize learning-by-reading the explanations: the explanation is part of the curriculum, not just an answer key.
+
+**Question policy**
+- Avoid memorization of commands/flags/options as a primary goal (AI can look these up). Instead, test the meanings behind them: concepts, design philosophy, thought frameworks, key terms, metric meanings, common misconceptions, and typical errors.
+- When a new reference URL or a new small theme is added, create **10 questions**.
+- For a large theme, create **25 questions**.
+
+**Explanation policy (must)**
+- Include: (1) what is being asked + explanation of the concept, (2) why this question exists ("問題を出した背景" / context), (3) key takeaways.
+- Make especially important keywords **bold**.
+- Explain each option carefully (not a one-line summary), so a reader can learn by following the explanation.
+- Author the question and explanation blocks so Markdown-like formatting is safely/consistently rendered by the quiz template.
+
 ## Research References
 Some pages reference external research outputs associated with ToppyMicroServices.
 

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC Quiz Hub | ToppyMicroServices</title>
+  <meta name="description" content="RFC quiz hub: links to RFC drills (HTTP, TLS, QUIC, WebSocket, URI, cookies) with English/Japanese versions." />
+  <link rel="canonical" href="https://toppymicros.com/education/rfc_quize.html" />
+
+  <link rel="alternate" hreflang="en" href="rfc_quize.html" />
+  <link rel="alternate" hreflang="ja" href="rfc_quize_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <script defer src="../assets/global.js"></script>
+
+  <style>
+    .hub-top{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+    .hub-top p{margin:0;color:var(--muted)}
+    .search{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search input{
+      width:min(520px, 92vw);
+      padding:.55rem .75rem;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#0f1620;
+      color:var(--fg);
+      outline:none;
+    }
+    body[data-theme="light"] .search input{background:white;color:#0b1221;border-color:#dbe3ee}
+    .grid-hub{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .item{grid-column:span 12;padding:14px 16px}
+    @media (min-width: 820px){ .item{grid-column:span 6;} }
+    .item h3{margin:0 0 6px;font-size:1.05rem}
+    .item .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .item .meta .tag{padding:.18rem .5rem;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:.78rem;background:rgba(255,255,255,.03)}
+    .item .links{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+    .item .links a{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .6rem;border:1px solid var(--border);border-radius:10px;background:#141c27;text-decoration:none}
+    body[data-theme="light"] .item .links a{background:rgba(226,232,240,0.7)}
+    .empty{padding:14px 16px}
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a href="../index.html" aria-label="Home">
+            <img alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1>RFC Quiz Hub</h1>
+        <h2>HTTP / TLS / QUIC / Web / URI — drills with explanations</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="rfc_quize.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="rfc_quize_ja.html">🇯🇵</a>
+        </div>
+        <a class="badge" href="../index.html">Home</a>
+      </div>
+    </header>
+
+    <section class="card panel" aria-label="Hub controls">
+      <div class="hub-top">
+        <div>
+          <p>Pick a quiz (English or Japanese). Use search to filter by RFC number, title, or keyword.</p>
+        </div>
+        <div class="search" aria-label="Search RFC quizzes">
+          <label class="sr-only" for="filterInput">Search</label>
+          <input id="filterInput" type="search" inputmode="search" placeholder="Search: 9110, TLS, cookies, WebSocket, URI..." autocomplete="off" />
+          <span class="badge" id="countBadge" aria-live="polite">0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-hub" id="quizList" aria-label="RFC quiz list"></section>
+  </div>
+
+  <script>
+    (function(){
+      const THEME_KEY='quizTheme';
+      const prefersDark=window.matchMedia('(prefers-color-scheme: dark)');
+
+      function updateThemeToggle(mode){
+        const b=document.getElementById('themeToggle'); if(!b) return;
+        const light=mode==='light';
+        b.textContent=light?'🌙 Dark':'🌞 Light';
+        b.setAttribute('aria-pressed', light ? 'true' : 'false');
+      }
+      function setTheme(mode, persist){
+        const normalized = mode === 'light' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', normalized);
+        if(persist){
+          try{ localStorage.setItem(THEME_KEY, normalized); }catch(_e){}
+        }
+        updateThemeToggle(normalized);
+      }
+      function applyInitialTheme(){
+        let saved=null;
+        try{ saved = localStorage.getItem(THEME_KEY); }catch(_e){}
+        const init = saved || (prefersDark.matches ? 'dark' : 'light');
+        setTheme(init, false);
+      }
+      function toggleTheme(){
+        const current = document.body.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        setTheme(current === 'light' ? 'dark' : 'light', true);
+      }
+
+      const QUIZZES = [
+        { rfc: 2119, title: "MUST / SHOULD / MAY, etc.", titleJa: "規範語（BCP 14）", goal: "Read and write normative language without ambiguity", goalJa: "仕様書の規範語を、誤解が出ない形で読み書きできるようにする", tags: ["spec-writing","BCP 14"], en: "quiz_rfc2119.html", ja: "quiz_rfc2119_ja.html" },
+        { rfc: 2818, title: "HTTP Over TLS (HTTPS)", titleJa: "HTTPS（HTTP over TLS）", goal: "Understand what HTTPS means for URLs, ports, and security expectations", goalJa: "https URLが意味する接続動作と、セキュリティ上の期待値を説明できるようにする", tags: ["https","tls","web"], en: "quiz_rfc2818.html", ja: "quiz_rfc2818_ja.html" },
+        { rfc: 3552, title: "Writing Security Considerations", titleJa: "Security Considerationsの書き方", goal: "Be able to produce a useful security considerations section for a protocol or API", goalJa: "プロトコルやAPIのSecurity Considerationsを、実装者と運用者に役立つ形で書けるようにする", tags: ["security","spec-writing"], en: "quiz_rfc3552.html", ja: "quiz_rfc3552_ja.html" },
+        { rfc: 3986, title: "URI Generic Syntax", titleJa: "URI（Generic Syntax）", goal: "Parse, construct, and normalize URIs without breaking meaning", goalJa: "意味を壊さずにURIをパース・生成・正規化できるようにする", tags: ["uri","parsing"], en: "quiz_rfc3986.html", ja: "quiz_rfc3986_ja.html" },
+        { rfc: 4949, title: "Internet Security Glossary", titleJa: "セキュリティ用語（Glossary）", goal: "Use precise security vocabulary in reviews and incident analysis", goalJa: "レビューやインシデント分析で、セキュリティ用語を正確に使えるようにする", tags: ["security","glossary"], en: "quiz_rfc4949.html", ja: "quiz_rfc4949_ja.html" },
+        { rfc: 5077, title: "TLS Session Resumption via Session Tickets", titleJa: "TLS Session Tickets", goal: "Understand how session tickets enable stateless resumption and what key management risks exist", goalJa: "Session Ticketによるステートレス再開の仕組みと、チケット鍵運用のリスクを説明できるようにする", tags: ["tls","tickets"], en: "quiz_rfc5077.html", ja: "quiz_rfc5077_ja.html" },
+        { rfc: 6066, title: "TLS Extensions", titleJa: "TLS Extensions", goal: "Understand why TLS has extensions and what SNI enables", goalJa: "TLS拡張の目的と、SNIがデプロイとプライバシーに与える影響を説明できるようにする", tags: ["tls","sni"], en: "quiz_rfc6066.html", ja: "quiz_rfc6066_ja.html" },
+        { rfc: 6265, title: "Cookies", titleJa: "Cookies", goal: "Understand Set-Cookie, Cookie, and the security attributes you must use", goalJa: "Set-CookieとCookie、Secure/SameSiteなどの属性を正しく使えるようにする", tags: ["cookies","security","web"], en: "quiz_rfc6265.html", ja: "quiz_rfc6265_ja.html" },
+        { rfc: 6455, title: "The WebSocket Protocol", titleJa: "WebSocket", goal: "Understand the WebSocket upgrade handshake and ws/wss security implications", goalJa: "HTTP Upgradeハンドシェイクと、ws と wss のセキュリティ上の違いを説明できるようにする", tags: ["websocket","http"], en: "quiz_rfc6455.html", ja: "quiz_rfc6455_ja.html" },
+        { rfc: 6797, title: "HSTS", titleJa: "HSTS", goal: "Understand Strict-Transport-Security and how to deploy it safely", goalJa: "Strict-Transport-Securityのディレクティブと、安全な導入手順を理解する", tags: ["hsts","security","https"], en: "quiz_rfc6797.html", ja: "quiz_rfc6797_ja.html" },
+        { rfc: 7239, title: "Forwarded", titleJa: "Forwarded", goal: "Understand standardized proxy forwarding metadata and its risks", goalJa: "プロキシ経由の元の情報を安全に扱い、信頼境界の落とし穴を避ける", tags: ["proxy","http"], en: "quiz_rfc7239.html", ja: "quiz_rfc7239_ja.html" },
+        { rfc: 7258, title: "Pervasive Monitoring Is an Attack", titleJa: "Pervasive Monitoring", goal: "Understand what it means to treat large scale passive monitoring as an attacker", goalJa: "大規模な受動監視を攻撃者（attacker）として前提に置き、プロトコル設計で露出を減らす発想を説明できるようにする", tags: ["security","privacy"], en: "quiz_rfc7258.html", ja: "quiz_rfc7258_ja.html" },
+        { rfc: 7541, title: "HPACK", titleJa: "HPACK", goal: "Understand header compression primitives and pitfalls for HTTP/2", goalJa: "HTTP/2のヘッダー圧縮の仕組みと、落とし穴を説明できるようにする", tags: ["http2","compression"], en: "quiz_rfc7541.html", ja: "quiz_rfc7541_ja.html" },
+        { rfc: 7616, title: "HTTP Digest Authentication", titleJa: "HTTP Digest認証", goal: "Understand Digest auth fields, nonces, and the operational pitfalls", goalJa: "Digest認証のnonceやパラメータの役割と、運用上の落とし穴を説明できるようにする", tags: ["auth","http","security"], en: "quiz_rfc7616.html", ja: "quiz_rfc7616_ja.html" },
+        { rfc: 7617, title: "HTTP Basic Authentication", titleJa: "HTTP Basic認証", goal: "Understand Basic auth wire format and why it must be paired with TLS", goalJa: "Basic認証のワイヤ形式（wire format）と、TLSとセットで使う理由を説明できるようにする", tags: ["auth","http","tls"], en: "quiz_rfc7617.html", ja: "quiz_rfc7617_ja.html" },
+        { rfc: 7807, title: "Problem Details", titleJa: "Problem Details", goal: "Represent API errors consistently with problem+json fields", goalJa: "problem+jsonの標準フィールドで、APIエラーを一貫した形にする", tags: ["api","errors","http"], en: "quiz_rfc7807.html", ja: "quiz_rfc7807_ja.html" },
+        { rfc: 8174, title: "BCP 14 case-sensitivity update", titleJa: "BCP 14更新（大文字/小文字）", goal: "Interpret MUST/SHOULD/MAY correctly and write requirements that are unambiguous", goalJa: "MUST/SHOULD/MAYを正しく読み、曖昧さのない要件を書く", tags: ["spec-writing","BCP 14"], en: "quiz_rfc8174.html", ja: "quiz_rfc8174_ja.html" },
+        { rfc: 8441, title: "WebSockets over HTTP/2", titleJa: "HTTP/2上のWebSocket（extended CONNECT）", goal: "Understand the extended CONNECT approach for WebSockets over HTTP/2", goalJa: "HTTP/2でUpgradeが使えない状況でも、extended CONNECTでWebSocketを成立させる考え方を説明できるようにする", tags: ["websocket","http2"], en: "quiz_rfc8441.html", ja: "quiz_rfc8441_ja.html" },
+        { rfc: 8446, title: "TLS 1.3", titleJa: "TLS 1.3", goal: "Understand TLS 1.3 handshake properties and where risks like 0-RTT replay appear", goalJa: "TLS 1.3の性質と、0-RTTのリプレイなどの注意点を説明できるようにする", tags: ["tls13","security"], en: "quiz_rfc8446.html", ja: "quiz_rfc8446_ja.html" },
+        { rfc: 9000, title: "QUIC Transport", titleJa: "QUIC Transport", goal: "Understand QUIC streams, connection identity, and flow control at a high level", goalJa: "QUICのストリーム、コネクションID、フロー制御を高レベルで理解する", tags: ["quic","transport"], en: "quiz_rfc9000.html", ja: "quiz_rfc9000_ja.html" },
+        { rfc: 9110, title: "HTTP Semantics", titleJa: "HTTP Semantics", goal: "Reason about HTTP methods, status codes, caching, and header meaning", goalJa: "method、status code、caching、headerの意味を誤解せずに扱えるようにする", tags: ["http","semantics"], en: "quiz_rfc9110.html", ja: "quiz_rfc9110_ja.html" },
+        { rfc: 9112, title: "HTTP/1.1", titleJa: "HTTP/1.1", goal: "Correctly frame messages and manage connections in HTTP/1.1", goalJa: "HTTP/1.1で正しくメッセージをフレーミングし、コネクションを安全に扱う", tags: ["http1","framing"], en: "quiz_rfc9112.html", ja: "quiz_rfc9112_ja.html" },
+        { rfc: 9113, title: "HTTP/2", titleJa: "HTTP/2", goal: "Understand streams, frames, flow control, and HTTP/2 connection behavior", goalJa: "ストリームとフレーム、フロー制御、コネクションの基本を押さえる", tags: ["http2","frames"], en: "quiz_rfc9113.html", ja: "quiz_rfc9113_ja.html" },
+        { rfc: 9114, title: "HTTP/3", titleJa: "HTTP/3", goal: "Understand how HTTP/3 maps HTTP to QUIC and what problems it solves", goalJa: "HTTP/3がQUICにどうマッピングされ、損失や移動でどう振る舞うかを理解する", tags: ["http3","quic"], en: "quiz_rfc9114.html", ja: "quiz_rfc9114_ja.html" }
+      ];
+
+      function makeEl(tag, attrs){
+        const el=document.createElement(tag);
+        if(attrs){
+          for(const [k,v] of Object.entries(attrs)){
+            if(k === 'class') el.className = v;
+            else if(k === 'text') el.textContent = v;
+            else el.setAttribute(k, v);
+          }
+        }
+        return el;
+      }
+
+      function render(filter){
+        const q=(filter||'').toLowerCase().trim();
+        const list=document.getElementById('quizList');
+        const count=document.getElementById('countBadge');
+        if(!list) return;
+
+        list.innerHTML='';
+        const shown = QUIZZES.filter(item => {
+          if(!q) return true;
+          const hay = [
+            String(item.rfc),
+            item.title,
+            item.titleJa,
+            item.goal,
+            item.goalJa,
+            (item.tags||[]).join(' ')
+          ].join(' ').toLowerCase();
+          return hay.includes(q);
+        });
+
+        if(count) count.textContent = shown.length + " / " + QUIZZES.length;
+
+        if(!shown.length){
+          const empty = makeEl('div', { class: 'card empty' });
+          empty.textContent = "No matches. Try another keyword (e.g., “TLS”, “HTTP/2”, “cookies”, “9110”).";
+          list.appendChild(empty);
+          return;
+        }
+
+        shown.sort((a,b)=>a.rfc-b.rfc).forEach(item => {
+          const card = makeEl('article', { class: 'card item' });
+          const h = makeEl('h3');
+          const a = makeEl('a', { href: item.en });
+          a.textContent = "RFC " + item.rfc + " — " + item.title;
+          h.appendChild(a);
+          card.appendChild(h);
+
+          const p = makeEl('p', { class: 'muted', text: item.goal });
+          card.appendChild(p);
+
+          const meta = makeEl('div', { class: 'meta' });
+          (item.tags || []).forEach(t => meta.appendChild(makeEl('span', { class: 'tag', text: t })));
+          card.appendChild(meta);
+
+          const links = makeEl('div', { class: 'links' });
+          const en = makeEl('a', { href: item.en, 'aria-label': "Open English quiz for RFC " + item.rfc });
+          en.textContent = "🇺🇸 English";
+          const ja = makeEl('a', { href: item.ja, 'aria-label': "Open Japanese quiz for RFC " + item.rfc });
+          ja.textContent = "🇯🇵 日本語";
+          links.appendChild(en);
+          links.appendChild(ja);
+          card.appendChild(links);
+
+          list.appendChild(card);
+        });
+      }
+
+      document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+      const input = document.getElementById('filterInput');
+      if(input){
+        input.addEventListener('input', () => render(input.value));
+      }
+
+      applyInitialTheme();
+      render('');
+    })();
+  </script>
+</body>
+</html>
