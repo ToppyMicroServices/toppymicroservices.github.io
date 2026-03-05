@@ -89,17 +89,22 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
           .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
           .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
           .replace(/<strong>背景（なぜこの問題）:<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
+          .replace(/<strong>Real-world usage:<\/strong>/g, '<strong>実務での機会:<\/strong>')
           .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
           .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
           .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
           .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
           .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
+
+	    // Project policy: prefer '.' and ',' in Japanese text.
+	    out = out.replace(/、/g, ',').replace(/。/g, '.');
       }
 
 	    // Ensure section headings start on their own lines (even if authored inline).
 	    out = out
 	      .replace(/\s*(<strong>(?:Explanation|解説)(?::)?<\/strong>)/g, '\n$1')
 	      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>)/g, '\n\n$1')
+	      .replace(/\s*(<strong>(?:Real-world usage|実務での機会):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Terms|用語):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Correct|正解)[^<]*?:<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Options|選択肢):<\/strong>)/g, '\n\n$1')
@@ -382,6 +387,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    const titleRaw = q.querySelector('h4')?.textContent || '';
 	    const title = titleRaw.toLowerCase();
 	    const rfc = getRfcNumber();
+      const isRfc = isRfcDrill();
 	    const subtitle = String(window.DRILL_SETTINGS?.SKILL_SUBTITLE || '').trim();
 
     const en = (() => {
@@ -398,7 +404,9 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         return "This question is chosen because TLS misconceptions lead to insecure deployments; you need to separate channel security (TLS) from application-layer authorization and policy.";
       }
       if(title.includes('cache') || title.includes('cach') || title.includes('idempotent')){
-        return "This question is chosen because HTTP semantics drive retries, caching, and client behavior; misreading them causes subtle correctness and privacy bugs.";
+	      return isRfc
+	        ? "This question is chosen because HTTP semantics drive retries, caching, and client behavior; misreading them causes subtle correctness and privacy bugs."
+	        : "This question is chosen because semantics drive behavior; a small misunderstanding can cause subtle correctness or security issues in practice.";
       }
       if(title.includes('websocket') || title.includes('upgrade') || title.includes('connect')){
         return "This question is chosen because WebSocket bootstrapping differs across HTTP versions; mixing the rules breaks deployments behind proxies and CDNs.";
@@ -414,12 +422,18 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       }
       // Fall back to RFC subtitle/goal framing when no keyword hit.
       if(subtitle){
-        return "This question is chosen to reinforce a core concept in **" + subtitle + "** that implementers must get right for interoperability.";
+	      return isRfc
+	        ? "This question is chosen to reinforce a core concept in **" + subtitle + "** that implementers must get right for interoperability."
+	        : "This question is chosen to reinforce a core concept in **" + subtitle + "** so you can explain it clearly in your own words.";
       }
       if(correctSummary){
-        return "This question is chosen to reinforce a core definition that commonly causes interoperability bugs when misunderstood.";
+	      return isRfc
+	        ? "This question is chosen to reinforce a core definition that commonly causes interoperability bugs when misunderstood."
+	        : "This question is chosen to reinforce a core definition that is easy to mix up when reading real materials.";
       }
-      return "This question is chosen to reinforce a core definition that implementations must get right for interoperability.";
+	    return isRfc
+	      ? "This question is chosen to reinforce a core definition that implementations must get right for interoperability."
+	      : "This question is chosen to reinforce a core definition that you should be able to state precisely.";
     })();
 
     const ja = (() => {
@@ -436,7 +450,9 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         return "この問題は、TLSの誤解が危険なデプロイにつながりやすく、TLSの**通信路の保護**とアプリ層の認可/ポリシーを分けて理解する必要があるため選んでいます。";
       }
       if(title.includes('cache') || title.includes('cach') || title.includes('idempotent')){
-        return "この問題は、HTTPの意味論がリトライやキャッシュ挙動を左右し、誤解が正しさ/プライバシーのバグになるため選んでいます。";
+        return isRfc
+          ? "この問題は、HTTPの**セマンティクス(意味/ルール)**がリトライやキャッシュ挙動を左右し、誤解が正しさ/プライバシーのバグになるため選んでいます。"
+          : "この問題は、定義や**セマンティクス(意味/ルール)**の取り違えが実務での判断ミスにつながりやすいため選んでいます。";
 	      }
 	      if(title.includes('websocket') || title.includes('upgrade') || title.includes('connect')){
 	        return "この問題は、HTTPバージョンごとにWebSocketの成立手順が異なり、混同するとプロキシ/CDN配下で壊れるため選んでいます。";
@@ -448,9 +464,13 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	        return "この問題は、輸送層の部品（**ストリーム**、**フロー制御**、**コネクションID** など）がHTTP/3の理解の土台になるため選んでいます。";
 	      }
 	      if(subtitle){
-	        return "この問題は、**" + subtitle + "** の中核概念を相互運用性の観点で定着させるため選んでいます。";
+          return isRfc
+            ? "この問題は、**" + subtitle + "** の中核概念を相互運用性の観点で定着させるため選んでいます。"
+            : "この問題は、**" + subtitle + "** の中核概念を、読み物や実務で迷わないように定着させるため選んでいます。";
 	      }
-	      return "この問題は、相互運用性のために取り違えやすい定義を定着させる目的で選んでいます。";
+        return isRfc
+          ? "この問題は、相互運用性のために取り違えやすい定義を定着させる目的で選んでいます。"
+          : "この問題は、取り違えやすい定義を定着させる目的で選んでいます。";
 	    })();
 
       return locale.startsWith('ja')
@@ -519,8 +539,10 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 
     if(isCorrect){
       return locale.startsWith('ja')
-        ? "設問の要件/定義に合致します。"
-        : "This aligns with the RFC-defined requirement/definition for this concept.";
+        ? "設問の定義/要件に合致します。"
+        : (isRfcDrill()
+          ? "This aligns with the RFC-defined requirement/definition for this concept."
+          : "This matches the definition/requirement asked by the question.");
     }
 
     if(correctSummary){
@@ -530,8 +552,40 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     }
 
     return locale.startsWith('ja')
-      ? "仕様上の定義/要件と一致しません。"
-      : "This does not match the RFC-defined behavior/definition.";
+      ? "設問で問われている定義/要件と一致しません。"
+      : (isRfcDrill()
+        ? "This does not match the RFC-defined behavior/definition."
+        : "This does not match what the question is asking for.");
+  }
+
+  function ensureRealWorldSection(q, html){
+    const lines = String(html || '').split('\n');
+    const hasRealWorld = lines.some(l => /<strong>(?:Real-world usage|実務での機会):<\/strong>/i.test(l));
+    if(hasRealWorld) return html;
+
+    const titleRaw = q.querySelector('h4')?.textContent || '';
+    const title = titleRaw.toLowerCase();
+    const heading = locale.startsWith('ja')
+      ? '<strong>実務での機会:</strong>'
+      : '<strong>Real-world usage:</strong>';
+
+    const text = (() => {
+      if(locale.startsWith('ja')){
+        if(title.includes('header') || title.includes('cookie') || title.includes('proxy') || title.includes('tls')){
+          return '仕様どおりに理解できていないと、本番の相互接続やセキュリティレビューで詰まりやすいポイントです。';
+        }
+        return '資料を読む/設計レビューをする場面で、用語や定義を正確に言い換えられるようにするための練習です。';
+      }
+      if(title.includes('header') || title.includes('cookie') || title.includes('proxy') || title.includes('tls')){
+        return 'This shows up often in production interoperability and security reviews; small misunderstandings turn into real incidents.';
+      }
+      return 'This helps you read real materials faster by being able to restate the definition precisely.';
+    })();
+
+    const insertAfter = lines.findIndex(l => /<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>/i.test(l));
+    const at = insertAfter >= 0 ? insertAfter + 1 : 1;
+    lines.splice(at, 0, '', heading + ' ' + text);
+    return lines.join('\n').trim();
   }
 
   function ensureOptionsSection(q, html){
@@ -574,10 +628,15 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     if(optionsStart < 0){
       // If the explanation already contains per-option commentary (e.g. "<li>A (...): ..."),
       // avoid duplicating an Options block.
-      const alreadyHasPerOption = choices
-        .filter(c => c.letter && new RegExp('\\b' + c.letter + '\\s*\\(', 'i').test(String(html || '')))
-        .length >= Math.min(choices.length, 2);
-      if(alreadyHasPerOption) return html;
+      const present = new Set();
+      choices.forEach(c => {
+        if(!c.letter) return;
+        if(new RegExp('\\b' + c.letter + '\\s*\\(', 'i').test(String(html || ''))){
+          present.add(c.letter);
+        }
+      });
+      const alreadyHasPerOption = present.size >= Math.min(choices.length, 2);
+      if(alreadyHasPerOption && present.size === choices.length) return html;
 
       // Insert before Related if present, otherwise append to end.
       const relatedIndex = lines.findIndex(l => /<strong>(?:Related|関連):<\/strong>/i.test(l));
@@ -680,17 +739,24 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       refs.push({ href, text });
     });
 
-    if(!refs.length) return html;
-
     const heading = locale.startsWith('ja') ? '<strong>関連:</strong>' : '<strong>Related:</strong>';
+
+    if(!refs.length){
+      const bullets = locale.startsWith('ja')
+        ? ['- Scope / チートシート（このページ上部）', '- もう一度、問題文を自分の言葉で言い換える']
+        : ['- Scope / cheat sheet (top of this page)', '- Restate the question in your own words'];
+      const block = [heading, ...bullets].join('\n');
+      return String(html || '').trim() + '\n\n' + block;
+    }
     const bullets = refs.slice(0, 3).map(r => '- ' + '<a href="' + escapeHtml(r.href) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(r.text) + '</a>');
     const block = [heading, ...bullets].join('\n');
 
     return String(html || '').trim() + '\n\n' + block;
   }
 
-  function enrichRfcExplain(q, html){
+	function enrichExplain(q, html){
     let out = ensureContextAndTerms(q, html);
+	  out = ensureRealWorldSection(q, out);
     out = ensureOptionsSection(q, out);
     out = ensureRelatedSection(out);
     return out;
@@ -841,25 +907,22 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   }
 
   function normalizeAllExplanations(){
-    const rfc = isRfcDrill();
     $$('#questions .q').forEach(q => {
       if(!(q instanceof HTMLElement)) return;
       const exp = q.querySelector('.explain');
       if(!(exp instanceof HTMLElement)) return;
 
       let out = normalizeExplainHtml(exp.innerHTML);
-      if(rfc){
-        out = enrichRfcExplain(q, out);
-          out = normalizeExplainHtml(out);
-          const terms = extractTermsFromExplainHtml(out);
-          const inferred = terms.length ? terms : inferQuestionTerms(q);
-          const keywords = uniqueKeywords([
-            ...getDefaultImportantKeywords(),
-            ...inferred
-          ]);
-          out = boldifyKeywordsInHtml(out, keywords);
-          out = normalizeExplainHtml(out);
-      }
+	    out = enrichExplain(q, out);
+	    out = normalizeExplainHtml(out);
+	    const terms = extractTermsFromExplainHtml(out);
+	    const inferred = terms.length ? terms : inferQuestionTerms(q);
+	    const keywords = uniqueKeywords([
+	      ...getDefaultImportantKeywords(),
+	      ...inferred
+	    ]);
+	    out = boldifyKeywordsInHtml(out, keywords);
+	    out = normalizeExplainHtml(out);
       exp.innerHTML = out;
     });
   }
