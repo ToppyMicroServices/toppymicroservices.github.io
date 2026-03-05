@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 9110（HTTP Semantics）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 9110 ドリル: HTTPの意味論（method、status code、header、caching）を正しく理解する。" />
+  <meta name="description" content="RFC 9110 ドリル: HTTPのセマンティクス（method、status code、header、caching）を正しく理解する。" />
   <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9110_ja.html" />
 
   <link rel="alternate" hreflang="en" href="quiz_rfc9110.html" />
@@ -38,7 +38,7 @@
           </a>
         </div>
         <h1 id="title">RFC 9110 Quiz</h1>
-        <h2 id="subtitle">HTTPの意味論を正しく扱う</h2>
+        <h2 id="subtitle">HTTPのセマンティクスを正しく扱う</h2>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
@@ -76,7 +76,7 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
-        <header><h4>Q1: 次のうち, HTTPのtransport詳細ではなくHTTPの意味論に当たる話題はどれ</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: 次のうち, HTTPのtransport詳細ではなくHTTPのセマンティクス(意味/ルール)に当たる話題はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. GETがsafeであり条件によりcache可能という意味</label>
@@ -86,9 +86,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** semantics, transport, methodの意味. 意味論は, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味"の話.
+            **Terms:** semantics(セマンティクス), transport, methodの意味. ここでのセマンティクスは, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味/ルール"の話.
 
-            **Correct (A):** safe, idempotent, cacheable, status codeの意味は意味論の中心.
+            **Correct (A):** safe, idempotent, cacheable, status codeの意味はセマンティクスの中心.
 
             **Options:**
 
@@ -97,7 +97,7 @@
             - B (incorrect): framingはtransport mappingの話.
             - C (incorrect): QUICのpacket挙動はtransportの話.
 
-            **Related:** 意味論が分離されているから, プロキシやキャッシュは下位transportと独立に判断できる.
+            **Related:** セマンティクスが分離されているから, プロキシやキャッシュは下位transportと独立に判断できる.
           </div>
         </div>
       </article>
@@ -142,7 +142,7 @@
 
             **Terms:** idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.
 
-            **Correct (A,C):** PUTとDELETEはidempotentとして定義される. 実運用では部分失敗もあり得るが, 意味論上は再試行が想定される.
+            **Correct (A,C):** PUTとDELETEはidempotentとして定義される. 実運用では部分失敗もあり得るが, 仕様上は再試行が想定される.
 
             **Options:**
 
@@ -170,7 +170,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** status code class. 先頭の数字は意味論上の大分類を示す.
+            **Terms:** status code class. 先頭の数字は仕様上の大分類を示す.
             **Correct (B):** 3xxはredirectionで, クライアントが追加の動作や別URIの使用を求められる.
 
             **Options:**
