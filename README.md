@@ -70,9 +70,15 @@ These quizzes are not designed for certifications or rote memorization. Their pu
 - For a large theme, create **25 questions**.
 
 **Explanation policy (must)**
-- Include: (1) what is being asked + explanation of the concept, (2) why this question exists ("問題を出した背景" / context), (3) key takeaways.
-- Make especially important keywords **bold**.
-- Explain each option carefully (not a one-line summary), so a reader can learn by following the explanation.
+- Explanations are learning-first: a reader should be able to study by reading them.
+- Include (at minimum):
+  - (1) Context / why the question exists ("問題を出した背景") and what skill it trains
+  - (2) What is being asked (definitions + the core concept)
+  - (3) Real-world usage: when/where you would face this in practice
+  - (4) Term/word explanations (mini glossary when needed)
+  - (5) Especially important keywords must be **bold**
+  - (6) A careful explanation for every option (including why each incorrect option is wrong); do not end with a one-line summary
+  - (7) Related topics / adjacent concepts to connect the learning (briefly)
 - Author the question and explanation blocks so Markdown-like formatting is safely/consistently rendered by the quiz template.
 
 ## Research References
