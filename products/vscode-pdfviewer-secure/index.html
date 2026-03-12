@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VSCode PDF Viewer Secure | ToppyMicroServices</title>
+  <meta name="description" content="Security-first, offline-first PDF viewing for Visual Studio Code business environments. VSCode PDF Viewer Secure is a hardened, read-only-by-default PDF viewer extension for controlled deployments." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <link rel="canonical" href="https://toppymicros.com/products/vscode-pdfviewer-secure" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="VSCode PDF Viewer Secure | ToppyMicroServices" />
+  <meta property="og:description" content="A security-first, offline-first PDF viewer extension for Visual Studio Code business environments." />
+  <meta property="og:url" content="https://toppymicros.com/products/vscode-pdfviewer-secure" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="VSCode PDF Viewer Secure | ToppyMicroServices" />
+  <meta name="twitter:description" content="A security-first, offline-first PDF viewer extension for Visual Studio Code business environments." />
+  <meta name="twitter:image" content="https://toppymicros.com/og-brand-clean.png" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://toppymicros.com/#organization",
+      "name": "ToppyMicroServices OÜ",
+      "url": "https://toppymicros.com/",
+      "email": "info@toppymicros.com",
+      "logo": "https://toppymicros.com/216722720.png",
+      "sameAs": [
+        "https://github.com/ToppyMicroServices"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://toppymicros.com/products/vscode-pdfviewer-secure#product",
+      "name": "VSCode PDF Viewer Secure",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "description": "A hardened PDF viewer extension for Visual Studio Code business environments, designed for offline-first use and reduced attack surface.",
+      "url": "https://toppymicros.com/products/vscode-pdfviewer-secure",
+      "publisher": {
+        "@id": "https://toppymicros.com/#organization"
+      },
+      "codeRepository": "https://github.com/thinksyncs/vscode-pdfviewer-secure",
+      "sameAs": [
+        "https://marketplace.visualstudio.com/items?itemName=ToppyMicroServices.vscode-pdfviewer-secure",
+        "https://open-vsx.org/extension/ToppyMicroServices/vscode-pdfviewer-secure"
+      ],
+      "isBasedOn": "https://github.com/tomoki1207/vscode-pdfviewer"
+    }
+  ]
+}
+  </script>
+
+  <style>
+    :root {
+      --bg: #0b1221;
+      --fg: #e6e9f2;
+      --muted: #a7b0c3;
+      --card: #121a2e;
+      --card-soft: #0f1729;
+      --accent: #5aa7ff;
+      --accent-2: #72e5b6;
+      --border: #1b2540;
+      --maxw: 960px;
+      --navh: 64px;
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #ffffff;
+        --fg: #0b1221;
+        --muted: #5b667a;
+        --card: #f7f9fc;
+        --card-soft: #ffffff;
+        --accent: #0056cc;
+        --accent-2: #0a8b61;
+        --border: #dfe7f2;
+        --shadow: 0 14px 36px rgba(7, 22, 48, 0.08);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--fg);
+      background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(90, 167, 255, 0.12), transparent 60%),
+        radial-gradient(900px 480px at 92% 0%, rgba(114, 229, 182, 0.1), transparent 52%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible, .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .sr-only:focus {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      clip: auto;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #0b1221;
+      display: inline-block;
+      font-weight: 600;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: var(--navh);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: saturate(150%) blur(8px);
+      background: color-mix(in hsl, var(--bg) 88%, transparent);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--fg);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .brand:hover { text-decoration: none; }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
+    .nav-links a { color: var(--fg); opacity: 0.92; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--fg);
+      font-weight: 600;
+      transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn:hover {
+      border-color: var(--accent);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+    .btn.primary {
+      border: none;
+      color: #0b1221;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    }
+    main { padding-bottom: 48px; }
+    section { padding: 28px 0; }
+    .hero {
+      padding-top: 56px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-wrap {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+      align-items: start;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.15;
+    }
+    .tagline {
+      margin: 0 0 14px;
+      font-size: clamp(17px, 2vw, 20px);
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .lead {
+      margin: 0;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .hero-actions, .link-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .summary-card,
+    .panel,
+    .notice {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, color-mix(in hsl, var(--card-soft) 84%, transparent), var(--card));
+      box-shadow: var(--shadow);
+    }
+    .summary-card {
+      padding: 20px;
+    }
+    .summary-card h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+    .summary-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .summary-list {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+    }
+    .summary-list li {
+      padding: 9px 0;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 24px;
+    }
+    .section-copy {
+      margin: 0 0 18px;
+      max-width: 68ch;
+      color: var(--muted);
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .panel {
+      padding: 18px;
+    }
+    .panel h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .security-list,
+    .disclaimer-list {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .notice {
+      padding: 20px;
+    }
+    .notice p:last-child,
+    .panel p:last-child {
+      margin-bottom: 0;
+    }
+    .fine-print {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      padding: 24px 0 40px;
+    }
+    .footer-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .footer-links,
+    .meta-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    @media (max-width: 820px) {
+      .hero-wrap,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav {
+        flex-wrap: wrap;
+      }
+      .nav-links {
+        width: 100%;
+      }
+    }
+  </style>
+  <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+  <script defer src="/assets/global.js"></script>
+</head>
+<body>
+  <a href="#main" class="sr-only">Skip to content</a>
+
+  <header>
+    <nav class="container nav" aria-label="Main">
+      <a href="/" class="brand" aria-label="ToppyMicroServices home">
+        <img src="/216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" />
+        <span>ToppyMicroServices</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/security-policy.html">Security Policy</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" aria-label="Hero">
+      <div class="hero-wrap">
+        <div>
+          <div class="eyebrow">Product page</div>
+          <h1>VSCode PDF Viewer Secure</h1>
+          <p class="tagline">Security-first, offline-first PDF viewing for Visual Studio Code.</p>
+          <p class="lead">VSCode PDF Viewer Secure is a hardened PDF viewer extension for Visual Studio Code business environments. It is designed to support controlled document viewing workflows with reduced attack surface, conservative defaults, and local bundled assets.</p>
+          <div class="hero-actions" aria-label="Primary links">
+            <a class="btn primary" href="https://marketplace.visualstudio.com/items?itemName=ToppyMicroServices.vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">VS Code Marketplace</a>
+            <a class="btn" href="https://open-vsx.org/extension/ToppyMicroServices/vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">Open VSX</a>
+            <a class="btn" href="https://github.com/thinksyncs/vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+          </div>
+        </div>
+
+        <aside class="summary-card" aria-label="Product summary">
+          <h2>Designed for controlled use</h2>
+          <p>Built for engineering teams, IT administrators, and security-conscious business users who need predictable PDF viewing behavior inside VS Code.</p>
+          <ul class="summary-list">
+            <li>Read-only by default</li>
+            <li>Offline-first document handling</li>
+            <li>Bundled viewer and local assets</li>
+            <li>Feature flags for controlled enablement</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-labelledby="features-title">
+      <h2 id="features-title" class="section-title">Key features</h2>
+      <p class="section-copy">The extension favors safe defaults and explicit enablement. Core controls are intended to be understandable to engineering, IT, and security review teams.</p>
+      <div class="feature-grid">
+        <article class="panel">
+          <h3>Offline-first PDF viewing</h3>
+          <p>Document rendering is designed to work with bundled assets and local viewing flows rather than remote runtime dependencies.</p>
+        </article>
+        <article class="panel">
+          <h3>Read-only by default</h3>
+          <p>Default behavior is aligned with viewing rather than editing, helping reduce accidental or unauthorized document modification paths.</p>
+        </article>
+        <article class="panel">
+          <h3>Restrictive webview CSP</h3>
+          <p>The webview applies a restrictive Content Security Policy to narrow the execution surface inside the Visual Studio Code environment.</p>
+        </article>
+        <article class="panel">
+          <h3>PDF scripting disabled</h3>
+          <p>PDF scripting support is disabled to avoid enabling active content paths that are unnecessary for standard viewing use cases.</p>
+        </article>
+        <article class="panel">
+          <h3>External links disabled by default</h3>
+          <p>Outbound link behavior is conservative by default so document interaction stays predictable in controlled environments.</p>
+        </article>
+        <article class="panel">
+          <h3>No shell or child-process execution</h3>
+          <p>The extension is designed without shell invocation or child-process execution paths as part of normal product behavior.</p>
+        </article>
+        <article class="panel">
+          <h3>Feature flags for controlled enablement</h3>
+          <p>Optional behavior can be gated so teams can review and enable specific capabilities deliberately rather than implicitly.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="security-title">
+      <h2 id="security-title" class="section-title">Security posture</h2>
+      <div class="notice">
+        <p class="section-copy">VSCode PDF Viewer Secure is designed to reduce attack surface for PDF viewing inside Visual Studio Code. It is intended for controlled business environments where conservative defaults, operational review, and local handling are preferred.</p>
+        <ul class="security-list">
+          <li>Printing, download, open file, forms, and annotation editing are disabled by default.</li>
+          <li>The extension uses a bundled viewer and local assets rather than depending on remote runtime resources for core viewing behavior.</li>
+          <li>Default controls are chosen to support reviewable, predictable deployment profiles for enterprise and internal tool environments.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="disclaimer-title">
+      <h2 id="disclaimer-title" class="section-title">Disclaimer</h2>
+      <div class="panel">
+        <p class="fine-print">This software is provided on an as-is basis, without warranties of any kind. ToppyMicroServices does not guarantee the absence of defects, vulnerabilities, or fitness for a particular deployment. Users are responsible for conducting their own technical, legal, and security review before production or business use.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="oss-title">
+      <h2 id="oss-title" class="section-title">Open source and attribution</h2>
+      <div class="panel">
+        <p>VSCode PDF Viewer Secure is based on <a href="https://github.com/tomoki1207/vscode-pdfviewer" target="_blank" rel="noopener noreferrer">tomoki1207/vscode-pdfviewer</a> and uses Mozilla PDF.js. License notices and attribution are preserved in accordance with upstream requirements.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="links-title">
+      <h2 id="links-title" class="section-title">Links</h2>
+      <p class="section-copy">Public listings and support information for review, procurement, and internal evaluation.</p>
+      <div class="link-actions" aria-label="Resource links">
+        <a class="btn primary" href="https://github.com/thinksyncs/vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+        <a class="btn" href="https://marketplace.visualstudio.com/items?itemName=ToppyMicroServices.vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">VS Code Marketplace</a>
+        <a class="btn" href="https://open-vsx.org/extension/ToppyMicroServices/vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">Open VSX</a>
+        <a class="btn" href="/contact.html">Contact or support</a>
+      </div>
+      <div class="meta-links" aria-label="Secondary links">
+        <a href="/security-policy.html">Security Policy</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms-legal-notice.html">Terms / Legal Notice</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <img src="/216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" loading="lazy" decoding="async" />
+        <div>© 2026 ToppyMicroServices OÜ</div>
+      </div>
+      <div class="meta-links" aria-label="Footer links">
+        <a href="/">Home</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/security-policy.html">Security Policy</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms-legal-notice.html">Terms / Legal Notice</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

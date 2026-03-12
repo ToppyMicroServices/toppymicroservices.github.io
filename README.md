@@ -41,6 +41,8 @@ The site consists of a small number of standalone pages. Some pages describe ser
 Primary site: https://toppymicroservices.github.io (CNAME → https://toppymicros.com)
 
 Selected standalone pages:
+- `contact.html` — business contact and product support information
+- `products/vscode-pdfviewer-secure/` — VSCode PDF Viewer Secure product page
 - `Economy_AI_ERA.html` — AI Economy / Window Guidance as Code (EN) — research note published as a proof artifact
 - `Economy_AI_ERA_ja.html` — 同上（JA）
 - `theory.html` — summary of Thermo-Credit (QTC) theory, published as a proof artifact
@@ -117,8 +119,9 @@ The site is deployed automatically using GitHub Actions and GitHub Pages.
 
 Automated via GitHub Actions (`.github/workflows/static.yml`). Workflow:
 1. Trigger: push to `main` or manual dispatch.
-2. Steps: checkout → configure Pages → upload entire repo as artifact → deploy.
+2. Steps: checkout → prepare a publish-only `_site/` directory → configure Pages → upload artifact → deploy.
 3. Concurrency group `pages` ensures serialized deployments without canceling in-progress.
+4. Internal-only files such as `.github/`, `.beads/`, scripts, and repository metadata are excluded from the publish artifact.
 
 Custom domain configured via `CNAME` (toppymicros.com). Ensure DNS A/ALIAS records point to GitHub Pages.
 
