@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 6585 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 6585 drill: additional HTTP status codes, including 428, 429, 431, 511, Retry-After, cache handling, and overload trade-offs." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc6585.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc6585.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc6585_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 6585",
+      SKILL_SUBTITLE: "Additional HTTP Status Codes",
+      GOAL_DESCRIPTION: "Use 428, 429, 431, and 511 to make HTTP failures more actionable without confusing overload, auth, and cache behavior",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 6585 Quiz</h1>
+        <h2 id="subtitle">Additional HTTP Status Codes</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc6585.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc6585_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6585" target="_blank" rel="noopener noreferrer">RFC 6585: Additional HTTP Status Codes</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9111" target="_blank" rel="noopener noreferrer">RFC 9111: HTTP Caching</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: choose more precise status codes for rate limiting, conditional updates, oversized headers, and captive portals, while keeping retry and cache behavior understandable.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: What is the best high-level reason RFC 6585 exists</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. It replaces the older 4xx and 5xx status codes with a completely new numbering system</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. It adds more precise HTTP status codes for common situations where vague responses made client behavior harder to reason about</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. It defines a new HTTP authentication scheme for browser logins</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The point of RFC 6585 is not “more status codes for trivia.” It is to improve interoperability when generic responses such as 400, 403, or 503 hide the next action clients should take.
+
+            **Terms:** **status codes** are part of the protocol contract between server and client. A **more precise** status code narrows the meaning of the failure and suggests a better retry or recovery strategy.
+
+            **Real-world usage:** In practice this helps API gateways, SDKs, browsers, and operators distinguish rate limiting, precondition failures, header-size problems, and captive-portal interception.
+
+            **Options:**
+            - A (incorrect): RFC 6585 adds a few targeted codes. It does not replace the whole status-code space.
+            - B (correct): This is the core motivation of the RFC.
+            - C (incorrect): The RFC is not defining a new auth scheme.
+
+            **Related:** A good review question is not “do we have a special code available,” but “would a more precise response change client behavior in a useful way.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: Which situation is the strongest fit for 428 Precondition Required</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. An origin server wants clients to send a conditional update so stale writes do not overwrite a newer version</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. A client has exceeded a per-minute quota</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. A captive portal wants the user to log into the local network</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** `428 Precondition Required` is easy to confuse with generic conflict handling, but the RFC frames it around making clients use conditional requests to avoid the lost-update problem.
+
+            **Terms:** A **precondition** is something like `If-Match` that must evaluate successfully before the method is applied. A **lost update** happens when one client overwrites another client's newer change without realizing it.
+
+            **Real-world usage:** This shows up in document editing APIs, config stores, and admin panels where multiple actors may update the same resource.
+
+            **Options:**
+            - A (correct): This is the textbook 428 use case.
+            - B (incorrect): Per-minute quota exceedance is the domain of `429 Too Many Requests`.
+            - C (incorrect): Network login interception is what `511 Network Authentication Required` is for.
+
+            **Related:** The important design move is not merely returning an error, but forcing the client to prove which version it intended to update.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: A client receives 428 after trying to update a resource. What retry strategy best matches the RFC's intent</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep resending the same update until the server eventually accepts it</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Fetch or remember the current validator, then retry the update with a conditional header such as If-Match</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Switch the response semantics to 503 because preconditions are optional</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The value of `428 Precondition Required` lies in the recovery path. It should steer the client toward a conditional request, not a blind retry loop.
+
+            **Terms:** A **validator** is metadata such as an `ETag` that helps identify a specific version of a representation. `If-Match` is a conditional header commonly used to say “apply this update only if the resource still matches this validator.”
+
+            **Real-world usage:** This is the difference between safe collaborative editing and accidental data loss in dashboards, CMS tools, and admin APIs.
+
+            **Options:**
+            - A (incorrect): Retrying without a precondition leaves the lost-update risk unchanged.
+            - B (correct): This follows the RFC's intended fix.
+            - C (incorrect): `503 Service Unavailable` is not a substitute for missing preconditions.
+
+            **Related:** A server that emits 428 should usually help the client understand which conditional mechanism it expects, rather than making the client guess.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: Your API service is healthy overall, but one authenticated key exceeded its request quota. Which response is usually the best fit</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 429 Too Many Requests</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 503 Service Unavailable</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 511 Network Authentication Required</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Teams often blur per-client throttling with whole-service overload. RFC 6585 gives `429 Too Many Requests` so that clients can distinguish “you are over the limit” from “the service is down.”
+
+            **Terms:** **429 Too Many Requests** is about request-rate or quota policy for the client. **503 Service Unavailable** is about broader service availability. **511 Network Authentication Required** is about local network access mediation, not ordinary API auth.
+
+            **Real-world usage:** This affects SDK retry logic, dashboards, rate-limit observability, and whether on-call engineers page the whole service team or just adjust one tenant's traffic profile.
+
+            **Options:**
+            - A (correct): This is the best fit when the service is healthy but the client exceeded a limit.
+            - B (incorrect): 503 implies a service-level availability problem rather than a client-specific quota issue.
+            - C (incorrect): 511 is for captive portals or intercepting proxies.
+
+            **Related:** If clients cannot tell quota exhaustion from server unavailability, they either retry too aggressively or route the incident to the wrong team.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q5: Which statements about Retry-After are generally correct (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. With responses such as 429 or 503, Retry-After can tell the client when it is reasonable to try again</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. Retry-After can only be an integer number of seconds, never an HTTP date</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. Retry-After turns a generic failure into a more actionable backoff signal for clients and SDKs</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. Retry-After is mandatory on every 429 and every 503 response</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** `Retry-After` matters because a status code alone often says only “not now.” Well-designed clients also need timing guidance.
+
+            **Terms:** **Retry-After** is a response header that indicates when the client may retry. It can be expressed as **delay-seconds** or as an **HTTP date**, depending on the response semantics.
+
+            **Real-world usage:** This shapes SDK backoff policy, browser behavior, and API client fairness during rate limiting or temporary outages.
+
+            **Options:**
+            - A (correct): This is one of the most useful roles of `Retry-After`.
+            - B (incorrect): `Retry-After` is not limited to integer seconds. An HTTP date is also valid.
+            - C (correct): This is exactly why the header improves client behavior.
+            - D (incorrect): It is helpful, but not universally mandatory on every 429 or 503.
+
+            **Related:** A precise backoff hint is often the difference between graceful recovery and a retry storm.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q6: Which statements about 431 Request Header Fields Too Large are generally true (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. It can be used when the overall request header section is too large</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. It only applies when exactly one header field is syntactically malformed</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. If a single header field caused the problem, the response representation should explain which field was too large</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. It is the preferred code for oversized request bodies or file uploads</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** `431 Request Header Fields Too Large` is not only about one bad header line. The RFC allows it for either a single oversized header field or an oversized set of headers.
+
+            **Terms:** A **header field** is one named header entry. The **request header section** is the total set of request headers sent with the message.
+
+            **Real-world usage:** This is common with cookie bloat, oversized auth tokens, forwarding chains, and proxy limits that are lower than application developers expect.
+
+            **Options:**
+            - A (correct): The code can cover the total header set being too large.
+            - B (incorrect): Syntax errors are not the defining point here, and the issue is not limited to one field.
+            - C (correct): The RFC encourages the response to identify the offending field when that is possible.
+            - D (incorrect): Oversized bodies are a different problem from oversized headers.
+
+            **Related:** Good 431 handling helps teams debug whether the problem lives in cookies, auth middleware, proxy forwarding, or client header construction.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q7: A shared cache in front of your API sees a 429 for one tenant's token. Which handling best matches RFC 6585</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Store it aggressively so unrelated clients fail fast too</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Do not store and replay 428, 429, 431, or 511, because they reflect request-specific conditions or local network state</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Convert it to 200 and put the error details in JSON to make caches simpler</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** One subtle but important part of RFC 6585 is cache behavior. These responses are not meant to become shared reusable facts about unrelated requests.
+
+            **Terms:** A **shared cache** can reuse a stored response across multiple users or clients. **request-specific conditions** include missing preconditions, quota state, header-size mistakes, or captive-portal network state.
+
+            **Real-world usage:** This matters in CDNs, reverse proxies, and API gateways where accidental reuse of a 429 or 428 can create tenant bleed, misleading failures, or very confusing support tickets.
+
+            **Options:**
+            - A (incorrect): Replaying one tenant's 429 to other clients is exactly the kind of mistake the RFC tries to avoid.
+            - B (correct): RFC 6585 says these specific responses must not be stored by caches.
+            - C (incorrect): Rewriting protocol errors into 200 hides semantics and breaks client logic.
+
+            **Related:** Status codes are not just UI messages. They also guide intermediaries, and that includes telling caches what not to reuse.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q8: During a request flood or header-bomb attack, which operational choice is most consistent with RFC 6585</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. The server must return 429 or 431 for every bad request, even if that spends more resources</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. The server should always replace 429 and 431 with 503, regardless of the cause</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. The server may decide that dropping connections or taking other defensive action is better than spending work on detailed responses</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** RFC 6585 includes a pragmatic security note: sometimes the most accurate status code is not the most operationally sound thing to emit under attack.
+
+            **Terms:** A **request flood** or **header-bomb** attack tries to consume server resources. A **defensive action** can include dropping the connection or otherwise refusing to spend more CPU on a detailed response.
+
+            **Real-world usage:** This matters in DDoS mitigation, bot control, and edge-proxy defense where response generation itself may be expensive enough to worsen the incident.
+
+            **Options:**
+            - A (incorrect): The RFC explicitly leaves room for cheaper defensive behavior.
+            - B (incorrect): 503 is not a universal replacement for all attack-related failures.
+            - C (correct): This is the RFC-consistent operational mindset.
+
+            **Related:** Precise semantics are valuable, but survivability comes first when the response itself becomes part of the attack cost.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q9: Which deployment is the strongest fit for 511 Network Authentication Required</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. An origin API telling the user their application account session expired</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. An intercepting proxy or captive portal requiring the user to authenticate before general network access is allowed</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. A CDN warning that one cached object is stale</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** `511 Network Authentication Required` is one of the easiest RFC 6585 codes to misuse. It is not a generic “authentication failed” response for ordinary origin applications.
+
+            **Terms:** An **intercepting proxy** or **captive portal** sits on the network path and blocks broader access until the user satisfies some local network-login requirement. An **origin API** is the actual target application server.
+
+            **Real-world usage:** This distinction matters in Wi-Fi onboarding, hotel portals, enterprise guest networks, and browsers or operating systems trying to detect network mediation cleanly.
+
+            **Options:**
+            - A (incorrect): Origin application session problems are not what 511 is for.
+            - B (correct): This is the intended deployment model.
+            - C (incorrect): Cache staleness is unrelated to 511.
+
+            **Related:** If an app uses 511 for normal login failures, clients will misunderstand both the layer and the recovery path.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q10: Which review comment shows the strongest RFC 6585 understanding</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. We should separate quota exhaustion from service outage, require conditional writes where lost updates matter, avoid caching these RFC 6585 responses, and treat 511 as network mediation rather than ordinary origin authentication</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Once we add 429, clients no longer need to handle generic 4xx or 5xx responses because every server should now use RFC 6585 perfectly</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. 511 is the best answer for any login-related problem because every authentication issue is ultimately a network issue</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The real value of RFC 6585 is not memorizing four numbers. It is being able to map each code to the right failure layer, recovery path, and intermediary behavior.
+
+            **Terms:** **quota exhaustion**, **service outage**, **conditional writes**, **caching**, and **network mediation** are the recurring design dimensions that make these codes useful rather than decorative.
+
+            **Real-world usage:** This kind of review comment improves API contracts, client backoff logic, cache safety, and captive-portal handling across browsers, apps, and gateways.
+
+            **Options:**
+            - A (correct): This captures the design intent of the RFC at an operational level.
+            - B (incorrect): Clients still need robust fallback handling because not every server uses the newer codes.
+            - C (incorrect): 511 is intentionally narrower than generic login or application authentication failure.
+
+            **Related:** Strong RFC 6585 understanding means you can explain not only what each code means, but why each one changes retries, caching, and ownership boundaries.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 6585</strong> to “<em id="footer-goal">actionable HTTP failure design</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

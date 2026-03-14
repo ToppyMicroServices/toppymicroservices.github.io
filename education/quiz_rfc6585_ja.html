@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 6585（Additional HTTP Status Codes）クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 6585 ドリル: 428, 429, 431, 511, Retry-After, cache の扱い, overload 時の判断を理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc6585_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc6585.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc6585_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 6585",
+      SKILL_SUBTITLE: "Additional HTTP Status Codes",
+      GOAL_DESCRIPTION: "428, 429, 431, 511 を, retry, cache, auth, overload の設計判断に結びつけて使えるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 6585 Quiz</h1>
+        <h2 id="subtitle">HTTP error を雑にしないための追加 status code</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc6585.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc6585_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6585" target="_blank" rel="noopener noreferrer">RFC 6585: Additional HTTP Status Codes</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9111" target="_blank" rel="noopener noreferrer">RFC 9111: HTTP Caching</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">狙い: rate limit, 条件付き更新, header 肥大化, captive portal を, 適切な status code と retry 方針, cache 方針まで含めて説明できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: RFC 6585 の狙いを一番よく表しているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 既存の 4xx, 5xx を全部置き換える新しい番号体系を定義すること</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 曖昧な error では client の次の行動が読みにくい場面で, もう少し具体的な status code を足すこと</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. browser login 専用の新しい authentication scheme を定義すること</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 6585 を, 「番号が増えた」という話で終わらせるのはもったいないです. 本質は client と server のやり取りを少し具体的にすることです.
+
+            **用語:** **status code** は server から client への意味づけです. **具体的な status code** があると, retry, backoff, 修正方法を client が読み取りやすくなります.
+
+            **実務での機会:** API gateway, SDK, browser, proxy の設計で, 400 や 503 だけでは行動が曖昧になる場面を減らせます.
+
+            **選択肢:**
+            - A (incorrect): 既存体系を捨てる RFC ではありません.
+            - B (correct): これが RFC 6585 の価値です.
+            - C (incorrect): 新しい auth scheme を定義する文書ではありません.
+
+            **関連:** 良い設計レビューでは, 「この failure を client がどう解釈して次に何をするか」まで確認します.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q2: 428 Precondition Required が最も向いているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. stale な更新で新しい内容を上書きしないよう, origin server が conditional update を必須にしたい場面</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 1 分あたりの quota を超えた場面</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. captive portal が network login を要求する場面</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 428 は conflict 系の error と混ざりやすいですが, RFC 6585 では lost update を避けるために conditional request を強制する用途が中心です.
+
+            **用語:** **precondition** は `If-Match` のように, 条件が満たされたときだけ method を適用する仕組みです. **lost update** は古い内容を持った client が新しい更新を消してしまう事故です.
+
+            **実務での機会:** document 編集, 設定管理, admin API など, 同じ resource を複数人や複数 process が触る場面で重要です.
+
+            **選択肢:**
+            - A (correct): これが 428 の代表的な使いどころです.
+            - B (incorrect): quota 超過なら `429 Too Many Requests` が近いです.
+            - C (incorrect): network login の話は `511 Network Authentication Required` です.
+
+            **関連:** 428 の価値は error を返すこと自体ではなく, 「条件を付けてもう一度送ってほしい」と client に伝えられることです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: client が 428 を受け取った後の動きとして, RFC の意図に一番合うのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 同じ更新 request を, 条件なしのまま何度も送り直す</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 現在の validator を取り直し, `If-Match` などの conditional header を付けて更新をやり直す</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. precondition は任意なので, status code を 503 に読み替える</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 428 の価値は recovery path にあります. blind retry をさせるための error ではありません.
+
+            **用語:** **validator** は `ETag` のように version を識別する手掛かりです. `If-Match` は, その validator が一致するときだけ更新したい, と伝える条件付き header です.
+
+            **実務での機会:** collaborative editing や admin 画面で, 上書き事故を防ぎながら再送する設計に直結します.
+
+            **選択肢:**
+            - A (incorrect): 条件なし再送では lost update の危険が残ります.
+            - B (correct): これが 428 の意図に沿った retry です.
+            - C (incorrect): 503 に読み替える話ではありません.
+
+            **関連:** server 側は 428 を返すだけでなく, どの conditional request を期待するかを説明できると親切です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: service 全体は元気だが, ある API key だけが quota を超えた. 最も近い response はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 429 Too Many Requests</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 503 Service Unavailable</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 511 Network Authentication Required</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** per-client の rate limiting と, service 全体の availability 低下を混同すると, client の retry も運用判断もずれます.
+
+            **用語:** **429 Too Many Requests** は client 側の rate や quota の超過を表します. **503 Service Unavailable** は service 側の広い availability 問題を示します. **511** は local network access の話です.
+
+            **実務での機会:** SDK の backoff, rate-limit dashboard, on-call の切り分けで, 「誰の問題か」を正しく伝える必要があります.
+
+            **選択肢:**
+            - A (correct): service が元気で client だけが制限超過なら 429 が自然です.
+            - B (incorrect): 503 は service 側の availability 問題を連想させます.
+            - C (incorrect): 511 は captive portal 系の用途です.
+
+            **関連:** status code は責任分担を伝える道具でもあります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q5: Retry-After について, 一般に正しいものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. 429 や 503 と組み合わせると, いつ再試行すべきかを client に伝えられる</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. 値は整数秒しか許されず, HTTP date は使えない</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. 単なる失敗を, backoff 方針つきの失敗に変えられる</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. 429 と 503 では必ず毎回付けなければならない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** `Retry-After` は小さな header ですが, client の行動を大きく変えます. ここを雑にすると retry storm が起きやすいです.
+
+            **用語:** **Retry-After** は, どれくらい待ってから再試行すべきかを示す response header です. 値は **delay-seconds** でも **HTTP date** でも表せます.
+
+            **実務での機会:** SDK, browser, bot, batch job の backoff 実装を揃えるときに重要です.
+
+            **選択肢:**
+            - A (correct): これが最も典型的な使い方です.
+            - B (incorrect): HTTP date も使えます.
+            - C (correct): 失敗の意味に retry の手掛かりを足せます.
+            - D (incorrect): 有用ですが, 常に必須とは限りません.
+
+            **関連:** 「あとで試して」と伝えるなら, どのくらい待つかも一緒に伝える方が client 実装は安定します.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q6: 431 Request Header Fields Too Large について, 一般に正しいものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. request header 全体が大きすぎる場合にも使える</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. 1 個の header field が文法的に壊れている場合にしか使えない</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. もし特定の header field が原因なら, どれが大きすぎたかを説明した方がよい</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. upload body が大きすぎるときの第一候補である</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 431 を 1 行の bad header 用だと思い込むと, cookie 肥大化や proxy chain の事故を見落とします.
+
+            **用語:** **header field** は個別の header です. **request header 全体** は message に付く header 群全体です.
+
+            **実務での機会:** cookie の肥大化, oversized auth token, `Forwarded` や `X-Forwarded-*` の伸びすぎ, proxy 制限などで頻出です.
+
+            **選択肢:**
+            - A (correct): 全体が大きすぎる場合にも使えます.
+            - B (incorrect): 文法 error だけの話ではなく, サイズ問題です.
+            - C (correct): 特定できるなら原因 field を伝えると debug しやすくなります.
+            - D (incorrect): body size の問題とは別です.
+
+            **関連:** 431 は app の bug だけでなく, middleware や proxy の積み重ねで起きることも多いです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q7: shared cache が, ある tenant の token に対する 429 を見た. RFC 6585 に一番合う扱いはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. 他の client も早く止められるよう, 積極的に cache して使い回す</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. 428, 429, 431, 511 は cache に保存して再利用しない. request 固有の条件や local network state に依存するから</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. cache を簡単にするため, 200 に変換して body にだけ error を入れる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 6585 の重要な点のひとつが cache です. これらの response を共有事実のように再利用すると, かなり危険です.
+
+            **用語:** **shared cache** は複数 client のあいだで response を再利用します. **request 固有の条件** には precondition, quota 状態, header size, captive portal 状態などがあります.
+
+            **実務での機会:** CDN, reverse proxy, API gateway で, tenant をまたいだ誤配信や謎の 429 を防ぐのに重要です.
+
+            **選択肢:**
+            - A (incorrect): 他の client にまで 429 を広げるのは危険です.
+            - B (correct): RFC 6585 はこれらを cache してはいけないとしています.
+            - C (incorrect): 200 に潰すと protocol semantics が壊れます.
+
+            **関連:** status code は UI 向けメッセージだけではなく, intermediary の挙動も制御します.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q8: request flood や header-bomb attack の最中に, RFC 6585 的に一番自然な運用判断はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. どんな負荷でも, 429 や 431 を全 request に丁寧に返す義務がある</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. 原因に関係なく, 必ず全部 503 に置き換えるべきである</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. 詳細 response を返すより, connection を落とすなどの防御を選んだ方がよい場合がある</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 正確な status code を返すことと, attack 中に生き残ることは別問題です. RFC 6585 もその現実を認めています.
+
+            **用語:** **request flood** や **header-bomb attack** は server 資源を食い潰す攻撃です. **防御** には connection drop のような, 応答コストを抑える手段も含まれます.
+
+            **実務での機会:** DDoS, bot 対策, edge proxy の incident で, 正確さより survivability を優先する判断が必要になります.
+
+            **選択肢:**
+            - A (incorrect): attack 中に毎回丁寧な response を返す必要はありません.
+            - B (incorrect): 503 一択でもありません.
+            - C (correct): これが RFC の security note に近い考え方です.
+
+            **関連:** semantics は大事ですが, response 自体が attack cost になるなら先に守るべきです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q9: 511 Network Authentication Required が一番しっくりくるのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. origin API が, application account の session 切れを伝える場面</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. intercepting proxy や captive portal が, network access の前に login を求める場面</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. CDN が stale cache を知らせる場面</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 511 は「auth が必要」という文字面で誤用されやすいです. でも普通の origin login failure には向きません.
+
+            **用語:** **intercepting proxy** や **captive portal** は network path 上で access を止める存在です. **origin API** は本来の application server です.
+
+            **実務での機会:** hotel Wi-Fi, guest network, enterprise onboarding, OS の captive portal 検出で重要です.
+
+            **選択肢:**
+            - A (incorrect): app の session 切れは 511 の主戦場ではありません.
+            - B (correct): これが RFC 6585 の想定に近いです.
+            - C (incorrect): cache の鮮度問題ではありません.
+
+            **関連:** 511 を app login に流用すると, layer の意味が崩れて client 側の理解もずれます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q10: RFC 6585 を理解した review comment として最もよいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. quota 超過と service outage を分けて扱い, lost update が痛い更新には conditional write を要求し, これらの response を cache させず, 511 は origin auth ではなく network mediation として扱いましょう</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. 429 を足した以上, client は generic 4xx や 5xx を考えなくてよいはずです</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. login 関連の問題は全部 511 に寄せるのが一番わかりやすいです</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 6585 の価値は 4 つの番号を覚えることではなく, failure の層と client 行動を揃えることです.
+
+            **用語:** **quota 超過**, **service outage**, **conditional write**, **cache**, **network mediation** は, RFC 6585 を使いこなすときの主要論点です.
+
+            **実務での機会:** API 契約, SDK retry, CDN 設定, captive portal 対応をまたいで, 仕様と運用のズレを減らせます.
+
+            **選択肢:**
+            - A (correct): RFC 6585 の設計意図を operational に捉えています.
+            - B (incorrect): 新しい code が増えても, generic handling は依然として必要です.
+            - C (incorrect): 511 はもっと限定的な用途です.
+
+            **関連:** RFC 6585 を使える知識にするには, 各 code が retry, cache, auth, ownership にどう効くかまで話せる必要があります.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 6585</strong> to “<em id="footer-goal">HTTP error handling judgment</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
