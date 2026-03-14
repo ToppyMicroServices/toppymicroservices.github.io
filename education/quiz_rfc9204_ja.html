@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9204（QPACK）クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9204 ドリル: HTTP/3 の header compression, blocked streams, dynamic table 参照, 圧縮率と待ち時間の trade-off を理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9204_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9204.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9204_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9204",
+      SKILL_SUBTITLE: "QPACK",
+      GOAL_DESCRIPTION: "HTTP/3 の header compression を, 圧縮率と blocked stream の trade-off を含めて説明できるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9204 Quiz</h1>
+        <h2 id="subtitle">HTTP/3 のための QPACK</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc9204.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9204_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9204" target="_blank" rel="noopener noreferrer">RFC 9204: QPACK</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9114" target="_blank" rel="noopener noreferrer">RFC 9114: HTTP/3</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7541" target="_blank" rel="noopener noreferrer">RFC 7541: HPACK</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">狙い: なぜ HTTP/3 で HPACK をそのまま使えないのか, どこで block が起きるのか, 圧縮率と待ち時間をどう天秤にかけるのかを説明できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: HTTP/3 で HPACK をそのまま流用しなかった一番大きい理由はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. HPACK は TLS renegotiation に依存していたから</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTP/3 の配送特性で HPACK の前提を持ち込むと, header decode が余計に block し得るから</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. HPACK は trailer 専用だったから</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK を理解する入口は命令形式よりも, 「なぜ別方式が必要だったか」を掴むことです.
+
+            **用語:** **HPACK** は HTTP/2 向けの header compression です. **QPACK** は HTTP/3 の配送特性に合わせて, block の扱いを変えた方式です.
+
+            **実務での機会:** HTTP/2 と HTTP/3 の差を説明するときに, 単に transport が違うではなく, compression 戦略まで変わる理由を語れるようになります.
+
+            **選択肢:**
+            - A (incorrect): TLS renegotiation は本題ではありません.
+            - B (correct): ここが QPACK の出発点です.
+            - C (incorrect): HPACK は trailer 専用ではありません.
+
+            **関連:** QPACK は HPACK の考え方を捨てたのではなく, ordered delivery 前提の危うさを避ける方向へ作り直しています.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="b,c" data-difficulty="L2">
+        <header><h4>Q2: decoder 側の dynamic table state に依存せず, それだけでは block を生まない表現はどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. まだ decoder に届いていない dynamic entry への参照</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. static table 参照</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. literal 表現</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. post-base を使った dynamic table 参照</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK の設計判断は, 「何が安全で, 何が block を呼ぶか」を分けて考えられるかでかなり変わります.
+
+            **用語:** **static table** は仕様で固定済みです. **literal** はその場で値を運ぶので, dynamic state に頼りません. **dynamic table** 参照は state 依存です.
+
+            **実務での機会:** loss や reordering がある回線で, encoder をどこまで攻めるかを決めるときにこの区別が効きます.
+
+            **選択肢:**
+            - A (incorrect): decoder がまだ知らない dynamic entry は block の原因になります.
+            - B (correct): static table は共有前提が固定なので安全です.
+            - C (correct): literal は wire size は増えても state 依存を避けられます.
+            - D (incorrect): これも dynamic table 参照なので block し得ます.
+
+            **関連:** QPACK は, bytes を節約するか, 待ちを減らすかを encoder が都度選べるようにした設計です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q3: field section が Required Insert Count として, decoder の Insert Count より先の state を要求していたらどうなるか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. decoder が自動で literal に書き換える</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. QUIC connection が別 path に migration する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 必要な state が届くまで, その stream はすぐには処理できず block 扱いになる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 「QPACK なら block しない」と短く覚えると, 実装や debug の場面で誤解します.
+
+            **用語:** **Required Insert Count** は, decode に必要な dynamic table の到達点です. **Insert Count** は decoder が今どこまで知っているかを表します.
+
+            **実務での機会:** header decode が詰まる理由を調べるときや, encoder の aggressiveness を調整するときに重要です.
+
+            **選択肢:**
+            - A (incorrect): decoder が勝手に表現を変えるわけではありません.
+            - B (incorrect): path migration は QUIC の別機能です.
+            - C (correct): 必要 state が来るまで stream は block されます.
+
+            **関連:** QPACK は block を消したのではなく, encoder がそのリスクを制御しやすい形へ移したと理解すると分かりやすいです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: SETTINGS_QPACK_BLOCKED_STREAMS が主に制御しているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. dynamic table state 待ちで block してよい stream 数の上限</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. QUIC packet の最大 payload サイズ</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. response trailer の最大数</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK では圧縮方式だけでなく, どれくらい待ちを許すかという運用上の上限設定が重要です.
+
+            **用語:** **SETTINGS_QPACK_BLOCKED_STREAMS** は, dynamic table state 不足で block してよい stream 数を decoder 側が制約する setting です.
+
+            **実務での機会:** mobile network や loss が多い経路で, どこまで dynamic 参照を積極的に使うかの tuning に関わります.
+
+            **選択肢:**
+            - A (correct): これが setting の本旨です.
+            - B (incorrect): packet size の話ではありません.
+            - C (incorrect): trailer 数の制御ではありません.
+
+            **関連:** blocked stream を強く絞ると, encoder は literal や安全な参照を多めに選ぶ必要が出てきます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q5: 圧縮率は欲しいが, path は lossy で低遅延も重視したい. このとき比較的安全な方針はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. まだ transit 中でも, できるだけ新しい dynamic entry を積極的に参照する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. block の値打ちが薄い場面では, acknowledged 済み entry や literal を優先する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. QUIC flow control を無効化する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK は「常に一番圧縮する」のが正解ではなく, block してまで bytes を削る価値があるかを問う設計です.
+
+            **用語:** **acknowledged entry** は decoder が利用可能だと encoder が見なせる dynamic entry です. **literal** は大きくなっても待ちを作りません.
+
+            **実務での機会:** browser, CDN, reverse proxy の encoder policy で, どこまで aggressive に dynamic table を使うかの判断に直結します.
+
+            **選択肢:**
+            - A (incorrect): 圧縮率は上がっても block リスクも上がります.
+            - B (correct): 低遅延重視ならこちらが現実的です.
+            - C (incorrect): flow control は QPACK の block 解決策ではありません.
+
+            **関連:** QPACK の本質は, bytes と latency の交換条件を encoder が持てるようにした点です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q6: QPACK の encoder stream の役割として一番近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. HTTP request body を運ぶ</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. QUIC control stream を置き換える</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. decoder 側の dynamic table state を更新するための instruction を送る</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** stream type の番号を覚えるより, その stream が「何の state を進めるか」を理解する方が重要です.
+
+            **用語:** **encoder stream** は encoder から decoder へ向かう一方向 stream で, dynamic table 更新 instruction を運びます.
+
+            **実務での機会:** ここが壊れると application logic ではなく compression state の同期で失敗しているのに, 原因を見誤りやすくなります.
+
+            **選択肢:**
+            - A (incorrect): body は request/response stream で運ばれます.
+            - B (incorrect): すべての control traffic を置き換えるわけではありません.
+            - C (correct): これが encoder stream の中核です.
+
+            **関連:** QPACK では「header block」と「state 更新」が別 stream に分かれていることが設計の要です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q7: decoder stream の役割として一番近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. decoder が encoder に feedback を返し, どの dynamic entry を安全に使えるか判断しやすくする</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. application data を header decode 後に流す</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. trailer 専用で, 通常 header には使わない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK の理解では, encoder が decoder の状態をどう知るかを押さえておく必要があります.
+
+            **用語:** **decoder stream** は decoder から encoder へ返す feedback 用の stream で, acknowledgment などを通じて encoder の次の選択に影響します.
+
+            **実務での機会:** 「なぜその entry を参照してよいと判断したのか」を説明するための前提になります.
+
+            **選択肢:**
+            - A (correct): これが decoder stream の役目です.
+            - B (incorrect): application payload を運ぶ stream ではありません.
+            - C (incorrect): trailer 専用ではありません.
+
+            **関連:** encoder が decoder の進み具合を知らなければ, block リスクをまともに制御できません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q8: RFC 9204 が, mutual distrust な主体が connection を共有する状況に注意を促すのはなぜか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. QPACK は同じ DNS resolver を信頼していることが前提だから</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. compression state と encoded size の振る舞いが, side channel になり得るから</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. HTTP/3 は origin をまたぐ reuse を全面禁止しているから</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK の security は暗号を破る話ではなく, compression が情報をにじませる話だと掴む必要があります.
+
+            **用語:** **compression side channel** は, size や圧縮のされ方から hidden value の手掛かりが漏れる状況です. shared compression state はその土台になり得ます.
+
+            **実務での機会:** browser, intermediary, shared upstream connection で, 別主体の traffic がどこまで state を共有してよいかを考えるときに重要です.
+
+            **選択肢:**
+            - A (incorrect): DNS trust が主題ではありません.
+            - B (correct): ここが RFC の caution point です.
+            - C (incorrect): そこまで単純な禁止の話ではありません.
+
+            **関連:** 高 entropy の secret は当てにくいですが, だから安全と言い切るのではなく, sensitive field をどう扱うかを別途考えるべきです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q9: SETTINGS_QPACK_MAX_TABLE_CAPACITY が主に縛るのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. 開ける request stream 数</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. HTTP body の最大サイズ</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. dynamic table が持てる容量</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QPACK は latency だけでなく memory も trade-off に入っており, table capacity を軽視できません.
+
+            **用語:** **dynamic table capacity** は, index 化のために保持できる state の大きさです.
+
+            **実務での機会:** endpoint の memory budget, library の default tuning, resource 制約の厳しい client 実装で効いてきます.
+
+            **選択肢:**
+            - A (incorrect): stream 数の制御ではありません.
+            - B (incorrect): body size を決める setting ではありません.
+            - C (correct): dynamic table の上限を決めます.
+
+            **関連:** table を大きくすると圧縮には有利でも, memory 消費と state 管理は重くなります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q10: RFC 9204 を踏まえた review comment として最も筋が良いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. blocked stream 許容量, loss 条件, 圧縮メリットを見ながら dynamic table 利用を調整しましょう</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. header は小さいほど正義なので, 常に最新 dynamic entry を最大限参照しましょう</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. literal は非効率なので, 原則禁止でよいです</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 9204 の学習ゴールは, instruction 名の暗記ではなく, encoder policy を trade-off として語れるようになることです.
+
+            **用語:** **blocked streams**, **loss**, **dynamic table 利用**, **compression gain** が, QPACK の現場で本当に効く論点です.
+
+            **実務での機会:** browser, CDN, reverse proxy, HTTP library の review で, encoder をどこまで攻めるかの議論に直結します.
+
+            **選択肢:**
+            - A (correct): QPACK の核心を operational な判断に落としています.
+            - B (incorrect): 圧縮率だけ見て待ち時間を無視するのは危険です.
+            - C (incorrect): literal は安全側へ倒すための重要な逃げ道です.
+
+            **関連:** QPACK を分かったと言えるのは, bytes を削る判断と latency を守る判断の両方を説明できるときです.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9204</strong> to “<em id="footer-goal">QPACK design literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

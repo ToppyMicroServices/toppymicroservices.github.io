@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9204 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9204 drill: QPACK for HTTP/3, blocked streams, dynamic table references, and compression trade-offs." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9204.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9204.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9204_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9204",
+      SKILL_SUBTITLE: "QPACK",
+      GOAL_DESCRIPTION: "Understand HTTP/3 header compression and the trade-off between compression efficiency and blocked streams",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9204 Quiz</h1>
+        <h2 id="subtitle">QPACK for HTTP/3</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9204.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc9204_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9204" target="_blank" rel="noopener noreferrer">RFC 9204: QPACK</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9114" target="_blank" rel="noopener noreferrer">RFC 9114: HTTP/3</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7541" target="_blank" rel="noopener noreferrer">RFC 7541: HPACK</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: explain why HTTP/3 needs QPACK, when dynamic table references are worth the risk, and how blocked-stream limits shape implementation choices.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: Why could HTTP/3 not simply reuse HPACK unchanged</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. HPACK depends on TLS renegotiation, which QUIC removed</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. HPACK assumes total ordering across streams and would reintroduce head-of-line blocking under HTTP/3 delivery properties</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. HPACK only works for trailers, not request headers</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The most important QPACK idea is not the bit layout. It is the transport mismatch that made HPACK unsafe to reuse as-is for HTTP/3.
+
+            **Terms:** **HPACK** assumes ordered delivery suitable for HTTP/2 over a single ordered byte stream. **QPACK** adapts header compression for HTTP/3 over QUIC, where out-of-order delivery matters.
+
+            **Real-world usage:** In practice this helps you explain why HTTP/3 performance tuning is not “HTTP/2 plus UDP,” and why header compression design changed.
+
+            **Options:**
+            - A (incorrect): TLS renegotiation is not the core reason QPACK exists.
+            - B (correct): This is the architectural motivation for QPACK.
+            - C (incorrect): HPACK works for header and trailer sections; the issue is ordering assumptions.
+
+            **Related:** QPACK keeps HPACK ideas like static and dynamic tables, but redesigns how state is coordinated so implementations can choose their blocking risk.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="b,c" data-difficulty="L2">
+        <header><h4>Q2: Which representations never risk blocking because they do not depend on dynamic table state at the decoder (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Dynamic table references that have not been acknowledged yet</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Static table references</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Literal representations</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Post-Base references into the dynamic table</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The best way to reason about QPACK is to separate “cheap and safe” references from “more efficient but potentially blocked” references.
+
+            **Terms:** **static table** references are predefined. **literal** representations carry enough information directly. **dynamic table** references depend on shared evolving state.
+
+            **Real-world usage:** This distinction drives encoder decisions when there is packet loss, reordering, or strict latency targets.
+
+            **Options:**
+            - A (incorrect): Unacknowledged dynamic references are exactly the kind that can block decoding.
+            - B (correct): Static table references do not depend on decoder dynamic state.
+            - C (correct): Literals are bigger on the wire but avoid state dependence.
+            - D (incorrect): Post-Base is still a dynamic table reference and can block.
+
+            **Related:** A practical encoder often mixes literals, static references, and dynamic references depending on latency tolerance and connection state.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q3: When a field section arrives with Required Insert Count greater than the decoder's current Insert Count, what is the main consequence</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. The decoder silently rewrites the field section as literals</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. The connection immediately migrates to a new path</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. The stream cannot be processed immediately and is considered blocked</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Engineers often hear “QPACK reduces head-of-line blocking” and mistakenly conclude that blocking is impossible. It is reduced, not eliminated.
+
+            **Terms:** **Required Insert Count** says how much dynamic table state the decoder must have before it can decode the field section. **Insert Count** is how many entries the decoder currently knows.
+
+            **Real-world usage:** This directly affects tail latency, debugging of header decode stalls, and why encoder choices matter under packet loss.
+
+            **Options:**
+            - A (incorrect): The decoder does not invent a fallback representation on its own.
+            - B (incorrect): Path migration is a QUIC concern, unrelated to QPACK decode readiness.
+            - C (correct): The field section is blocked until the needed dynamic state arrives.
+
+            **Related:** QPACK moves the trade-off toward encoder choice. Better compression can still create blocking if the required state is not available in time.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q4: What does SETTINGS_QPACK_BLOCKED_STREAMS primarily control</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. How many streams may be blocked waiting for dynamic table state</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. The maximum UDP payload size for QUIC packets</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. The maximum number of response trailers allowed on a connection</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** QPACK is as much about operational limits as about compression format. Blocked-stream limits are a key control surface.
+
+            **Terms:** **SETTINGS_QPACK_BLOCKED_STREAMS** is a decoder-provided bound on how many streams can be blocked due to missing dynamic table state.
+
+            **Real-world usage:** This setting matters when tuning encoder aggressiveness for mobile loss, prioritization, and latency-sensitive traffic.
+
+            **Options:**
+            - A (correct): This is the direct meaning of the setting.
+            - B (incorrect): Packet sizing is unrelated.
+            - C (incorrect): Trailers are not what this setting limits.
+
+            **Related:** Lower blocked-stream tolerance pushes encoders toward safer but larger encodings, such as literals or acknowledged references only.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q5: An encoder wants the best compression ratio, but the path is lossy and low latency matters. Which strategy is usually safer</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Always reference the newest dynamic entries, even if they are still in transit</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Prefer acknowledged dynamic entries or literals when the blocking risk is not worth the compression gain</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Disable QUIC flow control entirely so the decoder can never block</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** QPACK is built around a real trade-off, not a single “best” encoding. The encoder has to choose between compression efficiency and latency risk.
+
+            **Terms:** **acknowledged entries** are dynamic table entries known to be available at the decoder. **literals** are bigger but avoid dependency on dynamic state.
+
+            **Real-world usage:** This shows up in CDN and browser stacks where a few bytes saved are not worth stalling request processing under loss or reordering.
+
+            **Options:**
+            - A (incorrect): This maximizes compression potential, but it also maximizes blocking risk.
+            - B (correct): This is the safer strategy when latency matters more than squeezing every byte.
+            - C (incorrect): Flow control is not the knob that solves QPACK blocking.
+
+            **Related:** QPACK shifts complexity toward encoder policy. Tuning that policy is often more important than memorizing instruction formats.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q6: What is the main purpose of the QPACK encoder stream</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. It carries HTTP request bodies to the peer</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. It replaces the QUIC control stream</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. It carries encoder instructions that update decoder-side dynamic table state</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** QPACK introduces dedicated coordination streams, and understanding their role is more useful than memorizing stream type numbers.
+
+            **Terms:** The **encoder stream** is a unidirectional stream that carries encoder instructions from encoder to decoder. Those instructions update the dynamic table state.
+
+            **Real-world usage:** If this stream is mismanaged, header decoding can fail even when the application logic looks correct.
+
+            **Options:**
+            - A (incorrect): HTTP bodies travel on request or response streams, not the QPACK encoder stream.
+            - B (incorrect): QPACK streams are specialized, not replacements for all HTTP/3 control traffic.
+            - C (correct): This is the essential job of the encoder stream.
+
+            **Related:** QPACK also has a decoder stream in the opposite direction so the encoder can learn what the decoder has processed.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q7: What is the main purpose of the decoder stream in QPACK</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. It sends decoder instructions and acknowledgments back so the encoder can reason about usable dynamic entries</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. It carries application data after header decompression is complete</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. It is only needed for HTTP trailers, not normal headers</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** QPACK is intentionally designed so the encoder can track decoder readiness. The decoder stream is central to that feedback loop.
+
+            **Terms:** The **decoder stream** carries feedback from decoder to encoder, including acknowledgments and related instructions that inform future encoding decisions.
+
+            **Real-world usage:** This matters when tuning whether the encoder can safely reference newer dynamic entries without creating blocked streams.
+
+            **Options:**
+            - A (correct): This feedback lets the encoder know which dynamic state is safe to depend on.
+            - B (incorrect): Application payloads do not travel on the decoder stream.
+            - C (incorrect): The stream is not limited to trailers.
+
+            **Related:** QPACK works because the encoder can trade compression ratio against the decoder's confirmed state instead of assuming global ordering.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q8: Why does RFC 9204 discuss mutually distrustful entities sharing a connection</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Because QPACK requires every peer to trust the same DNS resolver</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Because compression state can become a side channel when one party influences entries and another observes encoded size behavior</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Because HTTP/3 forbids connection reuse across origins entirely</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Security concerns in QPACK are not about breaking encryption directly. They are about what compression reveals under adversarial influence.
+
+            **Terms:** A **compression side channel** exists when output size or encoding behavior leaks information about hidden values. Shared compression context makes that more plausible.
+
+            **Real-world usage:** Browsers, intermediaries, and shared upstream connections need to reason about whether different parties can affect or observe the same compression state.
+
+            **Options:**
+            - A (incorrect): DNS trust is unrelated to the QPACK security model here.
+            - B (correct): This is the actual concern described in the RFC.
+            - C (incorrect): HTTP/3 does not forbid all such reuse in this simplistic way.
+
+            **Related:** High-entropy secrets are harder to recover than low-entropy values, but the safe lesson is still to treat sensitive fields cautiously in shared compression contexts.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q9: What does SETTINGS_QPACK_MAX_TABLE_CAPACITY primarily bound</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. The number of request streams an endpoint may open</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. The maximum size of HTTP bodies on a connection</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. The permitted maximum capacity of the dynamic table</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** QPACK performance is constrained by memory as well as latency. Table-capacity limits are part of that resource contract.
+
+            **Terms:** **dynamic table capacity** is the amount of space available for entries used in indexed compression on a connection.
+
+            **Real-world usage:** This matters for memory budgeting, endpoint hardening, and deciding how much dynamic compression state is worth maintaining.
+
+            **Options:**
+            - A (incorrect): Stream count is a different transport concern.
+            - B (incorrect): Body size is unrelated to this QPACK setting.
+            - C (correct): This setting bounds dynamic table capacity.
+
+            **Related:** A larger table can improve compression ratio, but it also increases state memory and coordination complexity.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q10: Which review comment best reflects a mature QPACK understanding</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. We should tune dynamic table usage based on blocked-stream tolerance, loss conditions, and whether the compression gain is worth the latency risk</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. We should always maximize dynamic table references because smaller headers are always better</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. We should disable literals because they are inefficient and never useful</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The real learning target for RFC 9204 is design judgment. A good review comment shows that the engineer sees QPACK as an optimization problem with operational trade-offs.
+
+            **Terms:** **blocked streams**, **loss**, **dynamic table usage**, and **compression gain** are the practical knobs in QPACK design.
+
+            **Real-world usage:** This is exactly the framing you want in browser, CDN, proxy, or library implementation reviews when someone asks how aggressive the encoder should be.
+
+            **Options:**
+            - A (correct): This captures the core trade-off QPACK was designed to expose and manage.
+            - B (incorrect): Better compression is not always better if it creates head-of-line-style stalls.
+            - C (incorrect): Literals are an important safety valve when dynamic-state risk is too high.
+
+            **Related:** Mature QPACK use is about choosing when to spend bytes to save latency, and when to spend state to save bytes.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9204</strong> to “<em id="footer-goal">QPACK design literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
