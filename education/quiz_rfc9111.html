@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9111 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9111 drill: HTTP caching, freshness, revalidation, validators, shared caches, and invalidation." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9111.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9111.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9111_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9111",
+      SKILL_SUBTITLE: "HTTP Caching",
+      GOAL_DESCRIPTION: "Reason about freshness, revalidation, validators, shared caches, and invalidation without cargo-culting directives",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9111 Quiz</h1>
+        <h2 id="subtitle">Design cache behavior deliberately</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9111.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc9111_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9111" target="_blank" rel="noopener noreferrer">RFC 9111: HTTP Caching</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: choose caching directives and validation strategies that fit the data, the risk, and the deployment path.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
+        <header><h4>Q1: Which response policy best fits a personalized bank account summary page</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Cache-Control: public, max-age=600</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Cache-Control: private, max-age=600</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Cache-Control: no-store</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Teams often treat every HTML page as just another cacheable document and forget that sensitivity matters more than latency on some endpoints.
+
+            **Terms:** **no-store** means caches should not keep a copy. **private** limits reuse to a private cache such as a browser, but it still allows storage.
+
+            **Real-world usage:** In practice this appears in reviews for account dashboards, admin consoles, and pages that can leak personal data through browser history or shared devices.
+
+            **Options:**
+            - A (incorrect): **public** is wrong for personalized financial data because shared caches must not reuse it across users.
+            - B (incorrect): **private** avoids shared-cache reuse, but it still permits storage in the browser and is weaker than needed for highly sensitive content.
+            - C (correct): **no-store** matches the risk model when persistence itself is unacceptable.
+
+            **Related:** Caching is not only a performance decision. It is also a data-handling and privacy decision.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q2: What does Cache-Control: no-cache actually allow</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. It forbids storage completely</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. It allows storage, but reuse requires validation</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. It allows reuse for private caches only</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Many production bugs come from confusing **no-cache** with **no-store**, which leads teams either to over-cache or to disable caching unnecessarily.
+
+            **Terms:** **no-cache** does not mean “do not cache.” It means a stored response must be validated before reuse. **validation** usually uses validators such as **ETag** or **Last-Modified**.
+
+            **Real-world usage:** In practice this matters for dashboards and APIs where you want conditional requests and bandwidth savings, but not blind reuse.
+
+            **Options:**
+            - A (incorrect): That is the meaning of **no-store**, not **no-cache**.
+            - B (correct): Storage is allowed, but reuse requires an origin check.
+            - C (incorrect): This answer invents a private-cache-only rule that **no-cache** does not define.
+
+            **Related:** Revalidation is often the right middle ground between “never store” and “reuse freely.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: A product catalog should stay fresh for browsers for 60 seconds, but a CDN may reuse it for 10 minutes. Which directive pair best matches that goal</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Cache-Control: max-age=600</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Cache-Control: max-age=60, s-maxage=600</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Cache-Control: private, max-age=600</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Shared caches and private caches often need different reuse windows, but teams frequently publish a single directive and hope every layer behaves the same way.
+
+            **Terms:** **max-age** applies generally to caches. **s-maxage** is for **shared caches**, such as CDNs and proxy caches.
+
+            **Real-world usage:** This appears when you want edge caching to absorb load while browsers still re-check more aggressively because user-visible freshness matters.
+
+            **Options:**
+            - A (incorrect): This gives both browsers and shared caches the same 10-minute lifetime.
+            - B (correct): Browsers get 60 seconds, while shared caches can reuse for 600 seconds.
+            - C (incorrect): **private** blocks shared-cache reuse, which defeats the CDN goal.
+
+            **Related:** Split cache lifetimes are common in API and storefront design where origin load and user freshness have different tolerances.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q4: If both Cache-Control: max-age=120 and an Expires date are present, which freshness signal should a modern cache follow</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Cache-Control: max-age</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Expires</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Whichever gives the longer lifetime</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Mixed legacy and modern headers are common. Reviewers need to know which signal actually controls behavior instead of reasoning from both at once.
+
+            **Terms:** **Cache-Control** is the primary HTTP caching control surface. **Expires** is an older absolute-time mechanism.
+
+            **Real-world usage:** You see this when frameworks add default headers, CDNs rewrite responses, or older services still emit legacy metadata.
+
+            **Options:**
+            - A (correct): **Cache-Control** takes precedence when both are present.
+            - B (incorrect): **Expires** does not win over explicit **Cache-Control** freshness directives.
+            - C (incorrect): Caches do not pick the more convenient lifetime based on length.
+
+            **Related:** Prefer explicit, relative freshness policy with **Cache-Control**, because it is clearer and less fragile than clock-based reasoning alone.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L1">
+        <header><h4>Q5: Which fields are validators that support revalidation (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. ETag</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. Age</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. Last-Modified</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. Vary</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Caching discussions often mix up selection metadata, freshness metadata, and validation metadata. The distinction matters for correct debugging.
+
+            **Terms:** **validators** let a cache ask whether a stored response still matches the current representation. **ETag** and **Last-Modified** are classic validator fields.
+
+            **Real-world usage:** This is central when troubleshooting unexpected **304 Not Modified** responses or excessive origin traffic from needless full downloads.
+
+            **Options:**
+            - A (correct): **ETag** is a validator designed for conditional requests.
+            - B (incorrect): **Age** reports how long a response has been in cache, not whether it still matches origin state.
+            - C (correct): **Last-Modified** can also drive conditional revalidation.
+            - D (incorrect): **Vary** affects cache key selection, not validation.
+
+            **Related:** Selection, freshness, and validation are different phases of cache reasoning. Good debugging separates them.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q6: After a cache revalidates a stored response and receives 304 Not Modified, what should it generally do</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Discard the stored response body and return an empty response</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Reuse the stored body and update stored metadata as needed</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Treat 304 as a redirect to the origin URI</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Teams sometimes treat **304** as if it were a body-carrying success response or as if it invalidated the cached entry. Both interpretations are wrong.
+
+            **Terms:** **304 Not Modified** is a validation result. It says the cache can keep using the stored representation body.
+
+            **Real-world usage:** In practice this affects reverse proxies, browser devtools interpretation, and origin cost when tuning conditional GET behavior.
+
+            **Options:**
+            - A (incorrect): The stored body is exactly what the cache is supposed to keep using.
+            - B (correct): The cache reuses the existing representation and may update metadata supplied with the validation response.
+            - C (incorrect): **304** is about validation, not location change.
+
+            **Related:** A successful validation path is often cheaper than a full **200** response, but it still depends on correct validator handling.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q7: A site serves different language variants at the same URI. Which missing field most likely causes caches to mix up English and Japanese pages</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Vary: Accept-Language</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Age</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Last-Modified</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Variant confusion is a classic cache bug. People often blame freshness when the real problem is cache key selection.
+
+            **Terms:** **Vary** tells a cache which request fields influence representation selection. **Accept-Language** is commonly part of language negotiation.
+
+            **Real-world usage:** This shows up in multilingual sites, device-adaptive rendering, and compressed/uncompressed content delivery.
+
+            **Options:**
+            - A (correct): Without **Vary: Accept-Language**, a cache can wrongly reuse one language variant for another request.
+            - B (incorrect): **Age** does not decide variant selection.
+            - C (incorrect): **Last-Modified** helps validation, not language-based cache key separation.
+
+            **Related:** **Vary** is about “which stored entry should I pick,” not “is the chosen entry still fresh.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q8: A response was generated for a request containing Authorization. When may a shared cache reuse it</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Always, because authenticated users expect faster responses</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Never, under any condition</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Only when the response explicitly permits shared-cache reuse</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** “Authenticated” does not automatically mean “uncacheable,” but it does raise the bar. Engineers need to know the difference between default caution and explicit permission.
+
+            **Terms:** A **shared cache** is a cache reused across clients. **Authorization** changes the default safety assumptions because responses are often user-specific.
+
+            **Real-world usage:** This matters for CDNs in front of APIs, token-authenticated content, and service meshes that want to cache some authenticated traffic safely.
+
+            **Options:**
+            - A (incorrect): Speed alone is not a caching policy. Reuse must be explicitly safe.
+            - B (incorrect): RFC 9111 allows exceptions when the response explicitly authorizes shared-cache reuse.
+            - C (correct): Shared reuse requires explicit permission, not guesswork.
+
+            **Related:** Security-sensitive caching decisions should be explicit in headers, not inferred from optimistic assumptions.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q9: What does Cache-Control: private primarily communicate</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. The response may only be stored if it also has an ETag</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Shared caches should not store it for reuse across users</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. The response must be revalidated every time</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Teams often reach for **private** when they mean “sensitive” or “must not be stored anywhere,” but that is not what the directive says.
+
+            **Terms:** **private** restricts shared-cache storage and reuse. It does not automatically forbid a browser from storing the response.
+
+            **Real-world usage:** This is common in user dashboards, personalized homepages, and BFF-style endpoints that are safe in a browser but not in a CDN.
+
+            **Options:**
+            - A (incorrect): Validators are unrelated to the meaning of **private**.
+            - B (correct): The core meaning is “not for shared reuse.”
+            - C (incorrect): Revalidation-on-every-use is closer to **no-cache** behavior.
+
+            **Related:** If browser persistence is also unacceptable, **no-store** is usually the stronger and more appropriate instruction.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q10: Which endpoint is the strongest candidate for Cache-Control: public</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. A versioned product image identical for every user</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. A user profile page personalized by session</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. A one-time password verification response</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The important skill is not memorizing directive names. It is identifying when reuse across users is actually safe.
+
+            **Terms:** **public** explicitly allows storage by shared caches. Versioned static assets are usually excellent shared-cache candidates because identity and mutability are controlled.
+
+            **Real-world usage:** CDNs, image delivery, and immutable build artifacts all benefit from clear public cacheability.
+
+            **Options:**
+            - A (correct): A versioned, user-independent asset is ideal for shared reuse.
+            - B (incorrect): Personalized content should not be exposed to shared reuse.
+            - C (incorrect): Security-sensitive transactional responses are poor candidates for public caching.
+
+            **Related:** “Same URI for everyone” is not enough. You also need stable content and low confidentiality risk.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q11: Why would a team add must-revalidate to a response that can become unsafe when stale</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. To prevent all storage in all caches</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. To make the response public to shared caches</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. To forbid stale reuse without successful validation</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Engineers often underestimate the business impact of stale data, especially for inventory, quota, or compliance decisions.
+
+            **Terms:** **must-revalidate** means that once the response becomes stale, a cache cannot keep serving it without successful validation.
+
+            **Real-world usage:** This matters for stock counts, entitlement decisions, feature gates, and financial limits where stale data can cause incorrect actions.
+
+            **Options:**
+            - A (incorrect): Storage can still happen. The directive controls stale reuse, not storage itself.
+            - B (incorrect): Shared-cache permission is a different concern.
+            - C (correct): The point is to stop “just serve stale and hope” behavior.
+
+            **Related:** Freshness lifetime answers “how long may I reuse this.” Revalidation directives answer “what happens after that time runs out.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q12: When can heuristic caching become relevant</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. Whenever a response contains Cache-Control: no-store</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. When explicit freshness information is absent and the response is heuristically cacheable</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. Only after a client sends Authorization</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Teams sometimes assume “no freshness header” means “never cached,” but caches can still reason heuristically in some cases.
+
+            **Terms:** **heuristic caching** estimates freshness when explicit freshness data is missing. That does not mean “invent anything you want”; it operates within defined limits and response categories.
+
+            **Real-world usage:** This appears with legacy services, static pages missing explicit cache headers, and CDN defaults in front of older origins.
+
+            **Options:**
+            - A (incorrect): **no-store** explicitly blocks storage, so heuristics are irrelevant.
+            - B (correct): This is the situation where heuristic freshness can matter.
+            - C (incorrect): Authorization is unrelated to the definition of heuristic freshness.
+
+            **Related:** Heuristic caching is a fallback, not a substitute for deliberate cache policy.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q13" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q13: What does the request directive min-fresh express</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q13" value="a"> A. The client wants a response that will remain fresh for at least a specified amount of time</label>
+            <label class="choice"><input type="radio" name="Q13" value="b"> B. The client allows any stale response as long as the body is small</label>
+            <label class="choice"><input type="radio" name="Q13" value="c"> C. The client forbids validators in the response</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Client request directives are less famous than response directives, so they are easy to misuse in proxy and browser tooling.
+
+            **Terms:** **min-fresh** is a request preference. It asks for a response that will still be fresh for at least the given number of seconds.
+
+            **Real-world usage:** This can matter for prefetching, offline-aware clients, and workflows where a response must stay usable for a near-future action.
+
+            **Options:**
+            - A (correct): That is the core meaning of **min-fresh**.
+            - B (incorrect): Accepting stale content maps more closely to **max-stale** reasoning.
+            - C (incorrect): Validators are unrelated to **min-fresh**.
+
+            **Related:** Client directives are about preferences and constraints on reuse, not about rewriting origin policy.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q14" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q14: What does max-stale let a client express</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q14" value="a"> A. The client forbids all stale reuse under all conditions</label>
+            <label class="choice"><input type="radio" name="Q14" value="b"> B. The client is willing to accept a stale response, optionally within a limit</label>
+            <label class="choice"><input type="radio" name="Q14" value="c"> C. The client requires the cache to store the response permanently</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Engineers often learn only origin-side directives and forget that clients can also express reuse preferences.
+
+            **Terms:** **max-stale** is a request directive that says the client can tolerate some staleness. It can be unbounded or bounded by a value.
+
+            **Real-world usage:** This matters for resilient clients, degraded-mode browsing, and systems that value availability over perfect freshness in some workflows.
+
+            **Options:**
+            - A (incorrect): That is the opposite of what **max-stale** expresses.
+            - B (correct): The directive widens the acceptable freshness window from the client side.
+            - C (incorrect): Caches are not forced to keep responses forever.
+
+            **Related:** Freshness policy is a negotiation between origin instructions and client tolerance, not a one-sided command channel.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q15" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q15: After a successful unsafe request like PUT changes a resource, what should a cache generally avoid doing</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q15" value="a"> A. Revalidating related stored responses later</label>
+            <label class="choice"><input type="radio" name="Q15" value="b"> B. Invalidating stored knowledge that might now be stale</label>
+            <label class="choice"><input type="radio" name="Q15" value="c"> C. Continuing to serve old cached state as if the update never happened</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Caches are not just passive readers. Unsafe methods can make previously stored responses wrong immediately.
+
+            **Terms:** An **unsafe method** can change server state. **invalidation** means dropping or retiring stored responses that may no longer reflect current origin state.
+
+            **Real-world usage:** This is critical after writes in APIs, CMS systems, admin panels, and any product where a fresh read is expected right after an update.
+
+            **Options:**
+            - A (incorrect): Revalidation is a safe follow-up action, not the mistake.
+            - B (incorrect): Invalidating stale knowledge is exactly what a good cache should consider.
+            - C (correct): Reusing obviously stale state after a successful write defeats the correctness goal of caching.
+
+            **Related:** Cache invalidation is hard mainly because the dependency graph can be broader than the directly updated URI.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q16" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q16: What does the Age header help a recipient estimate</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q16" value="a"> A. How long the response has effectively been resident since origin generation or validation</label>
+            <label class="choice"><input type="radio" name="Q16" value="b"> B. How many caches have stored the response</label>
+            <label class="choice"><input type="radio" name="Q16" value="c"> C. Which validator field the origin prefers</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** People often treat **Age** as a mystery proxy field, but it is a practical signal for understanding freshness calculations.
+
+            **Terms:** **Age** estimates how much time has passed since the response was generated or successfully validated by the origin, as seen through caching layers.
+
+            **Real-world usage:** You read **Age** when debugging CDN behavior, explaining why a response is already close to expiry, or checking whether revalidation is working.
+
+            **Options:**
+            - A (correct): This is the useful interpretation for freshness reasoning.
+            - B (incorrect): **Age** is not a hop count.
+            - C (incorrect): Validator preference is unrelated to **Age**.
+
+            **Related:** **Age** affects freshness math, but it does not by itself decide whether a response may be reused.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q17" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q17: Why can a HEAD response be useful to a cache that already stores a GET response</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q17" value="a"> A. It provides a replacement body with less bandwidth</label>
+            <label class="choice"><input type="radio" name="Q17" value="b"> B. It can update stored metadata without transferring the representation body</label>
+            <label class="choice"><input type="radio" name="Q17" value="c"> C. It forces all validators to become weak validators</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** HEAD is often taught as a curiosity, but it matters when thinking about cheap metadata refresh and cache bookkeeping.
+
+            **Terms:** **HEAD** returns the headers that would accompany a GET response, without the response body. That makes it useful for metadata-oriented checks.
+
+            **Real-world usage:** This can matter for large objects, CDN metadata refresh, and monitoring systems that need state hints without full download cost.
+
+            **Options:**
+            - A (incorrect): HEAD does not transfer the representation body.
+            - B (correct): Metadata can be refreshed or compared while avoiding the full payload.
+            - C (incorrect): HEAD does not redefine validator strength.
+
+            **Related:** Even when HEAD is supported, you still need to reason carefully about which stored metadata remains trustworthy.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q18" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q18: Which validator choice is more appropriate when byte-for-byte equality matters for a resumed download</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q18" value="a"> A. A weak ETag is enough because semantic similarity is all that matters</label>
+            <label class="choice"><input type="radio" name="Q18" value="b"> B. Last-Modified is always stronger than any ETag</label>
+            <label class="choice"><input type="radio" name="Q18" value="c"> C. A strong validator is safer when exact representation identity matters</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Validator strength matters when caches or clients need confidence about exact representation identity, not just approximate sameness.
+
+            **Terms:** A **strong validator** supports exact representation matching. A **weak validator** is looser and better for semantic equivalence than byte identity.
+
+            **Real-world usage:** This matters for range requests, resumable downloads, artifact delivery, and any flow where exact bytes are important.
+
+            **Options:**
+            - A (incorrect): Weak validators are not the safest choice for exact byte-identity use cases.
+            - B (incorrect): **Last-Modified** is not automatically stronger than an **ETag**.
+            - C (correct): Exact identity-sensitive scenarios call for strong validation.
+
+            **Related:** Good cache design starts by asking what kind of equality the client actually needs.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q19" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q19: Which statement about no-store is the safest engineering interpretation</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q19" value="a"> A. It guarantees the response leaves no traces anywhere in the system</label>
+            <label class="choice"><input type="radio" name="Q19" value="b"> B. It is a strong cache directive, but it is not a total privacy guarantee for every component</label>
+            <label class="choice"><input type="radio" name="Q19" value="c"> C. It only matters to browsers, not to intermediaries</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Security reviews go wrong when people over-interpret protocol directives as end-to-end guarantees that cover logs, telemetry, and every implementation detail.
+
+            **Terms:** **no-store** is a cache directive. It tells caches not to keep a stored copy. It does not magically erase every other system artifact.
+
+            **Real-world usage:** This matters when discussing privacy claims with legal, security, or platform teams. Protocol behavior and system-wide data retention are different layers.
+
+            **Options:**
+            - A (incorrect): That promise is broader than what the directive defines.
+            - B (correct): This is the safe, engineering-accurate interpretation.
+            - C (incorrect): Intermediaries are exactly part of the caching story.
+
+            **Related:** Good privacy design combines protocol directives with logging, retention, and storage controls outside HTTP caching itself.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q20" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q20: Which pairing correctly separates cache key selection from freshness validation</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q20" value="a"> A. Vary helps choose the right stored entry, while ETag helps validate that entry</label>
+            <label class="choice"><input type="radio" name="Q20" value="b"> B. ETag chooses the cache key, while Age validates the selected entry</label>
+            <label class="choice"><input type="radio" name="Q20" value="c"> C. Last-Modified chooses the variant, while private validates freshness</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Cache failures are easier to diagnose when you know whether the bug happened during entry selection or after selection during reuse checks.
+
+            **Terms:** **Vary** shapes cache key selection. **ETag** is a validator used after the cache has already chosen a stored response candidate.
+
+            **Real-world usage:** In practice, this distinction helps when debugging “wrong variant served” versus “right variant served but not fresh anymore.”
+
+            **Options:**
+            - A (correct): This cleanly separates selection from validation.
+            - B (incorrect): **ETag** is not a cache-key selector, and **Age** is not a validator.
+            - C (incorrect): **private** is a storage/reuse restriction, not a freshness validator.
+
+            **Related:** Good cache design has multiple decision stages. Mixing them together leads to cargo-cult reasoning.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q21" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q21: A public product-list API returns the same JSON to every user and is acceptable to reuse for 120 seconds. Which directives fit that goal (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q21" value="a"> A. public</label>
+            <label class="choice"><input type="checkbox" name="Q21" value="b"> B. no-store</label>
+            <label class="choice"><input type="checkbox" name="Q21" value="c"> C. max-age=120</label>
+            <label class="choice"><input type="checkbox" name="Q21" value="d"> D. private</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The useful skill is mapping endpoint behavior to policy, not memorizing isolated directives.
+
+            **Terms:** **public** permits shared reuse. **max-age=120** gives the freshness window. **private** and **no-store** push in the opposite direction.
+
+            **Real-world usage:** This is exactly the kind of quick policy choice engineers make for catalog APIs, anonymous landing data, and search suggestion payloads.
+
+            **Options:**
+            - A (correct): Shared caches may reuse the response.
+            - B (incorrect): **no-store** contradicts the requirement to reuse for 120 seconds.
+            - C (correct): This supplies the desired freshness lifetime.
+            - D (incorrect): **private** would block shared-cache reuse and conflict with the public API goal.
+
+            **Related:** Cache policy should reflect data audience, mutation rate, and harm if stale, not just “is it JSON or HTML.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q22" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q22: Which response is the poorest candidate for heuristic caching when explicit freshness is missing</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q22" value="a"> A. A stable brochure page that rarely changes</label>
+            <label class="choice"><input type="radio" name="Q22" value="b"> B. A generic 404 response for a missing public page</label>
+            <label class="choice"><input type="radio" name="Q22" value="c"> C. A rapidly changing inventory response where stale data causes overselling</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Heuristic caching is not inherently wrong. The key question is whether guessed freshness is acceptable for the data and the failure mode.
+
+            **Terms:** **heuristic caching** estimates freshness in the absence of explicit cache lifetime metadata. That makes risk analysis especially important.
+
+            **Real-world usage:** You encounter this when older services omit headers and platform teams must decide whether default CDN behavior is safe.
+
+            **Options:**
+            - A (incorrect): A low-change brochure page is a much safer place for heuristic reuse.
+            - B (incorrect): Generic missing-page responses are often lower risk than dynamic transactional data.
+            - C (correct): Business-critical, fast-changing inventory is a poor place for guessed freshness.
+
+            **Related:** When stale risk is costly, explicit cache policy is much better than heuristic fallback.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q23" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+        <header><h4>Q23: Which response classes are commonly good candidates for shared caching when the content is identical across users (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q23" value="a"> A. Versioned static assets</label>
+            <label class="choice"><input type="checkbox" name="Q23" value="b"> B. Session-bound account pages</label>
+            <label class="choice"><input type="checkbox" name="Q23" value="c"> C. Public documentation pages</label>
+            <label class="choice"><input type="checkbox" name="Q23" value="d"> D. Anonymous product catalog responses</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Shared caching works best when audience and representation are stable. Many bad policies come from ignoring either one.
+
+            **Terms:** A **shared cache** is worthwhile when many users can safely reuse the same representation. The opposite is session-bound or user-specific content.
+
+            **Real-world usage:** This question maps directly to CDN onboarding, edge policy reviews, and deciding which endpoints deserve cache effort.
+
+            **Options:**
+            - A (correct): Versioned static assets are classic high-value shared-cache targets.
+            - B (incorrect): Session-bound pages should not be reused across users.
+            - C (correct): Public docs are often stable, public, and broadly reusable.
+            - D (correct): Anonymous catalog data is often safe and valuable to share-cache.
+
+            **Related:** Good shared-cache candidates are public, broadly reused, and not overly sensitive to short staleness.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q24" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q24: Which statement about 304 Not Modified is most accurate</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q24" value="a"> A. It is a full replacement response body that should overwrite the stored body</label>
+            <label class="choice"><input type="radio" name="Q24" value="b"> B. It is a validation response that lets the cache keep using a stored representation body</label>
+            <label class="choice"><input type="radio" name="Q24" value="c"> C. It means the response is now permanently cacheable without validators</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Even experienced engineers sometimes remember **304** only as “a cache status code” without understanding the operational consequences.
+
+            **Terms:** **304 Not Modified** means the cache’s stored representation is still valid for reuse after conditional revalidation.
+
+            **Real-world usage:** This affects browser waterfall analysis, CDN origin traffic, and server-side conditional request implementations.
+
+            **Options:**
+            - A (incorrect): **304** does not carry the stored representation body as a replacement payload.
+            - B (correct): Validation succeeded, so the stored body remains the active representation.
+            - C (incorrect): Validator-free permanent cacheability is not what **304** means.
+
+            **Related:** Conditional requests are valuable mainly because they preserve correctness while reducing transfer cost.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q25" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q25: Which review comment shows the strongest RFC 9111 understanding</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q25" value="a"> A. This endpoint needs an explicit statement about who may store it, how long it stays fresh, and how clients should revalidate it</label>
+            <label class="choice"><input type="radio" name="Q25" value="b"> B. This endpoint returns JSON, so it is probably fine to cache aggressively everywhere</label>
+            <label class="choice"><input type="radio" name="Q25" value="c"> C. Caching is mostly about adding max-age and letting the CDN guess the rest</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The real goal of this RFC is better engineering judgment, not rote directive recall.
+
+            **Terms:** A sound cache review covers **storage scope**, **freshness lifetime**, and **validation strategy**. Those are the three recurring decision points behind most real incidents.
+
+            **Real-world usage:** This is the kind of comment you want in API reviews, CDN change reviews, and security sign-off discussions.
+
+            **Options:**
+            - A (correct): This frames the problem in the right dimensions and invites an explicit policy.
+            - B (incorrect): Content type does not determine safe caching policy.
+            - C (incorrect): Guesswork is exactly what RFC 9111 is trying to reduce through explicit behavior.
+
+            **Related:** Mature caching practice is a design discipline. It combines semantics, risk tolerance, and deployment knowledge.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9111</strong> to “<em id="footer-goal">Deliberate HTTP caching design</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

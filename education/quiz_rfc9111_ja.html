@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9111（HTTP Caching）クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9111 ドリル: HTTP cache の freshness, revalidation, validator, shared cache, invalidation を設計判断として理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9111_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9111.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9111_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9111",
+      SKILL_SUBTITLE: "HTTP Caching",
+      GOAL_DESCRIPTION: "freshness, revalidation, validator, shared cache, invalidation を丸暗記ではなく設計判断として扱えるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9111 Quiz</h1>
+        <h2 id="subtitle">HTTP cache を意図して設計する</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc9111.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9111_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9111" target="_blank" rel="noopener noreferrer">RFC 9111: HTTP Caching</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">狙い: どこまで保存してよいか, どこまで再利用してよいか, stale をどこまで許せるかを, endpointごとに言語化できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
+        <header><h4>Q1: 個人の残高や取引履歴を出す口座サマリー画面に, 最も合う方針はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Cache-Control: public, max-age=600</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Cache-Control: private, max-age=600</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Cache-Control: no-store</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** cache は速くする道具として語られがちですが, 実際には「保存してよいか」の判断が先に来る場面が多いです.
+
+            **用語:** **no-store** は保存自体をさせない強い指示です. **private** は shared cache では使わせないという意味で, browser 側の保存までは止めません.
+
+            **実務での機会:** 口座情報, 管理画面, 医療情報, 社内ポータルのレビューで, 「shared cache だけ防げば十分か」が論点になります.
+
+            **選択肢:**
+            - A (incorrect): **public** は shared cache での再利用を許すので, 個人データには不適切です.
+            - B (incorrect): **private** は shared cache 事故は避けられますが, 保存そのものを嫌う画面には弱いです.
+            - C (correct): **no-store** が, 残してはいけないデータという前提に最も合います.
+
+            **関連:** cache 設計は性能だけでなく, 漏えい面と操作端末の共有リスクも含めて考えます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q2: Cache-Control: no-cache の説明として最も正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 一切保存してはいけない</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 保存はできるが, 再利用前に検証が必要</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. private cache だけが再利用できる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** **no-cache** と **no-store** の取り違えは, 現場で一番起きやすい cache 設計ミスのひとつです.
+
+            **用語:** **no-cache** は「cache するな」ではなく, 「再利用するなら origin に確認しろ」という意味です. その確認には **ETag** や **Last-Modified** が使われます.
+
+            **実務での機会:** 管理画面やダッシュボードで, 帯域は節約したいが stale のまま出したくない, という場面でよく出ます.
+
+            **選択肢:**
+            - A (incorrect): それは **no-store** の意味です.
+            - B (correct): 保存は可能で, 使う前に validation を挟みます.
+            - C (incorrect): private cache 専用という意味ではありません.
+
+            **関連:** cache を完全停止するより, conditional request に寄せた方が良いケースは多いです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q3: 商品一覧 API は browser では 60 秒, CDN では 10 分まで再利用したい. 一番合う設定はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Cache-Control: max-age=600</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Cache-Control: max-age=60, s-maxage=600</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Cache-Control: private, max-age=600</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** browser と CDN を同じ寿命で扱ってしまい, どちらか一方の都合に引っ張られる設計はよくあります.
+
+            **用語:** **max-age** は一般的な freshness 指示です. **s-maxage** は **shared cache** 向けの寿命を別に切るためのものです.
+
+            **実務での機会:** storefront, catalog API, public landing data では, edge で負荷を吸いたい一方, browser ではもう少し細かく更新を見たいことがあります.
+
+            **選択肢:**
+            - A (incorrect): browser まで 10 分 stale を許すことになります.
+            - B (correct): browser と shared cache の都合を分けて指定できます.
+            - C (incorrect): **private** を付けると CDN での再利用ができません.
+
+            **関連:** cache policy は 1 つの TTL を雑に置くのではなく, 利用層ごとに分けて考えると設計が安定します.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q4: Cache-Control: max-age=120 と Expires が同時に入っていたとき, 優先して見るべきなのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Cache-Control: max-age</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Expires</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. より長い寿命になる方</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 古い middleware や framework が **Expires** を足してくるせいで, 実際の優先順位を曖昧に理解したまま運用されがちです.
+
+            **用語:** **Cache-Control** は現代的な cache 制御の中心です. **Expires** は絶対時刻ベースの古い仕組みです.
+
+            **実務での機会:** CDN や backend framework の default header を見直すときに, どの指示が効いているかを判断する必要があります.
+
+            **選択肢:**
+            - A (correct): **Cache-Control** を優先して読みます.
+            - B (incorrect): **Expires** が勝つわけではありません.
+            - C (incorrect): cache が都合の良い方を選ぶ, という挙動ではありません.
+
+            **関連:** 明示的な相対寿命を置ける **Cache-Control** を中心に設計する方が事故が少ないです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L1">
+        <header><h4>Q5: revalidation に使う validator はどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. ETag</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. Age</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. Last-Modified</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. Vary</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** cache 周りでは, freshness, variant 選択, validation を一緒くたにしてしまうことが多いです.
+
+            **用語:** **validator** は「手元の表現がまだ同じか」を確かめるための手掛かりです. 代表例は **ETag** と **Last-Modified** です.
+
+            **実務での機会:** 304 が多い, origin に無駄に取りに行く, 逆に stale を出す, といった障害の切り分けで重要です.
+
+            **選択肢:**
+            - A (correct): **ETag** は代表的な validator です.
+            - B (incorrect): **Age** は滞留時間の見積もりであって validator ではありません.
+            - C (correct): **Last-Modified** も validation に使えます.
+            - D (incorrect): **Vary** は cache key 側の話です.
+
+            **関連:** 「どの entry を選ぶか」と「その entry を今も使えるか」は別の判断です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q6: stored response を再検証して 304 Not Modified が返ったら, cache はどう動くべきか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. body を捨てて空の応答として返す</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 保存済みの body を使い続け, 必要なら metadata を更新する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. redirect と同じ扱いにする</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 304 を「body の無い 200」くらいに雑に覚えると, 実装も運用も崩れます.
+
+            **用語:** **304 Not Modified** は validation の結果です. 既に持っている representation body をそのまま使ってよい, という意味です.
+
+            **実務での機会:** browser devtools の見方, reverse proxy の実装, origin の条件付き GET 最適化で頻繁に出ます.
+
+            **選択肢:**
+            - A (incorrect): body を捨てるのではなく, 既存の body を活かします.
+            - B (correct): 既存 body を使い, validation 応答で更新された metadata は取り込みます.
+            - C (incorrect): location の移動ではありません.
+
+            **関連:** conditional request の価値は, 正しさを保ったまま転送コストを減らせる点にあります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q7: 同じ URI で英語版と日本語版を返すサイトで, language が混線する事故を防ぐのに重要なのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Vary: Accept-Language</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Age</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Last-Modified</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 多言語配信の事故は freshness の問題ではなく, そもそも別 variant を同じ entry と見なしていることが原因な場合が多いです.
+
+            **用語:** **Vary** は, request header の何が representation 選択に効くかを cache に伝えます. **Accept-Language** はその典型です.
+
+            **実務での機会:** 多言語サイト, device 別配信, 圧縮形式違いの配信で, 「別の人向けの内容が出る」事故を防ぎます.
+
+            **選択肢:**
+            - A (correct): language ごとに別 entry として扱わせるために重要です.
+            - B (incorrect): **Age** は variant の識別には使いません.
+            - C (incorrect): **Last-Modified** は freshness 確認寄りで, variant 分離そのものはしません.
+
+            **関連:** **Vary** は「どれを選ぶか」の話で, validator は「選んだものが今も使えるか」の話です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q8: Authorization 付き request に対する response を, shared cache が再利用してよいのはどんなときか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. 認証済みなら重い API なので常に再利用してよい</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. 認証付きなら絶対に再利用してはいけない</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. response 側で shared cache 再利用を明示的に許しているとき</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 「認証付きだから全部 no-cache」と「重いから CDN で全部 cache」の両極端がよく起きます.
+
+            **用語:** **shared cache** は複数 client で再利用される cache です. **Authorization** が付くと, default では慎重に扱うべき応答が増えます.
+
+            **実務での機会:** token 付き API の CDN 利用, service mesh の cache, edge 認証後の public data 配信で出てきます.
+
+            **選択肢:**
+            - A (incorrect): 重いことは再利用許可の根拠にはなりません.
+            - B (incorrect): 例外なく禁止, と覚えるのも雑です.
+            - C (correct): shared cache で使わせたいなら, response 側で明示する必要があります.
+
+            **関連:** 認証の有無より, 実際に user ごとに違う内容なのか, 共有して安全なのかを headers で明示することが大切です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q9: Cache-Control: private がまず伝えていることはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. ETag が無いと保存できない</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. shared cache では使わせない</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. 毎回 revalidate させる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** **private** を「機密情報なので保存禁止」と読み違えるケースが多いです.
+
+            **用語:** **private** は shared cache での保存や再利用を止める指示です. browser 側の保存まで必ず止めるわけではありません.
+
+            **実務での機会:** user 向け dashboard, personalized top page, BFF endpoint の policy を決めるときによく使います.
+
+            **選択肢:**
+            - A (incorrect): validator の有無とは別問題です.
+            - B (correct): まず shared cache での利用制限を意味します.
+            - C (incorrect): それは **no-cache** に近い考え方です.
+
+            **関連:** browser 保存も避けたいなら, **private** だけでなく **no-store** を検討します.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q10: Cache-Control: public を最も素直に置けるのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. version 付きで配る商品画像</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. session ごとに内容が変わる profile 画面</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. one-time password の検証結果</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** shared cache に向くものを, content-type や実装言語ではなく, 再利用可能性で見分けられる必要があります.
+
+            **用語:** **public** は shared cache での保存を許す指示です. user 非依存で, 内容が安定している資産に向きます.
+
+            **実務での機会:** CDN で負荷を吸う対象を選ぶとき, image, script, doc, catalog のどれを edge に乗せるかで判断します.
+
+            **選択肢:**
+            - A (correct): version 付き static asset は shared cache の典型です.
+            - B (incorrect): user 固有の画面は shared 再利用に向きません.
+            - C (incorrect): security-sensitive な transactional 応答に public は危険です.
+
+            **関連:** 「誰に返しても同じか」と「しばらく stale でも許せるか」をまず確認すると判断しやすいです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q11: stale になった在庫情報を validation なしで使わせたくない. この意図に一番近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. 保存自体を止める</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. public にする</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. stale なら validation 成功なしでは再利用させない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** stale の許容度は endpoint ごとに違います. 在庫, quota, 権限のようなデータは stale の一発が大きいです.
+
+            **用語:** **must-revalidate** は, stale になった後の再利用を validation 成功に縛る指示です.
+
+            **実務での機会:** inventory, entitlement, seat availability, 金融枠のように, stale をそのまま出すと誤処理に直結する場面で重要です.
+
+            **選択肢:**
+            - A (incorrect): 保存そのものを止める話ではありません.
+            - B (incorrect): shared reuse の可否とは別軸です.
+            - C (correct): stale 後の雑な再利用を禁止したい, という意図に合います.
+
+            **関連:** freshness を決める指示と, stale 後の扱いを決める指示は分けて考えると整理しやすいです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q12: heuristic caching が効いてくるのはどんなときか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. Cache-Control: no-store があるとき</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. 明示的な freshness 情報が無く, その response が heuristically cacheable なとき</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. Authorization が付いた request のときだけ</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** freshness header が無いと「じゃあ cache されない」と思い込むと, 実際の platform 挙動を読み違えます.
+
+            **用語:** **heuristic caching** は, 明示的な寿命指定がないときに, cache が一定のルールで freshness を推定する考え方です.
+
+            **実務での機会:** 古い service の前に CDN を置くときや, default 動作で意図せず cache されるかをレビューするときに出ます.
+
+            **選択肢:**
+            - A (incorrect): **no-store** があるなら保存自体ができません.
+            - B (correct): heuristic は, 明示的寿命がないときの fallback です.
+            - C (incorrect): Authorization は heuristic の定義条件ではありません.
+
+            **関連:** heuristic は便利ですが, 大事な endpoint では推測任せにせず explicit に書く方が安全です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q13" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q13: request directive の min-fresh が表しているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q13" value="a"> A. 少なくとも指定秒数ぶんは fresh であり続ける response をほしい</label>
+            <label class="choice"><input type="radio" name="Q13" value="b"> B. どれだけ stale でもよい</label>
+            <label class="choice"><input type="radio" name="Q13" value="c"> C. validator を返すな</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** request 側の cache directive は知名度が低く, 読み飛ばされがちです.
+
+            **用語:** **min-fresh** は client 側の希望で, 受け取る response が今すぐ stale になるようなものを避けたい, という意味です.
+
+            **実務での機会:** prefetch, offline-aware client, 次の操作まで短時間だが fresh さを保ちたい workflow で役立ちます.
+
+            **選択肢:**
+            - A (correct): これが **min-fresh** の狙いです.
+            - B (incorrect): stale 許容は **max-stale** の側です.
+            - C (incorrect): validator の有無とは関係ありません.
+
+            **関連:** cache は origin の一方的命令だけでなく, client の許容度も含めて読むと理解が深まります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q14" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q14: max-stale で client が表明しているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q14" value="a"> A. stale は絶対に許さない</label>
+            <label class="choice"><input type="radio" name="Q14" value="b"> B. 条件付きで stale response を受け入れてよい</label>
+            <label class="choice"><input type="radio" name="Q14" value="c"> C. 永続保存を要求する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** client 側の許容度を知らないまま cache を語ると, 可用性重視と整合性重視の違いを説明できません.
+
+            **用語:** **max-stale** は stale を一定範囲で受け入れてよい, という request 側の意思表示です.
+
+            **実務での機会:** degraded mode, offline 寄りの UX, stale でもまず返したい検索や一覧で考え方が出てきます.
+
+            **選択肢:**
+            - A (incorrect): それは逆です.
+            - B (correct): stale をどこまで許すかを client が表明できます.
+            - C (incorrect): 保存期間を永続にする指示ではありません.
+
+            **関連:** origin の厳しさと client の許容度の両方を見ると, cache policy を会話しやすくなります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q15" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q15: PUT のような unsafe method で resource を更新した直後, cache が避けるべき振る舞いはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q15" value="a"> A. 後で revalidate できるようにする</label>
+            <label class="choice"><input type="radio" name="Q15" value="b"> B. 古くなった知識を invalidation する</label>
+            <label class="choice"><input type="radio" name="Q15" value="c"> C. 更新前の state を, 何も無かったかのように出し続ける</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** write 系 endpoint を通した後に stale read が続く事故は, cache の存在を忘れた設計で起きやすいです.
+
+            **用語:** **unsafe method** は state 変更を起こし得る method です. **invalidation** は, その変更で怪しくなった stored response を使わないようにすることです.
+
+            **実務での機会:** CMS, 管理画面, 商品編集, 設定変更 API の直後に「更新したのに画面が変わらない」問題として現れます.
+
+            **選択肢:**
+            - A (incorrect): 後での revalidation はあり得る対応で, 避けるべき本質ではありません.
+            - B (incorrect): invalidation を考えるのはむしろ正しい方向です.
+            - C (correct): 更新後も古い state を平気で返し続けるのが最もまずいです.
+
+            **関連:** cache invalidation が難しいのは, 更新対象 URI だけでなく関連一覧まで影響が広がることがあるからです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q16" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q16: Age header が見積もるのは何か</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q16" value="a"> A. origin がその応答を生成または検証してから, 実質どれくらい時間が経ったか</label>
+            <label class="choice"><input type="radio" name="Q16" value="b"> B. 何段の cache を通ったか</label>
+            <label class="choice"><input type="radio" name="Q16" value="c"> C. どの validator を使うべきか</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** **Age** は見慣れないため, 単なる proxy のおまけ情報として見落とされがちです.
+
+            **用語:** **Age** は freshness 計算に使う指標で, origin 生成または成功 validation からの経過時間を見積もる助けになります.
+
+            **実務での機会:** CDN debug, browser での残り freshness の読み取り, stale に近い response の説明で役立ちます.
+
+            **選択肢:**
+            - A (correct): freshness を考える上での基本的な読み方です.
+            - B (incorrect): hop 数ではありません.
+            - C (incorrect): validator 選択の指示ではありません.
+
+            **関連:** **Age** は freshness 計算を助けますが, それ単独で reuse 可否を決めるわけではありません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q17" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q17: すでに GET response を持っている cache にとって, HEAD response が役立つのはなぜか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q17" value="a"> A. body を短くした置き換え版として使えるから</label>
+            <label class="choice"><input type="radio" name="Q17" value="b"> B. body を送らずに metadata を見直せるから</label>
+            <label class="choice"><input type="radio" name="Q17" value="c"> C. validator を全部 weak に変えるから</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** HEAD は「body が無い GET」程度にしか覚えられず, cache 観点の価値が見落とされがちです.
+
+            **用語:** **HEAD** は GET なら返る header 群を, body なしで返す method です. そのため metadata 中心の確認に向きます.
+
+            **実務での機会:** 大きな object の存在確認, metadata refresh, monitoring で, 本体転送なしに状態を見たいときに使われます.
+
+            **選択肢:**
+            - A (incorrect): body の簡略版ではありません.
+            - B (correct): metadata を更新・比較したいときに価値があります.
+            - C (incorrect): validator の強さを変える機能ではありません.
+
+            **関連:** HEAD を使うときも, どの metadata を stored GET に反映してよいかは慎重に扱う必要があります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q18" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q18: 途中からの download 再開のように, byte 単位で同一かが重要な場面で, より適切なのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q18" value="a"> A. weak ETag で十分. 意味が近ければよい</label>
+            <label class="choice"><input type="radio" name="Q18" value="b"> B. Last-Modified は常に ETag より強い</label>
+            <label class="choice"><input type="radio" name="Q18" value="c"> C. 厳密な同一性が要るなら strong validator が向く</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** validator の強さを理解しないと, semantic には同じでも byte 列としては別物, という差を扱えません.
+
+            **用語:** **strong validator** は representation の厳密な同一性を扱うのに向きます. **weak validator** は意味的に同じならよい場面向けです.
+
+            **実務での機会:** artifact 配信, range request, resume download, 大きな binary の配布で重要です.
+
+            **選択肢:**
+            - A (incorrect): byte 単位の一致が要るなら weak では弱いです.
+            - B (incorrect): **Last-Modified** が常に強い, という理解は危険です.
+            - C (correct): 厳密一致が必要なら strong validator を優先した方が安全です.
+
+            **関連:** 「同じとみなせればよい」のか, 「完全に同じでないと困る」のかで validator の選び方が変わります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q19" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q19: no-store について, 一番安全な理解はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q19" value="a"> A. システム全体で痕跡が一切残らないことを保証する</label>
+            <label class="choice"><input type="radio" name="Q19" value="b"> B. 強い cache 指示ではあるが, すべての privacy 問題を自動的に解決するわけではない</label>
+            <label class="choice"><input type="radio" name="Q19" value="c"> C. browser にしか効かず, intermediary には意味がない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** protocol directive を, logging, telemetry, analytics, app-level retention まで含めた万能保証だと誤解するのは危険です.
+
+            **用語:** **no-store** は cache に保存させないための指示です. それは強いですが, システム全体の痕跡ゼロ保証とは別です.
+
+            **実務での機会:** security review, privacy 表現の確認, 法務や platform team との会話で, 過剰な保証文言を避けるために重要です.
+
+            **選択肢:**
+            - A (incorrect): そこまでの保証はこの directive だけではできません.
+            - B (correct): cache 制御としては強いが, privacy 全体は別層の対策も必要です.
+            - C (incorrect): intermediary こそ cache の重要な担い手です.
+
+            **関連:** privacy 設計は HTTP header だけで完結せず, log と保存ポリシーまで含めて詰める必要があります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q20" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q20: cache key の選択と freshness validation の役割分担として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q20" value="a"> A. Vary は選ぶ entry を決め, ETag はその entry がまだ使えるかを確かめる</label>
+            <label class="choice"><input type="radio" name="Q20" value="b"> B. ETag が cache key を決め, Age が validation する</label>
+            <label class="choice"><input type="radio" name="Q20" value="c"> C. Last-Modified が variant を決め, private が validation する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** cache 事故の切り分けで, entry 選択ミスと stale 利用ミスを分けて考えられないと原因を外しやすいです.
+
+            **用語:** **Vary** は variant 選択, **ETag** は validation です. 判断フェーズがそもそも違います.
+
+            **実務での機会:** 「別言語が出た」「正しい言語だけど古い内容だった」を切り分けるときに役立ちます.
+
+            **選択肢:**
+            - A (correct): 選択と validation を正しく分離できています.
+            - B (incorrect): **ETag** は cache key を決めませんし, **Age** は validator でもありません.
+            - C (incorrect): **private** は reuse 制限であって validation ではありません.
+
+            **関連:** cache は 1 回の判断ではなく, 「選ぶ」「freshness を見る」「必要なら validation する」という段階的な仕組みです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q21" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q21: 全 user に同じ JSON を返す公開商品一覧 API を, 120 秒 shared reuse したい. 合う directive はどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q21" value="a"> A. public</label>
+            <label class="choice"><input type="checkbox" name="Q21" value="b"> B. no-store</label>
+            <label class="choice"><input type="checkbox" name="Q21" value="c"> C. max-age=120</label>
+            <label class="choice"><input type="checkbox" name="Q21" value="d"> D. private</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** directive を 1 個ずつ覚えていても, endpoint の性質に合わせて組み合わせられないと実務では役に立ちません.
+
+            **用語:** **public** は shared cache を許し, **max-age=120** は freshness window を与えます. **no-store** と **private** は今回の狙いと逆方向です.
+
+            **実務での機会:** catalog, public listing, anonymous search API で, edge cache を使って負荷を落とすときの基本です.
+
+            **選択肢:**
+            - A (correct): shared reuse を許すのに合います.
+            - B (incorrect): 保存自体を止めてしまいます.
+            - C (correct): 120 秒の freshness を明示できます.
+            - D (incorrect): shared cache を止めてしまうので狙いに反します.
+
+            **関連:** content が JSON か HTML かではなく, audience と mutation rate と stale 許容度で policy を決めるのが本筋です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q22" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q22: 明示的な freshness 指定が無い response を heuristic に任せると危ないのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q22" value="a"> A. めったに変わらない案内ページ</label>
+            <label class="choice"><input type="radio" name="Q22" value="b"> B. 一般公開の 404 page</label>
+            <label class="choice"><input type="radio" name="Q22" value="c"> C. 変化が早く stale が oversell に繋がる在庫 API</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** heuristic caching を「使ってはいけない技術」としてではなく, どこなら危ないかで判断できる必要があります.
+
+            **用語:** **heuristic caching** は freshness を推定で決めます. だからこそ, stale の被害が大きい endpoint では相性が悪いです.
+
+            **実務での機会:** 旧 service の前に CDN を置くとき, default 挙動のままでもよいかをレビューする場面で使います.
+
+            **選択肢:**
+            - A (incorrect): 変化が少ない案内ページは heuristic の被害が比較的小さいです.
+            - B (incorrect): generic な 404 は在庫 API より危険度が低いことが多いです.
+            - C (correct): stale のコストが高いので, 推定任せは危険です.
+
+            **関連:** stale の被害が大きい endpoint ほど, 明示的な policy を書く価値が高いです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q23" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+        <header><h4>Q23: 全 user で同じ内容を返すなら, shared cache の候補として強いものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q23" value="a"> A. version 付き static asset</label>
+            <label class="choice"><input type="checkbox" name="Q23" value="b"> B. session に依存する account page</label>
+            <label class="choice"><input type="checkbox" name="Q23" value="c"> C. 公開ドキュメント page</label>
+            <label class="choice"><input type="checkbox" name="Q23" value="d"> D. anonymous 商品一覧 API</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** cache 候補の選定を, 「静的か動的か」だけで雑に分けると失敗しやすいです.
+
+            **用語:** **shared cache** は, 多くの client が同じ representation を安全に使い回せるほど価値が高いです.
+
+            **実務での機会:** CDN の導入範囲を決めるときに, どこへ effort を払うべきかを判断する基本になります.
+
+            **選択肢:**
+            - A (correct): version 付き asset は shared cache の定番です.
+            - B (incorrect): session 依存 page は user 横断で再利用できません.
+            - C (correct): public doc は広く再利用しやすいです.
+            - D (correct): anonymous catalog も shared cache に向きます.
+
+            **関連:** shared cache 向きかどうかは, audience, 個人差分, 更新頻度, stale 許容度で見ると整理しやすいです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q24" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q24: 304 Not Modified の理解として最も正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q24" value="a"> A. body 付きの置き換え response として保存済み body を上書きする</label>
+            <label class="choice"><input type="radio" name="Q24" value="b"> B. validation の結果であり, 保存済み body を使い続けてよいことを示す</label>
+            <label class="choice"><input type="radio" name="Q24" value="c"> C. validator なしで永久に cache できることを示す</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 304 を status code の暗記で終わらせると, cache の実装や debug に繋がりません.
+
+            **用語:** **304 Not Modified** は, 条件付き request の結果として「持っている body をそのまま使ってよい」と伝える応答です.
+
+            **実務での機会:** browser の waterfall, reverse proxy の挙動確認, origin 負荷削減の検証で頻出です.
+
+            **選択肢:**
+            - A (incorrect): 304 は body 置き換えのための full response ではありません.
+            - B (correct): これが実務上の読み方です.
+            - C (incorrect): validator 不要になるわけではありません.
+
+            **関連:** conditional request の要点は, 正確さを落とさずに body 転送を減らすことです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q25" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q25: RFC 9111 を踏まえた review comment として最も筋が良いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q25" value="a"> A. 誰が保存してよいか, 何秒 fresh か, stale 後にどう validation するかを endpoint ごとに明示しましょう</label>
+            <label class="choice"><input type="radio" name="Q25" value="b"> B. JSON を返す API なので, とりあえず aggressive に cache してよいです</label>
+            <label class="choice"><input type="radio" name="Q25" value="c"> C. max-age だけ付けて, あとは CDN の default に任せれば十分です</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** この RFC を読む目的は directive 名を増やすことではなく, cache policy を設計レビューの言葉で話せるようになることです.
+
+            **用語:** 良い cache review は, **保存範囲**, **freshness**, **validation** の 3 軸で整理します. これが endpoint ごとの差分を最も説明しやすい枠組みです.
+
+            **実務での機会:** API review, CDN policy review, security sign-off で, 何を明示すべきかを短く正確に言う場面で役立ちます.
+
+            **選択肢:**
+            - A (correct): RFC 9111 を設計判断に落とした, 最も実務的なコメントです.
+            - B (incorrect): JSON かどうかは cache policy の本質ではありません.
+            - C (incorrect): default 任せは, まさに避けたい態度です.
+
+            **関連:** cache 設計が強い人は, directive の丸暗記よりも「この endpoint の失敗モードは何か」を先に考えます.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9111</strong> to “<em id="footer-goal">Deliberate HTTP caching design</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
