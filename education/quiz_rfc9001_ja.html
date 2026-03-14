@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9001（Using TLS to Secure QUIC）クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9001 ドリル: QUIC が TLS 1.3 をどう使うか, encryption level, transport parameter, 0-RTT, TLS/QUIC の責務分担を理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9001_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9001.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9001_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9001",
+      SKILL_SUBTITLE: "Using TLS to Secure QUIC",
+      GOAL_DESCRIPTION: "encryption level, transport parameter, 0-RTT, TLS/QUIC の責務分担を説明できるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9001 Quiz</h1>
+        <h2 id="subtitle">QUIC の中で TLS が担うもの</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc9001.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9001_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9001" target="_blank" rel="noopener noreferrer">RFC 9001: Using TLS to Secure QUIC</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC Transport</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">狙い: どの security property が TLS 由来で, どの transport behavior が QUIC 由来なのか, そして両者がどこで強く結びついているのかを言語化できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: RFC 9001 を一番正しくまとめるとどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. TLS 1.3 の代わりに, QUIC 専用の新しい暗号 handshake を定義する RFC</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. TLS 1.3 を QUIC でどう使うか, その packet と encryption level の流れにどう結びつけるかを説明する RFC</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. HTTP/3 の header compression を定義する RFC</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QUIC には TLS に似た独自 handshake がある, と誤解されがちです. ここを正すのが最初の一歩です.
+
+            **用語:** **TLS 1.3** は cryptographic handshake と key schedule を担います. **QUIC** は transport と packet 保護の枠組みを担います.
+
+            **実務での機会:** bug が TLS library 由来か, QUIC transport 実装由来か, あるいは両者のつなぎ込み由来かを切り分けるときに重要です.
+
+            **選択肢:**
+            - A (incorrect): TLS 1.3 を置き換えるわけではありません.
+            - B (correct): RFC 9001 の中心を正しく捉えています.
+            - C (incorrect): それは QPACK の領域です.
+
+            **関連:** RFC 9001 は「QUIC が TLS を使う」と言うだけでなく, どう噛み合わせるかを operational に説明する文書です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q2: QUIC の encryption level は, どう理解するのが一番よいか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. HTTP の status code class を再利用したもの</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS の key schedule を簡略化した packet number の別名</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. handshake の段階ごとに, 何を送れて何を decrypt できるかを別の鍵系統で区切る仕組み</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** Initial, Handshake, 1-RTT というラベルだけ覚えても, 実装や debug にはつながりません.
+
+            **用語:** **encryption level** は, handshake の進み具合に応じた保護レベルです. それぞれ別の秘密情報と packet 保護文脈に結びつきます.
+
+            **実務での機会:** どの frame がどの段階で送れるか, なぜ decrypt 失敗が起きるかを考えるときに必要です.
+
+            **選択肢:**
+            - A (incorrect): HTTP semantics ではありません.
+            - B (incorrect): key schedule を置き換えるものでもありません.
+            - C (correct): これが operational な理解です.
+
+            **関連:** encryption level で考えると, QUIC setup を 1 本の直線ではなく段階ごとの保護切り替えとして理解しやすくなります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q3: QUIC の transport parameter とは何か</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. TLS handshake の中で運ばれる, QUIC transport 向けの設定値</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. TLS certificate を HTTP header へ載せ替える仕組み</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. cipher suite を DNS で公告する仕組み</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** transport parameter は TLS handshake に載るので, TLS の generic option だと思い込むと誤ります.
+
+            **用語:** **transport parameter** は QUIC-specific な設定値です. ただし交換の場は TLS handshake の中です.
+
+            **実務での機会:** peer mismatch, flow control, 設定値の食い違いを調べるときに, 「TLS が運ぶが QUIC が解釈する」という構図が役立ちます.
+
+            **選択肢:**
+            - A (correct): 場所と意味を正しく言えています.
+            - B (incorrect): HTTP header とは無関係です.
+            - C (incorrect): DNS で運ぶ話ではありません.
+
+            **関連:** 境界をまたぐ概念は, 「どこを通るか」と「誰が意味づけするか」を分けて覚えると崩れません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3">
+        <header><h4>Q4: QUIC における 0-RTT について, 一般に正しいものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. latency は下げられるが, replay risk は application が引き受けて考える必要がある</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. QUIC を使う限り, write operation でも自動的に安全になる</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. replay されても困らない operation に絞るのが基本方針である</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 0-RTT を有効にすると server 側の anti-replay policy は不要になる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** QUIC は速い, だから 0-RTT も無条件に使ってよい, という雑な理解を避けるための設問です.
+
+            **用語:** **0-RTT** は handshake 完了前に application data を送る仕組みです. **replay** は同じ early data が再受理される危険です.
+
+            **実務での機会:** cached GET, idempotent API, login shortcut などで, 早さを優先するか replay 安全性を優先するかの判断に出ます.
+
+            **選択肢:**
+            - A (correct): 速度向上と replay risk はセットです.
+            - B (incorrect): write operation が勝手に安全になるわけではありません.
+            - C (correct): replay-safe な操作に限るのが基本です.
+            - D (incorrect): server 側 policy は依然として必要です.
+
+            **関連:** 0-RTT は transport 最適化ですが, 安全に使えるかどうかは application semantics 次第です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q5: QUIC transport format の責務よりも, TLS 側の責務として見るべきものはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. packet number の表現や ACK frame の形式</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. connection ID の rotation policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. certificate authentication と key schedule</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** encrypted packet が出てくると全部 QUIC 側の責務に見えてしまう, という混乱を避けたい設問です.
+
+            **用語:** **certificate authentication** と **key schedule** は TLS 1.3 が定める仕組みです. QUIC はその結果を transport に組み込みます.
+
+            **実務での機会:** bug が certificate validation policy なのか, packet 処理なのかを切り分けるときに役立ちます.
+
+            **選択肢:**
+            - A (incorrect): これは QUIC transport の話です.
+            - B (incorrect): connection ID policy も QUIC transport の領域です.
+            - C (correct): ここは TLS 由来の責務です.
+
+            **関連:** 大事なのは「暗号に関係しているか」ではなく, 「その意味やルールを誰が定義しているか」です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q6: QUIC が通常の TLS record layer をそのまま wire 上に見せないのはなぜか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. TLS handshake message は QUIC packet 処理の中へ組み込まれ, 別の record layer wire format としては出てこないから</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. UDP では TLS record を使うことが Internet 的に禁止されているから</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. QUIC は connection 完了まで全部 plaintext handshake だから</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 「QUIC は TLS over UDP」という雑な理解を修正するために必要なポイントです.
+
+            **用語:** 伝統的な **TLS record layer** は TLS over TCP の wire format です. QUIC では TLS handshake data は **CRYPTO frame** などを通じて packet 処理へ統合されます.
+
+            **実務での機会:** parser 実装, observability, Wireshark 的な見方, stack の責務説明で重要です.
+
+            **選択肢:**
+            - A (correct): architecture を正しく表しています.
+            - B (incorrect): そういう禁止はありません.
+            - C (incorrect): QUIC は最後まで plaintext のままではありません.
+
+            **関連:** 「TLS を使う」と「TLS record をそのまま流す」は同じ意味ではありません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q7: transport parameter が欠けていたり, 期待と食い違っていたりすると, 何が起きやすいか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. application が自動で HTTP/1.1 に downgrade する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. peer 同士の QUIC transport 前提が揃わず, connection failure に繋がり得る</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. certificate trust にしか影響せず, transport には影響しない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** transport parameter を単なる付随情報だと思うと, setup failure の本丸を見逃します.
+
+            **用語:** **negotiated state** とは, handshake を通じて両 peer が共有した前提です. transport parameter はその中心にあります.
+
+            **実務での機会:** interop test, version skew, flow-control 関連の事故で, 「設定した」ではなく「相手にどう伝わったか」を確認する必要があります.
+
+            **選択肢:**
+            - A (incorrect): HTTP downgrade の話に直結するわけではありません.
+            - B (correct): transport の前提不一致は setup failure の原因になります.
+            - C (incorrect): transport そのものに大きく影響します.
+
+            **関連:** negotiation 系の bug は, 設定ファイルを見るだけではなく, 実際に合意された値を見るのが近道です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q8: QUIC における server authentication が最終的に依存しているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. packet number space を client が信じること</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. connection ID が途中で変わらないこと</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. TLS certificate validation と authenticated handshake transcript</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** connection ID や packet 保護が見えてくると, identity 保証まで QUIC transport が担うように錯覚しやすいです.
+
+            **用語:** **certificate validation** と **authenticated handshake transcript** が, server identity の根拠です. transport identifier はその代わりにはなりません.
+
+            **実務での機会:** 「encrypted packet が来ているから相手は本物だろう」という危うい議論を避けるときに重要です.
+
+            **選択肢:**
+            - A (incorrect): packet number は認証の根拠ではありません.
+            - B (incorrect): connection ID は continuity や routing に関わりますが, identity の根拠ではありません.
+            - C (correct): ここが server authentication の土台です.
+
+            **関連:** QUIC の transport feature は便利ですが, trust の根は TLS 側にあると押さえておくと整理しやすいです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q9: handshake failure を切り分ける見方として最も良いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. TLS の cryptographic handshake が成立したかと, QUIC-specific state が一貫していたかを両方見る</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. TLS library が成功を返したなら, QUIC setup failure は起こり得ない</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. QUIC での failure は常に certificate validation を切れば直る</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 9001 の難しさは, failure が TLS だけでも QUIC だけでもなく, その境界に出ることがある点です.
+
+            **用語:** **cryptographic handshake** と **QUIC-specific state** は密接ですが同一ではありません. 両方が整って初めて接続が成立します.
+
+            **実務での機会:** browser, server, proxy の incident で, 「TLS は進んでいるのに接続が成立しない」状況を読む枠組みとして使えます.
+
+            **選択肢:**
+            - A (correct): 一番実務的で, RFC 9001 的な見方です.
+            - B (incorrect): QUIC 側の不整合は依然として起こり得ます.
+            - C (incorrect): validation を切るのは fix ではなく, security model を壊します.
+
+            **関連:** setup failure を見るときは, どの layer の前提が破れたかをまず特定するのが近道です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q10: RFC 9001 を理解している review comment として最も良いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. QUIC は encrypted なので, replay, authentication, key derivation はもう個別に考えなくてよい</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. どの property が TLS 由来で, どの挙動が QUIC transport 由来で, transport parameter と encryption level が両者をどう結びつけるかを分けて見ましょう</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. QUIC を有効にした後の handshake failure は, すべて transport bug と見なしてよい</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 9001 の学習ゴールは packet 詳細の暗記ではなく, crypto と transport の結合点を architectural に説明できることです.
+
+            **用語:** **TLS responsibilities**, **QUIC transport responsibilities**, **transport parameter**, **encryption level** は review の中心論点です.
+
+            **実務での機会:** 実装 review, interop test, incident review で, どこに test を足すべきか, どこに境界条件があるかを見つけやすくなります.
+
+            **選択肢:**
+            - A (incorrect): QUIC 導入で TLS 的な論点が消えるわけではありません.
+            - B (correct): これが最も成熟した見方です.
+            - C (incorrect): failure は TLS, QUIC, その統合部のどこにもあり得ます.
+
+            **関連:** RFC 9001 を本当に使える知識にするには, 「QUIC uses TLS」という一文を, 実装責務の分解まで落として話せるようになることが大事です.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9001</strong> to “<em id="footer-goal">QUIC-TLS integration literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

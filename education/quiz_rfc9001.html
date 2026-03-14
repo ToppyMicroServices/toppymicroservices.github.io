@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9001 Quiz (EN) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9001 drill: how QUIC uses TLS 1.3, encryption levels, transport parameters, and 0-RTT trade-offs." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc9001.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc9001.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc9001_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 9001",
+      SKILL_SUBTITLE: "Using TLS to Secure QUIC",
+      GOAL_DESCRIPTION: "Understand encryption levels, transport parameters, 0-RTT, and the TLS/QUIC responsibility split",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 9001 Quiz</h1>
+        <h2 id="subtitle">TLS inside QUIC</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9001.html">🇺🇸</a>
+          <a aria-label="日本語" data-lang="ja" href="quiz_rfc9001_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9001" target="_blank" rel="noopener noreferrer">RFC 9001: Using TLS to Secure QUIC</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC Transport</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">Goal: explain which security properties come from TLS, which transport behavior comes from QUIC, and where the two are tightly coupled.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: What is the most accurate high-level statement about RFC 9001</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. It replaces TLS 1.3 with a new QUIC-only cryptographic handshake</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. It describes how QUIC uses TLS 1.3 while adapting the handshake to QUIC packets and encryption levels</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. It defines HTTP/3 header compression for QUIC connections</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** A common misunderstanding is that QUIC invents a separate TLS-like handshake. RFC 9001 instead explains how TLS 1.3 is used in a QUIC-specific way.
+
+            **Terms:** **TLS 1.3** provides the cryptographic handshake and key schedule. **QUIC** provides transport, packetization, and encryption-level handling around that handshake.
+
+            **Real-world usage:** This distinction helps when deciding whether a bug belongs in the TLS stack, QUIC transport logic, or the integration between them.
+
+            **Options:**
+            - A (incorrect): QUIC does not replace TLS 1.3 with a new crypto protocol here.
+            - B (correct): This is the core purpose of RFC 9001.
+            - C (incorrect): Header compression for HTTP/3 is QPACK, not RFC 9001.
+
+            **Related:** RFC 9001 is best read as the “how QUIC and TLS fit together” document, while RFC 9000 handles transport behavior and RFC 8446 handles TLS semantics.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q2: What is the right way to think about QUIC encryption levels</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. They are HTTP status code classes reused for TLS packets</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. They replace the TLS key schedule with a simpler packet numbering scheme</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. They separate what can be sent and decrypted at different handshake stages using different keys</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Engineers often memorize “Initial, Handshake, 1-RTT” as labels without connecting them to what each level permits and why that staging exists.
+
+            **Terms:** **encryption levels** are handshake stages tied to different secrets and packet protection contexts. They control when packets can be generated and understood.
+
+            **Real-world usage:** This is crucial when debugging why some frames are allowed only at certain stages or why decryption fails during connection setup.
+
+            **Options:**
+            - A (incorrect): Encryption levels are not HTTP semantics.
+            - B (incorrect): They do not remove the TLS key schedule; they use its outputs.
+            - C (correct): This is the correct operational meaning.
+
+            **Related:** Thinking in encryption levels is a good way to understand why QUIC can protect different handshake stages without treating the whole connection as one monolithic state.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q3: What are QUIC transport parameters</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. QUIC-specific configuration values exchanged during the TLS handshake that affect transport behavior</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Replacement HTTP headers used to carry TLS certificates</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. DNS records that announce which cipher suites the origin prefers</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Transport parameters are a classic place where engineers blur protocol boundaries: they are carried via the handshake, but they are about QUIC transport, not generic TLS policy.
+
+            **Terms:** **transport parameters** are QUIC-specific values exchanged in the TLS handshake. They affect transport behavior such as limits and connection properties.
+
+            **Real-world usage:** This matters when diagnosing peer mismatch, flow-control setup, or configuration assumptions that were never actually negotiated.
+
+            **Options:**
+            - A (correct): This captures both where they are exchanged and what they control.
+            - B (incorrect): They are not HTTP headers.
+            - C (incorrect): DNS does not carry them.
+
+            **Related:** A healthy mental model is: TLS carries them, but QUIC interprets them.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3">
+        <header><h4>Q4: Which statements about 0-RTT in QUIC are generally true (select all)</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. It can reduce latency, but replay risk still matters to the application</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. It is automatically safe for any write operation once the server supports QUIC</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It should be limited to requests or operations that are safe under replay</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. It removes the need for server-side anti-replay policy</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Teams often hear “QUIC is faster” and forget that early data changes the security model. RFC 9001 inherits the TLS 1.3 replay concern rather than erasing it.
+
+            **Terms:** **0-RTT** allows early application data before handshake completion. **replay** means an attacker may cause early data to be accepted more than once under some conditions.
+
+            **Real-world usage:** This affects login shortcuts, cached API requests, and any idempotent-vs-non-idempotent design review on top of QUIC.
+
+            **Options:**
+            - A (correct): Lower latency is the gain, replay risk is the trade-off.
+            - B (incorrect): Write operations can be dangerous under replay.
+            - C (correct): Replay-safe behavior remains the design principle.
+            - D (incorrect): Anti-replay and policy decisions are still needed.
+
+            **Related:** Faster handshake paths are only useful when the application semantics can tolerate the changed risk profile.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q5: Which security responsibility remains primarily a TLS responsibility rather than a QUIC transport-format responsibility</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Packet number encoding and ACK frame layout</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Connection ID rotation policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Certificate authentication and key schedule derivation</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The hard part of RFC 9001 is knowing where the division of labor sits. Not everything involving encrypted packets belongs to QUIC transport design.
+
+            **Terms:** **certificate authentication** and the **key schedule** come from TLS 1.3 semantics. QUIC uses their outputs but does not redefine those cryptographic responsibilities.
+
+            **Real-world usage:** This helps teams decide whether a bug belongs in certificate validation policy, TLS library usage, or QUIC packet logic.
+
+            **Options:**
+            - A (incorrect): That is QUIC transport and packet-format territory.
+            - B (incorrect): Connection ID policy is a QUIC transport concern.
+            - C (correct): These are fundamentally TLS responsibilities.
+
+            **Related:** The useful split is not “encrypted means QUIC” versus “crypto means TLS,” but rather “who defines the semantics that peers are expected to follow.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q6: Why doesn't QUIC simply expose a normal TLS record layer on the wire</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Because QUIC integrates TLS handshake messages into QUIC packet processing instead of using TLS records as a separate wire format</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Because TLS records are forbidden on UDP by the laws of the Internet</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Because QUIC uses only plaintext handshake messages until the entire connection is complete</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** This is a subtle architectural point. QUIC uses TLS 1.3, but it does not look like “TLS records carried inside QUIC packets.”
+
+            **Terms:** **TLS record layer** is the wire format used in traditional TLS over TCP. QUIC instead carries TLS handshake data in CRYPTO frames and uses QUIC packet protection semantics.
+
+            **Real-world usage:** This matters when instrumenting traffic, building parsers, or explaining why a normal TLS-over-TCP mental model breaks down for QUIC.
+
+            **Options:**
+            - A (correct): This is the architectural reason.
+            - B (incorrect): There is no such prohibition; this answer is nonsense.
+            - C (incorrect): QUIC does not keep everything plaintext until the end.
+
+            **Related:** “QUIC uses TLS” is true, but it does not mean “QUIC looks like TLS over UDP.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q7: If a transport parameter is missing or inconsistent with what the peer expects, what kind of problem is most likely</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. The application automatically downgrades to HTTP/1.1 without any handshake effect</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. The connection can fail because the peer's QUIC transport assumptions no longer match the negotiated state</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. The issue can only affect certificate trust, never transport behavior</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Engineers often underestimate transport parameters because they look like just another list of values. In practice they are foundational negotiation inputs.
+
+            **Terms:** **negotiated state** matters because both peers derive transport behavior from the values exchanged in the handshake.
+
+            **Real-world usage:** This comes up in interop testing, version skew, and bugs where one stack assumes limits or options the other side never agreed to.
+
+            **Options:**
+            - A (incorrect): HTTP downgrade is not the normal meaning of transport-parameter mismatch.
+            - B (correct): Broken or mismatched transport assumptions can cause connection failure.
+            - C (incorrect): The impact is often transport behavior itself.
+
+            **Related:** A useful debugging habit is to ask not only “what did I configure” but “what did the peer actually learn through negotiation.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q8: What does server authentication in QUIC most directly depend on</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. The client trusting the current packet number space</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. The connection ID remaining unchanged for the entire connection lifetime</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. The TLS certificate validation process and the authenticated handshake transcript</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** Connection IDs, packet protection, and TLS authentication all show up together in QUIC, so people sometimes assign identity guarantees to the wrong mechanism.
+
+            **Terms:** **certificate validation** and the authenticated **handshake transcript** are the basis for server authentication. QUIC transport identifiers do not replace that trust model.
+
+            **Real-world usage:** This helps prevent incorrect security arguments such as “the connection ID proves the server identity” or “encrypted packets imply correct certificate validation happened.”
+
+            **Options:**
+            - A (incorrect): Packet number space does not authenticate the server.
+            - B (incorrect): Connection ID stability is not the basis of authentication.
+            - C (correct): This is the actual root of server identity assurance.
+
+            **Related:** QUIC transport features help continuity and routing, but authentication still comes from the TLS side of the design.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q9: Which statement best captures the split between QUIC and TLS when debugging handshake failures</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. You need to ask both whether the TLS cryptographic handshake succeeded and whether QUIC-specific state such as transport parameters and encryption-level transitions remained consistent</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. If the TLS library reports success, QUIC transport state cannot be responsible for any connection-setup failure</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. QUIC failures can always be solved by disabling certificate validation temporarily</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** RFC 9001 is valuable because it teaches that connection setup problems can live in the seam between protocols, not only in one stack or the other.
+
+            **Terms:** **cryptographic handshake** and **QUIC-specific state** are related but not identical concerns. A healthy setup needs both to line up.
+
+            **Real-world usage:** This framing is useful in browser, server, and proxy debugging when “TLS worked” is true in one sense but the QUIC connection still failed to establish cleanly.
+
+            **Options:**
+            - A (correct): This is the most accurate debugging mindset.
+            - B (incorrect): QUIC-specific setup can still fail even if core TLS processing advanced.
+            - C (incorrect): Disabling validation is not a principled fix and undermines the security model.
+
+            **Related:** Good QUIC debugging asks “which layer owns this failure” and also “which layer depended on the other one being in a certain state.”
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q10: Which review comment shows the strongest RFC 9001 understanding</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. QUIC encryption means we no longer need to reason separately about TLS properties like replay, authentication, and key derivation</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. We should review which properties come from TLS 1.3, which come from QUIC transport, and how transport parameters and encryption levels make those pieces interact during setup</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Once QUIC is enabled, all handshake failures should be classified as transport bugs rather than security bugs</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Context (why chosen):** The goal of this RFC is not packet-field memorization. It is a clean architectural model for a system where crypto and transport are tightly coupled.
+
+            **Terms:** **TLS responsibilities**, **QUIC transport responsibilities**, **transport parameters**, and **encryption levels** are the recurring review dimensions that matter in RFC 9001 work.
+
+            **Real-world usage:** This is the kind of review comment that improves implementation design, test coverage, and incident handling across client and server stacks.
+
+            **Options:**
+            - A (incorrect): QUIC does not erase TLS-specific reasoning.
+            - B (correct): This is the most complete and operationally useful framing.
+            - C (incorrect): Failures can emerge from either side or from their integration.
+
+            **Related:** Mature RFC 9001 understanding means you can explain not just “QUIC uses TLS,” but exactly which guarantees come from where and how setup can still go wrong.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 9001</strong> to “<em id="footer-goal">QUIC-TLS integration literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
