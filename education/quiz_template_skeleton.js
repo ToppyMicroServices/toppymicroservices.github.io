@@ -770,8 +770,8 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 
 	    const p = document.createElement('p');
 	    p.className = 'muted rfc-hub-link';
-      const hubHref = locale.startsWith('ja') ? 'rfc_quize_ja.html' : 'rfc_quize.html';
-	    const label = locale.startsWith('ja') ? 'RFCクイズ一覧' : 'RFC quiz hub';
+      const hubHref = locale.startsWith('ja') ? 'rfc_quizzes_ja.html' : 'rfc_quizzes.html';
+	    const label = locale.startsWith('ja') ? 'RFCクイズ一覧' : 'RFC quizzes';
 	    p.innerHTML = '↩ <a href="' + escapeHtml(hubHref) + '">' + escapeHtml(label) + '</a>';
 
     const refsList = scope.querySelector('ul');
