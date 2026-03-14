@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7301（ALPN）クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7301 ドリル: ALPN, protocol negotiation, SNI との違い, certificate selection, 失敗時の挙動を理解する." />
+  <link rel="canonical" href="https://toppymicros.com/education/quiz_rfc7301_ja.html" />
+
+  <link rel="alternate" hreflang="en" href="quiz_rfc7301.html" />
+  <link rel="alternate" hreflang="ja" href="quiz_rfc7301_ja.html" />
+
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css" />
+  <script defer src="../assets/global.js"></script>
+  <script defer src="quiz_template_skeleton.js"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 7301",
+      SKILL_SUBTITLE: "ALPN",
+      GOAL_DESCRIPTION: "TLS 内で application protocol をどう交渉するか, SNI とどう違うか, failure がどこで起きるかを説明できるようにする",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">RFC 7301 Quiz</h1>
+        <h2 id="subtitle">TLS の中で protocol を決める仕組み</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a aria-label="English" data-lang="en" href="quiz_rfc7301.html">🇺🇸</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc7301_ja.html">🇯🇵</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7301" target="_blank" rel="noopener noreferrer">RFC 7301: TLS Application-Layer Protocol Negotiation Extension</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6066" target="_blank" rel="noopener noreferrer">RFC 6066: TLS Extensions</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+      </ul>
+      <p class="muted" style="margin-top:.6rem">狙い: ALPN が TLS handshake の中で何を決めるのか, SNI とどう違うのか, 交渉失敗がどんな operational trouble に繋がるのかを説明できるようにする.</p>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show explanation immediately</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+        <header><h4>Q1: ALPN が主に解いている問題はどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. server certificate だけを別方式で暗号化すること</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 同じ TLS port 上で, どの application protocol を使うかを追加 round trip なしで決めること</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. TCP port 番号の代わりに DNS で protocol discovery すること</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** ALPN は HTTP/2 のための機能, という覚え方だけだと, 設計の本質を見失いやすいです.
+
+            **用語:** **ALPN** は **Application-Layer Protocol Negotiation** です. TLS handshake の中で, 接続後に話す application protocol を決めます.
+
+            **実務での機会:** 443 番 port で HTTP/1.1, HTTP/2, あるいは他の protocol を併用する server や proxy の review で頻出です.
+
+            **選択肢:**
+            - A (incorrect): certificate の暗号化方式を別にする話ではありません.
+            - B (correct): これが ALPN の中心的な役割です.
+            - C (incorrect): DNS-based discovery の置き換えではありません.
+
+            **関連:** RFC 7301 は HTTP/2 を後押しした文脈がありますが, 交渉対象は HTTP 系に限りません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+        <header><h4>Q2: 通常の ALPN で, client が送るのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 対応できる application protocol の候補リスト</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. server が必ず受け入れるべき 1 個の protocol</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. protocol ごとの certificate chain 一式</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 交渉の責務分担を誤ると, client と server のどちらが protocol を決めるのかが曖昧になります.
+
+            **用語:** **ClientHello** で client は自分の候補を列挙します. 最終的にどれを使うかを選ぶのは server 側です.
+
+            **実務での機会:** 「client は h2 を出しているのに, なぜ HTTP/1.1 になったのか」を調べるときに, まずここを押さえます.
+
+            **選択肢:**
+            - A (correct): 候補リストを出すのが client の役目です.
+            - B (incorrect): 1 個を強制する仕組みではありません.
+            - C (incorrect): certificate chain を ALPN 候補として送るわけではありません.
+
+            **関連:** protocol 選択は client の希望と server の都合の両方を踏まえて決まります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+        <header><h4>Q3: ALPN と SNI の違いを一番正しく言っているのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. ALPN が hostname を決め, SNI が HTTP method を決める</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. どちらも同じ extension の別名である</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. SNI はどの hostname に行きたいかを伝え, ALPN はその TLS 接続の中でどの application protocol を話すかを決める</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** ALPN と SNI は一緒に語られやすいので, hostname routing と protocol negotiation を混同しがちです.
+
+            **用語:** **SNI** は server name を伝えます. **ALPN** は application protocol を交渉します. 問題の層が違います.
+
+            **実務での機会:** ingress, TLS terminator, certificate 事故の切り分けで, 「名前の問題」なのか「話す protocol の問題」なのかを分けて考えるのに重要です.
+
+            **選択肢:**
+            - A (incorrect): 役割の割り当てが完全に違います.
+            - B (incorrect): 別物です.
+            - C (correct): これが正しい整理です.
+
+            **関連:** 実運用では SNI, ALPN, certificate selection, backend routing が組み合わさるので, それぞれの責務を分けて把握する必要があります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q4: server が client の ALPN 候補のどれもサポートしていないとき, RFC 7301 の期待する動きはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. client が出していない protocol を server が勝手に選ぶ</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. fatal な no_application_protocol alert を返す</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 失敗を避けるため plaintext HTTP に落とす</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** handshake 自体は成立しそうに見えるため, 「どこで protocol mismatch を止めるべきか」が曖昧になりやすいです.
+
+            **用語:** **no_application_protocol** は, 共通の application protocol が無いときの alert です.
+
+            **実務での機会:** h2 だけを想定した client と, HTTP/1.1 しか出せない origin や proxy の間で failure を読むときに役立ちます.
+
+            **選択肢:**
+            - A (incorrect): client が提示していない protocol を使うのは交渉として不正です.
+            - B (correct): これが RFC 上の正しい failure です.
+            - C (incorrect): plaintext への自動 downgrade は ALPN の fallback ではありません.
+
+            **関連:** 正しく失敗させることは, 曖昧な成功よりずっと debug しやすく安全です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q5: RFC 7301 が certificate selection に触れている理由として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 選ばれた application protocol に応じて, server が別の certificate や routing を選びたい場面があるから</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. client が protocol ごとに新しい certificate を upload するから</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. ALPN が certificate validation を不要にするから</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** ALPN を単なる互換性の仕組みとだけ見ると, deployment 上の価値を見落とします.
+
+            **用語:** **certificate selection** や **routing** は, negotiate された protocol に応じて server 側の挙動を変える設計です.
+
+            **実務での機会:** multi-tenant ingress, TLS offload, protocol ごとに backend を分ける構成で意味を持ちます.
+
+            **選択肢:**
+            - A (correct): RFC の design discussion に沿った理解です.
+            - B (incorrect): client が certificate を差し替える機構ではありません.
+            - C (incorrect): certificate validation は依然として必要です.
+
+            **関連:** hostname, protocol, certificate, backend の選択は別軸ですが, 現場では同じ handshake の中で絡み合います.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2">
+        <header><h4>Q6: ALPN の可視性について, 一般に正しいものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. 少なくとも一部の TLS version と deployment では, client が出す protocol identifier が平文で観測され得る</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. ALPN は接続前に negotiated protocol を完全に隠すために設計された</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. ALPN は, その TLS connection がどの application protocol を使うかの externally visible marker になり得る</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. RFC 7301 は, ALPN identifier が sensitive information を絶対に漏らさないと保証している</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** ALPN を「ただの negotiation field」と思っていると, metadata leakage の論点を見逃します.
+
+            **用語:** **externally visible marker** とは, application data 前の段階で on-path entity が connection の性質を推測できる手掛かりです.
+
+            **実務での機会:** protocol 名そのものが profiling や policy decision に使われ得る環境では, ここを意識しないと設計が甘くなります.
+
+            **選択肢:**
+            - A (correct): RFC は古い TLS version を含め, identifier の可視性に注意を促しています.
+            - B (incorrect): ALPN は protocol 秘匿の仕組みではありません.
+            - C (correct): これが設計上の見方のひとつです.
+            - D (incorrect): むしろ leakage に注意しろと書いています.
+
+            **関連:** protocol 名自体が sensitive なら, 「ALPN で見える前提でよいか」を別途検討する必要があります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q7: ALPN で選ばれた protocol が connection に対して definitive というのはどういう意味か</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. server は ALPN で 1 つ返しておいて, 実際の application data では別 protocol を話してもよい</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. 最初の response header を返すまでだけ有効である</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. その connection 上で実際に使う protocol を確定させるので, server は別の protocol を話してはいけない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** ALPN を単なる hint と見なすと, 交渉後の application behavior を緩く扱ってしまいます.
+
+            **用語:** **definitive for the connection** は, その TLS connection 上で何を話すかを決める binding な結果だという意味です.
+
+            **実務での機会:** front proxy と backend の protocol mismatch や, observability 上は h2 なのに実際は HTTP/1.1 相当で応答している, という事故を防ぐ観点で重要です.
+
+            **選択肢:**
+            - A (incorrect): それでは negotiation の意味が失われます.
+            - B (incorrect): 最初の response までの一時的設定ではありません.
+            - C (correct): これが RFC の意図するところです.
+
+            **関連:** protocol negotiation が役立つのは, 双方が「この接続では何を話すのか」を曖昧にしないからです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q8: session resumption のとき, ALPN はどう扱うべきか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. 以前の session の ALPN 値は決定要因ではなく, 新しい handshake の ALPN がその接続を決める</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. 前回の ALPN を必ずそのまま使わなければならない</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. resumed handshake では ALPN は無視され, 平文で protocol を決め直す</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 「resume だから前回の条件がそのまま残る」と思い込むと, connection property と session property を混同します.
+
+            **用語:** ALPN は **session property** ではなく **connection property** として扱われます. つまり, 今回の handshake で決まるということです.
+
+            **実務での機会:** client 側の候補が変わった, server 側の設定が変わった, といった再接続シナリオで重要です.
+
+            **選択肢:**
+            - A (correct): 新しい handshake の ALPN を見ます.
+            - B (incorrect): 前回の値に固定されるわけではありません.
+            - C (incorrect): 平文 side negotiation に戻るわけではありません.
+
+            **関連:** TLS 周りの debugging では, 「session に紐づく情報か, 現 connection に紐づく情報か」を分ける癖が役立ちます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q9: browser が `h2` と `http/1.1` を出しており, TLS handshake も成功したのに site が HTTP/1.1 相当に見える. ALPN 的に最もありそうなのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. SNI が正しければ HTTP/2 が強制されるので, ALPN は関係ない</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. server が client の候補から `http/1.1` を選んだので, handshake 自体は成功した</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. client が `h2` を 1 回でも出していれば, server は必ず `h2` を選ぶ</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** 現場では「TLS は通ったのに期待 protocol じゃない」という事故がよくあり, そこを SNI や証明書の問題と混同しがちです.
+
+            **用語:** ALPN では client は候補を出し, server がその中から選びます. 成功したことと, 一番新しい protocol が選ばれたことは同じではありません.
+
+            **実務での機会:** load balancer, CDN, origin のどこかで `h2` が無効になっていると, こうした見え方になります.
+
+            **選択肢:**
+            - A (incorrect): SNI は protocol を強制しません.
+            - B (correct): これが一番現実的です.
+            - C (incorrect): 最新 protocol を必ず選ぶ義務はありません.
+
+            **関連:** debug のときは, client が何を offer したか, server が何を support しているか, 実際に何を select したかを分けて見ると早いです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q10: ALPN を分かっている review comment として一番筋が良いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. ALPN, SNI, certificate selection, backend routing は別レイヤの話なので, 一緒に見ないと handshake 起点の障害を外しやすいです</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. SNI が合っていれば ALPN は要らないです</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. TLS が通れば, negotiated protocol を観測しなくても application side は信頼できます</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **問題を出した背景:** RFC 7301 の学習ゴールは extension 番号を覚えることではなく, deployment failure を横断的に読めるようになることです.
+
+            **用語:** **ALPN**, **SNI**, **certificate selection**, **routing** は別々の責務を持ちますが, 現場では同じ接続確立の流れの中で絡みます.
+
+            **実務での機会:** ingress review, TLS incident, proxy config review で, どこに fault があるかを狭める comment としてそのまま使えます.
+
+            **選択肢:**
+            - A (correct): 最も operational に強い見方です.
+            - B (incorrect): SNI は protocol negotiation の代わりになりません.
+            - C (incorrect): TLS 成功だけでは, 想定通りの application protocol になっている保証にはなりません.
+
+            **関連:** ALPN を本当に理解したと言えるのは, protocol negotiation を単体ではなく deployment 全体のつながりで説明できるときです.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p>This drill helps elevate <strong id="footer-skill">RFC 7301</strong> to “<em id="footer-goal">ALPN deployment literacy</em>”.</p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
