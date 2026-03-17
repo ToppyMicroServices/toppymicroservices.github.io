@@ -943,9 +943,10 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       if(q.querySelector('.difficulty-badge')) return;
       const type=q.querySelector('.type');
       if(!(type instanceof HTMLElement)) return;
+      const level=mapDifficulty(q);
       const badge=document.createElement('span');
-      badge.className='difficulty-badge';
-      badge.textContent=mapDifficulty(q);
+      badge.className='difficulty-badge level-' + String(level || '').toLowerCase();
+      badge.textContent=level;
       badge.setAttribute('title','Difficulty');
       type.append(' ');
       type.appendChild(badge);
