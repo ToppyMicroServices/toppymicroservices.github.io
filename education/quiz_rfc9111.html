@@ -221,6 +221,28 @@
             <label class="choice"><input type="radio" name="Q6" value="b"> B. Reuse the stored body and update stored metadata as needed</label>
             <label class="choice"><input type="radio" name="Q6" value="c"> C. Treat 304 as a redirect to the origin URI</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9111-q6-caption">
+            <figcaption id="rfc9111-q6-caption">A 304 response validates the stored entry, so the cache keeps the body and refreshes metadata as needed.</figcaption>
+            <svg viewBox="0 0 780 140" role="img" aria-label="Stored response goes through conditional revalidation, receives 304 Not Modified, and reuses the stored body">
+              <rect class="flow-box" x="20" y="36" width="170" height="68" rx="12"></rect>
+              <text class="flow-text" x="105" y="58">Stored</text>
+              <text class="flow-text" x="105" y="76">response body</text>
+              <line class="flow-arrow" x1="190" y1="70" x2="280" y2="70"></line>
+              <polygon class="flow-arrow-head" points="280,70 268,64 268,76"></polygon>
+              <text class="flow-label" x="235" y="52">conditional request</text>
+              <rect class="flow-box" x="280" y="36" width="160" height="68" rx="12"></rect>
+              <text class="flow-text" x="360" y="58">Origin checks</text>
+              <text class="flow-text" x="360" y="76">validator</text>
+              <line class="flow-arrow" x1="440" y1="70" x2="540" y2="70"></line>
+              <polygon class="flow-arrow-head" points="540,70 528,64 528,76"></polygon>
+              <text class="flow-label" x="490" y="52">validation result</text>
+              <rect class="flow-box" x="540" y="36" width="110" height="68" rx="12"></rect>
+              <text class="flow-text" x="595" y="70">304</text>
+              <line class="flow-arrow" x1="650" y1="70" x2="760" y2="70"></line>
+              <polygon class="flow-arrow-head" points="760,70 748,64 748,76"></polygon>
+              <text class="flow-label" x="705" y="52">reuse body</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

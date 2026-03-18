@@ -139,6 +139,26 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Replacement HTTP headers used to carry TLS certificates</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. DNS records that announce which cipher suites the origin prefers</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9001-q3-caption">
+            <figcaption id="rfc9001-q3-caption">Transport parameters travel inside the TLS handshake, but QUIC is the layer that interprets them.</figcaption>
+            <svg viewBox="0 0 760 132" role="img" aria-label="TLS handshake carrying transport parameters that QUIC interprets as transport behavior">
+              <rect class="flow-box" x="20" y="32" width="180" height="68" rx="12"></rect>
+              <text class="flow-text" x="110" y="55">TLS handshake</text>
+              <text class="flow-label" x="110" y="77">exchange channel</text>
+              <line class="flow-arrow" x1="200" y1="66" x2="290" y2="66"></line>
+              <polygon class="flow-arrow-head" points="290,66 278,60 278,72"></polygon>
+              <text class="flow-label" x="245" y="50">carries</text>
+              <rect class="flow-box" x="290" y="32" width="180" height="68" rx="12"></rect>
+              <text class="flow-text" x="380" y="53">Transport</text>
+              <text class="flow-text" x="380" y="72">parameters</text>
+              <line class="flow-arrow" x1="470" y1="66" x2="560" y2="66"></line>
+              <polygon class="flow-arrow-head" points="560,66 548,60 548,72"></polygon>
+              <text class="flow-label" x="515" y="50">interpreted by</text>
+              <rect class="flow-box" x="560" y="32" width="180" height="68" rx="12"></rect>
+              <text class="flow-text" x="650" y="55">QUIC transport</text>
+              <text class="flow-label" x="650" y="77">limits and behavior</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

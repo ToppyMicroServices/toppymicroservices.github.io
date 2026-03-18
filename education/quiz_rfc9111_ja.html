@@ -221,6 +221,28 @@
             <label class="choice"><input type="radio" name="Q6" value="b"> B. 保存済みの body を使い続け, 必要なら metadata を更新する</label>
             <label class="choice"><input type="radio" name="Q6" value="c"> C. redirect と同じ扱いにする</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9111-ja-q6-caption">
+            <figcaption id="rfc9111-ja-q6-caption">304 は stored body の再利用を許す validation result です. body を捨てるのではなく, metadata を整えて使い続けます.</figcaption>
+            <svg viewBox="0 0 780 140" role="img" aria-label="stored response が条件付き再検証を経て 304 を受け, body を再利用する流れ">
+              <rect class="flow-box" x="20" y="36" width="170" height="68" rx="12"></rect>
+              <text class="flow-text" x="105" y="58">Stored</text>
+              <text class="flow-text" x="105" y="76">response body</text>
+              <line class="flow-arrow" x1="190" y1="70" x2="280" y2="70"></line>
+              <polygon class="flow-arrow-head" points="280,70 268,64 268,76"></polygon>
+              <text class="flow-label" x="235" y="52">条件付き request</text>
+              <rect class="flow-box" x="280" y="36" width="160" height="68" rx="12"></rect>
+              <text class="flow-text" x="360" y="58">Origin が</text>
+              <text class="flow-text" x="360" y="76">validator を確認</text>
+              <line class="flow-arrow" x1="440" y1="70" x2="540" y2="70"></line>
+              <polygon class="flow-arrow-head" points="540,70 528,64 528,76"></polygon>
+              <text class="flow-label" x="490" y="52">validation result</text>
+              <rect class="flow-box" x="540" y="36" width="110" height="68" rx="12"></rect>
+              <text class="flow-text" x="595" y="70">304</text>
+              <line class="flow-arrow" x1="650" y1="70" x2="760" y2="70"></line>
+              <polygon class="flow-arrow-head" points="760,70 748,64 748,76"></polygon>
+              <text class="flow-label" x="705" y="52">body を再利用</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

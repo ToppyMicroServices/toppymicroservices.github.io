@@ -139,6 +139,26 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. どちらも同じ extension の別名である</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. SNI はどの hostname に行きたいかを伝え, ALPN はその TLS 接続の中でどの application protocol を話すかを決める</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc7301-ja-q3-caption">
+            <figcaption id="rfc7301-ja-q3-caption">同じ ClientHello に入っていても, SNI は host を, ALPN は application protocol を指しています.</figcaption>
+            <svg viewBox="0 0 720 180" role="img" aria-label="ClientHello から SNI と ALPN に分かれる図">
+              <rect class="flow-box" x="24" y="56" width="170" height="68" rx="12"></rect>
+              <text class="flow-text" x="109" y="80">ClientHello</text>
+              <text class="flow-label" x="109" y="102">両方ここに入る</text>
+              <line class="flow-arrow" x1="194" y1="76" x2="310" y2="54"></line>
+              <polygon class="flow-arrow-head" points="310,54 297,49 300,61"></polygon>
+              <text class="flow-label" x="247" y="48">どの host?</text>
+              <line class="flow-arrow" x1="194" y1="104" x2="310" y2="126"></line>
+              <polygon class="flow-arrow-head" points="310,126 300,119 297,131"></polygon>
+              <text class="flow-label" x="252" y="138">どの protocol?</text>
+              <rect class="flow-box" x="310" y="18" width="180" height="68" rx="12"></rect>
+              <text class="flow-text" x="400" y="41">SNI</text>
+              <text class="flow-label" x="400" y="63">target hostname</text>
+              <rect class="flow-box" x="310" y="96" width="180" height="68" rx="12"></rect>
+              <text class="flow-text" x="400" y="119">ALPN</text>
+              <text class="flow-label" x="400" y="141">application protocol</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
