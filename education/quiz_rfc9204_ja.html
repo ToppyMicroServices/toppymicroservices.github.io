@@ -141,6 +141,29 @@
             <label class="choice"><input type="radio" name="Q3" value="b"> B. QUIC connection が別 path に migration する</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. 必要な state が届くまで, その stream はすぐには処理できず block 扱いになる</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9204-ja-q3-caption">
+            <figcaption id="rfc9204-ja-q3-caption">field section が先に届いても, decoder 側の dynamic table state が追いついていなければ decode できません. Required Insert Count が先なら, その stream は待たされます.</figcaption>
+            <svg viewBox="0 0 840 170" role="img" aria-label="encoder stream の insert より decoder の Insert Count が遅れていて, field section が block される図">
+              <rect class="flow-box" x="20" y="48" width="170" height="74" rx="12"></rect>
+              <text class="flow-text" x="105" y="70">Encoder stream</text>
+              <text class="flow-label" x="105" y="93">entry 5 を insert</text>
+              <line class="flow-arrow" x1="190" y1="85" x2="300" y2="85"></line>
+              <polygon class="flow-arrow-head" points="300,85 288,79 288,91"></polygon>
+              <text class="flow-label" x="245" y="66">更新はまだ途中</text>
+              <rect class="flow-box" x="300" y="48" width="180" height="74" rx="12"></rect>
+              <text class="flow-text" x="390" y="70">Decoder が知る</text>
+              <text class="flow-label" x="390" y="93">Insert Count = 3</text>
+              <line class="flow-arrow" x1="480" y1="85" x2="610" y2="85"></line>
+              <polygon class="flow-arrow-head" points="610,85 598,79 598,91"></polygon>
+              <text class="flow-label" x="545" y="66">field section 到着</text>
+              <rect class="flow-box" x="610" y="48" width="210" height="74" rx="12"></rect>
+              <text class="flow-text" x="715" y="70">Required Insert</text>
+              <text class="flow-label" x="715" y="93">Count = 5</text>
+              <line class="flow-arrow" x1="715" y1="122" x2="715" y2="156"></line>
+              <polygon class="flow-arrow-head" points="715,156 709,144 721,144"></polygon>
+              <text class="flow-label" x="770" y="141">stream が block</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

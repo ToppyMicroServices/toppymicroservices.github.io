@@ -152,6 +152,29 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. They are compressed but not encrypted</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. They are encrypted using handshake traffic keys</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc8446-q4-caption">
+            <figcaption id="rfc8446-q4-caption">TLS 1.3 keeps the early handshake visible only until ServerHello establishes the next stage of secrets. After that point, most handshake messages are protected.</figcaption>
+            <svg viewBox="0 0 820 160" role="img" aria-label="ClientHello and ServerHello leading to handshake traffic keys that protect later handshake messages">
+              <rect class="flow-box" x="20" y="44" width="150" height="72" rx="12"></rect>
+              <text class="flow-text" x="95" y="66">ClientHello</text>
+              <text class="flow-label" x="95" y="89">initial plaintext</text>
+              <line class="flow-arrow" x1="170" y1="80" x2="250" y2="80"></line>
+              <polygon class="flow-arrow-head" points="250,80 238,74 238,86"></polygon>
+              <text class="flow-label" x="210" y="61">negotiate</text>
+              <rect class="flow-box" x="250" y="44" width="160" height="72" rx="12"></rect>
+              <text class="flow-text" x="330" y="66">ServerHello</text>
+              <text class="flow-label" x="330" y="89">key share chosen</text>
+              <line class="flow-arrow" x1="410" y1="80" x2="520" y2="80"></line>
+              <polygon class="flow-arrow-head" points="520,80 508,74 508,86"></polygon>
+              <text class="flow-label" x="465" y="61">derive secrets</text>
+              <rect class="flow-box" x="520" y="44" width="160" height="72" rx="12"></rect>
+              <text class="flow-text" x="600" y="66">Handshake</text>
+              <text class="flow-label" x="600" y="89">traffic keys active</text>
+              <line class="flow-arrow" x1="680" y1="80" x2="800" y2="80"></line>
+              <polygon class="flow-arrow-head" points="800,80 788,74 788,86"></polygon>
+              <text class="flow-label" x="740" y="61">protect later handshake</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

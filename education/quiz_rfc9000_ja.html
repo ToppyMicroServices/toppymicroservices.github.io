@@ -107,6 +107,31 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS certificateを置き換える</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. requestの完全URIを符号化する</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9000-ja-q2-caption">
+            <figcaption id="rfc9000-ja-q2-caption">QUIC connection ID があると, 古い path の IP:port に縛られず, path が変わっても同じ connection を継続しやすくなります.</figcaption>
+            <svg viewBox="0 0 780 190" role="img" aria-label="旧 path と新 path が同じ QUIC connection ID を通じて同じ connection に繋がる図">
+              <rect class="flow-box" x="20" y="22" width="190" height="60" rx="12"></rect>
+              <text class="flow-text" x="115" y="44">旧 path</text>
+              <text class="flow-label" x="115" y="66">IP:port A</text>
+              <rect class="flow-box" x="20" y="108" width="190" height="60" rx="12"></rect>
+              <text class="flow-text" x="115" y="130">新 path</text>
+              <text class="flow-label" x="115" y="152">IP:port B</text>
+              <line class="flow-arrow" x1="210" y1="52" x2="320" y2="84"></line>
+              <polygon class="flow-arrow-head" points="320,84 308,77 305,89"></polygon>
+              <line class="flow-arrow" x1="210" y1="138" x2="320" y2="106"></line>
+              <polygon class="flow-arrow-head" points="320,106 305,101 308,113"></polygon>
+              <rect class="flow-box" x="320" y="55" width="170" height="80" rx="12"></rect>
+              <text class="flow-text" x="405" y="79">同じ QUIC</text>
+              <text class="flow-text" x="405" y="99">connection ID</text>
+              <text class="flow-label" x="405" y="119">1つの path 固定ではない</text>
+              <line class="flow-arrow" x1="490" y1="95" x2="610" y2="95"></line>
+              <polygon class="flow-arrow-head" points="610,95 598,89 598,101"></polygon>
+              <text class="flow-label" x="550" y="76">connection 継続</text>
+              <rect class="flow-box" x="610" y="55" width="150" height="80" rx="12"></rect>
+              <text class="flow-text" x="685" y="79">server側では</text>
+              <text class="flow-text" x="685" y="99">同じ connection</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

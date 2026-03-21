@@ -107,6 +107,31 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Replace TLS certificates</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Encode the full URI of the request</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9000-q2-caption">
+            <figcaption id="rfc9000-q2-caption">A QUIC connection ID lets the connection survive path changes because the transport is not identified only by the old IP:port tuple.</figcaption>
+            <svg viewBox="0 0 780 190" role="img" aria-label="Old path and new path both map through the same QUIC connection ID to the same live connection">
+              <rect class="flow-box" x="20" y="22" width="190" height="60" rx="12"></rect>
+              <text class="flow-text" x="115" y="44">Old path</text>
+              <text class="flow-label" x="115" y="66">IP:port A</text>
+              <rect class="flow-box" x="20" y="108" width="190" height="60" rx="12"></rect>
+              <text class="flow-text" x="115" y="130">New path</text>
+              <text class="flow-label" x="115" y="152">IP:port B</text>
+              <line class="flow-arrow" x1="210" y1="52" x2="320" y2="84"></line>
+              <polygon class="flow-arrow-head" points="320,84 308,77 305,89"></polygon>
+              <line class="flow-arrow" x1="210" y1="138" x2="320" y2="106"></line>
+              <polygon class="flow-arrow-head" points="320,106 305,101 308,113"></polygon>
+              <rect class="flow-box" x="320" y="55" width="170" height="80" rx="12"></rect>
+              <text class="flow-text" x="405" y="79">Same QUIC</text>
+              <text class="flow-text" x="405" y="99">connection ID</text>
+              <text class="flow-label" x="405" y="119">not tied to one path</text>
+              <line class="flow-arrow" x1="490" y1="95" x2="610" y2="95"></line>
+              <polygon class="flow-arrow-head" points="610,95 598,89 598,101"></polygon>
+              <text class="flow-label" x="550" y="76">continue connection</text>
+              <rect class="flow-box" x="610" y="55" width="150" height="80" rx="12"></rect>
+              <text class="flow-text" x="685" y="79">Server keeps</text>
+              <text class="flow-text" x="685" y="99">same connection</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 

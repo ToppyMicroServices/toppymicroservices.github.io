@@ -107,6 +107,29 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS暗号化の必要性</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. packet loss時のtransport level head-of-line blocking</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9114-ja-q2-caption">
+            <figcaption id="rfc9114-ja-q2-caption">HTTP/2 は多くの request を 1 本の TCP byte stream に載せるため, 1つの loss が全streamの待ちに繋がります. QUIC はその巻き込みを減らします.</figcaption>
+            <svg viewBox="0 0 760 200" role="img" aria-label="TCP の loss で HTTP/2 の全streamが待つ場合と, QUIC では一部streamだけが影響を受ける図">
+              <rect class="flow-box" x="20" y="24" width="220" height="62" rx="12"></rect>
+              <text class="flow-text" x="130" y="46">TCP で packet loss</text>
+              <text class="flow-label" x="130" y="68">1本の ordered byte stream</text>
+              <line class="flow-arrow" x1="240" y1="55" x2="380" y2="55"></line>
+              <polygon class="flow-arrow-head" points="380,55 368,49 368,61"></polygon>
+              <text class="flow-label" x="310" y="38">全streamが待つ</text>
+              <rect class="flow-box" x="380" y="24" width="240" height="62" rx="12"></rect>
+              <text class="flow-text" x="500" y="46">HTTP/2 stream 停滞</text>
+              <text class="flow-label" x="500" y="68">cross-streamの足止め</text>
+              <rect class="flow-box" x="20" y="112" width="220" height="62" rx="12"></rect>
+              <text class="flow-text" x="130" y="134">QUIC で stream A loss</text>
+              <text class="flow-label" x="130" y="156">stream state は分離</text>
+              <line class="flow-arrow" x1="240" y1="143" x2="380" y2="143"></line>
+              <polygon class="flow-arrow-head" points="380,143 368,137 368,149"></polygon>
+              <text class="flow-label" x="310" y="126">stream B は進める</text>
+              <rect class="flow-box" x="380" y="112" width="240" height="62" rx="12"></rect>
+              <text class="flow-text" x="500" y="134">HTTP/3 on QUIC</text>
+              <text class="flow-label" x="500" y="156">巻き込み待ちを減らす</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
