@@ -356,6 +356,377 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     ]
   };
 
+  const QUESTION_HINT_CASES = [
+    {
+      keywords: ['428', 'precondition', 'if-match', 'etag', 'validator', 'conditional request', 'lost update'],
+      guideJa: 'ここでは, 更新をそのまま再送してよい場面か, validator を取り直して条件付きで送り直すべき場面かを見分けます.',
+      contextJa: 'この問題は, stale な更新をそのまま通すと lost update が起き, retry 設計まで誤るため選んでいます.',
+      realJa: 'document 編集, 設定変更 API, admin 画面で, 上書き事故を防ぎながら再送方針を決める場面に直結します.',
+      guideEn: 'This asks whether the client should blindly retry the update or first re-fetch a validator and retry conditionally.',
+      contextEn: 'This is chosen because stale writes cause lost-update bugs and lead to the wrong retry strategy.',
+      realEn: 'This matters for document editing, admin APIs, and any workflow that must avoid overwrite races.'
+    },
+    {
+      keywords: ['429', 'retry-after', 'quota', 'rate limit', 'too many requests', '503', '511', '431', 'request header fields too large', 'network authentication required'],
+      guideJa: 'ここでは, failure を「条件不足」「client 単位の制限」「header 肥大化」「network login」のどれとして伝えるべきかを見ます.',
+      contextJa: 'この問題は, 追加 status code を使い分けないと client の次の行動が読めない error になってしまうため選んでいます.',
+      realJa: 'API gateway, SDK backoff, captive portal, oversized header 対策, on-call 切り分けで重要です.',
+      guideEn: 'This asks which kind of failure is being described: missing preconditions, client-specific throttling, oversized headers, or network login.',
+      contextEn: 'This is chosen because vague error codes leave clients without a clear next action.',
+      realEn: 'This shows up in API gateways, SDK backoff logic, captive portals, and incident triage.'
+    },
+    {
+      keywords: ['must', 'should', 'may', 'optional', 'required', 'recommended', 'shall', 'bcp 14', 'rfc 2119', 'rfc 8174'],
+      guideJa: 'ここでは, 規範語が「必須」「原則推奨」「任意」のどれを意味するかを, 例外の扱いで見分けます.',
+      contextJa: 'この問題は, 規範語の強さを曖昧にすると仕様が testable でなくなり, 実装者ごとに解釈が割れるため選んでいます.',
+      realJa: 'API 契約, protocol spec, 設計レビューで, requirement を曖昧語ではなく規範語で書き分ける場面に直結します.',
+      guideEn: 'This asks you to separate “required”, “strongly recommended”, and “optional” by how exceptions are handled.',
+      contextEn: 'This is chosen because ambiguous normative language makes a spec hard to test and easy to misread.',
+      realEn: 'This matters when writing API contracts, protocol specs, and review comments that need clear requirement levels.'
+    },
+    {
+      keywords: ['https', '443', 'http over tls', 'certificate validation', 'subjectaltname', 'default port'],
+      guideJa: 'ここでは, HTTPS が何を守るかと, `https` の既定動作を「なんとなく secure」ではなく説明できるかを見ます.',
+      contextJa: 'この問題は, HTTPS の説明を雑にすると port, certificate, mixed content, downgrade の話が一緒になってしまうため選んでいます.',
+      realJa: 'reverse proxy, browser behavior, redirect 設計, security review で, HTTPS の前提を短く正確に言う必要があります.',
+      guideEn: 'This asks whether you can explain what HTTPS protects and what the `https` scheme implies, not just “it is secure somehow”.',
+      contextEn: 'This is chosen because loose HTTPS explanations blur together ports, certificates, mixed content, and downgrade risk.',
+      realEn: 'This matters in reverse proxies, browser behavior, redirect design, and security reviews.'
+    },
+    {
+      keywords: ['security considerations', 'threat model', 'asset', 'attacker', 'mitigation', 'residual risk', 'trust boundary'],
+      guideJa: 'ここでは, 安全対策の列挙ではなく, asset, attacker, trust boundary, residual risk を枠組みで捉えられるかを見ます.',
+      contextJa: 'この問題は, Security Considerations を「TLS を使う」だけで済ませると, 本当に残るリスクが設計に反映されないため選んでいます.',
+      realJa: '設計書, ADR, protocol proposal, セキュリティレビューで, 何を守り, 何を諦めるかを言語化するときに使います.',
+      guideEn: 'This asks whether you can reason in terms of assets, attackers, trust boundaries, and residual risk instead of listing generic mitigations.',
+      contextEn: 'This is chosen because “just use TLS” is not enough to capture the real remaining risk.',
+      realEn: 'This matters in design docs, ADRs, protocol proposals, and security reviews.'
+    },
+    {
+      keywords: ['authentication', 'authorization', 'threat', 'vulnerability', 'integrity', 'availability', 'confidentiality'],
+      guideJa: 'ここでは, 似た言葉を雰囲気で選ばず, 何を確認する語か, 何を許可する語か, 何が弱点かを切り分けます.',
+      contextJa: 'この問題は, 用語の取り違えだけで incident review や設計議論が噛み合わなくなるため選んでいます.',
+      realJa: 'セキュリティレビュー, postmortem, 要件定義で, 攻撃, 弱点, 認証, 認可を混同しないための基本です.',
+      guideEn: 'This asks you to separate similar terms by role: what verifies identity, what grants permission, and what the weakness actually is.',
+      contextEn: 'This is chosen because terminology mix-ups derail reviews and incident discussions.',
+      realEn: 'This matters in security reviews, postmortems, and requirements writing.'
+    },
+    {
+      keywords: ['uri', 'authority', 'fragment', 'percent', 'encoding', 'normalize', 'scheme', 'host', 'path', 'query'],
+      guideJa: 'ここでは, URI の各 component と delimiter の役割を, 「区切り文字なのか, data として保持したいのか」で読み分けます.',
+      contextJa: 'この問題は, URI を文字列として雑に連結/比較すると, redirect, cache key, signature 検証でバグになりやすいため選んでいます.',
+      realJa: 'router, signed URL, redirect URI, CDN cache key, auth callback の実装や review で頻出です.',
+      guideEn: 'This asks you to separate URI components and delimiters by whether a character is structural syntax or data.',
+      contextEn: 'This is chosen because naive URI concatenation and comparison breaks redirects, cache keys, and signature checks.',
+      realEn: 'This shows up in routers, signed URLs, redirect URIs, CDN cache keys, and auth callbacks.'
+    },
+    {
+      keywords: ['session ticket', 'resumption', 'ticket', 'key rotation', 'stateless resumption'],
+      guideJa: 'ここでは, resumption が「速くする仕組み」である一方, ticket key の運用や追跡可能性も増やすことを見ます.',
+      contextJa: 'この問題は, resumption を性能だけで語ると, ticket key 管理や linkability の論点を落としやすいため選んでいます.',
+      realJa: 'TLS terminator, CDN, large fleet の鍵運用, latency 改善の設計で重要です.',
+      guideEn: 'This asks you to see resumption as both a latency feature and an operational/privacy trade-off.',
+      contextEn: 'This is chosen because focusing only on speed hides ticket-key management and linkability concerns.',
+      realEn: 'This matters in TLS terminators, CDNs, large fleets, and latency tuning.'
+    },
+    {
+      keywords: ['tls extension', 'sni', 'server_name', 'certificate', 'virtual hosting', 'hostname', 'clienthello'],
+      guideJa: 'ここでは, handshake 中に何を知らせているかと, それが certificate 選択や privacy にどう効くかを見ます.',
+      contextJa: 'この問題は, SNI を「証明書の中身」と混同すると, multi-tenant 配置や privacy の説明が崩れるため選んでいます.',
+      realJa: 'ingress, load balancer, cert 管理, TLS incident の切り分けで, どの hostname 向けに接続しているかを扱う場面で使います.',
+      guideEn: 'This asks what information is signaled during the handshake and how it affects certificate selection and privacy.',
+      contextEn: 'This is chosen because confusing SNI with certificate contents breaks deployment and privacy reasoning.',
+      realEn: 'This matters in ingress, load balancers, certificate management, and TLS incident triage.'
+    },
+    {
+      keywords: ['cookie', 'set-cookie', 'samesite', 'httponly', 'secure', 'csrf', 'domain', 'path'],
+      guideJa: 'ここでは, Cookie 属性を「保存できるか」ではなく, どの request に付くか, JS から触れるか, cross-site で送るかで見分けます.',
+      contextJa: 'この問題は, Cookie 属性の思い込みが session 漏えい, CSRF, 意図しない送信範囲に直結するため選んでいます.',
+      realJa: 'login, session management, BFF, browser security review で毎回出る論点です.',
+      guideEn: 'This asks you to map cookie attributes to request scope, JS accessibility, and cross-site behavior.',
+      contextEn: 'This is chosen because cookie misconceptions turn directly into session leaks and CSRF bugs.',
+      realEn: 'This matters in login flows, session management, BFFs, and browser security reviews.'
+    },
+    {
+      keywords: ['websocket', 'upgrade', 'extended connect', 'connect', 'sec-websocket'],
+      guideJa: 'ここでは, WebSocket 開始手順を HTTP version ごとに区別し, tunnel に近いものか, 単なる request/response かを見分けます.',
+      contextJa: 'この問題は, `Upgrade` と `CONNECT` を混同すると proxy/CDN 配下で接続が成立しないため選んでいます.',
+      realJa: 'browser からの接続, ingress, CDN, corporate proxy 配下での deploy/review で重要です.',
+      guideEn: 'This asks you to distinguish the WebSocket bootstrap flow by HTTP version and by whether the mechanism behaves like a tunnel.',
+      contextEn: 'This is chosen because mixing up `Upgrade` and `CONNECT` breaks deployments behind proxies and CDNs.',
+      realEn: 'This matters for browser connections, ingress, CDNs, and corporate-proxy deployments.'
+    },
+    {
+      keywords: ['strict-transport-security', 'hsts', 'preload', 'includesubdomains', 'max-age'],
+      guideJa: 'ここでは, HSTS が「今の request を暗号化する機能」ではなく, browser に将来の HTTPS-only 方針を覚えさせる仕組みだと捉えます.',
+      contextJa: 'この問題は, HSTS を redirect と同じだと思うと, first-visit 問題や rollout 手順を見落としやすいため選んでいます.',
+      realJa: 'domain 移行, HTTPS 強制, preload 申請, subdomain 運用の設計で重要です.',
+      guideEn: 'This asks you to see HSTS as a browser policy memory mechanism, not a way to encrypt the current request.',
+      contextEn: 'This is chosen because treating HSTS like a redirect hides the first-visit limitation and rollout concerns.',
+      realEn: 'This matters for domain migrations, HTTPS enforcement, preload enrollment, and subdomain policy.'
+    },
+    {
+      keywords: ['forwarded', 'x-forwarded', 'for=', 'proto=', 'host=', 'proxy'],
+      guideJa: 'ここでは, proxy が付ける転送情報を「便利な header」ではなく, trust boundary をまたぐ metadata として読みます.',
+      contextJa: 'この問題は, forwarding 情報を無条件で信じると client IP や scheme 判定を偽装されるため選んでいます.',
+      realJa: 'load balancer, ingress, geo 制御, redirect 生成, audit log で client 情報を復元するときに使います.',
+      guideEn: 'This asks you to treat forwarding metadata as trust-boundary-crossing input, not just a handy header.',
+      contextEn: 'This is chosen because trusting forwarding data blindly allows spoofed client identity and scheme decisions.',
+      realEn: 'This matters for load balancers, ingress, geo logic, redirect generation, and audit logging.'
+    },
+    {
+      keywords: ['pervasive monitoring', 'metadata', 'linkability', 'passive attacker', 'surveillance'],
+      guideJa: 'ここでは, payload だけでなく metadata が何を漏らすか, passive attacker が何を学べるかで考えます.',
+      contextJa: 'この問題は, 「中身は暗号化しているから十分」で止まると, privacy 設計が甘くなるため選んでいます.',
+      realJa: 'protocol design, telemetry 設計, identifier の持ち方, privacy review で判断材料になります.',
+      guideEn: 'This asks you to reason about metadata leakage and what a passive attacker can still learn.',
+      contextEn: 'This is chosen because encrypted payloads alone do not guarantee good privacy design.',
+      realEn: 'This matters in protocol design, telemetry, identifier choices, and privacy reviews.'
+    },
+    {
+      keywords: ['hpack', 'qpack', 'dynamic table', 'header compression', 'blocked stream', 'encoder', 'decoder', 'insert count'],
+      guideJa: 'ここでは, header compression を「ただの圧縮」ではなく, state 同期, memory 制約, block の発生条件まで含めて考えます.',
+      contextJa: 'この問題は, compression state の共有条件を誤ると decode failure や性能劣化が transport bug に見えてしまうため選んでいます.',
+      realJa: 'browser, CDN, reverse proxy, HTTP library の tuning, incident 切り分けで役立ちます.',
+      guideEn: 'This asks you to see header compression as shared state with memory limits and blocking behavior, not just byte savings.',
+      contextEn: 'This is chosen because compression-state mistakes often masquerade as transport bugs or performance issues.',
+      realEn: 'This matters for browsers, CDNs, reverse proxies, HTTP libraries, and incident triage.'
+    },
+    {
+      keywords: ['basic', 'digest', 'nonce', 'realm', 'base64'],
+      guideJa: 'ここでは, 認証 scheme の違いを「暗号化の有無」で雑に見るのではなく, 何が wire に乗り, 何を TLS が補うかで比べます.',
+      contextJa: 'この問題は, Base64 や Digest の説明を誤ると, credential 保護や migration の判断を誤るため選んでいます.',
+      realJa: 'legacy API, proxy auth, internal tool の認証見直し, security review で出てきます.',
+      guideEn: 'This asks you to compare auth schemes by what is sent on the wire and what TLS must still provide.',
+      contextEn: 'This is chosen because misunderstanding Base64 or Digest leads to bad credential-protection decisions.',
+      realEn: 'This matters in legacy APIs, proxy auth, internal tools, and security reviews.'
+    },
+    {
+      keywords: ['problem+json', 'application/problem+json', 'detail', 'instance', 'title', 'status'],
+      guideJa: 'ここでは, API error を「文字列メッセージ」ではなく, client が機械的に扱える field の組み合わせとして見ます.',
+      contextJa: 'この問題は, error schema が揺れると SDK, UI, observability の全部が brittle になるため選んでいます.',
+      realJa: 'API contract, SDK 実装, monitoring, support tooling で一貫した error model を作るときに使います.',
+      guideEn: 'This asks you to treat API errors as structured fields clients can reason about, not just free-form strings.',
+      contextEn: 'This is chosen because inconsistent error schemas make SDKs, UIs, and observability brittle.',
+      realEn: 'This matters when designing API contracts, SDKs, monitoring, and support tooling.'
+    },
+    {
+      keywords: ['0-rtt', 'tls 1.3', 'early data', 'handshake', 'replay'],
+      guideJa: 'ここでは, TLS 1.3 の速さと安全性の trade-off を, 特に 0-RTT の replay 安全性で見ます.',
+      contextJa: 'この問題は, 0-RTT を「速いから使う」だけで決めると, replay に弱い操作まで早送りしてしまうため選んでいます.',
+      realJa: 'login shortcut, idempotent GET, edge TLS termination, performance tuning で判断が必要です.',
+      guideEn: 'This asks you to weigh TLS 1.3 latency benefits against replay safety, especially for 0-RTT.',
+      contextEn: 'This is chosen because “it is faster” is not enough when early data can be replayed.',
+      realEn: 'This matters for login shortcuts, idempotent GETs, edge TLS termination, and performance tuning.'
+    },
+    {
+      keywords: ['alpn', 'protocol selection', 'h2', 'http/1.1', 'tls handshake'],
+      guideJa: 'ここでは, TLS の中で「どの protocol を話すか」を合意する役割を, 名前解決や certificate 選択と分けて考えます.',
+      contextJa: 'この問題は, protocol mismatch の障害を certificate 問題と混同しやすいため選んでいます.',
+      realJa: 'ingress, CDN, TLS terminator, multi-protocol service の review で使います.',
+      guideEn: 'This asks you to separate protocol selection inside TLS from naming and certificate-selection concerns.',
+      contextEn: 'This is chosen because protocol mismatches are often misdiagnosed as certificate problems.',
+      realEn: 'This matters in ingress, CDNs, TLS terminators, and multi-protocol service reviews.'
+    },
+    {
+      keywords: ['quic', 'connection id', 'flow control', 'stream', 'udp', 'transport parameter', 'http/3'],
+      guideJa: 'ここでは, QUIC の機能を「TLS がやること」「transport がやること」「HTTP/3 がやること」に分けて考えます.',
+      contextJa: 'この問題は, QUIC の責務境界を混同すると, incident の切り分けや interop の説明が難しくなるため選んでいます.',
+      realJa: 'browser/server interop, load balancer, mobile network, observability 設計で役立ちます.',
+      guideEn: 'This asks you to separate what TLS, QUIC transport, and HTTP/3 each own.',
+      contextEn: 'This is chosen because blurred responsibility boundaries make incidents and interop much harder to explain.',
+      realEn: 'This matters in browser/server interop, load balancers, mobile networks, and observability.'
+    },
+    {
+      keywords: ['cache-control', 'cache', 'etag', 'vary', 'stale', 'fresh', 'no-store', 'no-cache', 'revalidate', 'private', 'public', 'age', '304', 'conditional get', 'last-modified'],
+      guideJa: 'ここでは, cache policy を「保存してよいか」「そのまま再利用してよいか」「誰の cache に効くか」の3つに分けて読みます.',
+      contextJa: 'この問題は, cache directive を1つの「速くする設定」として扱うと, stale 配信や private data の漏えいに直結するため選んでいます.',
+      realJa: 'CDN, browser cache, dashboard, catalog API, personalization の設計で何度も出てきます.',
+      guideEn: 'This asks you to split cache policy into storage, reuse without validation, and which caches are affected.',
+      contextEn: 'This is chosen because treating cache directives as generic “speed knobs” causes stale data and privacy bugs.',
+      realEn: 'This matters in CDNs, browser caches, dashboards, catalog APIs, and personalization.'
+    },
+    {
+      keywords: ['safe', 'idempotent', 'status code', 'status class', 'representation', 'content-type', 'accept', 'method', 'semantics'],
+      guideJa: 'ここでは, HTTP の意味を transport/framing と切り分け, method, status, header が client の行動にどう影響するかを見ます.',
+      contextJa: 'この問題は, semantics を wire 形式と混同すると retry, cache, compatibility の判断を誤るため選んでいます.',
+      realJa: 'API design, SDK retry, browser behavior, reverse proxy review で基本になります.',
+      guideEn: 'This asks you to separate HTTP meaning from framing and transport, then reason about how methods, status codes, and headers shape client behavior.',
+      contextEn: 'This is chosen because confusing semantics with wire format breaks retry, cache, and compatibility decisions.',
+      realEn: 'This matters in API design, SDK retry logic, browser behavior, and reverse proxy reviews.'
+    },
+    {
+      keywords: ['content-length', 'transfer-encoding', 'chunked', 'request smuggling', 'message body', 'connection reuse'],
+      guideJa: 'ここでは, HTTP/1.1 の message 境界を, body の中身ではなく framing rule で決める点を見ます.',
+      contextJa: 'この問題は, framing の誤解が request smuggling や proxy desync に直結するため選んでいます.',
+      realJa: 'reverse proxy, WAF, legacy service, security review で重要です.',
+      guideEn: 'This asks you to reason about message boundaries using framing rules, not body content.',
+      contextEn: 'This is chosen because framing mistakes lead directly to request smuggling and proxy desync.',
+      realEn: 'This matters in reverse proxies, WAFs, legacy services, and security reviews.'
+    },
+    {
+      keywords: ['goaway', 'stream state', 'prioritization', 'frame', 'settings', 'http/2'],
+      guideJa: 'ここでは, HTTP/2 を「1本の接続に多重化された stream の集まり」として捉え, frame と stream state の違いを見ます.',
+      contextJa: 'この問題は, stream 単位の制御と connection 全体の制御を混同すると, shutdown や backpressure の挙動を誤るため選んでいます.',
+      realJa: 'browser/server interop, gRPC, proxy tuning, incident review で頻出です.',
+      guideEn: 'This asks you to view HTTP/2 as multiplexed streams on one connection and distinguish frames from stream state.',
+      contextEn: 'This is chosen because mixing stream-level and connection-level control breaks shutdown and backpressure reasoning.',
+      realEn: 'This matters in browser/server interop, gRPC, proxy tuning, and incident reviews.'
+    }
+  ];
+
+  function includesAny(text, keywords){
+    const haystack = String(text || '').toLowerCase();
+    return (keywords || []).some(keyword => haystack.includes(String(keyword || '').toLowerCase()));
+  }
+
+  function getQuestionProfile(q){
+    const settings = window.DRILL_SETTINGS || {};
+    const titleRaw = cleanLabelText(q.querySelector('h4')?.textContent || '');
+    const type = String(q.dataset.type || '').toLowerCase();
+    const choiceTexts = [];
+    q.querySelectorAll('.choices label').forEach(label => {
+      if(!(label instanceof HTMLElement)) return;
+      const full = cleanLabelText(label.textContent || '');
+      const text = full.replace(/^[A-Z]\.\s*/, '').trim();
+      if(text) choiceTexts.push(text);
+    });
+
+    return {
+      q,
+      rfc: getRfcNumber(),
+      type,
+      titleRaw,
+      title: titleRaw.toLowerCase(),
+      subtitle: String(settings.SKILL_SUBTITLE || '').trim(),
+      goal: String(settings.GOAL_DESCRIPTION || '').trim(),
+      choiceTexts,
+      blob: [
+        titleRaw,
+        ...choiceTexts,
+        String(settings.SKILL_NAME || ''),
+        String(settings.SKILL_SUBTITLE || ''),
+        String(settings.GOAL_DESCRIPTION || '')
+      ].join(' ').toLowerCase()
+    };
+  }
+
+  function findQuestionHintCase(profile){
+    return QUESTION_HINT_CASES.find(entry => {
+      if(entry.rfc && String(entry.rfc) !== String(profile.rfc)) return false;
+      return includesAny(profile.blob, entry.keywords);
+    }) || null;
+  }
+
+  function getLocalizedHintText(entry, key){
+    if(!entry) return '';
+    const localeKey = locale.startsWith('ja') ? key + 'Ja' : key + 'En';
+    return String(entry[localeKey] || '').trim();
+  }
+
+  function buildFallbackQuestionGuide(profile){
+    if(locale.startsWith('ja')){
+      if(profile.type === 'ms'){
+        return 'ここでは, 各選択肢を独立に true/false 判定し, 「それっぽい」ではなく条件に合うものだけを残します.';
+      }
+      if(profile.type === 'text'){
+        return 'ここでは, RFC が使う正式な用語や header 名を, 役割とセットで思い出せるかを見ます.';
+      }
+      if(profile.subtitle){
+        return 'ここでは, ' + escapeHtml(profile.subtitle) + ' の中で問われている役割や条件を, 近い語と混同せずに選べるかを見ます.';
+      }
+      return 'ここでは, 問われている語の意味と役割を, 似た選択肢と切り分けて考えます.';
+    }
+
+    if(profile.type === 'ms'){
+      return 'Treat each choice as its own true/false statement and keep only the ones that satisfy the condition.';
+    }
+    if(profile.type === 'text'){
+      return 'Answer with the exact RFC term or header name, tied to the role it plays.';
+    }
+    if(profile.subtitle){
+      return 'Focus on the role or condition being tested inside ' + escapeHtml(profile.subtitle) + ', not just what sounds familiar.';
+    }
+    return 'Focus on the meaning and role being tested, not just the closest-sounding term.';
+  }
+
+  function buildFallbackContext(profile){
+    if(locale.startsWith('ja')){
+      if(profile.goal){
+        return 'この問題は, ' + escapeHtml(profile.goal) + 'ための前提概念を, 実装やレビューの言葉で説明できるようにするため選んでいます.';
+      }
+      if(profile.subtitle){
+        return 'この問題は, ' + escapeHtml(profile.subtitle) + ' の中核概念を, 実装やレビューで言い換えられるようにするため選んでいます.';
+      }
+      return 'この問題は, 取り違えやすい定義を, 実装やレビューで説明できる形にするため選んでいます.';
+    }
+
+    if(profile.goal){
+      return 'This question is chosen to reinforce a prerequisite concept behind ' + escapeHtml(profile.goal) + ' so you can explain it during implementation and review.';
+    }
+    if(profile.subtitle){
+      return 'This question is chosen to reinforce a core idea in ' + escapeHtml(profile.subtitle) + ' so you can restate it clearly during implementation and review.';
+    }
+    return 'This question is chosen to reinforce a definition that is easy to mix up in real implementation and review work.';
+  }
+
+  function buildFallbackRealWorld(profile){
+    if(locale.startsWith('ja')){
+      if(profile.goal){
+        return '設計レビュー, 実装, 障害切り分けで, ' + escapeHtml(profile.goal) + '必要がある場面で役立ちます.';
+      }
+      if(profile.subtitle){
+        return escapeHtml(profile.subtitle) + ' を前提に判断する設計レビューや実装で役立ちます.';
+      }
+      return '実務では, 仕様を読み, 実装を比較し, 障害を切り分ける場面で役立ちます.';
+    }
+
+    if(profile.goal){
+      return 'This helps in design reviews, implementation work, and incident triage when you need to ' + escapeHtml(profile.goal) + '.';
+    }
+    if(profile.subtitle){
+      return 'This shows up in implementation and review work that depends on understanding ' + escapeHtml(profile.subtitle) + '.';
+    }
+    return 'This shows up when reading specs, reviewing implementations, and triaging incidents.';
+  }
+
+  function buildQuestionGuideLine(q){
+    const profile = getQuestionProfile(q);
+    const match = findQuestionHintCase(profile);
+    return getLocalizedHintText(match, 'guide') || buildFallbackQuestionGuide(profile);
+  }
+
+  function buildRealWorldText(q){
+    const profile = getQuestionProfile(q);
+    const match = findQuestionHintCase(profile);
+    return getLocalizedHintText(match, 'real') || buildFallbackRealWorld(profile);
+  }
+
+  function injectQuestionGuides(){
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      if(q.querySelector('.question-guide')) return;
+
+      const body = q.querySelector('.body');
+      if(!(body instanceof HTMLElement)) return;
+
+      const text = buildQuestionGuideLine(q);
+      if(!text) return;
+
+      const p = document.createElement('p');
+      p.className = 'question-guide';
+      const label = locale.startsWith('ja') ? '<strong>見分けるポイント:</strong> ' : '<strong>What to compare:</strong> ';
+      p.innerHTML = normalizeExplainHtml(label + text);
+
+      const anchor = body.querySelector('.choices, input[type="text"], input[type="search"], textarea');
+      if(anchor instanceof HTMLElement){
+        anchor.insertAdjacentElement('beforebegin', p);
+      } else {
+        body.prepend(p);
+      }
+    });
+  }
+
   function inferQuestionTerms(q){
     const terms = new Set();
     const title = q.querySelector('h4')?.textContent || '';
@@ -383,99 +754,13 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     return Array.from(terms).slice(0, 10);
   }
 
-	  function buildContextLine(q, correctSummary){
-	    const titleRaw = q.querySelector('h4')?.textContent || '';
-	    const title = titleRaw.toLowerCase();
-	    const rfc = getRfcNumber();
-      const isRfc = isRfcDrill();
-	    const subtitle = String(window.DRILL_SETTINGS?.SKILL_SUBTITLE || '').trim();
-
-    const en = (() => {
-      if(title.includes('default port') || title.includes('port')){
-        return "This question is chosen because default-port assumptions show up in URL parsing, proxies, and security controls, and a small mistake can cause real outages or vulnerabilities.";
-      }
-      if(title.includes('header')){
-        return "This question is chosen because exact header field names and directive tokens are interoperability-critical; small typos silently break behavior in production.";
-      }
-      if(title.includes('cookie') || title.includes('samesite') || title.includes('csrf')){
-        return "This question is chosen because cookie attributes are a frequent source of auth/session vulnerabilities; you need to map each attribute to its real security effect.";
-      }
-      if(title.includes('tls') || title.includes('certificate') || title.includes('handshake') || title.includes('0-rtt')){
-        return "This question is chosen because TLS misconceptions lead to insecure deployments; you need to separate channel security (TLS) from application-layer authorization and policy.";
-      }
-      if(title.includes('cache') || title.includes('cach') || title.includes('idempotent')){
-	      return isRfc
-	        ? "This question is chosen because HTTP semantics drive retries, caching, and client behavior; misreading them causes subtle correctness and privacy bugs."
-	        : "This question is chosen because semantics drive behavior; a small misunderstanding can cause subtle correctness or security issues in practice.";
-      }
-      if(title.includes('websocket') || title.includes('upgrade') || title.includes('connect')){
-        return "This question is chosen because WebSocket bootstrapping differs across HTTP versions; mixing the rules breaks deployments behind proxies and CDNs.";
-      }
-      if(title.includes('forwarded') || title.includes('proxy')){
-        return "This question is chosen because forwarding metadata crosses trust boundaries; getting it wrong leads to spoofed client identity and security issues.";
-      }
-      if(title.includes('quic') || title.includes('stream') || title.includes('flow control') || title.includes('connection id')){
-        return "This question is chosen because transport-layer building blocks (streams, flow control, connection identity) are foundational for understanding HTTP/3 behavior.";
-      }
-      if(title.includes('problem') || title.includes('problem+json') || title.includes('error')){
-        return "This question is chosen because consistent error models are key for client UX and observability; small field mistakes lead to brittle clients.";
-      }
-      // Fall back to RFC subtitle/goal framing when no keyword hit.
-      if(subtitle){
-	      return isRfc
-	        ? "This question is chosen to reinforce a core concept in **" + subtitle + "** that implementers must get right for interoperability."
-	        : "This question is chosen to reinforce a core concept in **" + subtitle + "** so you can explain it clearly in your own words.";
-      }
-      if(correctSummary){
-	      return isRfc
-	        ? "This question is chosen to reinforce a core definition that commonly causes interoperability bugs when misunderstood."
-	        : "This question is chosen to reinforce a core definition that is easy to mix up when reading real materials.";
-      }
-	    return isRfc
-	      ? "This question is chosen to reinforce a core definition that implementations must get right for interoperability."
-	      : "This question is chosen to reinforce a core definition that you should be able to state precisely.";
-    })();
-
-    const ja = (() => {
-      if(title.includes('default port') || title.includes('port')){
-        return "この問題は、**デフォルトポート**の思い込みがURL解析・プロキシ・セキュリティ制御で事故になりやすく、些細なミスが障害や脆弱性に直結するため選んでいます。";
-      }
-      if(title.includes('header')){
-        return "この問題は、ヘッダー名やディレクティブの**トークン**が相互運用性の要であり、タイポが本番で静かに挙動を壊すため選んでいます。";
-      }
-      if(title.includes('cookie') || title.includes('samesite') || title.includes('csrf')){
-        return "この問題は、Cookie属性の誤解がセッション・認証の脆弱性につながりやすく、各属性の**実際の効果**を対応付ける必要があるため選んでいます。";
-      }
-      if(title.includes('tls') || title.includes('certificate') || title.includes('handshake') || title.includes('0-rtt')){
-        return "この問題は、TLSの誤解が危険なデプロイにつながりやすく、TLSの**通信路の保護**とアプリ層の認可/ポリシーを分けて理解する必要があるため選んでいます。";
-      }
-      if(title.includes('cache') || title.includes('cach') || title.includes('idempotent')){
-        return isRfc
-          ? "この問題は、HTTPの**セマンティクス(意味/ルール)**がリトライやキャッシュ挙動を左右し、誤解が正しさ/プライバシーのバグになるため選んでいます。"
-          : "この問題は、定義や**セマンティクス(意味/ルール)**の取り違えが実務での判断ミスにつながりやすいため選んでいます。";
-	      }
-	      if(title.includes('websocket') || title.includes('upgrade') || title.includes('connect')){
-	        return "この問題は、HTTPバージョンごとにWebSocketの成立手順が異なり、混同するとプロキシ/CDN配下で壊れるため選んでいます。";
-	      }
-	      if(title.includes('forwarded') || title.includes('proxy')){
-	        return "この問題は、転送メタデータが**信頼境界**をまたぎ、誤るとクライアント識別の**偽装**につながるため選んでいます。";
-	      }
-	      if(title.includes('quic') || title.includes('stream') || title.includes('flow control') || title.includes('connection id')){
-	        return "この問題は、輸送層の部品（**ストリーム**、**フロー制御**、**コネクションID** など）がHTTP/3の理解の土台になるため選んでいます。";
-	      }
-	      if(subtitle){
-          return isRfc
-            ? "この問題は、**" + subtitle + "** の中核概念を相互運用性の観点で定着させるため選んでいます。"
-            : "この問題は、**" + subtitle + "** の中核概念を、読み物や実務で迷わないように定着させるため選んでいます。";
-	      }
-        return isRfc
-          ? "この問題は、相互運用性のために取り違えやすい定義を定着させる目的で選んでいます。"
-          : "この問題は、取り違えやすい定義を定着させる目的で選んでいます。";
-	    })();
-
-      return locale.startsWith('ja')
-        ? '<strong>問題を出した背景:</strong> ' + ja
-        : '<strong>Context (why chosen):</strong> ' + en;
+  function buildContextLine(q, correctSummary){
+    const profile = getQuestionProfile(q);
+    const match = findQuestionHintCase(profile);
+    const text = getLocalizedHintText(match, 'context') || buildFallbackContext(profile);
+    return locale.startsWith('ja')
+      ? '<strong>問題を出した背景:</strong> ' + text
+      : '<strong>Context (why chosen):</strong> ' + text;
   }
 
   function getCorrectSummaryFromExplain(html){
@@ -563,24 +848,10 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     const hasRealWorld = lines.some(l => /<strong>(?:Real-world usage|実務での機会):<\/strong>/i.test(l));
     if(hasRealWorld) return html;
 
-    const titleRaw = q.querySelector('h4')?.textContent || '';
-    const title = titleRaw.toLowerCase();
     const heading = locale.startsWith('ja')
       ? '<strong>実務での機会:</strong>'
       : '<strong>Real-world usage:</strong>';
-
-    const text = (() => {
-      if(locale.startsWith('ja')){
-        if(title.includes('header') || title.includes('cookie') || title.includes('proxy') || title.includes('tls')){
-          return '仕様どおりに理解できていないと、本番の相互接続やセキュリティレビューで詰まりやすいポイントです。';
-        }
-        return '資料を読む/設計レビューをする場面で、用語や定義を正確に言い換えられるようにするための練習です。';
-      }
-      if(title.includes('header') || title.includes('cookie') || title.includes('proxy') || title.includes('tls')){
-        return 'This shows up often in production interoperability and security reviews; small misunderstandings turn into real incidents.';
-      }
-      return 'This helps you read real materials faster by being able to restate the definition precisely.';
-    })();
+    const text = buildRealWorldText(q);
 
     const insertAfter = lines.findIndex(l => /<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>/i.test(l));
     const at = insertAfter >= 0 ? insertAfter + 1 : 1;
@@ -1137,6 +1408,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  localizeStaticUiText();
 	  injectRfcHubLink();
 	  injectRfcCheatSheet();
+	  injectQuestionGuides();
 	  normalizeAllExplanations();
 	  injectKeywordsBlock();
 	  injectDifficultyBadges();
