@@ -624,6 +624,167 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     return String(entry[localeKey] || '').trim();
   }
 
+  function truncateHintLabel(text, max=34){
+    const clean = cleanLabelText(text || '');
+    if(clean.length <= max) return clean;
+    return clean.slice(0, Math.max(0, max - 1)).trim() + '…';
+  }
+
+  function getQuestionChoices(profile){
+    const answer = String(profile.q?.dataset?.answer || '').trim();
+    const correctValues = new Set(answer.split(',').map(s => s.trim()).filter(Boolean));
+    const choices = [];
+    profile.q?.querySelectorAll('.choices input').forEach(input => {
+      if(!(input instanceof HTMLInputElement)) return;
+      const label = input.closest('label');
+      const full = cleanLabelText(label?.textContent || '');
+      const text = full.replace(/^[A-Z]\.\s*/, '').trim();
+      choices.push({
+        value: String(input.value || '').trim(),
+        text,
+        correct: correctValues.has(String(input.value || '').trim())
+      });
+    });
+    return choices;
+  }
+
+  function formatCodeList(items, localeCode){
+    const parts = (items || []).map(s => String(s || '').trim()).filter(Boolean);
+    if(!parts.length) return '';
+    const coded = parts.map(p => '`' + escapeHtml(p) + '`');
+    if(parts.length === 1) return coded[0];
+    if(parts.length === 2){
+      return localeCode.startsWith('ja')
+        ? coded[0] + ' と ' + coded[1]
+        : coded[0] + ' and ' + coded[1];
+    }
+    const last = coded.pop();
+    return localeCode.startsWith('ja')
+      ? coded.join(', ') + ' など' + ' (' + last + ' を含む)'
+      : coded.join(', ') + ', including ' + last;
+  }
+
+  function inferQuestionFocus(profile){
+    const blob = profile.blob;
+    if(blob.includes('header')){
+      return locale.startsWith('ja')
+        ? 'どの header が request / response のどちらで使われ, 何を運ぶか'
+        : 'which header is used on the request vs response side, and what it carries';
+    }
+    if(blob.includes('parameter')){
+      return locale.startsWith('ja')
+        ? 'どの parameter が何を識別し, どこまで意味を持つか'
+        : 'which parameter identifies what, and what semantic role it plays';
+    }
+    if(blob.includes('directive')){
+      return locale.startsWith('ja')
+        ? 'どの directive が期間, 範囲, あるいは再利用条件を変えるか'
+        : 'which directive changes duration, scope, or reuse behavior';
+    }
+    if(blob.includes('status code') || /\b401\b|\b403\b|\b429\b|\b503\b/.test(blob)){
+      return locale.startsWith('ja')
+        ? 'どの status code が client の次の行動を一番正確に決めるか'
+        : 'which status code most precisely tells the client what to do next';
+    }
+    if(blob.includes('scheme')){
+      return locale.startsWith('ja')
+        ? 'どの scheme が transport や security expectation を表しているか'
+        : 'which scheme implies the transport and security expectation';
+    }
+    if(blob.includes('attribute')){
+      return locale.startsWith('ja')
+        ? 'どの attribute が送信条件, JS からの見え方, cross-site 挙動を変えるか'
+        : 'which attribute changes send conditions, JS visibility, or cross-site behavior';
+    }
+    if(blob.includes('member')){
+      return locale.startsWith('ja')
+        ? 'どの member が summary, detail, identifier のどれを担うか'
+        : 'which member carries the summary, detail, or identifier role';
+    }
+    if(blob.includes('method')){
+      return locale.startsWith('ja')
+        ? 'どの method が接続開始や意味づけの中心になるか'
+        : 'which method is central to bootstrapping or semantics';
+    }
+    if(blob.includes('port')){
+      return locale.startsWith('ja')
+        ? 'どの port が既定値で, 何を前提に解釈されるか'
+        : 'which port is the default and what interpretation it implies';
+    }
+    if(blob.includes('nonce') || blob.includes('token') || blob.includes('validator')){
+      return locale.startsWith('ja')
+        ? 'どの token / value が freshness や識別に効くか'
+        : 'which token or value drives freshness or identification';
+    }
+    return locale.startsWith('ja')
+      ? 'どの選択肢が定義に合い, どれが近いが別概念か'
+      : 'which option matches the definition, and which ones are close but different';
+  }
+
+  function inferTextQuestionGuide(profile){
+    const title = profile.title;
+    if(locale.startsWith('ja')){
+      if(title.includes('header')){
+        return 'ここでは, 略称ではなく **正確な header 名** をそのまま思い出し, request / response のどちらで使うかも結び付けます.';
+      }
+      if(title.includes('parameter')){
+        return 'ここでは, **parameter 名** を token 単位で正確に思い出し, 何を表す値かまで結び付けます.';
+      }
+      if(title.includes('directive')){
+        return 'ここでは, **directive 名** をそのまま再現し, どの範囲や期間へ効くかを結び付けます.';
+      }
+      if(title.includes('member')){
+        return 'ここでは, **member 名** を summary / detail / identifier の役割とセットで思い出します.';
+      }
+      return 'ここでは, RFC が使う **正式な token 名** を, 略称ではなくそのまま思い出せるかを見ます.';
+    }
+
+    if(title.includes('header')){
+      return 'Recall the exact **header name**, not an approximation, and tie it to the request/response direction.';
+    }
+    if(title.includes('parameter')){
+      return 'Recall the exact **parameter token** and what it represents.';
+    }
+    if(title.includes('directive')){
+      return 'Recall the exact **directive token** and the scope or duration it controls.';
+    }
+    if(title.includes('member')){
+      return 'Recall the exact **member name** and the role it plays in the object.';
+    }
+    return 'Recall the exact **RFC token name**, not just the concept it refers to.';
+  }
+
+  function buildSpecificQuestionGuide(profile){
+    if(profile.type === 'text'){
+      return inferTextQuestionGuide(profile);
+    }
+
+    const choices = getQuestionChoices(profile)
+      .map(c => truncateHintLabel(c.text))
+      .filter(Boolean)
+      .slice(0, 3);
+    const optionList = formatCodeList(choices, locale);
+    const focus = inferQuestionFocus(profile);
+
+    if(locale.startsWith('ja')){
+      if(profile.type === 'ms' && optionList){
+        return 'ここでは, ' + focus + 'を, ' + optionList + ' の違いで見ます. 複数選択でも **1つずつ独立に判定** して残します.';
+      }
+      if(optionList){
+        return 'ここでは, ' + focus + 'を, ' + optionList + ' の役割差で見ます.';
+      }
+      return 'ここでは, ' + focus + 'を見ます.';
+    }
+
+    if(profile.type === 'ms' && optionList){
+      return 'Focus on ' + focus + ', comparing ' + optionList + '. Even for multi-select, judge each choice independently.';
+    }
+    if(optionList){
+      return 'Focus on ' + focus + ', comparing ' + optionList + '.';
+    }
+    return 'Focus on ' + focus + '.';
+  }
+
   function buildFallbackQuestionGuide(profile){
     if(locale.startsWith('ja')){
       if(profile.type === 'ms'){
@@ -692,6 +853,8 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 
   function buildQuestionGuideLine(q){
     const profile = getQuestionProfile(q);
+    const specific = buildSpecificQuestionGuide(profile);
+    if(specific) return specific;
     const match = findQuestionHintCase(profile);
     return getLocalizedHintText(match, 'guide') || buildFallbackQuestionGuide(profile);
   }
