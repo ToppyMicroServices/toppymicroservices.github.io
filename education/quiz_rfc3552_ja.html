@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** security propertyとfailure modeを読者が判断できるようにする
+
+            **問題を出した背景:** Security Considerations section を「最後に付けるお作法」だと思うと中身が空疎になります. 仕様のどこが危ないか, 何を前提に安全と言っているかを読者が判断できる必要があります.
+
+            **用語:** **Security Considerations section** は, protocol や mechanism の security property, threat, failure mode, mitigation を spec に結び付けて説明する節です. 宣伝文句を書く場所ではありません.
+
+            **Correct (B):** これが役割に最も近いです. 読者はこの節を読んで, 何が守られ, どこに限界があり, どう運用すべきかを判断します.
+
+            **選択肢:**
+            - A (incorrect): 本文の言い換えだけでは, 何が security 上の論点か分かりません.
+            - B (correct): 現実的な脅威, 前提, mitigation を結び付けて説明するのが本筋です.
+            - C (incorrect): 「安全だと約束する」は危険です. security 文書は limitation や residual risk に正直であるべきです.
+
+            **関連:** 良い節は implementer と operator の両方が読んで役に立ちます. protocol の美しさではなく, 失敗の仕方を説明できるかが重要です.
           </div>
         </div>
       </article>
@@ -117,9 +129,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** securityはcryptoだけでなくdeploymentとopsも含む
-            **Options:**
-            - D (incorrect): marketingは避ける
+
+            **問題を出した背景:** Security Considerations が crypto の話だけで終わると, 実運用で壊れるポイントを拾えません. threat, privacy, operations を同時に扱えるかを見る問題です.
+
+            **用語:** **threat model** は attacker と capability の前提, **metadata exposure** は payload 以外から何が漏れるか, **operational guidance** は rotation, logging, monitoring など現場運用の注意点です.
+
+            **Correct (A,B,C):** これらは全部, section を実務で役立つものにします. protocol の安全性は design だけでなく deployment と operations にも依存します.
+
+            **選択肢:**
+            - A (correct): attacker が何をできる前提かを書かないと, 防御の妥当性を評価できません.
+            - B (correct): privacy や metadata 露出は, 暗号化していても残る論点です.
+            - C (correct): key rotation や logging の扱いを外すと, 運用で事故ります.
+            - D (incorrect): compliance や marketing claim は security analysis ではありません. 安全性を証明する代わりにもなりません.
+
+            **関連:** 「使うべき暗号」だけでなく, 「鍵が漏れたらどうなるか」「ログに何を残すか」まで書けると section の価値が上がります.
           </div>
         </div>
       </article>
@@ -134,7 +157,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** 小さく見える仕様でもcompositionや運用でリスクが出る
+
+            **問題を出した背景:** 「security considerations はない」と書きたくなる小さな仕様ほど危険です. 単独では小さくても, 他の protocol や運用と組み合わさると attack surface になります.
+
+            **用語:** **residual risk** は mitigation 後にも残るリスク, **assumption** は安全性が成り立つ前提条件です.
+
+            **Correct (A):** これが最も誠実な書き方です. 影響が小さいならその理由を書き, どんな前提でそう言えるのか, 何が残るのかを明示すべきです.
+
+            **選択肢:**
+            - A (correct): 影響, 前提, 残余リスクを短くでも示せば, 読み手は判断できます.
+            - B (incorrect): scrutiny を避けるために空欄にするのは最悪です. 読者は何を考慮すべきか分からなくなります.
+            - C (incorrect): `secure` を連呼しても threat や mitigation は伝わりません.
+
+            **関連:** 「特に新しいリスクは増やさない」と書くとしても, その文を支える前提を 1 行でいいので添えるのが実務的です.
           </div>
         </div>
       </article>
@@ -149,7 +184,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** 曖昧な助言は実装が揃わず, 誤用も起きやすい
+
+            **問題を出した背景:** security guidance の失敗は, 間違ったことを書くより, 曖昧で使えないことが多いです. 読み手が何をすればよいか分からない指示は, 実装のばらつきと誤用を生みます.
+
+            **用語:** **strong crypto** のような表現は耳触りは良いですが, algorithm, key size, threat, deployment 条件が不明なら actionable ではありません.
+
+            **Correct (C):** これが典型的な失敗です. 目的も文脈も示さず曖昧な助言だけを書くと, 実装者ごとに別解釈になります.
+
+            **選択肢:**
+            - A (incorrect): 用語定義を明確にするのは良い practice です.
+            - B (incorrect): 具体例は threat や failure mode を理解しやすくします.
+            - C (correct): 曖昧な助言だけでは, 何に対する防御かも, どこまで必須かも分かりません.
+
+            **関連:** 良い security 記述は, 「何を守るために, 何を, どこで, なぜやるか」を短く答えられます.
           </div>
         </div>
       </article>
@@ -165,9 +212,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** actionableで, scopeがあり, limitationに正直
-            **Options:**
-            - D (incorrect): securityは絶対ではない
+
+            **問題を出した背景:** mitigation の説明は「対策名の列挙」で終わりがちですが, 実務で役立つ guidance には scope と limitation が必要です. 実装者が採否を判断できる粒度かどうかを問う問題です.
+
+            **用語:** **mitigation** は threat を下げるための具体策, **tradeoff** は性能や運用負荷との交換条件, **out of scope** はその対策では守らない範囲です.
+
+            **Correct (A,B,C):** 良い guidance は, 何に効くのか, どんなコストがあるのか, 何は解決しないのかをセットで説明します.
+
+            **選択肢:**
+            - A (correct): 防御対象が不明だと, その対策を選ぶ理由も検証方法も定まりません.
+            - B (correct): tradeoff を書くと, deploy 可否を現場が判断しやすくなります.
+            - C (correct): scope を明確にすると, その外側を別対策で補う必要が分かります.
+            - D (incorrect): security は絶対保証ではありません. 「不可能」と言い切る guidance は危険です.
+
+            **関連:** たとえば「TLS を使う」と書くなら, 何の threat を下げるのか, endpoint compromise は防がないのか, 鍵運用は別途必要か, まで触れると強くなります.
           </div>
         </div>
       </article>
@@ -178,7 +236,16 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
           <div class="explain">
             **Explanation:**
-            **Correct:** threat model
+
+            **問題を出した背景:** security 文書を読むとき, まず確認すべきなのが「誰を attacker と見ているか」です. その前提をまとめる語を正しく言えるようにするための設問です.
+
+            **用語:** **threat model** は attacker, capability, asset, trust boundary, assumption をまとめた考え方です. 何を怖がる仕様なのかを定義します.
+
+            **Correct:** **threat model**.
+
+            **Why this matters:** 同じ mechanism でも threat model が違えば, 十分な対策も変わります. passive observer を想定するのか, active MITM を想定するのかで必要な記述は別です.
+
+            **関連:** security considerations を読むときは, 「threat model は明示されているか」「暗黙の前提は何か」を最初に探すと理解が速くなります.
           </div>
         </div>
       </article>

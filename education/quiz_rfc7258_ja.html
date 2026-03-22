@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** 法的主張ではなくthreat modelの立場
+
+            **問題を出した背景:** RFC 7258 は政治的スローガンではなく, protocol design の threat model を更新する文書です. その読み方を誤らないための最初の問題です.
+
+            **用語:** **pervasive monitoring** を attack として扱う, とは「大規模な受動監視者がいる」と仮定して protocol を設計する, ということです. 合法/違法の主張そのものではありません.
+
+            **Correct (B):** これが文書の意図に最も近いです. protocol 側で露出を減らし, 大規模相関を難しくする方向へ設計を促します.
+
+            **選択肢:**
+            - A (incorrect): 法的評価を宣言する文書ではありません.
+            - B (correct): threat model の立場として PM を attacker class に入れる, という要点を言っています.
+            - C (incorrect): encryption を禁止するのではなく, むしろ活用を強く促す立場です.
+
+            **関連:** ここで変わるのは「何を守るか」の前提です. 仕様を書くとき, passive observer を最初から attacker に入れるようになります.
           </div>
         </div>
       </article>
@@ -117,9 +129,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** 受動観測を役に立ちにくくし, 大規模化を難しくする
-            **Options:**
-            - D (incorrect): linkabilityを上げる
+
+            **問題を出した背景:** PM 対策は「暗号化する」だけに見えがちですが, metadata と ossification まで含めて考えないと exposure は残ります. 設計選択を複数軸で見られるかを問う問題です.
+
+            **用語:** **cleartext metadata** は payload 以外に見える情報, **ossification** は cleartext field が固定化して protocol 変更を難しくする現象です.
+
+            **Correct (A,B,C):** どれも受動観測を役立ちにくくし, 大規模監視のコストを上げる方向です.
+
+            **選択肢:**
+            - A (correct): in-transit encryption は PM 対策の基本です.
+            - B (correct): metadata を減らすと, payload が見えなくても相関しにくくなります.
+            - C (correct): cleartext field が固定化しにくい設計は, 後から露出を減らす余地も守りやすくします.
+            - D (incorrect): 新しい cleartext identifier を増やすと linkability が上がり, PM に有利になります.
+
+            **関連:** encryption, metadata minimization, identifier design は別々ではなく一緒に考えるべき論点です.
           </div>
         </div>
       </article>
@@ -134,7 +157,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** encryptionは有効だが, endpoint compromiseやtraffic analysisなど多くの脅威は残る
+
+            **問題を出した背景:** PM の議論で一番多い誤解は, encryption を万能薬として扱うことです. 有効だが十分条件ではない, という距離感を固める問題です.
+
+            **用語:** **traffic analysis** は通信量や timing から推測する攻撃, **endpoint compromise** は端点自体が侵害されることです. どちらも payload encryption だけでは消えません.
+
+            **Correct (C):** 「encryption はあらゆる security 問題を解決する」は誤解です. PM には有効でも, metadata, endpoint, operational weakness など別の論点は残ります.
+
+            **選択肢:**
+            - A (incorrect): encryption だけで authentication が自動化されるわけではありません.
+            - B (incorrect): metadata は残り得るので, 全て消えるとは言えません.
+            - C (correct): 万能視が誤りである, という典型的な誤解を表しています.
+
+            **関連:** PM 対策では, 「何が見えなくなり, 何がまだ見えるか」を毎回分けて説明するのが重要です.
           </div>
         </div>
       </article>
@@ -149,7 +184,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** 大規模な相関価値を下げる方向へ見直す
+
+            **問題を出した背景:** cleartext identifier は cache や analytics には便利でも, 大規模相関を極端に簡単にします. RFC 7258 の発想を設計判断へ落とせるかを見る問題です.
+
+            **用語:** **linkability** は別々の通信を同じ主体に結び付けやすい性質です. cleartext identifier はその linkability を強くします.
+
+            **Correct (A):** identifier を減らす, 暗号化する, linkability の低い token へ置き換える, という方向が RFC 7258 的に妥当です. 観測価値を下げることが狙いです.
+
+            **選択肢:**
+            - A (correct): 相関しやすさを下げる方向の見直しになっています.
+            - B (incorrect): analytics のために cleartext identifier を増やすと PM に有利になります.
+            - C (incorrect): 大規模収集されない前提に逃げるのは, threat model を無視する態度です.
+
+            **関連:** PM 対策では, 機能要件と privacy cost を同じテーブルで比較する必要があります.
           </div>
         </div>
       </article>
@@ -164,7 +211,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** PMをattacker classとして扱うことで, 仕様作成の前提を揃える
+
+            **問題を出した背景:** RFC 7258 は「全部 onion routing にしろ」と命じる文書ではなく, IETF の design baseline を変える文書です. 文書の意図自体を問う問題です.
+
+            **用語:** **attacker class** として PM を入れる, とは security considerations の中で passive large-scale observer を真面目に想定することです.
+
+            **Correct (B):** 文書の意図は, IETF に対して pervasive monitoring を security considerations と設計で考慮するよう促すことです.
+
+            **選択肢:**
+            - A (incorrect): 全監視機器の禁止を法的に命じる文書ではありません.
+            - B (correct): protocol 設計の前提を揃える, という狙いを正しく表しています.
+            - C (incorrect): 特定技術を一律義務化する文書でもありません.
+
+            **関連:** この文書の価値は, 各 RFC が「metadata や passive observer をどう扱うか」を書く習慣を強めたことにあります.
           </div>
         </div>
       </article>
@@ -175,7 +234,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** metadata
+
+            **問題を出した背景:** payload が暗号化されていても, まだ相関の材料は残ります. その残り物を何と呼ぶかを正しく言えることが PM 理解の入口です.
+
+            **用語:** **metadata** は, payload 以外に見える通信先, size, timing, identifier, routing 情報などを広く指します.
+
+            **Correct:** **metadata**.
+
+            **Why this matters:** PM は payload だけでなく metadata からも価値を引き出します. だから encryption だけで終わらず, metadata minimization が続きます.
           </div>
         </div>
       </article>

@@ -101,10 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** HTTPSはHTTP over TLSで, 通常はcertificateに基づくserver認証を行う
-            **Options:**
-            - A (incorrect): 同一hostがhttpとhttpsを提供するのは普通
-            - C (incorrect): Base64はsecurityではない
+
+            **問題を出した背景:** `https` を「暗号化っぽい URL」くらいに理解していると, redirect, mixed content, cert validation の議論が全部ぼやけます. まず scheme が何を意味するかを固める問題です.
+
+            **用語:** **HTTPS** は **HTTP over TLS** です. つまり application protocol は HTTP のままで, transport の下に TLS が入ります. その結果, confidentiality, integrity, server authentication を期待できる, という理解が土台になります.
+
+            **Correct (B):** これが一番正確です. `https` は「HTTP を TLS 上で運ぶ」ことを示し, client は通常 certificate 検証を通じて server identity を確認します.
+
+            **選択肢:**
+            - A (incorrect): 同じ host が `http` と `https` の両方を提供することは普通です. `https` scheme は `http` 提供の禁止までは意味しません.
+            - B (correct): scheme の意味と TLS の役割を正しく言い表しています.
+            - C (incorrect): Base64 は単なる encoding です. HTTPS の本質である encryption や certificate validation とは無関係です.
+
+            **関連:** HTTPS を使っていても, cert validation を無効化すると server authentication は崩れます. 「TLS を張った」だけで安心しないことが重要です.
           </div>
         </div>
       </article>
@@ -119,7 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** port指定がないhttpsは443へ対応付く
+
+            **問題を出した背景:** default port は暗記問題に見えますが, origin 判定, reverse proxy 設定, redirect の説明で頻繁に出ます. `https` を読んだときに client がどこへ connect する想定かを押さえるための設問です.
+
+            **用語:** **default port** は URL に port が明示されていないときに scheme から補われる既定値です. `https://example.com` は `https://example.com:443` と同じ接続先を指す想定で扱われます.
+
+            **Correct (A):** `https` の既定 port は **443** です. URL に port が書かれていなければ, client はこの値を前提に接続先を解釈します.
+
+            **選択肢:**
+            - A (correct): `https` の既定値です.
+            - B (incorrect): **80** は `http` の既定 port です. ここを混同すると scheme downgrade の説明まで曖昧になります.
+            - C (incorrect): **22** は SSH でよく使われる port であり, HTTPS の既定値ではありません.
+
+            **関連:** port を明示しない URL でも, origin 比較では既定 port が効きます. `https://example.com` と `https://example.com:443` を同じ origin とみなす理由もここにあります.
           </div>
         </div>
       </article>
@@ -135,9 +156,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** TLSはchannelを守るが, 誰が何を許可されるかは決めない
-            **Options:**
-            - D (incorrect): authorizationはapp側の責務
+
+            **問題を出した背景:** TLS の役割を広く言い過ぎると, 「TLS だから認可も安全」のような危ない議論になります. channel security と application logic の境界を分けるための問題です.
+
+            **用語:** **confidentiality** は盗み見の防止, **integrity** は改ざん検知/防止, **server authentication** は接続相手が想定した server かを確認することです. 一方で **authorization** は「その user が何をしてよいか」を決める application 側の判断です.
+
+            **Correct (A,B,C):** TLS は transport 上の channel を保護するので, passive observer に対する confidentiality, wire 上の改ざんに対する integrity, certificate に基づく server authentication を提供します.
+
+            **選択肢:**
+            - A (correct): 通信内容を第三者が読む難易度を上げる, という意味で TLS の中核です.
+            - B (correct): transit 中の tampering を防ぎ, 検知できるようにします.
+            - C (correct): certificate 検証を通じて, 接続先 server の identity を確認します.
+            - D (incorrect): authorization は app, API, business rule の責務です. TLS は「誰に何を許すか」までは決めません.
+
+            **関連:** TLS は secure channel を作りますが, secure application を自動生成してくれるわけではありません. authz, input validation, session 設計は別途必要です.
           </div>
         </div>
       </article>
@@ -152,7 +184,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** security sensitiveなflowはhttps強制が基本
+
+            **問題を出した背景:** user input から absolute URL を作る処理は, open redirect, downgrade, token 漏えいの入り口になりやすいです. credential や token が載る flow では「どの scheme を許すか」を先に固定する必要があります.
+
+            **用語:** **downgrade path** は, 本来 HTTPS で扱うべき flow が HTTP に落ちる経路です. 1回でも平文へ流れると confidentiality も integrity も失われます.
+
+            **Correct (C):** security sensitive な flow では, `https` を明示的に要求し, HTTP へ落ちる経路を作らないのが基本です. token を query や redirect で運ぶなら特に重要です.
+
+            **選択肢:**
+            - A (incorrect): `https` を `http` へ置換すると, わざわざ protection を外す方向です.
+            - B (incorrect): 常に `localhost` に向けるのは URL 組み立ての一般解ではなく, 問題の本質である scheme 制約も解決しません.
+            - C (correct): 最低限, sensitive flow を HTTP downgrade から守る前提になります.
+
+            **関連:** ここで必要なのは「URL を作れること」ではなく, 許可する origin と scheme を policy として固定することです.
           </div>
         </div>
       </article>
@@ -167,7 +211,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** scheme差はoriginやdefault portの差につながる
+
+            **問題を出した背景:** `http` と `https` を「同じ URL の secure 版」とだけ覚えると, origin, cookie, mixed content, redirect policy の差を説明しにくくなります. scheme 自体が別物であることを押さえる問題です.
+
+            **用語:** **distinct URI scheme** とは, `http` と `https` が別々の scheme として定義されている, という意味です. scheme が違えば既定 port も origin も扱いが変わります.
+
+            **Correct (A):** `https` は `http` とは異なる URI scheme です. 単なるフラグではなく, URL 解釈と security expectation が変わります.
+
+            **選択肢:**
+            - A (correct): これが RFC 2818 を読むときの基本前提です.
+            - B (incorrect): HTTPS を使っても Basic 認証は必須ではありません. auth scheme は別レイヤの選択です.
+            - C (incorrect): `https` scheme 自体が cross-origin redirect を一律禁止するわけではありません.
+
+            **関連:** scheme の違いは same-origin policy や cookie scope の議論にも影響します. URL の先頭文字列以上の意味を持っています.
           </div>
         </div>
       </article>
@@ -178,7 +234,16 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a number" />
           <div class="explain">
             **Explanation:**
-            **Correct:** 443
+
+            **問題を出した背景:** 数字だけ覚える問題ではなく, `https` を見たときに client がどの接続先を想定するかを即答できるようにするための設問です.
+
+            **用語:** **default port** は URL に明示されない port 番号を scheme から補うための既定値です.
+
+            **Correct:** **443**.
+
+            **Why this matters:** `https://example.com` を読むとき, browser や client library は `:443` を前提に接続します. reverse proxy, firewall, redirect 設定でもこの前提が基準になります.
+
+            **関連:** `http` の既定 port は **80** です. scheme と port をセットで覚えると, origin や redirect の説明が安定します.
           </div>
         </div>
       </article>

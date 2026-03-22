@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** UpgradeとConnection headerを含むHTTP handshakeで開始する
+
+            **問題を出した背景:** WebSocket を「いきなり別 protocol で始まるもの」と思うと, proxy や CDN 配下の挙動を説明できません. まず HTTP handshake から始まることを押さえる問題です.
+
+            **用語:** RFC 6455 の WebSocket は, 最初に **HTTP request** を送り, `Upgrade: websocket` などで protocol 切替を要求します. ここが browser, proxy, origin の責務境界になります.
+
+            **Correct (C):** 通常の始まり方は, connection upgrade を要求する HTTP request です. その handshake が成立したあとに WebSocket framing へ切り替わります.
+
+            **選択肢:**
+            - A (incorrect): DNS TXT record の交換では始まりません. 名前解決の仕組みと接続開始手順は別です.
+            - B (incorrect): UDP broadcast で始まる protocol ではありません.
+            - C (correct): HTTP handshake から始めて protocol を切り替える, という要点を正しく言っています.
+
+            **関連:** ここを理解していると, なぜ HTTP/2 では別の bootstrapping が必要になるのかも追いやすくなります.
           </div>
         </div>
       </article>
@@ -116,7 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** wsはplaintext, wssはTLS上
+
+            **問題を出した背景:** `ws` と `wss` を `http` と `https` の対応として即答できると, browser security と network path の説明が安定します.
+
+            **用語:** **`ws`** は plaintext の WebSocket, **`wss`** は TLS 上の WebSocket です. つまり `wss` は confidentiality と integrity の面で `https` に近い期待値を持ちます.
+
+            **Correct (A):** `ws` と `wss` が正しい組です. `wss` では WebSocket handshake もその後の frame も TLS 上を通ります.
+
+            **選択肢:**
+            - A (correct): WebSocket 用 scheme を正しく表しています.
+            - B (incorrect): `http` と `https` は HTTP の scheme であり, WebSocket 用ではありません.
+            - C (incorrect): `tcp` と `tls` は transport / security layer の名称で, URI scheme ではありません.
+
+            **関連:** `wss` でも app 認証が自動で解決するわけではありません. 守られるのは channel です.
           </div>
         </div>
       </article>
@@ -131,7 +155,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** browserはhandshakeにOriginを送る. server側で検証するのが一般的
+
+            **問題を出した背景:** browser からの WebSocket は cookie を伴って飛ぶことがあるので, CSRF に似た cross-site 問題を起こせます. そのため Origin check が重要になります.
+
+            **用語:** **Origin header** は browser が送る「この script がどの origin から来たか」の情報です. server 側では allowlist と照合して, 想定外 origin から privileged WebSocket を開けないようにします.
+
+            **Correct (B):** browser から victim の cookie を使った接続を防ぎたいなら, **Origin header を allowlist と照合する**のが基本です.
+
+            **選択肢:**
+            - A (incorrect): Origin を無視すると, browser 由来の cross-site 接続を見分ける手掛かりを捨てます.
+            - B (correct): server 側で Origin を検証するのが一般的な防御です.
+            - C (incorrect): `Accept-Language` は言語嗜好の header で, cross-site 制御には使えません.
+
+            **関連:** Origin check だけで十分とは限りません. app 認証, authorization, CSRF に近い設計判断も併せて必要です.
           </div>
         </div>
       </article>
@@ -146,7 +182,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** clientがKeyを送り, serverがAcceptを返す
+
+            **問題を出した背景:** `Sec-WebSocket-Key` と `Sec-WebSocket-Accept` は名前が似ているので, client と server のどちらがどちらを送るかを混同しやすいです. handshake の最小限の流れを固める問題です.
+
+            **用語:** client は **`Sec-WebSocket-Key`** を送り, server はそれを使って **`Sec-WebSocket-Accept`** を計算して返します. これにより, 相手が WebSocket handshake を理解していることを確かめやすくなります.
+
+            **Correct (A):** random value の元になる header を client が送るのは **`Sec-WebSocket-Key`** です.
+
+            **選択肢:**
+            - A (correct): client 側の challenge に当たる値です.
+            - B (incorrect): **`Sec-WebSocket-Accept`** は server が返す側です.
+            - C (incorrect): **`Sec-WebSocket-Token`** という標準 header はここでは使いません.
+
+            **関連:** ここは app 認証 token の header とは別です. handshake 成立確認と business auth を混同しないことが重要です.
           </div>
         </div>
       </article>
@@ -162,9 +210,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** framingとupgrade handshakeが要点
-            **Options:**
-            - D (incorrect): 認証はappとdeployment次第
+
+            **問題を出した背景:** WebSocket は handshake の仕組みと, 接続後の framing と, app security がそれぞれ別論点です. 1つにまとめて理解すると review で抜け漏れが出やすいので, 要素を分ける問題です.
+
+            **用語:** **framing** は接続後の message 形式, **handshake** は開始手順, **app authentication** は接続先 service が user をどう識別するかです.
+
+            **Correct (A,B,C):** どれも正しい説明です. handshake 後は WebSocket framing で message を送り, `wss` は channel 保護を強め, handshake 自体は HTTP request から始まります.
+
+            **選択肢:**
+            - A (correct): HTTP の request/response のまま話し続けるわけではなく, WebSocket framing に切り替わります.
+            - B (correct): `wss` は盗聴や tampering への耐性を高めます.
+            - C (correct): handshake は HTTP request として開始されます.
+            - D (incorrect): protocol 自体が app 認証を保証するわけではありません. 認証方式は app と deployment に依存します.
+
+            **関連:** `wss` を使っても, Origin check や token 検証が不要になるわけではありません. transport protection と app security は別です.
           </div>
         </div>
       </article>
@@ -175,7 +234,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** Origin
+
+            **問題を出した背景:** browser 経由の WebSocket では, cross-site 接続の可否をどう判定するかが実務上の論点になります. そのときに最初に見る header 名を答える問題です.
+
+            **用語:** **`Origin`** header は browser が送る接続元 origin の情報で, server は allowlist と照合して想定外 site からの接続を弾けます.
+
+            **Correct:** **Origin**.
+
+            **Why this matters:** `Referer` や cookie ではなく, WebSocket handshake で通常見るのは `Origin` です. 名前を即答できると security review が速くなります.
           </div>
         </div>
       </article>

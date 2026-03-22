@@ -158,8 +158,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** 平文HTTPへの漏えいを減らす
-            **Related:** session cookieはSecure, HttpOnly, SameSiteをセットで設計する
+
+            **問題を出した背景:** `Secure` は名前が強いので, 「署名される」「改ざん不能になる」と誤解されやすい属性です. 実際に制御しているのは送信経路だけなので, そこを明確にする問題です.
+
+            **用語:** **Secure attribute** は, cookie を **HTTPS のような secure transport でのみ送る**よう browser に求める属性です. cookie value 自体を暗号化したり署名したりする意味ではありません.
+
+            **Correct (C):** `Secure` の正しい意味は, cookie が secure transport 上でのみ送信されることです. 平文 HTTP へ流れてしまうリスクを減らします.
+
+            **選択肢:**
+            - A (incorrect): browser が cookie へ署名する, という意味ではありません.
+            - B (incorrect): 削除不能にする属性でもありません.
+            - C (correct): transport 上の送信条件を制御する説明として正しいです.
+
+            **関連:** session cookie では, `Secure`, `HttpOnly`, `SameSite` を役割分担で組み合わせて設計するのが基本です.
           </div>
         </div>
       </article>
@@ -189,8 +200,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** Cookie
-            **Related:** browserはdomainやpath, attributeに基づいて送信するcookieを選ぶ
+
+            **問題を出した背景:** `Set-Cookie` と `Cookie` は向きが逆なので, browser が受け取る header と送り返す header を取り違えやすいです.
+
+            **用語:** **`Cookie`** は request header で, browser が保存済み cookie のうち条件に合うものを server へ返すときに使います.
+
+            **Correct:** **Cookie**.
+
+            **Why this matters:** browser は domain, path, `Secure`, `SameSite` などの条件に基づいて, どの cookie を `Cookie` header に入れるかを決めます. 名前を正しく区別できると debug が速くなります.
           </div>
         </div>
       </article>

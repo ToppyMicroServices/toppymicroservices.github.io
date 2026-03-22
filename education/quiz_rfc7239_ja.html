@@ -178,9 +178,14 @@
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the parameter" />
           <div class="explain">
             **Explanation:**
-            **Terms:** for parameter
-            **Correct:** for
-            **Related:** 値はIP literalでもobfuscatedでも良い, 方針次第
+
+            **問題を出した背景:** `Forwarded` は parameter 名が短いので, `for`, `by`, `host`, `proto` を混同しやすいです. client 側起点の情報をどれが表すかを確認する問題です.
+
+            **用語:** **`for` parameter** は request initiator, つまり元の client に相当する情報を表します. 値は IP literal のことも, privacy を意識した obfuscated value のこともあります.
+
+            **Correct:** **for**.
+
+            **Why this matters:** `for` は analytics や audit log で使われがちですが, trust boundary をまたぐ metadata でもあります. どこまで保存・露出するかの方針とセットで扱う必要があります.
           </div>
         </div>
       </article>

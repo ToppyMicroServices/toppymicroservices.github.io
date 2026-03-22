@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** serverが暗号化したblobをclientへ渡し, 後で提示させることでstateを外出しする
+
+            **問題を出した背景:** session ticket は「resume を速くする便利機能」とだけ理解されがちですが, 本質は server state を client 側へ外出しする設計です. そこを言い換えられるかを見る問題です.
+
+            **用語:** **TLS session ticket** は, server が session 再開に必要な情報を暗号化した blob として client に渡し, 後で持ち戻させる仕組みです. これにより server は session cache を持たずに resumption できます.
+
+            **Correct (C):** これが session ticket の主目的に最も近いです. 速度改善の背後にある設計上の利点は, server 側 state を減らせることです.
+
+            **選択肢:**
+            - A (incorrect): certificate validation を置き換える仕組みではありません. server identity の確認は引き続き必要です.
+            - B (incorrect): plaintext HTTP を可能にする機能ではなく, TLS session resumption の仕組みです.
+            - C (correct): state を ticket として client に持たせる, という要点を正しく言っています.
+
+            **関連:** 「stateless だから安全」ではありません. secret である ticket key の管理責任はむしろ重くなります.
           </div>
         </div>
       </article>
@@ -116,7 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** ticket発行者はserverなので, server側のkey管理が中核
+
+            **問題を出した背景:** ticket を client が保存するからといって, security responsibility が client 側に移るわけではありません. confidentiality と integrity の中心は server 側 secret にあります.
+
+            **用語:** **ticket key** は server が ticket を encrypt/authenticate するための secret です. この key が漏れると, ticket 内容の保護や resumption の安全性が崩れます.
+
+            **Correct (B):** ticket の confidentiality と integrity を守る主体は **server** です. 発行者が server だからこそ, key 管理も rotation も server 運用の責務になります.
+
+            **選択肢:**
+            - A (incorrect): client が private key で暗号化する仕組みではありません. ticket を保護する鍵は server secret です.
+            - B (correct): server が ticket key を使って保護する, という説明が正しいです.
+            - C (incorrect): DNSSEC は DNS データの保護に関わるもので, TLS ticket へ署名する役割ではありません.
+
+            **関連:** 複数 node で resumption したいときは, server 群で ticket key をどう共有・rotation するかが実装より先に問題になります.
           </div>
         </div>
       </article>
@@ -131,8 +155,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** resume pathの設計や設定次第でforward secrecy目標が崩れ得る
-            **Related:** key lifetimeとrotateが重要
+
+            **問題を出した背景:** ticket key を長く使い回す運用は, resumption の利便性と引き換えに blast radius を広げます. ここを理解せずに「速くて stateless だから良い」で終えるのは危険です.
+
+            **用語:** **forward secrecy** は, 長期秘密鍵が後で漏れても過去の通信をさかのぼって読まれにくくする性質です. resumption path や ticket key の扱いが悪いと, この目標を弱めることがあります.
+
+            **Correct (A):** key 漏えい時に, 過去に capture された session の一部が decrypt 可能になるリスクがあり得ます. だから key lifetime を短くし, rotation を行う必要があります.
+
+            **選択肢:**
+            - A (correct): 長期間の使い回しは被害範囲を過去方向にも広げ得ます.
+            - B (incorrect): future session だけの問題ではありません. 過去の capture data への影響も考える必要があります.
+            - C (incorrect): ticket key は rotate できますし, rotate すべきです.
+
+            **関連:** ticket の導入判断は性能だけでなく, key compromise 時の blast radius と rotation 体制まで含めて行うべきです.
           </div>
         </div>
       </article>
@@ -148,9 +183,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** ticketはperformanceだけでなくkey管理の問題
-            **Options:**
-            - D (incorrect): ticket keyはserver secret
+
+            **問題を出した背景:** session ticket 運用の難しさは protocol そのものより secret management にあります. 「速くなるから有効化」だけでは足りないので, hygiene を問う問題です.
+
+            **用語:** **key rotation** は secret の定期更新, **ticket lifetime** は resumption を許す期間, **shared key** は複数 node で同じ ticket を受け付けるための共有 secret です.
+
+            **Correct (A,B,C):** どれも運用上の基本です. rotate し, lifetime を短くし, cluster resumption が必要なら server 群で鍵共有を設計します.
+
+            **選択肢:**
+            - A (correct): 漏えい時の影響期間を絞るために rotation は重要です.
+            - B (correct): lifetime を短くすると, 古い ticket が長く有効な状態を避けやすくなります.
+            - C (correct): node 跨ぎ resumption を実現するなら, server 側で鍵共有が必要です.
+            - D (incorrect): ticket key は **server secret** であり, client storage に置くものではありません.
+
+            **関連:** stateless resumption は「状態が消える」のではなく, state を secret で包んで client に持たせ直す設計だと理解すると運用論点が見えやすいです.
           </div>
         </div>
       </article>
@@ -165,7 +211,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** cacheはstate storageが必要, ticketはclient側保持とserver key管理が必要
+
+            **問題を出した背景:** session cache と ticket はどちらも resumption を速くしますが, state をどこに置くかが違います. ここを言い換えられると設計比較がしやすくなります.
+
+            **用語:** **server side session cache** は resumption state を server に保存する方式, **ticket** はその state を client に持たせる方式です.
+
+            **Correct (B):** ticket は server を stateless に近づけられますが, 代わりに ticket key の管理が必須になります. cache は key 共有より session storage の運用が中心です.
+
+            **選択肢:**
+            - A (incorrect): ticket は UDP 必須ではありません. transport を限定する性質ではありません.
+            - B (correct): 両方式の違いを, state storage と secret management の観点で正しく述べています.
+            - C (incorrect): ticket を使っても TLS 自体は必要です. resumption は TLS を省く仕組みではありません.
+
+            **関連:** 大規模 fleet では, 「cache を共有するか」「ticket key を共有するか」のどちらを運用しやすいかが実装選択に影響します.
           </div>
         </div>
       </article>
@@ -176,7 +234,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one or two words" />
           <div class="explain">
             **Explanation:**
-            **Correct:** ticket or session ticket
+
+            **問題を出した背景:** resumption の議論では, 何を client が保存して持ち戻すのかを正確に呼べることが出発点です.
+
+            **用語:** **ticket** または **session ticket** は, server が発行し, client が保存する暗号化 blob です. 次回 handshake で提示され, resumption の手掛かりになります.
+
+            **Correct:** **ticket** または **session ticket**.
+
+            **Why this matters:** これをただの cache entry と見ると, key rotation や confidentiality の議論が抜けます. 名前と役割をセットで覚えるのが大切です.
           </div>
         </div>
       </article>

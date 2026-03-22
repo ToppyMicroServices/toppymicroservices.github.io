@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** HTTP/2はHTTP/1.1のupgrade modelと違うので, extended CONNECTを使う
+
+            **問題を出した背景:** WebSocket の bootstrap を HTTP/1.1 の `Upgrade` だけで覚えると, HTTP/2-only の環境で説明が止まります. RFC 8441 の中核である extended CONNECT を最初に押さえる問題です.
+
+            **用語:** **extended CONNECT** は, HTTP/2 上で tunnel 的な接続を張るための拡張です. HTTP/1.1 の `Upgrade` model をそのまま持ち込めないため, 別の bootstrap が必要になります.
+
+            **Correct (B):** HTTP/2 で WebSocket を bootstrapping する中心的な仕組みは **extended CONNECT** です.
+
+            **選択肢:**
+            - A (incorrect): HTTP/1.1 の `Upgrade` header そのものを中心にはできません.
+            - B (correct): RFC 8441 の要点をそのまま表しています.
+            - C (incorrect): DNS SRV record は WebSocket bootstrap の中心機構ではありません.
+
+            **関連:** 「WebSocket の意味」は同じでも, **どう始めるか** は HTTP version によって変わります.
           </div>
         </div>
       </article>
@@ -116,7 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** HTTP/2は1 connection上でstreamを多重化できる
+
+            **問題を出した背景:** HTTP/2 で WebSocket を扱う価値は, header 名が変わることではなく, 接続の持ち方が変わることです. multiplexing の利点を見られるかを問う問題です.
+
+            **用語:** **multiplexing** は, 1 本の HTTP/2 connection 上で複数 stream を並行利用することです. HTTP/1.1 のように WebSocket ごとに専用 TCP connection を増やす前提から外れられます.
+
+            **Correct (C):** HTTP/2 では 1 connection 上で stream を多重化できるので, WebSocket ごとに専用 TCP connection へ縛られる度合いを下げられます.
+
+            **選択肢:**
+            - A (incorrect): encryption の必要自体はなくなりません.
+            - B (incorrect): HTTP の semantics が消えるわけでもありません.
+            - C (correct): multiplexing の実利を正しく述べています.
+
+            **関連:** 実際の deploy では proxy, load balancer, backpressure の設計も変わるので, 単なる記法差以上の意味があります.
           </div>
         </div>
       </article>
@@ -131,7 +155,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** extended CONNECTではprotocolとしてwebsocketを示す
+
+            **問題を出した背景:** extended CONNECT を使うときは, 「この tunnel で何の protocol を話すのか」を明示する必要があります. 値を正しく言えるかを確認する問題です.
+
+            **用語:** extended CONNECT では target protocol を示すために **`websocket`** という値を signal します. `http` や `tls` では意味が変わってしまいます.
+
+            **Correct (A):** WebSocket を作るなら signal すべき値は **`websocket`** です.
+
+            **選択肢:**
+            - A (correct): target protocol を正しく表します.
+            - B (incorrect): `http` はここで伝えたい protocol 値ではありません.
+            - C (incorrect): `tls` は transport/security layer 名であり, WebSocket の target protocol 値ではありません.
+
+            **関連:** bootstrapping が変わっても, 何を話したい tunnel なのかを intermediaries に伝える必要は残ります.
           </div>
         </div>
       </article>
@@ -147,9 +183,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** bootstrappingは変わるが, securityとapp側の論点は残る
-            **Options:**
-            - D (incorrect): HTTP/2には同じConnection modelがない
+
+            **問題を出した背景:** RFC 8441 を読むと, つい bootstrapping の違いばかりに目が行きます. でも WebSocket の security と app 設計の論点は残り続けます. そこを確認する問題です.
+
+            **用語:** **bootstrapping** は接続開始手順, **WebSocket semantics** は message framing や app security のような接続成立後も続く性質です.
+
+            **Correct (A,B,C):** bootstrapping は変わっても, WebSocket の message framing, browser Origin check, app 認証/authorization は引き続き重要です.
+
+            **選択肢:**
+            - A (correct): 接続後の framing 規則は依然として重要です.
+            - B (correct): browser 由来の security check は消えません.
+            - C (correct): app 認証と authorization は protocol が自動で解決しません.
+            - D (incorrect): HTTP/1.1 の `Connection` header 前提は HTTP/2 ではそのまま持ち込めません.
+
+            **関連:** 「HTTP/2 になったから secure」ではなく, bootstrap と app semantics を別々に review するのが実務的です.
           </div>
         </div>
       </article>
@@ -164,7 +211,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** extended CONNECTでWebSocketのセマンティクスを成立させる選択がある
+
+            **問題を出した背景:** corporate proxy や CDN で `Upgrade` が block されると, HTTP/1.1 前提の説明だけでは「WebSocket は無理」で止まりがちです. H2 bootstrapping の選択肢を知っているかを見る問題です.
+
+            **用語:** **H2 bootstrapping** とは, HTTP/2 上で extended CONNECT を使って WebSocket 的な接続を成立させる考え方です.
+
+            **Correct (B):** proxy が HTTP/2 のみ対応なら, HTTP/1.1 `Upgrade` の代わりに H2 bootstrapping 方式が必要になり得ます. WebSocket 自体が不可能になるとは限りません.
+
+            **選択肢:**
+            - A (incorrect): `Upgrade` が使えないだけで, WebSocket 全体が不可能とまでは言えません.
+            - B (correct): RFC 8441 がまさにその代替手段を与えます.
+            - C (incorrect): 常に long polling へ downgrade しなければならないわけではありません.
+
+            **関連:** deploy の失敗理由を正しく切り分けるには, 「HTTP/1.1 の制限」なのか「HTTP/2 bootstrapping 未対応」なのかを分けて考える必要があります.
           </div>
         </div>
       </article>
@@ -175,7 +234,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** CONNECT
+
+            **問題を出した背景:** RFC 8441 の議論では, どの HTTP method を中心に使うかをまず押さえないと packet trace や config を読みにくくなります.
+
+            **用語:** HTTP/2 WebSocket bootstrapping の中心になる method は **`CONNECT`** です. extended CONNECT という名前もここから来ています.
+
+            **Correct:** **CONNECT**.
+
+            **Why this matters:** `Upgrade` を探すのではなく `CONNECT` 系の流れを見る, という観点に切り替わると, HTTP/2-only 環境の debug がかなりしやすくなります.
           </div>
         </div>
       </article>

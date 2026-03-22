@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** authenticationはidentity, authorizationはpermission
+
+            **問題を出した背景:** `authentication` と `authorization` は security review で最も混同されやすい基本語です. 最初にここを外すと, 後続の議論が全部ずれます.
+
+            **用語:** **authentication** は「その主体が本当に誰かを確認すること」, **authorization** は「確認済みの主体に何を許すかを決めること」です.
+
+            **Correct (A):** user が主張する identity が正しいか確かめる行為は **authentication** です. password, passkey, certificate, session などはこの確認を支える手段です.
+
+            **選択肢:**
+            - A (correct): identity verification そのものを指します.
+            - B (incorrect): **authorization** は権限判断です. 本人確認が終わった後に「その user に delete を許すか」を決めます.
+            - C (incorrect): **compression** はデータ量を減らす処理で, security の主体確認とは無関係です.
+
+            **関連:** login は authentication の入口ですが, login 済みだから何でもできるわけではありません. その先に authorization が続きます.
           </div>
         </div>
       </article>
@@ -116,7 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** authorizationはaccess control decision
+
+            **問題を出した背景:** 実務では「認証済みです」と「その操作を許可します」が同じ意味で話されがちです. でも設計上は別判断なので, 用語も分けて扱う必要があります.
+
+            **用語:** **authorization** は access control decision です. 認証済みの user に対して, resource や action ごとに許可/拒否を決めます.
+
+            **Correct (B):** record を delete できるか決めるのは **authorization** です. その user が誰か分かったあとに, 何をしてよいかを判断する段階です.
+
+            **選択肢:**
+            - A (incorrect): **authentication** は本人確認であり, delete 許可の判断までは含みません.
+            - B (correct): operation ごとの access control を決めるのでこれが正解です.
+            - C (incorrect): **fragmentation** は network や message 分割の話で, access control とは無関係です.
+
+            **関連:** admin 画面で「ログインできたが削除はできない」は正常です. authentication と authorization が別だからです.
           </div>
         </div>
       </article>
@@ -131,7 +155,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** confidentialityはdisclosureを防ぐ
+
+            **問題を出した背景:** **CIA** の 3語は security の基本ですが, confidentiality と integrity を逆に覚えると対策選定まで崩れます. まず何を守りたい性質なのかを固める問題です.
+
+            **用語:** **confidentiality** は unauthorized disclosure, つまり見てはいけない人に読まれないことを守る性質です. encryption はその代表的な手段です.
+
+            **Correct (C):** outsider が data を読めないように守るなら **confidentiality** が最も近いです.
+
+            **選択肢:**
+            - A (incorrect): **availability** は必要なときに使えることです. 読めないようにする性質ではありません.
+            - B (incorrect): **integrity** は改ざんされていないことを守る性質です.
+            - C (correct): disclosure 防止という問いにそのまま対応します.
+
+            **関連:** 「漏えい」は confidentiality, 「改ざん」は integrity, 「落ちる」は availability と結び付けて覚えると, review の会話がぶれにくくなります.
           </div>
         </div>
       </article>
@@ -146,7 +182,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** integrityはtamperingの検知, 防止に関わる
+
+            **問題を出した背景:** security incident の切り分けでは, 「読まれた」のか「書き換えられた」のかを最初に分ける必要があります. integrity はその後者を扱う中心語です.
+
+            **用語:** **integrity** は data や message が unauthorized に改変されていないことを守る性質です. MAC, signature, checksum の一部はこの検証に関わります.
+
+            **Correct (B):** transit 中に message が tamper されたことを検知したいなら **integrity** が最も近いです.
+
+            **選択肢:**
+            - A (incorrect): **confidentiality** は見えないようにする性質で, 改ざん検知そのものは主目的ではありません.
+            - B (correct): tampering の防止や検知に関わるので正解です.
+            - C (incorrect): **deniability** はこの文脈の基本 3語とは別の概念で, transit 改ざん検知を直接表しません.
+
+            **関連:** encryption だけでは integrity が十分でない場合があります. 「読めない」と「書き換えられない」は別に確認する癖が大切です.
           </div>
         </div>
       </article>
@@ -161,7 +209,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** nonceはnumber used once
+
+            **問題を出した背景:** replay 防止を語るときに, nonce, timestamp, sequence number が混ざりやすいです. ここでは一番基礎的な「一度だけ使う値」の語を押さえます.
+
+            **用語:** **nonce** は **number used once** の略として使われることが多く, challenge/response や AEAD などで再利用を避けるための一回性の値です.
+
+            **Correct (A):** replay を防ぐ one-time value として最もよく出る語は **nonce** です.
+
+            **選択肢:**
+            - A (correct): 一回性を持たせる値として代表的です.
+            - B (incorrect): **cookie** は state を client に持たせる仕組みであり, replay 防止専用語ではありません.
+            - C (incorrect): **banner** は通知や表示文の意味で, cryptographic freshness の用語ではありません.
+
+            **関連:** nonce 自体は秘密でなくてもよいことがあります. 重要なのは, 同じ文脈で再利用しないことです.
           </div>
         </div>
       </article>
@@ -172,7 +232,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** authentication
+
+            **問題を出した背景:** security glossary の最初の1語を即答できることは, 仕様や設計レビューの読みやすさに直結します.
+
+            **用語:** **authentication** は claimed identity の確認です. password, certificate, token 検証などはこの行為を支える手段です.
+
+            **Correct:** **authentication**.
+
+            **Why this matters:** 「誰かを確認する」のか, 「何を許すかを決める」のかを混同すると, auth 設計の説明が崩れます. この1語を起点に vocabulary を揃えるのが大切です.
           </div>
         </div>
       </article>

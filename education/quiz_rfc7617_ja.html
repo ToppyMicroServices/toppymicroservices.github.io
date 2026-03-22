@@ -156,8 +156,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** WWW-Authenticate
-            **Correct (A):** serverは401とWWW-Authenticateを返す
+
+            **問題を出した背景:** Basic 認証でも, challenge を出す側と credential を送る側で header と status code の役割が分かれています. ここを混同しないための問題です.
+
+            **用語:** 認証 challenge では server が **401 Unauthorized** と **`WWW-Authenticate`** header を返し, client が次の request で **`Authorization`** header を送ります.
+
+            **Correct (A):** Basic challenge でよく使う status code は **401** です.
+
+            **選択肢:**
+            - A (correct): challenge と `WWW-Authenticate` を伴う代表的な status code です.
+            - B (incorrect): **206** は partial content の status code で, Basic challenge とは無関係です.
+            - C (incorrect): **302** は redirect であり, 認証 challenge の中心ではありません.
+
+            **関連:** 「401 + `WWW-Authenticate` -> 次 request で `Authorization`」という流れをセットで覚えると実装や debug が楽になります.
           </div>
         </div>
       </article>
@@ -172,8 +183,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** logやredirectなどで漏れやすい
-            **Related:** Authorizationはsensitiveなので, trust boundaryでstripする
+
+            **問題を出した背景:** Basic credential は扱いを雑にすると, debug, redirect, proxy log などから簡単に漏れます. 単に TLS を使うだけでなく, 運用上どう扱うかも大事です.
+
+            **用語:** **Authorization header** は credential を直接含む sensitive data です. untrusted origin への転送や log 出力は, そのまま secret 漏えいになります.
+
+            **Correct (C):** best practice に近いのは, **untrusted origin へ送らず, log にも残さない**ことです.
+
+            **選択肢:**
+            - A (incorrect): URL に入れると browser history, log, analytics, referer などから漏れやすくなります.
+            - B (incorrect): decode した値を log に出すのは最悪の運用です.
+            - C (correct): trust boundary を越える前に header を落とし, storage にも残さないのが基本です.
+
+            **関連:** reverse proxy や redirect handler では, `Authorization` をどこで strip するかを明示しておくと事故が減ります.
           </div>
         </div>
       </article>
@@ -184,7 +206,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** Authorization
+
+            **問題を出した背景:** Basic 認証では, どの header に credential を入れるかを即答できることが仕様読解の入口です.
+
+            **用語:** **`Authorization`** は client が credential を送る request header です. Basic では値の先頭に `Basic` scheme 名が付きます.
+
+            **Correct:** **Authorization**.
+
+            **Why this matters:** challenge の `WWW-Authenticate` と対で出てくるので, 役割を取り違えないことが重要です.
           </div>
         </div>
       </article>

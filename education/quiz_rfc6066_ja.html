@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** extensionで追加機能を交渉しつつ, 古い実装も壊しにくくする
+
+            **問題を出した背景:** TLS extension を「機能が増える箱」くらいにしか捉えていないと, negotiation や backward compatibility の価値が見えません. 拡張設計の目的を押さえる最初の問題です.
+
+            **用語:** **TLS extension** は, protocol version を増やさずに追加 capability を交渉する仕組みです. 古い実装が理解できない extension は無視できるように設計されることが重要です.
+
+            **Correct (B):** これが最も近い説明です. 拡張を optional capability として交渉できるから, protocol 全体を壊さず進化させられます.
+
+            **選択肢:**
+            - A (incorrect): extension は certificate を不要にする仕組みではありません.
+            - B (correct): backward compatibility を保ちながら機能追加する, という本質を表しています.
+            - C (incorrect): negotiation を無効化するのではなく, 何を使えるかを明示的に交渉しやすくします.
+
+            **関連:** 拡張が増えるほど attack surface も増えます. だから negotiation の失敗時挙動や security considerations もセットで設計する必要があります.
           </div>
         </div>
       </article>
@@ -116,8 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** SNI
-            **Correct (A):** hostnameを送ってserverが適切なcertを選べるようにする
+
+            **問題を出した背景:** SNI を知らないと, 1 IP に複数 hostname を載せる modern な HTTPS 運用がなぜ成立するのか説明できません. virtual hosting と cert selection の接点を押さえる設問です.
+
+            **用語:** **SNI** は **Server Name Indication** です. extension 名としては **`server_name`** が使われ, client が接続したい hostname を handshake 中に示します.
+
+            **Correct (A):** `server_name` extension により, server はどの hostname 向けの接続かを早い段階で知り, 適切な certificate を選びやすくなります.
+
+            **選択肢:**
+            - A (correct): hostname 別 certificate を返すための extension なので正解です.
+            - B (incorrect): `cookie` は HTTP の state 管理であり, TLS handshake で certificate 選択を助けるものではありません.
+            - C (incorrect): `transfer_encoding` は HTTP message framing の話で, TLS extension 名ではありません.
+
+            **関連:** extension の通称が **SNI**, wire 上の extension 名が **`server_name`** という対応を区別して覚えると混乱しにくくなります.
           </div>
         </div>
       </article>
@@ -132,7 +155,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** payloadが暗号化されてもmetadataが残り得る
+
+            **問題を出した背景:** 「TLS だから hostname も全部隠れる」と思い込むと privacy review を誤ります. SNI は deployment を助ける一方で metadata を露出し得る, という tradeoff を理解する必要があります.
+
+            **用語:** **privacy tradeoff** とは, 運用上の利便性を得る代わりに観測可能になる情報がある, という意味です. SNI では接続先 hostname が metadata として見え得ます.
+
+            **Correct (C):** payload が暗号化されていても, TLS version や deployment 次第では hostname が観測され得ます. これが SNI でよく話題になる privacy 論点です.
+
+            **選択肢:**
+            - A (incorrect): SNI があるから TLS encryption 自体が使えなくなるわけではありません.
+            - B (incorrect): SNI は HTTP/1.1 を強制する仕組みではありません. TLS と HTTP version は別に交渉されます.
+            - C (correct): metadata exposure の核心を述べています.
+
+            **関連:** 後年の ECH が注目されるのも, この hostname exposure を減らしたいからです.
           </div>
         </div>
       </article>
@@ -148,9 +183,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** extensibilityがdowngradeやinterop hazardにならないことが重要
-            **Options:**
-            - D (incorrect): extensionはattack surfaceになり得る
+
+            **問題を出した背景:** 拡張可能性は便利ですが, 設計が甘いと downgrade や interop failure を生みます. 「拡張できる」だけでなく, 安全に拡張できる条件を見極める問題です.
+
+            **用語:** **unknown extension を無視できる** ことは backward compatibility に重要で, **required / optional の明確化** は failure 時の挙動を決め, **security considerations** は attack surface を明文化します.
+
+            **Correct (A,B,C):** どれも extension negotiation が健全に動くための性質です. 新機能を足しても古い実装が壊れず, 何が必須かも分かり, security 上の注意も追える必要があります.
+
+            **選択肢:**
+            - A (correct): 未知の extension をどう扱うかは interoperability の土台です.
+            - B (correct): required / optional が曖昧だと negotiation failure の意味が不明になります.
+            - C (correct): extension は attack surface を増やすので, security considerations が欠かせません.
+            - D (incorrect): 「全extensionは安全」と仮定するのは危険です. 拡張は新しいリスクも持ち込みます.
+
+            **関連:** extension 設計では, feature そのものより failure mode の定義が interoperability を左右します.
           </div>
         </div>
       </article>
@@ -165,7 +211,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** SNIがないとhostname別certのvirtual hostingが難しい
+
+            **問題を出した背景:** ops が SNI を気にする理由は protocol 好きだからではなく, 1 IP で複数 service を安全に載せたいからです. deployment 観点での価値を言葉にする問題です.
+
+            **用語:** **virtual hosting** は 1 つの server / IP で複数 hostname を扱う構成です. HTTPS では, どの hostname 向けかを早く知れないと正しい certificate を返しにくくなります.
+
+            **Correct (B):** SNI があると, 1 IP で複数 hostname を扱いながら hostname ごとに適切な certificate を返しやすくなります. これが ops 上の大きな価値です.
+
+            **選択肢:**
+            - A (incorrect): SNI があっても TCP は必要です. transport を消す話ではありません.
+            - B (correct): multi-tenant TLS 運用の実利を正しく言っています.
+            - C (incorrect): cookie は HTTP state の話であり, SNI の役割とは別です.
+
+            **関連:** ingress, CDN, load balancer の certificate 配置を考えるとき, SNI は「どの証明書を返すか」を決める前提情報になります.
           </div>
         </div>
       </article>
@@ -176,7 +234,14 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** server_name
+
+            **問題を出した背景:** 通称の **SNI** と wire 上の extension 名 **`server_name`** を混同しやすいので, 実装や debug で困らないように名前を対応付ける問題です.
+
+            **用語:** **`server_name`** は TLS extension 名で, client が接続先 hostname を示すために使います. 文脈によっては, この仕組み全体を **SNI** と呼びます.
+
+            **Correct:** **`server_name`**.
+
+            **Why this matters:** config や packet trace では通称ではなく extension 名が出ることがあります. そのとき `server_name = SNI` と結び付くと読みやすくなります.
           </div>
         </div>
       </article>

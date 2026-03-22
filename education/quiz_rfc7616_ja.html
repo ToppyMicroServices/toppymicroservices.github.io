@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** challenge responseの計算で, raw password送信を避ける
+
+            **問題を出した背景:** Digest 認証は「Basic より secure」で終わらせると誤解が残ります. まず何を改善し, 何を改善しないのかを言葉にできる必要があります.
+
+            **用語:** **Digest auth** は challenge/response を使い, password そのものをそのまま wire に載せないようにする仕組みです. ただし channel 全体を守るわけではありません.
+
+            **Correct (B):** Digest が狙う中心は, **password を平文の形で送らない**ことです. server challenge と client 応答を組み合わせて検証します.
+
+            **選択肢:**
+            - A (incorrect): header を送らない仕組みではありません. むしろ認証用 parameter を含む header を送ります.
+            - B (correct): raw password 送信を避ける, という狙いを正しく表しています.
+            - C (incorrect): status code を送らないこととは無関係です.
+
+            **関連:** 平文 password を避けても, metadata 保護や phishing 耐性まで自動で手に入るわけではありません.
           </div>
         </div>
       </article>
@@ -116,7 +128,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** serverがWWW-Authenticateでchallengeし, clientがAuthorizationで応答する
+
+            **問題を出した背景:** Digest の header 名は request 側と response 側で役割が逆なので, `WWW-Authenticate` と `Authorization` を取り違えやすいです. challenge の流れを固める問題です.
+
+            **用語:** server は 401 response で **`WWW-Authenticate`** header を返し, client はそれに応じて **`Authorization`** header を送ります.
+
+            **Correct (A):** Digest challenge を運ぶのは **`WWW-Authenticate`** です.
+
+            **選択肢:**
+            - A (correct): challenge を示す response header です.
+            - B (incorrect): `Authorization` は client の応答側です.
+            - C (incorrect): `Forwarded` は proxy metadata で, 認証 challenge には使いません.
+
+            **関連:** Basic でも Digest でも, 「server が `WWW-Authenticate`, client が `Authorization`」という型は共通です.
           </div>
         </div>
       </article>
@@ -131,8 +155,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** replay resistance
-            **Correct (C):** serverがnonceを検証, rotateすることでreplayを制限できる
+
+            **問題を出した背景:** Digest の `nonce` をただの飾り parameter だと思うと, replay resistance の話が抜け落ちます. challenge freshness を支える役割を確認する問題です.
+
+            **用語:** **replay resistance** は, 過去の認証応答をそのまま再利用されにくくする性質です. **nonce** は server が freshness を持たせるための challenge value です.
+
+            **Correct (C):** nonce の主な役割は, client 応答を server の fresh な challenge に結び付け, replay を制限しやすくすることです.
+
+            **選択肢:**
+            - A (incorrect): header 圧縮の parameter ではありません.
+            - B (incorrect): TLS key exchange を置き換えるものでもありません.
+            - C (correct): freshness と replay 制御に関わる, という説明が正しいです.
+
+            **関連:** nonce をどう生成し, いつ失効させるかは server 実装の重要な運用論点です.
           </div>
         </div>
       </article>
@@ -148,10 +183,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** 実装複雑性とcredential運用が重くなりやすい
-            **Options:**
-            - D (incorrect): phishingは防げない
-            **Related:** 現代はTLS上のtoken schemeが選ばれることが多い
+
+            **問題を出した背景:** Digest は「Basic より少し賢い」だけではなく, parameter, credential storage, TLS 依存が絡むため実運用が重くなります. 現代で敬遠されがちな理由を問う問題です.
+
+            **用語:** **password 相当 material** とは, raw password そのものではなくても同等に扱うべき secret です. Digest では server 側保存形式や algorithm choice が運用の負担になります.
+
+            **Correct (A,B,C):** どれも実運用を難しくする要因です. edge case が多く, server は credential material の扱いに悩み, 交換全体の保護には依然 TLS が有効です.
+
+            **選択肢:**
+            - A (correct): parameter と corner case が多く, 相互運用性を保つのが難しくなりがちです.
+            - B (correct): server がどの形で credential material を保持するかが難題になります.
+            - C (correct): Digest だけでは channel 全体を守れないので, TLS の価値は残ります.
+            - D (incorrect): phishing を自動で防ぐ仕組みではありません.
+
+            **関連:** そのため現代では, TLS 上の token scheme や federated auth が選ばれることが多くなっています.
           </div>
         </div>
       </article>
@@ -162,7 +207,14 @@
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** nonce
+
+            **問題を出した背景:** Digest の parameter 名を正しく言えることは, packet trace や auth failure の debug で効きます. 通称ではなくそのままの token を答える問題です.
+
+            **用語:** **`nonce`** は server challenge value で, freshness と replay 制御の手掛かりになります.
+
+            **Correct:** **nonce**.
+
+            **Why this matters:** debug では「nonce が期限切れか」「nonce の生成規則は適切か」を直接見ることがあります. 用語を正しく結び付けておくと理解が速くなります.
           </div>
         </div>
       </article>
@@ -177,7 +229,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Digestだけではchannel integrityやmetadata保護はできない
+
+            **問題を出した背景:** Digest があるから TLS 不要, という誤解は今でも出ます. auth scheme と secure channel の役割分担を分けて理解する問題です.
+
+            **用語:** **TLS** は channel confidentiality / integrity / server authentication に効きます. Digest は主に credential をそのまま送らない工夫であり, transport protection の代わりではありません.
+
+            **Correct (B):** TLS は交換全体を守るために依然重要です. Digest だけでは channel integrity, metadata protection, certificate validation までは提供できません.
+
+            **選択肢:**
+            - A (incorrect): Digest があっても TLS は不要になりません.
+            - B (correct): auth scheme と channel protection の責務分担を正しく述べています.
+            - C (incorrect): TLS を使うこと自体が Digest を壊すわけではありません.
+
+            **関連:** 「平文 password を送らない」と「安全な通信路を持つ」は別要件です. 現代設計では両方を分けて満たします.
           </div>
         </div>
       </article>

@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Strict-Transport-SecurityをHTTPSで返し, browserがpolicyをcacheする
+
+            **問題を出した背景:** HSTS は「HTTPS redirect の別名」ではありません. browser に policy を覚えさせる仕組みなので, まず header 名を確実に結び付ける必要があります.
+
+            **用語:** **HSTS** は **HTTP Strict Transport Security** で, browser に「今後この host へは HTTPS だけ使う」と覚えさせる policy です. その policy を伝える header が **`Strict-Transport-Security`** です.
+
+            **Correct (B):** browser へ HSTS policy を伝えるのは **`Strict-Transport-Security`** header です. HTTPS response で受け取った browser がこれを cache します.
+
+            **選択肢:**
+            - A (incorrect): `Transport-Security` は標準 header 名ではありません.
+            - B (correct): RFC 6797 で使う正しい header 名です.
+            - C (incorrect): `Secure-Only` という header ではありません.
+
+            **関連:** HSTS は browser 側 policy memory なので, server が 1 回送れば終わりではなく, rollout と解除の難しさまで含めて考える必要があります.
           </div>
         </div>
       </article>
@@ -117,9 +129,20 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** max-ageは必須, includeSubDomainsとpreloadはよく使う
-            **Options:**
-            - D (incorrect): directiveではない
+
+            **問題を出した背景:** HSTS header は token を並べればよいわけではなく, directive ごとに意味と導入リスクが違います. 代表的な directive を正しく区別する問題です.
+
+            **用語:** **`max-age`** は policy 有効期間, **`includeSubDomains`** は subdomain への波及, **`preload`** は preload list 登録を意識した宣言です.
+
+            **Correct (A,B,C):** これらは HSTS で一般的に使われる directive です. 一方で `allowInsecure` のような逃げ道 token は標準では定義されていません.
+
+            **選択肢:**
+            - A (correct): `max-age` は policy の中核で, 実質必須です.
+            - B (correct): subdomain まで HTTPS-only にしたいときに使います.
+            - C (correct): preload 運用でよく見かける directive です.
+            - D (incorrect): HSTS の標準 directive ではありません.
+
+            **関連:** directive を追加するほど適用範囲と rollback 難度も上がります. 特に `includeSubDomains` は影響面積が大きいです.
           </div>
         </div>
       </article>
@@ -134,9 +157,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** trust on first use
-            **Correct (C):** 初回がHTTPだと, policyを学習する前にactive attackerに妨害され得る
-            **Related:** preload listはこの問題を緩和しやすい
+
+            **問題を出した背景:** HSTS の限界を知らないと, 「HSTS を入れたから初回も安全」と誤解しやすいです. first visit 問題は導入判断の核心なので, ここを押さえます.
+
+            **用語:** **trust on first use** は, 初回接続ではまだ policy を知らないため, その最初の一歩に弱さが残ることです.
+
+            **Correct (C):** browser がまだ policy を知らない **first visit** では, HTTP で最初に踏ませる構成だと active attacker に妨害され得ます. これが HSTS だけでは完全に守れない典型です.
+
+            **選択肢:**
+            - A (incorrect): policy を cache 済みなら, browser は以後 HTTPS-only を強く適用しやすくなります.
+            - B (incorrect): `includeSubDomains` が効いている request は, その policy が既に学習済みなら守られる側に寄ります.
+            - C (correct): browser が policy を学ぶ前の初回が弱い, という限界を正しく述べています.
+
+            **関連:** preload list はこの first visit 問題を緩和しやすいですが, その分 rollback の難しさも増します.
           </div>
         </div>
       </article>
@@ -151,7 +184,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** max-ageはsecondsの整数
+
+            **問題を出した背景:** `max-age` の単位を誤ると, 意図より極端に長い lock-in や, ほぼ効かない短さを招きます. 小さいですが運用事故になりやすい点です.
+
+            **用語:** **`max-age`** は HSTS policy を browser が保持する期間で, **seconds** 単位の整数です.
+
+            **Correct (A):** 単位は **seconds** です.
+
+            **選択肢:**
+            - A (correct): RFC 6797 の `max-age` は秒単位です.
+            - B (incorrect): minutes ではありません.
+            - C (incorrect): days でもありません. 日数で考えたいときも, 実際の値は秒へ変換して指定します.
+
+            **関連:** たとえば 1 年相当の policy は日数ではなく秒数で設定します. 運用時は human-friendly な説明と actual value の両方を確認すると安全です.
           </div>
         </div>
       </article>
@@ -162,8 +207,14 @@
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the directive" />
           <div class="explain">
             **Explanation:**
-            **Correct:** includeSubDomains
-            **Related:** subtree全体へ影響するため, 段階導入が安全
+
+            **問題を出した背景:** HSTS の rollout で一番破壊的になりやすいのが subdomain への波及です. directive 名をそのまま言えることが, review と運用確認の出発点になります.
+
+            **用語:** **`includeSubDomains`** は, 親 host だけでなく配下 subdomain 全体へ HSTS policy を広げる directive です.
+
+            **Correct:** **includeSubDomains**.
+
+            **Why this matters:** 便利ですが影響面積が大きいので, 準備できていない subdomain が 1 つでもあると事故になります. だから段階導入が安全です.
           </div>
         </div>
       </article>
@@ -178,12 +229,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** lock in risk
-            **Correct (B):** 誤設定があるとbrowser側でlockされ, 復旧に時間がかかる
-            **Options:**
-            - A (incorrect): 準備できていないsubdomainがあると破壊的
-            - B (correct): 段階導入が安全
-            - C (incorrect): headerはsecure connectionで返す必要がある
+
+            **問題を出した背景:** HSTS は一度効くと browser 側に残るので, 導入の雑さがそのまま lock-in risk になります. first step を慎重に選べるかを見る問題です.
+
+            **用語:** **lock-in risk** は, 誤った HSTS policy が browser に記憶され, 直ちに巻き戻せないリスクです.
+
+            **Correct (B):** 典型の第一歩は, **小さな `max-age` から始め, monitor しながら増やす**ことです. これなら誤設定時の blast radius を小さくできます.
+
+            **選択肢:**
+            - A (incorrect): 最初から巨大 `max-age` と `includeSubDomains` を入れると, 未準備 subdomain を巻き込んで破壊的になり得ます.
+            - B (correct): 段階導入が安全な定石です.
+            - C (incorrect): HSTS header は secure connection で返す必要があり, HTTP で返しても狙いどおり効かせられません.
+
+            **関連:** preload を目指す前に, redirect, certificate, subdomain inventory が揃っているかを確認するのが現実的です.
           </div>
         </div>
       </article>
