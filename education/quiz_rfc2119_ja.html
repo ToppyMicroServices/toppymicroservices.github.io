@@ -120,30 +120,54 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. クライアントは証明書チェーンを検証 <code>MUST</code></label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. クライアントは証明書チェーンを検証 <code>MAY</code></label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc2119-ja-q1-caption">
+            <figcaption id="rfc2119-ja-q1-caption">RFC 2119 を読むときは, まずその文が「適合に必須」なのか, 「原則推奨」なのか, 「任意」なのかを見分けます. その強さの段差が MUST, SHOULD, MAY の違いです.</figcaption>
+            <svg viewBox="0 0 760 180" role="img" aria-label="MUST SHOULD MAY の強さの違いを示す図">
+              <rect class="flow-box" x="24" y="46" width="200" height="88" rx="12"></rect>
+              <text class="flow-text" x="124" y="72">MUST</text>
+              <text class="flow-label" x="124" y="96">適合に必須</text>
+              <text class="flow-label" x="124" y="118">守らないと不適合</text>
+              <line class="flow-arrow" x1="224" y1="90" x2="302" y2="90"></line>
+              <polygon class="flow-arrow-head" points="302,90 290,84 290,96"></polygon>
+              <text class="flow-label" x="263" y="72">例外が増える</text>
+              <rect class="flow-box" x="302" y="46" width="200" height="88" rx="12"></rect>
+              <text class="flow-text" x="402" y="72">SHOULD</text>
+              <text class="flow-label" x="402" y="96">原則そうする</text>
+              <text class="flow-label" x="402" y="118">例外には理由が必要</text>
+              <line class="flow-arrow" x1="502" y1="90" x2="580" y2="90"></line>
+              <polygon class="flow-arrow-head" points="580,90 568,84 568,96"></polygon>
+              <text class="flow-label" x="541" y="72">裁量が増える</text>
+              <rect class="flow-box" x="580" y="46" width="156" height="88" rx="12"></rect>
+              <text class="flow-text" x="658" y="72">MAY</text>
+              <text class="flow-label" x="658" y="96">実装者の任意</text>
+              <text class="flow-label" x="658" y="118">適合条件ではない</text>
+            </svg>
+          </figure>
           <div class="explain">
             **解説:**
 
             **定義（問題語）:**
 
-            - `MUST`: 仕様適合のために必須（守らないと不適合）.
+            - `MUST`: 仕様適合のために必須です. 守らない実装は不適合になります.
+            - `SHOULD`: 原則は守るが, 例外はあり得ます. ただし例外には理由が必要です.
+            - `MAY`: 任意です. 実装しても, しなくても適合性は崩れません.
 
-            - `SHOULD`: 原則そうする（例外はあり得るが,理由が必要）.
+            **RFCを読むときの見方:**
 
-            - `MAY`: 任意（実装者の選択）.
+            まず, その文が「適合条件」なのか, 「設計上の推奨」なのか, 「任意機能」なのかを切り分けます. 証明書検証のように, 実装が必ず行わないと安全性も相互運用性も崩れる項目は `MUST` で読むのが自然です.
 
             **Bが正しい理由:**
 
-            「適合の条件」なら `MUST` にするのが一番明快で,テストもしやすいです.
+            問題文は「適合する実装なら必ず証明書検証を行う」と言っています. これは例外なしの必須条件なので, `MUST` が最も筋が良い書き方です. RFC の文をレビューするときも, 「この文はテストで yes/no 判定できるか」を見ると `MUST` の妥当性を判断しやすくなります.
 
             **A/Cが違う理由:**
 
-            - A（`SHOULD`）: 例外の余地が残るので,未実装でも“適合”と言い張れてしまう.
-
-            - C（`MAY`）: 任意になり,セキュリティ要件として弱すぎる.
+            - A（`SHOULD`）: 例外の余地が残るため, 証明書検証を省いた実装でも「事情があった」と言えてしまいます.
+            - C（`MAY`）: 任意機能になってしまい, セキュリティ要件として弱すぎます.
 
             **関連トピック例:**
 
-            セキュリティ要件で `SHOULD`/`MAY` をうっかり使うと,現場でそのまま“穴”になります.
+            AI に仕様文を書かせると, 強い気持ちで `SHOULD` を提案してくることがあります. そのときは, その文が「適合条件」なのか「推奨」なのかを人間が明示的に戻してあげるのが大事です.
           </div>
         </div>
       </article>

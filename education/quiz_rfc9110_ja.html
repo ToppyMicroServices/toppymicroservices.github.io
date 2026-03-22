@@ -99,12 +99,37 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTP/2フレームのwire上のエンコード</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. QUICパケットの再送制御</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9110-ja-q1-caption">
+            <figcaption id="rfc9110-ja-q1-caption">RFC 9110 は, HTTP/1.1, HTTP/2, HTTP/3 の下回りではなく, それらに共通する「意味」を定義します. まず semantics と framing/transport を層で分けると読みやすくなります.</figcaption>
+            <svg viewBox="0 0 760 210" role="img" aria-label="HTTP semantics と framing transport を分けて示す図">
+              <rect class="flow-box" x="180" y="20" width="400" height="60" rx="12"></rect>
+              <text class="flow-text" x="380" y="45">HTTP Semantics</text>
+              <text class="flow-label" x="380" y="65">method, status code, header の意味</text>
+              <line class="flow-arrow" x1="250" y1="80" x2="250" y2="118"></line>
+              <polygon class="flow-arrow-head" points="250,118 244,106 256,106"></polygon>
+              <line class="flow-arrow" x1="380" y1="80" x2="380" y2="118"></line>
+              <polygon class="flow-arrow-head" points="380,118 374,106 386,106"></polygon>
+              <line class="flow-arrow" x1="510" y1="80" x2="510" y2="118"></line>
+              <polygon class="flow-arrow-head" points="510,118 504,106 516,106"></polygon>
+              <rect class="flow-box" x="90" y="118" width="160" height="64" rx="12"></rect>
+              <text class="flow-text" x="170" y="145">HTTP/1.1</text>
+              <text class="flow-label" x="170" y="165">text framing</text>
+              <rect class="flow-box" x="300" y="118" width="160" height="64" rx="12"></rect>
+              <text class="flow-text" x="380" y="145">HTTP/2</text>
+              <text class="flow-label" x="380" y="165">binary frame</text>
+              <rect class="flow-box" x="510" y="118" width="160" height="64" rx="12"></rect>
+              <text class="flow-text" x="590" y="145">HTTP/3</text>
+              <text class="flow-label" x="590" y="165">QUIC stream</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
             **Terms:** semantics(セマンティクス), transport, methodの意味. ここでのセマンティクスは, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味/ルール"の話.
 
-            **Correct (A):** safe, idempotent, cacheable, status codeの意味はセマンティクスの中心.
+            **RFCを読むときの見方:** RFC 9110 を読むときは, 「どう運ぶか」ではなく「何を意味するか」を読んでいると意識すると迷いにくいです. 同じ GET でも, HTTP/1.1 の text line, HTTP/2 の frame, HTTP/3 の QUIC stream という違いはありますが, safe や idempotent の意味は共通です.
+
+            **Correct (A):** safe, idempotent, cacheable, status codeの意味はセマンティクスの中心です. これは transport が変わっても変わらない, HTTP そのものの意味づけです.
 
             **Options:**
 
@@ -113,7 +138,7 @@
             - B (incorrect): framingはtransport mappingの話.
             - C (incorrect): QUICのpacket挙動はtransportの話.
 
-            **Related:** セマンティクスが分離されているから, プロキシやキャッシュは下位transportと独立に判断できる.
+            **Related:** セマンティクスが分離されているから, プロキシやキャッシュは下位 transport と独立に判断できます. RFC 9110, 9112, 9113, 9114 を役割ごとに読むと全体像がつながります.
           </div>
         </div>
       </article>

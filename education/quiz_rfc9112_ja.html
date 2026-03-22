@@ -99,12 +99,31 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. LFだけの改行</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. CRLFだけの空行</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9112-ja-q1-caption">
+            <figcaption id="rfc9112-ja-q1-caption">RFC 9112 は, HTTP/1.1 message をどう区切るかの文書です. まず start-line, header section, 空行, body の境界を目で追えるようになると, framing の議論がかなり読みやすくなります.</figcaption>
+            <svg viewBox="0 0 760 220" role="img" aria-label="HTTP 1.1 の start line header empty line body の区切り図">
+              <rect class="flow-box" x="210" y="18" width="340" height="44" rx="12"></rect>
+              <text class="flow-text" x="380" y="45">start-line</text>
+              <rect class="flow-box" x="210" y="72" width="340" height="58" rx="12"></rect>
+              <text class="flow-text" x="380" y="96">header field</text>
+              <text class="flow-label" x="380" y="116">Host, Content-Length, ...</text>
+              <line class="flow-arrow" x1="380" y1="130" x2="380" y2="152"></line>
+              <polygon class="flow-arrow-head" points="380,152 374,140 386,140"></polygon>
+              <rect class="flow-box" x="250" y="152" width="260" height="32" rx="12"></rect>
+              <text class="flow-text" x="380" y="173">CRLF だけの空行</text>
+              <text class="flow-label" x="126" y="170">ここで header section が終わる</text>
+              <rect class="flow-box" x="210" y="192" width="340" height="44" rx="12"></rect>
+              <text class="flow-text" x="380" y="219">message body</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
             **Terms:** header section, empty line, CRLF. HTTP/1.1では, headerの終端とbodyの開始は空行で区切られる.
 
-            **Correct (C):** 最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了する.
+            **RFCを読むときの見方:** RFC 9112 では, まず「どこで header section が終わるか」を固定してから, 次に body 長の決め方へ進みます. 境界が曖昧だと, 同じ bytes を見ても proxy と origin で解釈がずれてしまいます.
+
+            **Correct (C):** 最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了します. ここを基準に body の開始位置が決まるので, line ending の扱いは単なる書式ではなく framing そのものです.
 
             **Options:**
 
@@ -113,7 +132,7 @@
             - B (incorrect): HTTP/1.1はCRLFを行終端として定義している. LF-onlyは互換性や安全性の問題になり得る.
 
             - C (correct): 空行が区切りになる.
-            **Related:** 終端解釈のズレはrequest smugglingの原因になり得る.
+            **Related:** 終端解釈のズレはrequest smugglingの原因になり得ます. だから RFC 9112 は, 些細に見える改行規則をかなり丁寧に定義しています.
           </div>
         </div>
       </article>

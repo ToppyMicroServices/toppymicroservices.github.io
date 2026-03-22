@@ -99,12 +99,38 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. 1つのconnection上で複数streamを多重化する</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSを置き換える新暗号プロトコルを導入する</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9113-ja-q1-caption">
+            <figcaption id="rfc9113-ja-q1-caption">HTTP/2 を理解するときは, まず「1 本の connection の中に複数 stream が並んでいる」図を頭に持つと読みやすくなります. RFC 9113 は, その multiplexing を frame と state machine で定義する文書です.</figcaption>
+            <svg viewBox="0 0 780 220" role="img" aria-label="1 connection 上で複数 stream が frame を多重化する図">
+              <rect class="flow-box" x="20" y="76" width="190" height="70" rx="12"></rect>
+              <text class="flow-text" x="115" y="103">1 TCP connection</text>
+              <text class="flow-label" x="115" y="125">client と server の間</text>
+              <line class="flow-arrow" x1="210" y1="111" x2="320" y2="111"></line>
+              <polygon class="flow-arrow-head" points="320,111 308,105 308,117"></polygon>
+              <rect class="flow-box" x="320" y="22" width="180" height="56" rx="12"></rect>
+              <text class="flow-text" x="410" y="46">stream 1</text>
+              <text class="flow-label" x="410" y="65">HEADERS, DATA</text>
+              <rect class="flow-box" x="320" y="82" width="180" height="56" rx="12"></rect>
+              <text class="flow-text" x="410" y="106">stream 3</text>
+              <text class="flow-label" x="410" y="125">HEADERS, DATA</text>
+              <rect class="flow-box" x="320" y="142" width="180" height="56" rx="12"></rect>
+              <text class="flow-text" x="410" y="166">stream 5</text>
+              <text class="flow-label" x="410" y="185">HEADERS, DATA</text>
+              <line class="flow-arrow" x1="500" y1="111" x2="620" y2="111"></line>
+              <polygon class="flow-arrow-head" points="620,111 608,105 608,117"></polygon>
+              <rect class="flow-box" x="620" y="76" width="140" height="70" rx="12"></rect>
+              <text class="flow-text" x="690" y="103">binary frame</text>
+              <text class="flow-label" x="690" y="125">で交互に流れる</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
             **Terms:** multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.
 
-            **Correct (B):** multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らす.
+            **RFCを読むときの見方:** RFC 9113 は, 「複数の request/response を同時に流したい」という要求を, stream, frame, flow control, stream state に分けて定義しています. まず 1 connection の中に stream が何本もあると理解すると, 後続の frame や flow control の話も追いやすくなります.
+
+            **Correct (B):** multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らします. 1 connection しかなくても, stream ごとに独立したやり取りを進められるのが大きな変化です.
 
             **Options:**
 
@@ -113,7 +139,7 @@
             - B (correct): これがtransport面での主要な変化.
             - C (incorrect): HTTP/2は通常TLS上で動くが, TLSを置き換えない.
 
-            **Related:** ただしTCP上なので, transportレイヤのhead-of-lineは残る.
+            **Related:** ただし TCP 上なので, transport レイヤの head-of-line は残ります. そこが HTTP/3 / QUIC へ話がつながるポイントです.
           </div>
         </div>
       </article>

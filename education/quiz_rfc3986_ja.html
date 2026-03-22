@@ -127,20 +127,50 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. /a</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc3986-ja-q2-caption">
+            <figcaption id="rfc3986-ja-q2-caption">RFC 3986 は, URI を 1 本の文字列ではなく component の並びとして読みます. 例を分解して, どこまでが authority なのかを目で追えるようにすると混乱しにくくなります.</figcaption>
+            <svg viewBox="0 0 820 210" role="img" aria-label="URI の scheme authority path query fragment への分解図">
+              <rect class="flow-box" x="20" y="28" width="130" height="58" rx="12"></rect>
+              <text class="flow-text" x="85" y="52">scheme</text>
+              <text class="flow-label" x="85" y="71">https</text>
+              <line class="flow-arrow" x1="150" y1="57" x2="220" y2="57"></line>
+              <polygon class="flow-arrow-head" points="220,57 208,51 208,63"></polygon>
+              <rect class="flow-box" x="220" y="28" width="245" height="58" rx="12"></rect>
+              <text class="flow-text" x="343" y="52">authority</text>
+              <text class="flow-label" x="343" y="71">user:pass@example.com:8443</text>
+              <line class="flow-arrow" x1="465" y1="57" x2="535" y2="57"></line>
+              <polygon class="flow-arrow-head" points="535,57 523,51 523,63"></polygon>
+              <rect class="flow-box" x="535" y="28" width="92" height="58" rx="12"></rect>
+              <text class="flow-text" x="581" y="52">path</text>
+              <text class="flow-label" x="581" y="71">/a</text>
+              <line class="flow-arrow" x1="627" y1="57" x2="680" y2="57"></line>
+              <polygon class="flow-arrow-head" points="680,57 668,51 668,63"></polygon>
+              <rect class="flow-box" x="680" y="28" width="120" height="58" rx="12"></rect>
+              <text class="flow-text" x="740" y="52">query</text>
+              <text class="flow-label" x="740" y="71">x=1</text>
+              <rect class="flow-box" x="320" y="120" width="160" height="58" rx="12"></rect>
+              <text class="flow-text" x="400" y="144">fragment</text>
+              <text class="flow-label" x="400" y="163">frag</text>
+              <line class="flow-arrow" x1="740" y1="86" x2="740" y2="120"></line>
+              <line class="flow-arrow" x1="740" y1="120" x2="480" y2="120"></line>
+              <polygon class="flow-arrow-head" points="480,120 492,114 492,126"></polygon>
+              <text class="flow-label" x="610" y="110"># の後ろ</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** authority, userinfo, host, port. authorityは"//"の直後から次の/, ?, #までで, userinfoやportを含み得る.
+            **Terms:** authority, userinfo, host, port. authorityは `//` の直後から, 次の `/`, `?`, `#` の手前までです. その中に userinfo, host, port が含まれます.
 
-            **Correct (A):** この例では userinfoが user:pass, hostが example.com, portが 8443 なので, authority全体は user:pass@example.com:8443 になる.
+            **RFCを読むときの見方:** URI の問題で迷ったら, まず `scheme -> authority -> path -> query -> fragment` の順に線を引くように見ます. RFC 3986 は component ごとの責務を定義しているので, 文字列全体を一気に読もうとするより, 区切り記号ごとに切る方が理解しやすいです.
+
+            **Correct (A):** この例では userinfo が `user:pass`, host が `example.com`, port が `8443` です. つまり authority 全体は `user:pass@example.com:8443` になります. host だけを抜き出した `example.com` は authority の一部にすぎません.
 
             **Options:**
 
-            - A (correct): [userinfo@]host[:port]に一致.
-
-            - B (incorrect): host部分だけで, authority全体ではない.
-
-            - C (incorrect): /aはpath.
+            - A (correct): `[userinfo@]host[:port]` の形に一致しています.
+            - B (incorrect): `example.com` は host 部分だけで, authority 全体ではありません.
+            - C (incorrect): `/a` は authority の後ろに来る path です.
 
             **Related:** userinfoはセキュリティ上の理由で推奨されないことが多いが, 文法としては存在する.
           </div>

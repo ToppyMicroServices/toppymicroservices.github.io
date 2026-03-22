@@ -100,15 +100,43 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. indexingを使ってheader sizeを減らす</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSなしでserver authenticityを保証する</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc7541-ja-q1-caption">
+            <figcaption id="rfc7541-ja-q1-caption">HPACK は, よく出る header を table に置き, 毎回文字列を丸ごと送らず index や短い表現で参照する仕組みです. RFC を読むときも, 「生の header を送る」のではなく「table を共有しながら参照する」と捉えると分かりやすくなります.</figcaption>
+            <svg viewBox="0 0 760 190" role="img" aria-label="HPACK の encoder と decoder が table を使って header を圧縮する図">
+              <rect class="flow-box" x="20" y="54" width="170" height="78" rx="12"></rect>
+              <text class="flow-text" x="105" y="79">HTTP header</text>
+              <text class="flow-label" x="105" y="101">:method, cookie, ...</text>
+              <line class="flow-arrow" x1="190" y1="93" x2="280" y2="93"></line>
+              <polygon class="flow-arrow-head" points="280,93 268,87 268,99"></polygon>
+              <rect class="flow-box" x="280" y="28" width="190" height="130" rx="12"></rect>
+              <text class="flow-text" x="375" y="53">encoder</text>
+              <text class="flow-label" x="375" y="77">static table</text>
+              <text class="flow-label" x="375" y="98">dynamic table</text>
+              <text class="flow-label" x="375" y="119">index / literal を選ぶ</text>
+              <line class="flow-arrow" x1="470" y1="93" x2="560" y2="93"></line>
+              <polygon class="flow-arrow-head" points="560,93 548,87 548,99"></polygon>
+              <text class="flow-label" x="515" y="75">小さい表現で送る</text>
+              <rect class="flow-box" x="560" y="54" width="180" height="78" rx="12"></rect>
+              <text class="flow-text" x="650" y="79">decoder</text>
+              <text class="flow-label" x="650" y="101">同じ table で復元</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
-            **Terms:** header compression, static table, dynamic table, indexing
-            **Correct (B):** 既知のheader fieldをtable参照で表し, wire上のサイズを減らす
+
+            **Terms:** header compression, static table, dynamic table, indexing. HPACK は, 頻出する header field を table に寄せ, その table を index で参照して wire 上の bytes を減らす仕組みです.
+
+            **RFCを読むときの見方:** RFC 7541 は, 文字列圧縮の文書というより, encoder と decoder が同じ table 状態を共有しながら header block をやり取りする文書だと考えると読みやすくなります. 「今この header は文字列そのものを送るのか, 既存 index を参照するのか」を追うのがコツです.
+
+            **Correct (B):** 既知の header field を table 参照や短い literal で表し, wire 上のサイズを減らすのが主目的です. だから HPACK は帯域効率と遅延の改善に効きます.
+
             **Options:**
-            - A (incorrect): 暗号化はTLSの役割
-            - B (correct): 目的そのもの
-            - C (incorrect): authenticityはHPACKでは保証しない
-            **Related:** HTTP/3はHPACKではなくQPACKを使う
+
+            - A (incorrect): header の **暗号化** は TLS の役割です. HPACK は圧縮であって, 秘密を守る仕組みではありません.
+            - B (correct): これが HPACK の中心です.
+            - C (incorrect): server authenticity は TLS や certificate validation の仕事で, HPACK は保証しません.
+
+            **Related:** HTTP/3 では ordered delivery 前提が変わるため, HPACK ではなく **QPACK** が使われます.
           </div>
         </div>
       </article>

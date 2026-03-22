@@ -100,12 +100,30 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. mustが要件か単なる英語かで読者が割れる</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. 文として無効なので必ず削除が必要</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc8174-ja-q1-caption">
+            <figcaption id="rfc8174-ja-q1-caption">RFC 8174 は, 同じ must という単語でも, ALL CAPS と BCP 14 宣言の有無で読み方が変わる点を整理しています. 初見では「英語の must」と「規範語の MUST」を分けて読むのが大事です.</figcaption>
+            <svg viewBox="0 0 760 190" role="img" aria-label="lowercase must と uppercase MUST の読み分け図">
+              <rect class="flow-box" x="28" y="34" width="300" height="110" rx="12"></rect>
+              <text class="flow-text" x="178" y="59">"Clients must validate"</text>
+              <text class="flow-label" x="178" y="84">BCP 14 宣言なし</text>
+              <text class="flow-label" x="178" y="106">要件か強い英語かが割れる</text>
+              <line class="flow-arrow" x1="328" y1="89" x2="432" y2="89"></line>
+              <polygon class="flow-arrow-head" points="432,89 420,83 420,95"></polygon>
+              <text class="flow-label" x="380" y="71">曖昧性が残る</text>
+              <rect class="flow-box" x="432" y="34" width="300" height="110" rx="12"></rect>
+              <text class="flow-text" x="582" y="59">"Clients MUST validate"</text>
+              <text class="flow-label" x="582" y="84">BCP 14 宣言あり</text>
+              <text class="flow-label" x="582" y="106">適合要件として読める</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
             **Terms:** must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.
 
-            **Correct (B):** BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい.
+            **RFCを読むときの見方:** RFC 8174 を読むときは, まず規範語が **ALL CAPS** で書かれているか, そして文書が BCP 14 の解釈を宣言しているかを見ます. ここが曖昧だと, 読み手によって must の重さが変わってしまいます.
+
+            **Correct (B):** BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい. RFC 8174 は, まさにこの曖昧性を減らすための文書です.
 
             **Options:**
 
@@ -115,7 +133,7 @@
 
             - C (incorrect): 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.
 
-            **Related:** セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する.
+            **Related:** セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する. だから RFC 2119 と RFC 8174 は, 仕様を書く人だけでなく読む人にも効く RFC です.
           </div>
         </div>
       </article>
