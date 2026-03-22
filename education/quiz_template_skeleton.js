@@ -258,6 +258,12 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       "**SameSite** helps mitigate **CSRF** by restricting cross-site sending behavior.",
       "Cookie scope rules (**domain/path**) decide what gets attached to requests."
     ],
+    "6585": [
+      "Use **428** when the server requires a **precondition** such as `If-Match` to avoid lost updates.",
+      "**429** is for client-specific rate/quota limits; **503** is for broader service unavailability.",
+      "`Retry-After` can guide retry timing and reduce retry storms.",
+      "**431** is about oversized request headers; **511** is about network authentication such as captive portals."
+    ],
     "6455": [
       "WebSocket starts as an **HTTP Upgrade** handshake, then switches protocols.",
       "`ws` is plaintext; `wss` is WebSocket over **TLS**.",
@@ -281,6 +287,12 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       "Minimize metadata exposure: avoid leaking identifiers, endpoints, or sensitive patterns.",
       "Prefer encryption and designs that reduce linkability/correlation.",
       "Document privacy/security tradeoffs explicitly in protocol design."
+    ],
+    "7301": [
+      "**ALPN** lets client and server choose an **application protocol** during the TLS handshake.",
+      "**SNI** identifies the target hostname; **ALPN** identifies what protocol to speak after TLS.",
+      "If there is no mutually supported protocol, fail explicitly instead of guessing.",
+      "ALPN matters in shared 443 deployments, proxies, CDNs, and HTTP/2 or HTTP/3 negotiation."
     ],
     "7541": [
       "HPACK compresses HTTP/2 headers using a static/dynamic table and Huffman encoding.",
@@ -330,11 +342,23 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       "Flow control provides receiver **backpressure** (per-stream and connection-level).",
       "QUIC reduces head-of-line blocking compared to TCP for multiplexed streams."
     ],
+    "9001": [
+      "RFC 9001 explains how **TLS 1.3** is carried inside **QUIC**, not as a separate TCP handshake.",
+      "QUIC encrypts most transport metadata early, changing what middleboxes can observe.",
+      "**0-RTT** keeps replay caveats; only replay-safe operations should use it.",
+      "Transport keys, packet protection, and TLS handshake messages interact differently than in TCP + TLS."
+    ],
     "9110": [
       "HTTP semantics define what methods/status codes/headers **mean**, independent of framing.",
       "**Idempotency** matters for retries; caching directives impact correctness and privacy.",
       "Status code classes are semantic categories (2xx success, 3xx redirect, 4xx client error, 5xx server error).",
       "Misunderstanding semantics breaks clients, caches, and security assumptions."
+    ],
+    "9111": [
+      "HTTP caching is about **reuse rules**, not just saving bandwidth.",
+      "Distinguish **freshness** from **validation**: `max-age` decides when reuse is allowed; validators help recheck.",
+      "`no-store`, `no-cache`, `private`, and `public` have different operational and privacy meanings.",
+      "Cache mistakes can leak data, serve stale responses, or break consistency."
     ],
     "9112": [
       "HTTP/1.1 framing is tricky: message boundaries depend on headers and connection state.",
@@ -353,6 +377,189 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       "QUIC handles loss recovery and avoids TCP head-of-line blocking across streams.",
       "Connection migration changes assumptions about addresses and load balancing.",
       "Understand how HTTP/3 differs operationally (firewalls, UDP, observability)."
+    ],
+    "9204": [
+      "**QPACK** compresses HTTP/3 headers without reintroducing large cross-stream blocking.",
+      "It separates encoder/decoder state onto dedicated streams instead of assuming ordered delivery.",
+      "Dynamic table use saves bytes but adds state management and implementation complexity.",
+      "Header compression is not just performance work; mistakes can affect memory use and correctness."
+    ]
+  };
+
+  const RFC_CHEATSHEETS_JA = {
+    "2119": [
+      "**MUST/SHOULD/MAY** は, 単なる強い言い方ではなく, **normative requirements** を書くときだけ使います.",
+      "**MUST** は適合に必須, **SHOULD** は強い推奨だが正当な例外あり, **MAY** は本当に任意です.",
+      "**SHOULD** を使うなら, どんな条件なら例外を認めるのかも書くと誤読が減ります.",
+      "「状況に応じて」「可能なら」のような曖昧表現より, テスト可能な書き方を優先します."
+    ],
+    "2818": [
+      "**HTTPS** は **HTTP over TLS** です. Base64 や単なる暗号化の別名ではありません.",
+      "`https` の既定 port は **443**, `http` は **80** です.",
+      "TLS は **confidentiality**, **integrity**, **server authentication** を与えます. ただし certificate validation が前提です.",
+      "credential や token を扱う flow では, downgrade や mixed content を避けるため **HTTPS 強制** が重要です."
+    ],
+    "3552": [
+      "良い **Security Considerations** は, asset, attacker, trust boundary, assumption を具体的に書きます.",
+      "「TLS を使え」で終わらせず, **何がどう危険か** を説明するのが本筋です.",
+      "鍵管理, logging, monitoring, default 設定のような運用現実も security に含めて考えます.",
+      "実装者と運用者の両方が読めるように, mitigation と residual risk を残します."
+    ],
+    "3986": [
+      "URI は `scheme://authority/path?query#fragment` のように component ごとに役割が違います.",
+      "`#fragment` は **client-side** で使われ, 通常の HTTP request には送られません.",
+      "**Percent-encoding** は文脈依存です. delimiter を data として使うときに encode が必要です.",
+      "normalization では `scheme` や `host` の lowercasing は比較的安全でも, `path` は安易に変えない方が安全です."
+    ],
+    "4949": [
+      "**authentication** と **authorization**, **threat** と **vulnerability** のような用語は混ぜずに使います.",
+      "review や incident では, 用語が揃うだけで意思疎通の事故が大きく減ります.",
+      "**confidentiality**, **integrity**, **availability** のどれを損なう話かを分けて考えます.",
+      "attacker も, passive observer, active MITM, insider のように具体名で置くと議論しやすくなります."
+    ],
+    "5077": [
+      "session ticket は, server 側状態を ticket に包んで返す **stateless resumption** の仕組みです.",
+      "ticket encryption key の rotation を誤ると, 多数 session へ影響するので運用が重要です.",
+      "ticket を長く使い回すと, client correlation の足掛かりになり得ます.",
+      "resumption は latency 改善には効きますが, TLS 設定そのものの健全性を置き換えるものではありません."
+    ],
+    "6066": [
+      "TLS extension は, protocol version を増やさずに handshake 中の機能交渉を広げる仕組みです.",
+      "**SNI** は接続先 hostname を伝え, 正しい certificate や virtual host 選択を助けます.",
+      "一方で SNI は ClientHello に hostname を出すため, **privacy** の注意点もあります.",
+      "extension は便利ですが, 交渉した結果で security property が変わるので, 有効になった値まで確認します."
+    ],
+    "6265": [
+      "`Set-Cookie` は state を設定し, `Cookie` はそれを request に載せて返します.",
+      "**Secure** は HTTPS 限定送信, **HttpOnly** は JS からの読み取りを減らし, XSS 時の盗難抑止に効きます.",
+      "**SameSite** は cross-site 送信を絞ることで **CSRF** 軽減に役立ちます.",
+      "cookie の `domain` と `path` は, どの request に cookie が付くかを決める重要な scope です."
+    ],
+    "6585": [
+      "**428** は `If-Match` のような **precondition** を必須にして lost update を防ぎたいときに使います.",
+      "**429** は client ごとの rate/quota 超過, **503** は service 側の広い availability 問題です.",
+      "`Retry-After` を返せると, client は雑な即時再試行ではなく backoff 付きで動けます.",
+      "**431** は request header が大きすぎる問題, **511** は captive portal など network authentication の話です."
+    ],
+    "6455": [
+      "WebSocket は最初に **HTTP Upgrade** handshake を行い, その後 protocol を切り替えます.",
+      "`ws` は平文, `wss` は **TLS** 上の WebSocket です.",
+      "security では origin check, authentication, proxy 越しの正しい取り扱いが重要です.",
+      "WebSocket は長寿命 connection なので, timeout, backpressure, message size 上限も設計対象です."
+    ],
+    "6797": [
+      "`Strict-Transport-Security` は browser に **HTTPS only** を覚えさせる仕組みです.",
+      "`max-age` は **秒**, `includeSubDomains` は subdomain まで対象, `preload` は preload list 文脈で使います.",
+      "HSTS には **初回訪問問題** があり, preload しない限り最初の 1 回は守れません.",
+      "導入時は小さい `max-age` から始め, monitoring しながら伸ばすのが安全です."
+    ],
+    "7239": [
+      "`Forwarded` は `for=`, `proto=`, `host=` などの proxy metadata を標準化します.",
+      "forwarding header は **trust boundary** をまたぐので, 信頼できる proxy から来たものだけを信用します.",
+      "可能なら ad-hoc な `X-Forwarded-*` より標準化された `Forwarded` を優先します.",
+      "client IP 判定は spoof されやすいので, proxy chain を前提にした安全な取り扱いが必要です."
+    ],
+    "7258": [
+      "pervasive passive monitoring は, 単なる雑音ではなく **attacker model** として扱います.",
+      "identifier, endpoint, traffic pattern のような metadata 漏えいを減らす設計が重要です.",
+      "暗号化だけでなく, linkability や correlation を減らす設計も privacy に効きます.",
+      "protocol 設計では, privacy と運用性の trade-off を明示しておくとレビューしやすくなります."
+    ],
+    "7301": [
+      "**ALPN** は TLS handshake の中で, その後に話す **application protocol** を決める仕組みです.",
+      "**SNI** が hostname を伝えるのに対し, **ALPN** は protocol 名を伝えます. 役割が違います.",
+      "共通で使える protocol が無いなら, 勝手に推測せず明示的に失敗させるのが筋です.",
+      "shared 443, proxy, CDN, HTTP/2, HTTP/3 の交渉で ALPN の理解が効きます."
+    ],
+    "7541": [
+      "HPACK は HTTP/2 header を static table, dynamic table, Huffman encoding で圧縮します.",
+      "圧縮は bytes 削減に効きますが, CRIME/BREACH 系の **side-channel** 発想には注意が必要です.",
+      "header table は memory pressure の原因にもなるので, サイズ制御と入力検証が必要です.",
+      "indexed representation と literal header の違いを読むと, decoder の挙動を追いやすくなります."
+    ],
+    "7616": [
+      "Digest auth は `nonce`, `realm`, hash-based response を使う challenge/response 方式です.",
+      "Basic より複雑で, algorithm, nonce reuse, proxy, 実装差異の落とし穴が多いです.",
+      "Digest を使っても TLS や deployment 設計が不要になるわけではありません.",
+      "現代では token-based auth を選ぶことが多く, Digest は理由がある場面で使います."
+    ],
+    "7617": [
+      "Basic auth は `Authorization: Basic <base64(user:pass)>` で, Base64 は **暗号化ではありません**.",
+      "credential を守るには **TLS** と組み合わせるのが前提です.",
+      "credential storage, rotation, rate limiting まで含めて設計しないと brute-force に弱くなります.",
+      "charset や encoding の扱いを曖昧にすると, 実装間で認証失敗の原因になります."
+    ],
+    "7807": [
+      "`application/problem+json` は API error を一定の形で返すための共通フォーマットです.",
+      "基本 field は `type`, `title`, `status`, `detail`, `instance` です.",
+      "安定した `type` URI を使うと, client が programmatic に error を分岐しやすくなります.",
+      "詳細を出しすぎると sensitive internals を漏らすので, observability と秘匿のバランスが大事です."
+    ],
+    "8174": [
+      "RFC 8174 は, **BCP 14** の意味が **ALL CAPS** の keyword にだけ適用されることを明確にします.",
+      "lowercase の must, should, may は普通の英語として読まれるので, normative meaning を期待しません.",
+      "現代的には BCP 14 として RFC 2119, RFC 8174 の両方を参照する書き方が安全です.",
+      "normative language が一貫していると, 仕様レビューや testability が上がります."
+    ],
+    "8441": [
+      "HTTP/2 では HTTP/1.1 のような `Upgrade` が使えないため, WebSocket は **extended CONNECT** を使います.",
+      "HTTP/2 上の WebSocket でも, origin check や auth, intermediary handling は引き続き重要です.",
+      "WebSocket tunnel が stream や frame にどう乗るかを大まかに掴むと理解しやすくなります.",
+      "HTTP/2 only の proxy や CDN 環境では, RFC 8441 の理解が実装可否に直結します."
+    ],
+    "8446": [
+      "TLS 1.3 は handshake latency を減らし, 古い insecure 機能を整理した modern TLS です.",
+      "**0-RTT** は replay され得るので, idempotent で replay-safe な request に限定します.",
+      "handshake は authentication, confidentiality, integrity を与えますが, mode ごとの差は理解が必要です.",
+      "full handshake と resumption では得られる性質や運用上の注意が少し変わります."
+    ],
+    "9000": [
+      "QUIC は **UDP** 上の secure で multiplexed な transport で, stream と TLS 1.3 相当の保護を持ちます.",
+      "**Connection ID** は address が変わっても connection を続けやすくし, load balancing にも役立ちます.",
+      "flow control は receiver 側の **backpressure** で, stream 単位と connection 単位の両方があります.",
+      "QUIC は multiplexed stream での TCP 由来の head-of-line blocking を減らします."
+    ],
+    "9001": [
+      "RFC 9001 は, **TLS 1.3** を **QUIC** の中でどう使うかを定義します. TCP 上の通常 TLS とは配置が違います.",
+      "QUIC は transport metadata の多くを早い段階で暗号化し, middlebox から見える情報を減らします.",
+      "**0-RTT** には replay の注意が残るので, replay-safe な操作だけに使います.",
+      "packet protection, transport key, TLS handshake message の関係を分けて捉えるのが理解の近道です."
+    ],
+    "9110": [
+      "HTTP semantics は, framing と無関係に method, status code, header が **何を意味するか** を定義します.",
+      "**Idempotency** は retry 設計で重要で, cache directive は correctness と privacy に直結します.",
+      "2xx, 3xx, 4xx, 5xx は単なる番号帯ではなく, client が次にどう動くかの意味分類です.",
+      "semantics を誤解すると, client, cache, security assumption がまとめて壊れます."
+    ],
+    "9111": [
+      "HTTP caching は bandwidth 節約だけではなく, **いつ再利用できるか** の規則です.",
+      "**freshness** と **validation** を分けて考えます. `max-age` は再利用期限, validator は再確認用です.",
+      "`no-store`, `no-cache`, `private`, `public` は似て見えても意味も privacy 影響も違います.",
+      "cache の誤設定は, stale response, data leak, 一貫性崩れに直結します."
+    ],
+    "9112": [
+      "HTTP/1.1 framing は, header と connection state で message boundary が決まるため繊細です.",
+      "`Content-Length`, `Transfer-Encoding: chunked`, connection reuse の読み違いに注意します.",
+      "framing の不整合は request smuggling や proxy/cache desync の原因になります.",
+      "どの条件で connection を再利用できるか, どこで close すべきかを分けて理解します."
+    ],
+    "9113": [
+      "HTTP/2 は 1 本の connection 上で binary frame と multiplexed stream を使います.",
+      "flow control は stream 単位と connection 単位の両方にあり, state machine の理解が重要です.",
+      "HPACK や intermediary の存在で, HTTP/1.1 とは違う failure mode が増えます.",
+      "prioritization はありますが, 実運用では複雑さもあるため慎重に扱われます."
+    ],
+    "9114": [
+      "HTTP/3 は HTTP semantics を TCP ではなく QUIC stream に載せたものです.",
+      "QUIC が loss recovery を担うため, TCP の cross-stream head-of-line blocking を避けやすくなります.",
+      "connection migration により, address や load balancing への前提が HTTP/2 と変わります.",
+      "HTTP/3 は UDP, observability, firewall の観点で運用上の差分も大きいです."
+    ],
+    "9204": [
+      "**QPACK** は HTTP/3 用の header compression で, 大きな cross-stream blocking を避けながら圧縮します.",
+      "ordered delivery を前提にせず, encoder stream と decoder stream を分けて state を運びます.",
+      "dynamic table は bytes 削減に効きますが, state 管理と実装複雑性を増やします.",
+      "header compression は性能だけでなく, memory usage と decode correctness の問題でもあります."
     ]
   };
 
@@ -1216,13 +1423,22 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     }
   }
 
+  function getLocalizedRfcCheatSheetBullets(rfc){
+    if(!rfc) return [];
+    if(locale.startsWith('ja')){
+      const jaBullets = RFC_CHEATSHEETS_JA[rfc];
+      if(Array.isArray(jaBullets) && jaBullets.length) return jaBullets;
+    }
+    const bullets = RFC_CHEATSHEETS[rfc];
+    return Array.isArray(bullets) ? bullets : [];
+  }
+
   function injectRfcCheatSheet(){
     if(!isRfcDrill()) return;
-    if(locale.startsWith('ja')) return; // keep English-only for now
     if(document.querySelector('details.cheatsheet')) return;
 
     const rfc = getRfcNumber();
-    const bullets = RFC_CHEATSHEETS[rfc];
+    const bullets = getLocalizedRfcCheatSheetBullets(rfc);
     if(!bullets || !bullets.length) return;
 
     const scope = document.querySelector('section.scope');
@@ -1230,10 +1446,12 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 
     const details = document.createElement('details');
     details.className = 'cheatsheet card';
-    details.open = false;
+    details.open = !!locale.startsWith('ja');
 
     const summary = document.createElement('summary');
-    summary.textContent = 'Cheat Sheet (RFC quick notes)';
+    summary.textContent = locale.startsWith('ja')
+      ? '先に押さえる要点'
+      : 'Cheat Sheet (RFC quick notes)';
     details.appendChild(summary);
 
     const sheet = document.createElement('div');
@@ -1248,6 +1466,85 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     details.appendChild(sheet);
 
     scope.insertAdjacentElement('afterend', details);
+  }
+
+  function buildQuestionTypeStudyTip(){
+    const types = new Set();
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      const type = String(q.dataset.type || '').toLowerCase();
+      if(type) types.add(type);
+    });
+
+    const tips = [];
+    if(types.has('mc')){
+      tips.push(locale.startsWith('ja')
+        ? '`Multiple Choice` は, 1 つだけ当てるというより, 選択肢同士の違いを 1 文で説明できるかを意識すると定着しやすいです.'
+        : 'For `Multiple Choice`, focus on explaining why the best option is different from the others instead of only hunting for the right letter.');
+    }
+    if(types.has('ms')){
+      tips.push(locale.startsWith('ja')
+        ? '`Multi-Select` は, 各選択肢を個別に true/false 判定すると迷いにくいです.'
+        : 'For `Multi-Select`, treat each option as its own true/false check instead of trying to guess the final combination first.');
+    }
+    if(types.has('text')){
+      tips.push(locale.startsWith('ja')
+        ? '`Short Text` は, 解説内で太字になっている用語名を, 正確な呼び方で言い直せるかを確認します.'
+        : 'For `Short Text`, check whether you can restate the key term exactly as it appears in the explanation.');
+    }
+    return tips;
+  }
+
+  function injectStudyPath(){
+    if(!isRfcDrill()) return;
+    if(document.querySelector('.study-path')) return;
+
+    const scope = document.querySelector('section.scope');
+    if(!(scope instanceof HTMLElement)) return;
+
+    const settings = window.DRILL_SETTINGS || {};
+    const topic = String(settings.SKILL_SUBTITLE || settings.SKILL_NAME || '').trim();
+    const keywords = inferKeywordsFromQuiz().slice(0, 4);
+    const keywordText = keywords.length ? keywords.join(', ') : '';
+    const typeTips = buildQuestionTypeStudyTip();
+
+    const section = document.createElement('section');
+    section.className = 'study-path card';
+
+    const title = document.createElement('h3');
+    title.textContent = locale.startsWith('ja') ? '初心者向けの見方' : 'How To Study This';
+    section.appendChild(title);
+
+    const intro = document.createElement('p');
+    intro.className = 'muted';
+    intro.innerHTML = locale.startsWith('ja')
+      ? normalizeExplainHtml('このページは **暗記** よりも, **用語の境界**, **責務の違い**, **failure の意味** を掴むためのドリルです' + (topic ? '. まずは **' + escapeHtml(topic) + '** が何を決める RFC なのかを大づかみにします.' : '.'))
+      : normalizeExplainHtml('Use this page to learn the boundaries between terms, responsibilities, and failure modes rather than to memorize isolated facts.');
+    section.appendChild(intro);
+
+    const ul = document.createElement('ul');
+    const bullets = locale.startsWith('ja')
+      ? [
+          '最初に `狙い`, `先に押さえる要点`, `重要キーワード` を読み, この RFC がどの層の何を決める文書かを先に把握します.',
+          keywordText ? '**' + escapeHtml(keywordText) + '** が何を指す語かを先に押さえると, 各問題の比較軸が見えやすくなります.' : 'わからない単語が出たら, まず解説の **用語** と **関連** を見て, その語がどの役割を持つかを確認します.',
+          '答え合わせでは, 正解理由だけでなく, 誤答がなぜ違うかまで読み切ると, 似た言葉の混同を防げます.',
+          '`Learning Mode` と `回答直後に解説` をオンのまま 1 周して, 2 周目に自力で言い換えられるか試すと定着しやすいです.'
+        ]
+      : [
+          'Start with the goal, cheat sheet, and keywords so you know which layer or responsibility this RFC is about before answering.',
+          keywordText ? 'Anchor yourself on **' + escapeHtml(keywordText) + '** first so each question has a clearer comparison point.' : 'When a term is unfamiliar, use the explanation and related notes as your glossary before worrying about the score.',
+          'Read why the wrong options are wrong, not just why the correct one is right.',
+          'A good first pass is to keep Learning Mode on, read the explanation immediately, and only test yourself on the second pass.'
+        ];
+    bullets.concat(typeTips).forEach(text => {
+      const li = document.createElement('li');
+      li.innerHTML = normalizeExplainHtml(text);
+      ul.appendChild(li);
+    });
+    section.appendChild(ul);
+
+    const anchor = document.querySelector('details.cheatsheet') || scope;
+    anchor.insertAdjacentElement('afterend', section);
   }
 
   function extractTermsFromExplainHtml(explainHtml){
@@ -1574,6 +1871,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  injectQuestionGuides();
 	  normalizeAllExplanations();
 	  injectKeywordsBlock();
+	  injectStudyPath();
 	  injectDifficultyBadges();
 	  initRevealControls();
 	  bindAnswerChangeEvents();
