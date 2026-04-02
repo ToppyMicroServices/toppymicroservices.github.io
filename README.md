@@ -38,7 +38,7 @@ Current public services include ultra-lean company architecture, AI-first operat
 ## Public Pages
 The site consists of a small number of standalone pages. Some pages describe services or policies, while others are published as proof artifacts supporting the company design philosophy.
 
-Primary site: https://toppymicroservices.github.io (CNAME → https://toppymicros.com)
+Primary site: https://toppymicroservices.github.io (CNAME → https://www.toppymicros.com)
 
 Selected standalone pages:
 - `contact.html` — business contact and product support information
@@ -123,7 +123,7 @@ Automated via GitHub Actions (`.github/workflows/static.yml`). Workflow:
 3. Concurrency group `pages` ensures serialized deployments without canceling in-progress.
 4. Internal-only files such as `.github/`, `.beads/`, scripts, and repository metadata are excluded from the publish artifact.
 
-Custom domain configured via `CNAME` (toppymicros.com). Ensure DNS A/ALIAS records point to GitHub Pages.
+Custom domain configured via `CNAME` (`www.toppymicros.com`). Keep `www` as the canonical host and redirect the apex domain there at the DNS/CDN edge.
 
 ## Contact
 For inquiries: **info@toppymicros.com**

@@ -3,15 +3,15 @@
 This repository hosts the public website for ToppyMicroServices OÜ.
 
 For the full coordinated disclosure policy, see:
-- https://toppymicros.com/security-policy.html
+- https://www.toppymicros.com/security-policy.html
 
 Machine-readable policy:
-- https://toppymicros.com/.well-known/security.txt
+- https://www.toppymicros.com/.well-known/security.txt
 
 ## Scope
 
 In scope:
-- Public assets under `toppymicros.com`
+- Public assets under `www.toppymicros.com` and `toppymicros.com`
 - Public GitHub repositories under `ToppyMicroServices`
 
 Out of scope (non-exhaustive):
@@ -38,4 +38,3 @@ Include:
 ## Safe Harbor
 
 If you act in good faith and follow the policy, we will not pursue legal action for your research activities.
-
