@@ -410,16 +410,16 @@
       '</tr>');}); const table='<div class="table-wrapper"><table><thead><tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Explanation</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'; const box=resolveResultsBox(targetId); if(!box) return; box.innerHTML='<h4 style="margin:0 0 8px">Score</h4><p>Correct: <strong>'+correct+'</strong> / '+total+' (answered: '+answered+')</p>'+table; box.style.display='block';}
     function stringifyAnswerValue(value){ if(Array.isArray(value)) return value.join(', '); if(value===undefined||value===null) return ''; return value.toString ? value.toString() : String(value); }
     function cleanLabelText(text){ return (text||'').replace(/\s+/g,' ').trim(); }
-    function findChoiceLabel(q,value){
-      const inputs=q.querySelectorAll('input[type=radio],input[type=checkbox]');
-      for(const input of inputs){
-        if(input.value===value){
-          const label=input.closest('label');
-          return label?cleanLabelText(label.textContent):value;
-        }
+  function findChoiceLabel(q,value){
+    const inputs=q.querySelectorAll('input[type=radio],input[type=checkbox]');
+    for(const input of inputs){
+      if(input.value===value){
+        const label=input.closest('label');
+        return label?cleanLabelText(label.querySelector('.choice-main')?.textContent || label.dataset.choiceBase || label.textContent):value;
       }
-      return value;
     }
+    return value;
+  }
     function describeChoiceList(q,values){
       if(!values || !values.length) return '';
       return values.map(val=>findChoiceLabel(q,val)).join(', ');

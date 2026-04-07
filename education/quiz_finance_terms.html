@@ -1055,7 +1055,7 @@
       const input=Array.from(q.querySelectorAll('.choice input')).find(el=>el.value===value);
       if(!input) return value;
       const choice=input.closest('.choice');
-      return choice ? choice.textContent.trim() : value;
+      return choice ? (choice.querySelector('.choice-main')?.textContent || choice.dataset.choiceBase || choice.textContent).replace(/\s+/g,' ').trim() : value;
     }
     function describeChoiceList(q,values){
       if(!values) return '';

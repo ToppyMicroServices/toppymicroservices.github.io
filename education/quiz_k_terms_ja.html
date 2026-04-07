@@ -399,7 +399,7 @@
     function computeLiveScore(){const qs=$$('#questions .q'); let total=0,correct=0,answered=0; qs.forEach(q=>{total++; const r=evaluateQuestion(q); if(r.ok===true) correct++; if(isAnswered(q)) answered++;}); return {total,correct,answered};}
     function updateLiveScore(){const s=computeLiveScore(); const el=$('#score-badge'); if(el){el.textContent=s.correct+' / '+s.total; el.title='正解 '+s.correct+' / '+s.total;}}
   function updateModeBadge(){const on=$('#learningMode')?.checked; const mb=$('#mode-badge'); if(!mb) return; mb.textContent=on?'学習モード':'テストモード'; mb.setAttribute('aria-pressed',on?'true':'false');}
-    function renderResults(targetId){let total=0,correct=0,answered=0; const rows=[]; $$('#questions .q').forEach(q=>{total++; const r=evaluateQuestion(q); if(isAnswered(q)) answered++; if(r.ok===true) correct++; const st=scoreLabel(r.ok); const exp=r.explainHtml||''; const title=q.querySelector('h4')?.textContent.trim()||r.id; const userDisp=escapeHtml(stringifyAnswerValue(r.user)); const correctDisp=escapeHtml((()=>{const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); if(!ans) return ''; if(type==='mc'){return (function find(qv){const inputs=q.querySelectorAll('input[type=radio],input[type=checkbox]'); for(const input of inputs){ if(input.value===ans){ const label=input.closest('label'); return label?label.textContent.trim():ans; } } return ans;})(q);} if(type==='ms'){const vals=ans.split(',').map(s=>s.trim()).filter(Boolean); const inputs=q.querySelectorAll('input[type=radio],input[type=checkbox]'); const mapLabel=v=>{for(const input of inputs){ if(input.value===v){ const label=input.closest('label'); return label?label.textContent.trim():v; } } return v;}; return vals.map(mapLabel).join(', ');} if(type==='text'){const mode=(q.dataset.eval||'exact').toLowerCase(); return mode==='regex' ? 'Regex: '+ans : ans;} return ans;})()); rows.push('<tr>'+ 
+    function renderResults(targetId){let total=0,correct=0,answered=0; const rows=[]; $$('#questions .q').forEach(q=>{total++; const r=evaluateQuestion(q); if(isAnswered(q)) answered++; if(r.ok===true) correct++; const st=scoreLabel(r.ok); const exp=r.explainHtml||''; const title=q.querySelector('h4')?.textContent.trim()||r.id; const userDisp=escapeHtml(stringifyAnswerValue(r.user)); const correctDisp=escapeHtml(formatCorrectAnswerDisplay(q)); rows.push('<tr>'+
           '<td><div><strong>'+escapeHtml(r.id)+'</strong></div><div>'+escapeHtml(title)+'</div></td>'+
           '<td>'+userDisp+'</td>'+
         '<td>'+correctDisp+'</td>'+
@@ -413,7 +413,7 @@
     for(const input of inputs){
       if(input.value===value){
         const label=input.closest('label');
-        return label?cleanLabelText(label.textContent):value;
+        return label?cleanLabelText(label.querySelector('.choice-main')?.textContent || label.dataset.choiceBase || label.textContent):value;
       }
     }
     return value;
@@ -539,13 +539,13 @@
         const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); if(!ans) return '';
         if(type==='mc'){
           const inputs=q.querySelectorAll('input[type=radio],input[type=checkbox]');
-          for(const input of inputs){ if(input.value===ans){ const label=input.closest('label'); return label?label.textContent.trim():ans; } }
+          for(const input of inputs){ if(input.value===ans){ const label=input.closest('label'); return label?cleanLabelText(label.querySelector('.choice-main')?.textContent || label.dataset.choiceBase || label.textContent):ans; } }
           return ans;
         }
         if(type==='ms'){
           const vals=ans.split(',').map(s=>s.trim()).filter(Boolean);
           const inputs=q.querySelectorAll('input[type=radio],input[type=checkbox]');
-          const mapLabel=v=>{ for(const input of inputs){ if(input.value===v){ const label=input.closest('label'); return label?label.textContent.trim():v; } } return v; };
+          const mapLabel=v=>{ for(const input of inputs){ if(input.value===v){ const label=input.closest('label'); return label?cleanLabelText(label.querySelector('.choice-main')?.textContent || label.dataset.choiceBase || label.textContent):v; } } return v; };
           return vals.map(mapLabel).join(', ');
         }
         if(type==='text'){

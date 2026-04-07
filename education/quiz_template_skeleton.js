@@ -806,7 +806,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     const choiceTexts = [];
     q.querySelectorAll('.choices label').forEach(label => {
       if(!(label instanceof HTMLElement)) return;
-      const full = cleanLabelText(label.textContent || '');
+      const full = readableChoiceLabel(label);
       const text = full.replace(/^[A-Z]\.\s*/, '').trim();
       if(text) choiceTexts.push(text);
     });
@@ -1116,7 +1116,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     const optionTexts = [];
     q.querySelectorAll('.choices label').forEach(label => {
       if(!(label instanceof HTMLElement)) return;
-      optionTexts.push(cleanLabelText(label.textContent || ''));
+      optionTexts.push(readableChoiceLabel(label));
     });
 
     const blob = (title + ' ' + optionTexts.join(' ')).replace(/\s+/g, ' ').trim();
@@ -1763,7 +1763,8 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   function isAnswered(q){const t=q.dataset.type; if(t==='mc') return !!q.querySelector('input[type=radio]:checked'); if(t==='ms') return q.querySelectorAll('input[type=checkbox]:checked').length>0; if(t==='text'){const v=q.querySelector('input[type=text]')?.value.trim(); return !!v;} return false;}
 
   function cleanLabelText(text){ return (text||'').replace(/\s+/g,' ').trim(); }
-  function describeChoiceList(q,values){ if(!values||!values.length) return ''; const map=v=>{const input=q.querySelector('input[value="'+CSS.escape(v)+'"]'); const label=input?.closest('label'); return label?cleanLabelText(label.textContent):v; }; return values.map(map).join(', '); }
+  function readableChoiceLabel(label){ if(!label) return ''; return cleanLabelText(label.querySelector('.choice-main')?.textContent || label.dataset.choiceBase || label.textContent); }
+  function describeChoiceList(q,values){ if(!values||!values.length) return ''; const map=v=>{const input=q.querySelector('input[value="'+CSS.escape(v)+'"]'); const label=input?.closest('label'); return label?readableChoiceLabel(label):v; }; return values.map(map).join(', '); }
   function describeChoiceLabel(q,value){ return describeChoiceList(q,[value]); }
 
   function evaluateQuestion(q){const id=q.dataset.id; const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); let ok=null,user=null; if(type==='mc'){const p=q.querySelector('input[type=radio]:checked'); if(!p){ok=null;} else {user=p.value; ok=(user===ans);} } else if(type==='ms'){const picked=q.querySelectorAll('input[type=checkbox]:checked'); user=Array.from(picked).map(i=>i.value).sort(); if(!user.length){ok=null;} else {const gold=ans.split(',').map(s=>s.trim()).sort(); ok=JSON.stringify(user)===JSON.stringify(gold);} } else if(type==='text'){const t=q.querySelector('input[type=text]'); user=(t?.value||'').trim(); const mode=(q.dataset.eval||'exact').toLowerCase(); if(!user){ok=null;} else if(mode==='regex'){try{ok=new RegExp(ans,'i').test(user);}catch(e){ok=false;}} else {ok=(user===ans);} } return {id,type,ok,user};}
