@@ -25,7 +25,13 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    showAllAnswers: 'すべての解答を表示',
 	    showAnswersAndScore: '解答とスコアを表示',
 	    referencesHeading: '参照（URL）',
-	    languageSwitcher: '言語切替'
+	    languageSwitcher: '言語切替',
+      progressTitle: '進捗',
+      progressIntro: '今どこまで進んだかをひと目で追えます',
+      progressAnswered: '回答済み',
+      progressCorrect: '正解',
+      progressRemaining: '残り',
+      skipToQuestions: '設問へスキップ'
 	  } : {
 	    learningMode: 'Learning Mode',
 	    testMode: 'Test Mode',
@@ -34,7 +40,13 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    showAllAnswers: 'Show all answers',
 	    showAnswersAndScore: 'Show Answers & Score',
 	    referencesHeading: 'References (URLs)',
-	    languageSwitcher: 'Language switcher'
+	    languageSwitcher: 'Language switcher',
+      progressTitle: 'Progress',
+      progressIntro: 'Track your pace and correctness at a glance',
+      progressAnswered: 'Answered',
+      progressCorrect: 'Correct',
+      progressRemaining: 'Remaining',
+      skipToQuestions: 'Skip to questions'
 	  };
 	  const DETAIL_TEXT=locale.startsWith('ja')?
 	    { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
@@ -1547,6 +1559,70 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     anchor.insertAdjacentElement('afterend', section);
   }
 
+  function injectSkipLink(){
+    if(document.querySelector('.skip-link')) return;
+    const anchorTarget = document.getElementById('questions');
+    if(!anchorTarget) return;
+    const skip = document.createElement('a');
+    skip.className = 'skip-link';
+    skip.href = '#questions';
+    skip.textContent = UI_TEXT.skipToQuestions;
+    document.body.insertAdjacentElement('afterbegin', skip);
+  }
+
+  function ensureProgressCard(){
+    if(document.getElementById('quizProgress')) return;
+    const anchor = document.querySelector('section.panel') || document.getElementById('questions');
+    if(!(anchor instanceof HTMLElement)) return;
+
+    const card = document.createElement('section');
+    card.id = 'quizProgress';
+    card.className = 'quiz-progress card';
+    card.innerHTML =
+      '<div class="progress-top">' +
+        '<div>' +
+          '<h3>' + escapeHtml(UI_TEXT.progressTitle) + '</h3>' +
+          '<p class="muted">' + escapeHtml(UI_TEXT.progressIntro) + '</p>' +
+        '</div>' +
+        '<span class="badge" id="progressBadge">0%</span>' +
+      '</div>' +
+      '<div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>' +
+      '<div class="progress-metrics">' +
+        '<div class="progress-metric"><strong id="progressAnsweredValue">0 / 0</strong><span>' + escapeHtml(UI_TEXT.progressAnswered) + '</span></div>' +
+        '<div class="progress-metric"><strong id="progressCorrectValue">0</strong><span>' + escapeHtml(UI_TEXT.progressCorrect) + '</span></div>' +
+        '<div class="progress-metric"><strong id="progressRemainingValue">0</strong><span>' + escapeHtml(UI_TEXT.progressRemaining) + '</span></div>' +
+      '</div>';
+
+    anchor.insertAdjacentElement('afterend', card);
+  }
+
+  function updateQuestionStates(){
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      const answered = isAnswered(q);
+      const result = evaluateQuestion(q);
+      q.dataset.state = answered
+        ? (result.ok === true ? 'correct' : result.ok === false ? 'incorrect' : 'answered')
+        : 'unanswered';
+    });
+  }
+
+  function updateProgressCard(score){
+    const s = score || computeLiveScore();
+    const pct = s.total ? Math.round((s.answered / s.total) * 100) : 0;
+    const remaining = Math.max(0, s.total - s.answered);
+    const badge = document.getElementById('progressBadge');
+    const fill = document.getElementById('progressFill');
+    const answered = document.getElementById('progressAnsweredValue');
+    const correct = document.getElementById('progressCorrectValue');
+    const remainingEl = document.getElementById('progressRemainingValue');
+    if(badge) badge.textContent = pct + '%';
+    if(fill) fill.style.width = pct + '%';
+    if(answered) answered.textContent = s.answered + ' / ' + s.total;
+    if(correct) correct.textContent = String(s.correct);
+    if(remainingEl) remainingEl.textContent = String(remaining);
+  }
+
   function extractTermsFromExplainHtml(explainHtml){
     const html = String(explainHtml ?? '').replace(/\r\n/g, '\n').replace(/<br\s*\/?>/gi, '\n');
     // Capture until the next section heading (not just any <strong>, since terms may be bolded).
@@ -1699,7 +1775,18 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   function scoreLabel(ok){ if(ok===true) return DETAIL_TEXT.status.correct; if(ok===false) return DETAIL_TEXT.status.incorrect; return DETAIL_TEXT.status.unanswered; }
 
   function computeLiveScore(){const qs=$$('#questions .q'); let total=0,correct=0,answered=0; qs.forEach(q=>{total++; const r=evaluateQuestion(q); if(r.ok===true) correct++; if(isAnswered(q)) answered++;}); return {total,correct,answered};}
-  function updateLiveScore(){const s=computeLiveScore(); const el=$('#score-badge'); if(el){ el.textContent=s.correct+' / '+s.total; el.title='Correct '+s.correct+' of '+s.total; }}
+  function updateLiveScore(){
+    const s=computeLiveScore();
+    const el=$('#score-badge');
+    if(el){
+      el.textContent=s.correct+' / '+s.total;
+      el.title=locale.startsWith('ja')
+        ? '正解 ' + s.correct + ' / ' + s.total + ' (回答 ' + s.answered + ')'
+        : 'Correct ' + s.correct + ' of ' + s.total + ' (answered ' + s.answered + ')';
+    }
+    updateQuestionStates();
+    updateProgressCard(s);
+  }
 
   function resolveResultsBox(targetId){ if(targetId){ const el=document.getElementById(targetId); if(el) return el; } return document.getElementById('results-bottom') || document.querySelector('.results'); }
 
@@ -1865,6 +1952,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  applyInitialTheme();
 	  try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
 	  applySettings();
+	  injectSkipLink();
 	  localizeStaticUiText();
 	  injectRfcHubLink();
 	  injectRfcCheatSheet();
@@ -1872,6 +1960,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  normalizeAllExplanations();
 	  injectKeywordsBlock();
 	  injectStudyPath();
+	  ensureProgressCard();
 	  injectDifficultyBadges();
 	  initRevealControls();
 	  bindAnswerChangeEvents();
