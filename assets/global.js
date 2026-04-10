@@ -182,6 +182,59 @@
       .trim();
   }
 
+  function stripLeadingLabel(text){
+    return String(text || '')
+      .replace(/^\s*(解説|Explanation|問題を出した背景|Context \(why chosen\)|背景（なぜこの問題）|用語|Terms)\s*:?\s*/i, '')
+      .trim();
+  }
+
+  function countChoices(q){
+    return q.querySelectorAll('.choices label.choice, .choices label').length;
+  }
+
+  function buildQuestionSummaryText(q){
+    const locale = (document.documentElement.lang || '').toLowerCase();
+    const type = String(q.dataset.type || '').toLowerCase();
+    const title = q.querySelector('h4')?.textContent || '';
+    const core = questionCoreText(title);
+    const exp = q.querySelector('.explain');
+    const explainText = exp ? plainExplainText(exp) : '';
+    const context = firstSentence(extractSection(explainText, ['Context \\(why chosen\\)', '問題を出した背景', '背景（なぜこの問題）']), 180);
+    const terms = firstSentence(extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']), 180);
+    const explanation = firstSentence(stripLeadingLabel(explainText), 200);
+    const choiceCount = countChoices(q);
+
+    if(locale.startsWith('ja')){
+      const intro =
+        type === 'ms'
+          ? 'この問題は「' + core + '」について, 各選択肢を個別に判定し, 条件に当てはまるものをすべて見分ける練習です.'
+          : type === 'text'
+            ? 'この問題は「' + core + '」という語を丸暗記でなく, 何を指す概念かまで言い直せるかを確かめる練習です.'
+            : 'この問題は「' + core + '」について, 似た候補の中から定義・役割・条件が最も合うものを 1 つ選ぶ練習です.';
+      const detail = context || terms || explanation;
+      const extra = detail
+        ? '前提として, ' + detail
+        : (choiceCount >= 3
+            ? '選択肢が複数あるので, 単語の雰囲気ではなく, どの条件を満たす説明かで比べるのがコツです.'
+            : '短い問いですが, 用語の意味と境界を頭の中で言い換えながら判断すると理解が深まります.');
+      return intro + ' ' + extra;
+    }
+
+    const intro =
+      type === 'ms'
+        ? 'This question asks you to judge each option separately and select every statement that truly fits "' + core + '".'
+        : type === 'text'
+          ? 'This question checks whether you can restate what "' + core + '" means, not just recognize the term.'
+          : 'This question asks you to pick the one option whose definition, role, or condition best matches "' + core + '".';
+    const detail = context || terms || explanation;
+    const extra = detail
+      ? 'Start from this premise: ' + detail
+      : (choiceCount >= 3
+          ? 'Because the options are close together, compare the actual conditions each one satisfies rather than guessing from familiar wording.'
+          : 'Even though the prompt is short, it becomes easier once you restate the concept in your own words before answering.');
+    return intro + ' ' + extra;
+  }
+
   function buildPremiseText(q){
     const title = q.querySelector('h4')?.textContent || '';
     const exp = q.querySelector('.explain');
@@ -251,6 +304,18 @@
         const text = (h4.textContent || '').trim();
         if(text && !/[?？]\s*$/.test(text)){
           h4.appendChild(document.createTextNode('?'));
+        }
+      }
+
+      if(h4 && !q.querySelector('.question-summary')){
+        const summary = document.createElement('p');
+        summary.className = 'question-summary';
+        summary.innerHTML = (locale.startsWith('ja') ? '<strong>この問題で考えること:</strong> ' : '<strong>What this question is really asking:</strong> ') + buildQuestionSummaryText(q);
+        const header = h4.closest('header');
+        if(header instanceof HTMLElement){
+          header.insertAdjacentElement('afterend', summary);
+        } else {
+          h4.insertAdjacentElement('afterend', summary);
         }
       }
 
