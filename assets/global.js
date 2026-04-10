@@ -192,6 +192,90 @@
     return q.querySelectorAll('.choices label.choice, .choices label').length;
   }
 
+  function splitKeywordCandidates(text){
+    const raw = String(text || '')
+      .replace(/\r\n/g, '\n')
+      .replace(/^\s*(?:Terms|用語|Related|関連)\s*:?\s*/i, '')
+      .replace(/\b(?:include|includes|such as|例えば|たとえば)\b/gi, ',')
+      .replace(/[()]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if(!raw) return [];
+    const parts = raw
+      .split(/[,/|]|(?:\s+-\s+)|(?:\s+and\s+)|(?:\s+or\s+)|(?:\s+や\s+)|(?:\s+と\s+)/i)
+      .map(s => s.trim())
+      .filter(Boolean);
+    const out = [];
+    const seen = new Set();
+    for(const part of parts){
+      if(part.length < 2 || part.length > 40) continue;
+      if(!/[A-Za-z0-9_-]/.test(part)) continue;
+      if(/[.。]/.test(part)) continue;
+      const normalized = part.replace(/\s+/g, ' ');
+      const key = normalized.toLowerCase();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      out.push(normalized);
+      if(out.length >= 5) break;
+    }
+    return out;
+  }
+
+  function extractQuestionKeywords(q){
+    const exp = q.querySelector('.explain');
+    const explainText = exp ? plainExplainText(exp) : '';
+    const terms = extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']);
+    const related = extractSection(explainText, ['Related', '関連']);
+    const title = questionCoreText(q.querySelector('h4')?.textContent || '');
+    const titleTerms = (title.match(/\b[A-Za-z][A-Za-z0-9/_-]*\b/g) || []).slice(0, 3);
+    const candidates = [
+      ...splitKeywordCandidates(terms),
+      ...splitKeywordCandidates(related),
+      ...titleTerms
+    ];
+    const out = [];
+    const seen = new Set();
+    for(const candidate of candidates){
+      const key = candidate.toLowerCase();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      out.push(candidate);
+      if(out.length >= 4) break;
+    }
+    return out;
+  }
+
+  function buildKeywordGuideText(q){
+    const locale = (document.documentElement.lang || '').toLowerCase();
+    const type = String(q.dataset.type || '').toLowerCase();
+    const keywords = extractQuestionKeywords(q);
+    if(!keywords.length) return '';
+    const exp = q.querySelector('.explain');
+    const explainText = exp ? plainExplainText(exp) : '';
+    const related = firstSentence(extractSection(explainText, ['Related', '関連']), 190);
+    const terms = firstSentence(extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']), 190);
+    const core = questionCoreText(q.querySelector('h4')?.textContent || '');
+    const keywordList = keywords.join(', ');
+    if(locale.startsWith('ja')){
+      const guide =
+        type === 'ms'
+          ? 'これらはこの問題で 1 つずつ true/false を判定する対象です. 名前よりも, どの条件に当てはまるかで見分けます.'
+          : type === 'text'
+            ? 'これらは「' + core + '」を説明するときに一緒に出やすい keywords です. それぞれが何を指すか, 境界がどこかを押さえると答えやすくなります.'
+            : 'これらは「' + core + '」と近い位置で登場する keywords です. 語感ではなく, role・definition・condition の違いで比較するのがコツです.';
+      const extra = related || terms;
+      return '<strong>関連 keywords:</strong> ' + keywordList + '. ' + guide + (extra ? ' ' + extra : '');
+    }
+    const guide =
+      type === 'ms'
+        ? 'Treat these as the terms whose conditions you must judge one by one.'
+        : type === 'text'
+          ? 'These are the nearby terms that help define what "' + core + '" actually refers to.'
+          : 'These are nearby terms, so compare role, definition, and condition rather than surface wording.';
+    const extra = related || terms;
+    return '<strong>Related keywords:</strong> ' + keywordList + '. ' + guide + (extra ? ' ' + extra : '');
+  }
+
   function buildQuestionSummaryText(q){
     const locale = (document.documentElement.lang || '').toLowerCase();
     const type = String(q.dataset.type || '').toLowerCase();
@@ -310,12 +394,25 @@
       if(h4 && !q.querySelector('.question-summary')){
         const summary = document.createElement('p');
         summary.className = 'question-summary';
-        summary.innerHTML = (locale.startsWith('ja') ? '<strong>この問題で考えること:</strong> ' : '<strong>What this question is really asking:</strong> ') + buildQuestionSummaryText(q);
+        summary.innerHTML = (locale.startsWith('ja') ? '<strong>出題意図:</strong> ' : '<strong>Question intent:</strong> ') + buildQuestionSummaryText(q);
         const header = h4.closest('header');
         if(header instanceof HTMLElement){
           header.insertAdjacentElement('afterend', summary);
         } else {
           h4.insertAdjacentElement('afterend', summary);
+        }
+      }
+
+      if(!q.querySelector('.question-keywords')){
+        const body = q.querySelector('.body');
+        const keywordHtml = buildKeywordGuideText(q);
+        if(body instanceof HTMLElement && keywordHtml){
+          const keywordBox = document.createElement('p');
+          keywordBox.className = 'question-keywords';
+          keywordBox.innerHTML = keywordHtml;
+          const anchor = body.querySelector('.question-guide, .question-premise, .choices, input[type="text"], input[type="search"], textarea');
+          if(anchor instanceof HTMLElement) anchor.insertAdjacentElement('beforebegin', keywordBox);
+          else body.prepend(keywordBox);
         }
       }
 
