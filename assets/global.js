@@ -151,11 +151,11 @@
     const clone = exp.cloneNode(true);
     if(!(clone instanceof HTMLElement)) return '';
     clone.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
-    return clone.textContent || '';
+    return (clone.textContent || '').replace(/\*\*/g, '');
   }
 
   function extractSection(text, labels){
-    const normalized = String(text || '').replace(/\r\n/g, '\n');
+    const normalized = String(text || '').replace(/\r\n/g, '\n').replace(/\*\*/g, '');
     const labelPattern = labels.join('|');
     const re = new RegExp('(?:^|\\n)\\s*(?:' + labelPattern + ')\\s*:?\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][a-zA-Z ]+|解説|定義|用語|問題を出した背景|実務での機会|選択肢|関連|Correct|Options|Related|Terms|Context)\\s*:?|$)', 'i');
     const match = normalized.match(re);
@@ -183,8 +183,15 @@
   }
 
   function stripLeadingLabel(text){
-    return String(text || '')
-      .replace(/^\s*(解説|Explanation|問題を出した背景|Context \(why chosen\)|背景（なぜこの問題）|用語|Terms)\s*:?\s*/i, '')
+    let cleaned = String(text || '').replace(/\*\*/g, '');
+    for(let i = 0; i < 3; i += 1){
+      const next = cleaned
+        .replace(/^\s*(解説|Explanation|問題を出した背景|Context \(why chosen\)|背景（なぜこの問題）|用語|Terms)\s*:?\s*/i, '')
+        .trim();
+      if(next === cleaned.trim()) break;
+      cleaned = next;
+    }
+    return cleaned
       .trim();
   }
 
@@ -195,6 +202,7 @@
   function splitKeywordCandidates(text){
     const raw = String(text || '')
       .replace(/\r\n/g, '\n')
+      .replace(/\*\*/g, '')
       .replace(/^\s*(?:Terms|用語|Related|関連)\s*:?\s*/i, '')
       .replace(/\b(?:include|includes|such as|例えば|たとえば)\b/gi, ',')
       .replace(/[()]/g, ' ')
@@ -202,16 +210,14 @@
       .trim();
     if(!raw) return [];
     const parts = raw
-      .split(/[,/|]|(?:\s+-\s+)|(?:\s+and\s+)|(?:\s+or\s+)|(?:\s+や\s+)|(?:\s+と\s+)/i)
+      .split(/[,、/|]|(?:\s+-\s+)|(?:\s+and\s+)|(?:\s+or\s+)|(?:\s+や\s+)|(?:\s+と\s+)/i)
       .map(s => s.trim())
       .filter(Boolean);
     const out = [];
     const seen = new Set();
     for(const part of parts){
-      if(part.length < 2 || part.length > 40) continue;
-      if(!/[A-Za-z0-9_-]/.test(part)) continue;
-      if(/[.。]/.test(part)) continue;
-      const normalized = part.replace(/\s+/g, ' ');
+      const normalized = normalizeKeywordCandidate(part);
+      if(!isUsefulKeyword(normalized)) continue;
       const key = normalized.toLowerCase();
       if(seen.has(key)) continue;
       seen.add(key);
@@ -221,21 +227,77 @@
     return out;
   }
 
+  function normalizeKeywordCandidate(value){
+    return String(value || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\*\*/g, '')
+      .replace(/^\s*(?:An?|The)\s+/i, '')
+      .replace(/\s+(?:は|とは|が|を)\s*$/u, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  const KEYWORD_STOPWORDS = new Set([
+    'a', 'an', 'and', 'are', 'as', 'best', 'can', 'does', 'for', 'from',
+    'how', 'is', 'it', 'of', 'or', 'problem', 'question', 'solve', 'that',
+    'the', 'this', 'to', 'what', 'when', 'where', 'which', 'who', 'why',
+    'with', 'rfc', '解説', '用語', '関連'
+  ]);
+
+  function isUsefulKeyword(value){
+    const normalized = String(value || '').replace(/\s+/g, ' ').trim();
+    const key = normalized.toLowerCase();
+    if(normalized.length < 2 || normalized.length > 42) return false;
+    if(KEYWORD_STOPWORDS.has(key)) return false;
+    if(!/[A-Za-z0-9_-]/.test(normalized)) return false;
+    if(/[.。:：]/.test(normalized)) return false;
+    if(/^(correct|incorrect|explanation|context|terms|related|options)$/i.test(normalized)) return false;
+    return true;
+  }
+
+  function extractHighlightedKeywords(exp){
+    if(!(exp instanceof HTMLElement)) return [];
+    const html = exp.innerHTML || '';
+    const out = [];
+    const seen = new Set();
+    const add = value => {
+      const parts = splitKeywordCandidates(value);
+      for(const part of parts){
+        const key = part.toLowerCase();
+        if(seen.has(key)) continue;
+        seen.add(key);
+        out.push(part);
+        if(out.length >= 6) return;
+      }
+    };
+    const strongRe = /<strong[^>]*>([\s\S]*?)<\/strong>/gi;
+    let m;
+    while((m = strongRe.exec(html))) add(m[1].replace(/<[^>]*>/g, ' '));
+    const markdownRe = /\*\*([^*]+)\*\*/g;
+    while((m = markdownRe.exec(html))) add(m[1]);
+    return out;
+  }
+
   function extractQuestionKeywords(q){
     const exp = q.querySelector('.explain');
     const explainText = exp ? plainExplainText(exp) : '';
     const terms = extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']);
     const related = extractSection(explainText, ['Related', '関連']);
     const title = questionCoreText(q.querySelector('h4')?.textContent || '');
-    const titleTerms = (title.match(/\b[A-Za-z][A-Za-z0-9/_-]*\b/g) || []).slice(0, 3);
+    const titleTerms = [
+      ...(title.match(/\bRFC\s*\d+\b/gi) || []),
+      ...(title.match(/\b[A-Z][A-Za-z0-9/_-]{2,}\b/g) || [])
+    ];
     const candidates = [
       ...splitKeywordCandidates(terms),
       ...splitKeywordCandidates(related),
+      ...extractHighlightedKeywords(exp),
       ...titleTerms
     ];
     const out = [];
     const seen = new Set();
     for(const candidate of candidates){
+      if(!isUsefulKeyword(candidate)) continue;
       const key = candidate.toLowerCase();
       if(seen.has(key)) continue;
       seen.add(key);
@@ -259,12 +321,12 @@
     if(locale.startsWith('ja')){
       const guide =
         type === 'ms'
-          ? 'これらはこの問題で 1 つずつ true/false を判定する対象です. 名前よりも, どの条件に当てはまるかで見分けます.'
+          ? 'これらはこの問題で 1 つずつ判定する対象です. 名前だけでなく, どの条件に当てはまるかで見分けます.'
           : type === 'text'
-            ? 'これらは「' + core + '」を説明するときに一緒に出やすい keywords です. それぞれが何を指すか, 境界がどこかを押さえると答えやすくなります.'
-            : 'これらは「' + core + '」と近い位置で登場する keywords です. 語感ではなく, role・definition・condition の違いで比較するのがコツです.';
+            ? 'これらは「' + core + '」を説明するときに一緒に出やすいキーワードです. それぞれが何を指すか, 境界がどこかを押さえると答えやすくなります.'
+            : 'これらは「' + core + '」と近い位置で登場するキーワードです. 語感ではなく, 役割・定義・条件の違いで比較するのがコツです.';
       const extra = related || terms;
-      return '<strong>関連 keywords:</strong> ' + keywordList + '. ' + guide + (extra ? ' ' + extra : '');
+      return '<strong>関連キーワード:</strong> ' + keywordList + '. ' + guide + (extra ? ' ' + extra : '');
     }
     const guide =
       type === 'ms'
@@ -379,6 +441,47 @@
     return { main, detail };
   }
 
+  function removeLegacyQuestionContext(q){
+    q.querySelectorAll('.question-summary, .question-keywords, .question-premise').forEach(node => node.remove());
+  }
+
+  function renderQuestionContext(q){
+    const locale = (document.documentElement.lang || '').toLowerCase();
+    const body = q.querySelector('.body');
+    if(!(body instanceof HTMLElement)) return;
+
+    removeLegacyQuestionContext(q);
+
+    let context = q.querySelector('.question-context');
+    if(!(context instanceof HTMLElement)){
+      context = document.createElement('aside');
+      context.className = 'question-context';
+      context.setAttribute('aria-label', locale.startsWith('ja') ? '出題補足' : 'Question context');
+    }
+
+    const intentLabel = locale.startsWith('ja') ? '出題意図' : 'Question intent';
+    const premiseLabel = locale.startsWith('ja') ? '前提' : 'Premise';
+    const keywordsLabel = locale.startsWith('ja') ? '関連キーワード' : 'Related keywords';
+    const keywordHtml = buildKeywordGuideText(q)
+      .replace(/^<strong>関連 keywords:<\/strong>\s*/i, '')
+      .replace(/^<strong>関連キーワード:<\/strong>\s*/i, '')
+      .replace(/^<strong>Related keywords:<\/strong>\s*/i, '');
+
+    context.innerHTML =
+      '<dl>' +
+        '<div><dt>' + intentLabel + '</dt><dd>' + buildQuestionSummaryText(q) + '</dd></div>' +
+        '<div><dt>' + premiseLabel + '</dt><dd>' + buildPremiseText(q) + '</dd></div>' +
+        (keywordHtml ? '<div><dt>' + keywordsLabel + '</dt><dd>' + keywordHtml + '</dd></div>' : '') +
+      '</dl>';
+
+    const choices = body.querySelector('.choices, input[type="text"], input[type="search"], textarea');
+    if(choices instanceof HTMLElement){
+      choices.insertAdjacentElement('afterend', context);
+    } else {
+      body.appendChild(context);
+    }
+  }
+
   function ensureQuestionMarksAndPremises(){
     const locale = (document.documentElement.lang || '').toLowerCase();
     document.querySelectorAll('#questions .q').forEach(q => {
@@ -391,42 +494,7 @@
         }
       }
 
-      if(h4 && !q.querySelector('.question-summary')){
-        const summary = document.createElement('p');
-        summary.className = 'question-summary';
-        summary.innerHTML = (locale.startsWith('ja') ? '<strong>出題意図:</strong> ' : '<strong>Question intent:</strong> ') + buildQuestionSummaryText(q);
-        const header = h4.closest('header');
-        if(header instanceof HTMLElement){
-          header.insertAdjacentElement('afterend', summary);
-        } else {
-          h4.insertAdjacentElement('afterend', summary);
-        }
-      }
-
-      if(!q.querySelector('.question-keywords')){
-        const body = q.querySelector('.body');
-        const keywordHtml = buildKeywordGuideText(q);
-        if(body instanceof HTMLElement && keywordHtml){
-          const keywordBox = document.createElement('p');
-          keywordBox.className = 'question-keywords';
-          keywordBox.innerHTML = keywordHtml;
-          const anchor = body.querySelector('.question-guide, .question-premise, .choices, input[type="text"], input[type="search"], textarea');
-          if(anchor instanceof HTMLElement) anchor.insertAdjacentElement('beforebegin', keywordBox);
-          else body.prepend(keywordBox);
-        }
-      }
-
-      if(!q.querySelector('.question-premise')){
-        const body = q.querySelector('.body');
-        if(body instanceof HTMLElement){
-          const premise = document.createElement('p');
-          premise.className = 'question-premise';
-          premise.innerHTML = (locale.startsWith('ja') ? '<strong>前提:</strong> ' : '<strong>Premise:</strong> ') + buildPremiseText(q);
-          const anchor = body.querySelector('.question-guide, .choices, input[type="text"], input[type="search"], textarea');
-          if(anchor instanceof HTMLElement) anchor.insertAdjacentElement('beforebegin', premise);
-          else body.prepend(premise);
-        }
-      }
+      renderQuestionContext(q);
 
       const exp = q.querySelector('.explain');
       const details = exp ? extractOptionDetails(plainExplainText(exp)) : new Map();

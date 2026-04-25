@@ -1957,7 +1957,6 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  localizeStaticUiText();
 	  injectRfcHubLink();
 	  injectRfcCheatSheet();
-	  injectQuestionGuides();
 	  normalizeAllExplanations();
 	  injectKeywordsBlock();
 	  injectStudyPath();
