@@ -166,6 +166,7 @@
       '問題を出した背景',
       '実務での機会',
       '選択肢',
+      'Related keywords',
       '関連',
       '関連キーワード',
       '正解'
@@ -227,7 +228,7 @@
       .trim();
     if(!raw) return [];
     const parts = raw
-      .split(/[,、/|]|(?:\s+-\s+)|(?:\s+and\s+)|(?:\s+or\s+)|(?:\s+や\s+)|(?:\s+と\s+)/i)
+      .split(/[,、|]|(?:\s+-\s+)|(?:\s+and\s+)|(?:\s+or\s+)|(?:\s+や\s+)|(?:\s+と\s+)/i)
       .map(s => s.trim())
       .filter(Boolean);
     const out = [];
@@ -268,8 +269,27 @@
     if(KEYWORD_STOPWORDS.has(key)) return false;
     if(!/[A-Za-z0-9_-]/.test(normalized)) return false;
     if(/[.。:：]/.test(normalized)) return false;
+    if(/(?:です|ます|でした|ました|ですが|ありません|なります|します|しました)/.test(normalized)) return false;
     if(/^(correct|incorrect|explanation|context|terms|related|options)$/i.test(normalized)) return false;
     return true;
+  }
+
+  function extractTermTokens(text){
+    const raw = String(text || '').replace(/\*\*/g, ' ');
+    const phraseMatches = raw.match(/\b[A-Z][A-Za-z0-9/-]+(?:\s+[A-Z][A-Za-z0-9/-]+){1,4}\b/g) || [];
+    const tokenMatches = raw.match(/\b(?:[A-Z][A-Z0-9-]{1,}|[A-Z][A-Za-z0-9]+(?:[-/][A-Za-z0-9]+)+|RFC\s*\d+|HTTP\/[0-9.]+|TLS\s*1\.3|0-RTT)\b/g) || [];
+    const matches = [...tokenMatches, ...phraseMatches];
+    const out = [];
+    const seen = new Set();
+    for(const match of matches){
+      const value = normalizeKeywordCandidate(match);
+      if(!isUsefulKeyword(value)) continue;
+      const key = value.toLowerCase();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      out.push(value);
+    }
+    return out;
   }
 
   function extractHighlightedKeywords(exp){
@@ -306,9 +326,10 @@
       ...(title.match(/\b[A-Z][A-Za-z0-9/_-]{2,}\b/g) || [])
     ];
     const candidates = [
+      ...extractTermTokens(terms),
+      ...extractHighlightedKeywords(exp),
       ...splitKeywordCandidates(terms),
       ...splitKeywordCandidates(related),
-      ...extractHighlightedKeywords(exp),
       ...titleTerms
     ];
     const out = [];
@@ -322,6 +343,40 @@
       if(out.length >= 4) break;
     }
     return out;
+  }
+
+  function splitMeaningSentences(text){
+    const normalized = String(text || '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\*\*/g, '')
+      .replace(/^\s*[-*]\s*/gm, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if(!normalized) return [];
+    return (normalized.match(/[^.!?。]+[.!?。]?/g) || [normalized])
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+
+  function stripSectionLabel(text){
+    return String(text || '')
+      .replace(/^\s*(?:Terms|用語|Related keywords|Related|関連キーワード|関連)\s*:?\s*/i, '')
+      .trim();
+  }
+
+  function meaningForKeyword(term, sources, locale){
+    const cleanTerm = String(term || '').replace(/\*\*/g, '').trim();
+    const lower = cleanTerm.toLowerCase();
+    for(const source of sources){
+      for(const sentence of splitMeaningSentences(source)){
+        const plain = stripSectionLabel(sentence);
+        if(!plain || plain.length > 180) continue;
+        if(plain.toLowerCase().includes(lower)) return plain;
+      }
+    }
+    return locale.startsWith('ja')
+      ? 'この問題で比較する中心語'
+      : 'a key term to compare in this question';
   }
 
   function escapeHtml(value){
@@ -340,11 +395,32 @@
   }
 
   function extractKeywordGuideItems(q){
+    const locale = (document.documentElement.lang || '').toLowerCase();
     const exp = q.querySelector('.explain');
     const explainText = exp ? plainExplainText(exp) : '';
+    const terms = extractRawSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']);
     const raw = extractRawSection(explainText, ['Related keywords', 'Related Keywords', '関連キーワード', 'Related', '関連']);
     const items = [];
     const seen = new Set();
+    const seenMeanings = new Set();
+    const sources = [terms, raw, explainText];
+
+    const addItem = (term, meaning) => {
+      const cleanedTerm = normalizeKeywordCandidate(term);
+      if(!isUsefulKeyword(cleanedTerm)) return;
+      const key = cleanedTerm.toLowerCase();
+      if(seen.has(key)) return;
+      if(Array.from(seen).some(existing => existing.includes(key) && existing !== key)) return;
+      const resolvedMeaning = String(meaning || '').trim() || meaningForKeyword(cleanedTerm, sources, locale);
+      const meaningKey = resolvedMeaning.toLowerCase();
+      if(seenMeanings.has(meaningKey)) return;
+      seen.add(key);
+      seenMeanings.add(meaningKey);
+      items.push({
+        term: cleanedTerm,
+        meaning: resolvedMeaning
+      });
+    };
 
     raw.split(/\n+/).forEach(line => {
       const cleaned = line
@@ -354,17 +430,22 @@
       if(!cleaned) return;
       const match = cleaned.match(/^(.+?)\s*[:：]\s*(.+)$/);
       if(!match) return;
-      const term = match[1].trim();
+      const term = match[1].trim().replace(/<[^>]*>/g, ' ');
       const meaning = match[2].trim();
-      const key = term.replace(/\*/g, '').toLowerCase();
-      if(!term || !meaning || seen.has(key)) return;
-      seen.add(key);
-      items.push({ term, meaning });
+      addItem(term, meaning);
     });
 
     if(items.length) return items.slice(0, 5);
 
-    return extractQuestionKeywords(q).slice(0, 4).map(term => ({ term, meaning: '' }));
+    const candidates = [
+      ...extractTermTokens(terms),
+      ...extractHighlightedKeywords(exp),
+      ...splitKeywordCandidates(terms),
+      ...splitKeywordCandidates(raw),
+      ...extractQuestionKeywords(q)
+    ];
+    candidates.forEach(term => addItem(term, meaningForKeyword(term, sources, locale)));
+    return items.slice(0, 4);
   }
 
   function buildKeywordGuideHtml(q){
@@ -379,44 +460,13 @@
     return '<ul class="keyword-list">' + lis + '</ul>';
   }
 
-  function buildKeywordGuideText(q){
-    const locale = (document.documentElement.lang || '').toLowerCase();
-    const type = String(q.dataset.type || '').toLowerCase();
-    const keywords = extractQuestionKeywords(q);
-    if(!keywords.length) return '';
-    const exp = q.querySelector('.explain');
-    const explainText = exp ? plainExplainText(exp) : '';
-    const related = firstSentence(extractSection(explainText, ['Related', '関連']), 190);
-    const terms = firstSentence(extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']), 190);
-    const core = questionCoreText(q.querySelector('h4')?.textContent || '');
-    const keywordList = keywords.join(', ');
-    if(locale.startsWith('ja')){
-      const guide =
-        type === 'ms'
-          ? 'これらはこの問題で 1 つずつ判定する対象です. 名前だけでなく, どの条件に当てはまるかで見分けます.'
-          : type === 'text'
-            ? 'これらは「' + core + '」を説明するときに一緒に出やすいキーワードです. それぞれが何を指すか, 境界がどこかを押さえると答えやすくなります.'
-            : 'これらは「' + core + '」と近い位置で登場するキーワードです. 語感ではなく, 役割・定義・条件の違いで比較するのがコツです.';
-      const extra = related || terms;
-      return '<strong>関連キーワード:</strong> ' + keywordList + '. ' + guide + (extra ? ' ' + extra : '');
-    }
-    const guide =
-      type === 'ms'
-        ? 'Treat these as the terms whose conditions you must judge one by one.'
-        : type === 'text'
-          ? 'These are the nearby terms that help define what "' + core + '" actually refers to.'
-          : 'These are nearby terms, so compare role, definition, and condition rather than surface wording.';
-    const extra = related || terms;
-    return '<strong>Related keywords:</strong> ' + keywordList + '. ' + guide + (extra ? ' ' + extra : '');
-  }
-
   function buildQuestionSummaryText(q){
     const locale = (document.documentElement.lang || '').toLowerCase();
     const type = String(q.dataset.type || '').toLowerCase();
     const exp = q.querySelector('.explain');
     const explainText = exp ? plainExplainText(exp) : '';
     const explicitIntent = extractSection(explainText, ['Question intent', '出題意図']);
-    if(explicitIntent) return explicitIntent;
+    if(explicitIntent) return sanitizeIntentText(q, explicitIntent);
     const context = firstSentence(extractSection(explainText, ['Context \\(why chosen\\)', '問題を出した背景', '背景（なぜこの問題）']), 180);
     const terms = firstSentence(extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']), 180);
     const explanation = firstSentence(stripLeadingLabel(explainText), 200);
@@ -435,7 +485,7 @@
         : (choiceCount >= 3
             ? '選択肢が複数あるので, 単語の雰囲気ではなく, どの条件を満たす説明かで比べるのがコツです.'
             : '短い問いですが, 用語の意味と境界を頭の中で言い換えながら判断すると理解が深まります.');
-      return intro + ' ' + extra;
+      return sanitizeIntentText(q, intro + ' ' + extra);
     }
 
     const intro =
@@ -450,7 +500,20 @@
       : (choiceCount >= 3
           ? 'Because the options are close together, compare the actual conditions each one satisfies rather than guessing from familiar wording.'
           : 'Even though the prompt is short, it becomes easier once you restate the concept in your own words before answering.');
-    return intro + ' ' + extra;
+    return sanitizeIntentText(q, intro + ' ' + extra);
+  }
+
+  function sanitizeIntentText(q, text){
+    const core = questionCoreText(q.querySelector('h4')?.textContent || '');
+    let cleaned = String(text || '').replace(/\s+/g, ' ').trim();
+    if(!cleaned) return '';
+    if(core && cleaned.toLowerCase().includes(core.toLowerCase())){
+      cleaned = (cleaned.match(/[^.!?。]+[.!?。]?/g) || [cleaned])
+        .filter(sentence => !sentence.toLowerCase().includes(core.toLowerCase()))
+        .join(' ')
+        .trim() || cleaned.replace(core, 'this topic').trim();
+    }
+    return cleaned;
   }
 
   function genericChoiceDetail(q, choiceText){
