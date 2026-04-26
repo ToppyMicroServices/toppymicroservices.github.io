@@ -154,12 +154,29 @@
     return (clone.textContent || '').replace(/\*\*/g, '');
   }
 
-  function extractSection(text, labels){
+  function extractRawSection(text, labels){
     const normalized = String(text || '').replace(/\r\n/g, '\n').replace(/\*\*/g, '');
     const labelPattern = labels.join('|');
-    const re = new RegExp('(?:^|\\n)\\s*(?:' + labelPattern + ')\\s*:?\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][a-zA-Z ]+|解説|定義|用語|問題を出した背景|実務での機会|選択肢|関連|Correct|Options|Related|Terms|Context)\\s*:?|$)', 'i');
+    const endLabels = [
+      '[A-Z][a-zA-Z ]+',
+      '出題意図',
+      '解説',
+      '定義',
+      '用語',
+      '問題を出した背景',
+      '実務での機会',
+      '選択肢',
+      '関連',
+      '関連キーワード',
+      '正解'
+    ].join('|');
+    const re = new RegExp('(?:^|\\n)\\s*(?:' + labelPattern + ')\\s*:?\\s*([\\s\\S]*?)(?=\\n\\s*(?:' + endLabels + ')\\s*:?|$)', 'i');
     const match = normalized.match(re);
-    return match ? match[1].replace(/\s+/g, ' ').trim() : '';
+    return match ? match[1].trim() : '';
+  }
+
+  function extractSection(text, labels){
+    return extractRawSection(text, labels).replace(/\s+/g, ' ').trim();
   }
 
   function extractOptionDetails(text){
@@ -307,6 +324,61 @@
     return out;
   }
 
+  function escapeHtml(value){
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderInlineMarkdown(value){
+    return escapeHtml(value)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
+  }
+
+  function extractKeywordGuideItems(q){
+    const exp = q.querySelector('.explain');
+    const explainText = exp ? plainExplainText(exp) : '';
+    const raw = extractRawSection(explainText, ['Related keywords', 'Related Keywords', '関連キーワード', 'Related', '関連']);
+    const items = [];
+    const seen = new Set();
+
+    raw.split(/\n+/).forEach(line => {
+      const cleaned = line
+        .replace(/^\s*[-*]\s*/, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if(!cleaned) return;
+      const match = cleaned.match(/^(.+?)\s*[:：]\s*(.+)$/);
+      if(!match) return;
+      const term = match[1].trim();
+      const meaning = match[2].trim();
+      const key = term.replace(/\*/g, '').toLowerCase();
+      if(!term || !meaning || seen.has(key)) return;
+      seen.add(key);
+      items.push({ term, meaning });
+    });
+
+    if(items.length) return items.slice(0, 5);
+
+    return extractQuestionKeywords(q).slice(0, 4).map(term => ({ term, meaning: '' }));
+  }
+
+  function buildKeywordGuideHtml(q){
+    const items = extractKeywordGuideItems(q);
+    if(!items.length) return '';
+    const lis = items.map(item => {
+      const termText = item.term.replace(/^\*\*|\*\*$/g, '');
+      const termHtml = '<strong>' + escapeHtml(termText) + '</strong>';
+      const meaningHtml = item.meaning ? ' : ' + renderInlineMarkdown(item.meaning) : '';
+      return '<li>' + termHtml + meaningHtml + '</li>';
+    }).join('');
+    return '<ul class="keyword-list">' + lis + '</ul>';
+  }
+
   function buildKeywordGuideText(q){
     const locale = (document.documentElement.lang || '').toLowerCase();
     const type = String(q.dataset.type || '').toLowerCase();
@@ -341,10 +413,10 @@
   function buildQuestionSummaryText(q){
     const locale = (document.documentElement.lang || '').toLowerCase();
     const type = String(q.dataset.type || '').toLowerCase();
-    const title = q.querySelector('h4')?.textContent || '';
-    const core = questionCoreText(title);
     const exp = q.querySelector('.explain');
     const explainText = exp ? plainExplainText(exp) : '';
+    const explicitIntent = extractSection(explainText, ['Question intent', '出題意図']);
+    if(explicitIntent) return explicitIntent;
     const context = firstSentence(extractSection(explainText, ['Context \\(why chosen\\)', '問題を出した背景', '背景（なぜこの問題）']), 180);
     const terms = firstSentence(extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']), 180);
     const explanation = firstSentence(stripLeadingLabel(explainText), 200);
@@ -353,13 +425,13 @@
     if(locale.startsWith('ja')){
       const intro =
         type === 'ms'
-          ? 'この問題は「' + core + '」について, 各選択肢を個別に判定し, 条件に当てはまるものをすべて見分ける練習です.'
+          ? '各選択肢を独立に読み, 条件を満たすものだけを選ぶ練習です.'
           : type === 'text'
-            ? 'この問題は「' + core + '」という語を丸暗記でなく, 何を指す概念かまで言い直せるかを確かめる練習です.'
-            : 'この問題は「' + core + '」について, 似た候補の中から定義・役割・条件が最も合うものを 1 つ選ぶ練習です.';
+            ? '用語名の暗記ではなく, 概念を自分の言葉で説明できるかを確認します.'
+            : '似た候補を, 用語の雰囲気ではなく定義・役割・条件で比べる練習です.';
       const detail = context || terms || explanation;
       const extra = detail
-        ? '前提として, ' + detail
+        ? '見るべき観点は, ' + detail
         : (choiceCount >= 3
             ? '選択肢が複数あるので, 単語の雰囲気ではなく, どの条件を満たす説明かで比べるのがコツです.'
             : '短い問いですが, 用語の意味と境界を頭の中で言い換えながら判断すると理解が深まります.');
@@ -368,42 +440,17 @@
 
     const intro =
       type === 'ms'
-        ? 'This question asks you to judge each option separately and select every statement that truly fits "' + core + '".'
+        ? 'Practice reading each option independently and selecting only the statements whose conditions are true.'
         : type === 'text'
-          ? 'This question checks whether you can restate what "' + core + '" means, not just recognize the term.'
-          : 'This question asks you to pick the one option whose definition, role, or condition best matches "' + core + '".';
+          ? 'Practice explaining the concept in your own words instead of recognizing the term by memory.'
+          : 'Practice comparing nearby choices by definition, role, and validation condition instead of familiar wording.';
     const detail = context || terms || explanation;
     const extra = detail
-      ? 'Start from this premise: ' + detail
+      ? 'Focus on this reading point: ' + detail
       : (choiceCount >= 3
           ? 'Because the options are close together, compare the actual conditions each one satisfies rather than guessing from familiar wording.'
           : 'Even though the prompt is short, it becomes easier once you restate the concept in your own words before answering.');
     return intro + ' ' + extra;
-  }
-
-  function buildPremiseText(q){
-    const title = q.querySelector('h4')?.textContent || '';
-    const exp = q.querySelector('.explain');
-    const type = (q.dataset.type || '').toLowerCase();
-    const explainText = exp ? plainExplainText(exp) : '';
-    const terms = firstSentence(extractSection(explainText, ['Terms', '用語', '定義（問題語）', '定義（用語）']), 170);
-    const context = firstSentence(extractSection(explainText, ['Context \\(why chosen\\)', '問題を出した背景', '背景（なぜこの問題）']), 170);
-    const core = questionCoreText(title);
-    const locale = (document.documentElement.lang || '').toLowerCase();
-    if(locale.startsWith('ja')){
-      if(context && terms) return context + ' ' + terms;
-      if(context) return context;
-      if(terms) return 'まず ' + terms + ' を前提に, 「' + core + '」を判断します.';
-      if(type === 'ms') return '各選択肢を 1 つずつ独立に判定しながら, 「' + core + '」を考える問題です.';
-      if(type === 'text') return '用語名だけを思い出すのでなく, その言葉が何を指すかを前提にして答える問題です.';
-      return '前提をそろえると, 「' + core + '」は単なる暗記でなく, 何と何を見分ける問いかとして読めます.';
-    }
-    if(context && terms) return context + ' ' + terms;
-    if(context) return context;
-    if(terms) return 'Start by anchoring on ' + terms + ' before deciding what "' + core + '" is really comparing.';
-    if(type === 'ms') return 'Treat each option as its own true/false check before deciding the final combination.';
-    if(type === 'text') return 'Answer from understanding of the term, not just raw recall.';
-    return 'Read this as a comparison question with an explicit premise, not as isolated trivia.';
   }
 
   function genericChoiceDetail(q, choiceText){
@@ -460,17 +507,12 @@
     }
 
     const intentLabel = locale.startsWith('ja') ? '出題意図' : 'Question intent';
-    const premiseLabel = locale.startsWith('ja') ? '前提' : 'Premise';
     const keywordsLabel = locale.startsWith('ja') ? '関連キーワード' : 'Related keywords';
-    const keywordHtml = buildKeywordGuideText(q)
-      .replace(/^<strong>関連 keywords:<\/strong>\s*/i, '')
-      .replace(/^<strong>関連キーワード:<\/strong>\s*/i, '')
-      .replace(/^<strong>Related keywords:<\/strong>\s*/i, '');
+    const keywordHtml = buildKeywordGuideHtml(q);
 
     context.innerHTML =
       '<dl>' +
         '<div><dt>' + intentLabel + '</dt><dd>' + buildQuestionSummaryText(q) + '</dd></div>' +
-        '<div><dt>' + premiseLabel + '</dt><dd>' + buildPremiseText(q) + '</dd></div>' +
         (keywordHtml ? '<div><dt>' + keywordsLabel + '</dt><dd>' + keywordHtml + '</dd></div>' : '') +
       '</dl>';
 
@@ -482,7 +524,7 @@
     }
   }
 
-  function ensureQuestionMarksAndPremises(){
+  function ensureQuestionMarksAndContext(){
     const locale = (document.documentElement.lang || '').toLowerCase();
     document.querySelectorAll('#questions .q').forEach(q => {
       if(!(q instanceof HTMLElement)) return;
@@ -521,7 +563,7 @@
     setupCTAEvents();
     setupDwellTracking();
     if(document.querySelector('#questions .q')){
-      window.addEventListener('load', ensureQuestionMarksAndPremises, { once: true });
+      window.addEventListener('load', ensureQuestionMarksAndContext, { once: true });
     }
   }
 

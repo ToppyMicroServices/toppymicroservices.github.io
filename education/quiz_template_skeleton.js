@@ -99,12 +99,14 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         out = out
           .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
           .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
+          .replace(/<strong>Question intent:<\/strong>/g, '<strong>出題意図:<\/strong>')
           .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
           .replace(/<strong>背景（なぜこの問題）:<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
           .replace(/<strong>Real-world usage:<\/strong>/g, '<strong>実務での機会:<\/strong>')
           .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
           .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
           .replace(/<strong>Options:<\/strong>/g, '<strong>選択肢:<\/strong>')
+          .replace(/<strong>Related keywords:<\/strong>/g, '<strong>関連キーワード:<\/strong>')
           .replace(/<strong>Related:<\/strong>/g, '<strong>関連:<\/strong>')
           .replace(/<strong>Correct([^<]*):<\/strong>/g, '<strong>正解$1:<\/strong>');
 
@@ -115,11 +117,13 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    // Ensure section headings start on their own lines (even if authored inline).
 	    out = out
 	      .replace(/\s*(<strong>(?:Explanation|解説)(?::)?<\/strong>)/g, '\n$1')
+	      .replace(/\s*(<strong>(?:Question intent|出題意図):<\/strong>)/g, '\n\n$1')
 	      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>)/g, '\n\n$1')
 	      .replace(/\s*(<strong>(?:Real-world usage|実務での機会):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Terms|用語):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Correct|正解)[^<]*?:<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Options|選択肢):<\/strong>)/g, '\n\n$1')
+      .replace(/\s*(<strong>(?:Related keywords|関連キーワード):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Related|関連):<\/strong>)/g, '\n\n$1');
 
     // Ensure headings and lists are readable even if authored as plain text.
@@ -1379,7 +1383,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   }
 
   function ensureRelatedSection(html){
-    const hasRelated = /<strong>(?:Related|関連):<\/strong>/i.test(String(html || ''));
+    const hasRelated = /<strong>(?:Related keywords|関連キーワード|Related|関連):<\/strong>/i.test(String(html || ''));
     if(hasRelated) return html;
 
     const scope = document.querySelector('section.scope');

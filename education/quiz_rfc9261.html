@@ -94,146 +94,104 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
-        <header><h4>Q1: What problem does RFC 9261 primarily solve</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: What is the main role of an Exported Authenticator in RFC 9261</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. It defines a new certificate format to replace X.509 inside TLS</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. It lets a TLS or DTLS peer prove ownership of an identity after the connection is established</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. It compresses HTTP/3 headers so they can be verified outside the TLS channel</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. It replaces X.509 with a new certificate syntax for TLS</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. It lets a TLS or DTLS peer prove possession of an identity after the connection exists</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. It defines a complete attested-infrastructure, workload, or Agent2Agent identity framework</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** RFC 9261 is easy to misread as another certificate syntax document. Its core is **post-handshake identity proof** that is derived from an existing TLS or DTLS connection.
+            **Question intent:** Separate the small TLS mechanism from larger identity, attestation, and authorization systems.
 
-            **Terms:** An **Exported Authenticator** is proof that one peer controls an identity, such as an X.509 certificate, and that the proof is bound to the initial connection. **TLS** or **DTLS** provides the connection secrets used to derive that proof.
-
-            **Real-world usage:** You encounter this when one secure connection needs later proof for another name, tenant, role, or application-level event without restarting the whole connection.
+            **Terms:** **Exported Authenticator** is a post-handshake proof that a peer controls an identity. **Post-handshake** means after the TLS or DTLS connection has already been established.
 
             **Options:**
-            - A (incorrect): RFC 9261 does not replace X.509. It uses identities such as X.509 certificates.
-            - B (correct): This is the main purpose of Exported Authenticators.
-            - C (incorrect): HTTP/3 header compression is QPACK, not RFC 9261.
+            - A (incorrect): RFC 9261 uses identities such as X.509 certificates; it does not replace the certificate format.
+            - B (correct): This is the core purpose of the mechanism.
+            - C (incorrect): Larger frameworks must be defined by the application protocol, verifier policy, or deployment.
 
-            **Related:** Think of RFC 9261 as a building block for application protocols that need additional authentication after the TLS handshake.
+            **Related keywords:**
+            - **Exported Authenticator** : proof of identity possession bound to an existing TLS or DTLS connection
+            - **post-handshake** : after the secure connection is already established
+            - **application building block** : a component that an application protocol must still integrate
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2">
-        <header><h4>Q2: Which use cases explain why Exported Authenticators exist (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+        <header><h4>Q2: Which limits remain outside RFC 9261 itself. Select all</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. A peer is authoritative for multiple identities but does not present all of them in the initial handshake</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. A client wants to skip certificate validation because the TLS connection already succeeded</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. An application event later in the protocol requires one side to prove an additional identity</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. A server wants to convert a TLS connection into a DNSSEC validation chain</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Binding the peer to an intended tenant, service, workload, task, or authorization policy</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Deriving connection-bound cryptographic material for the authenticator</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Defining verifier policy, deployment policy, and application-level meaning</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Changing TLS state when each authenticator is created or validated</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** The introduction of RFC 9261 highlights two motivations: **multiple identities** and **spontaneous authentication** after the connection is established.
+            **Question intent:** Learn where the RFC stops so that a report does not credit RFC 9261 with policy decisions it never makes.
 
-            **Terms:** **multiple identities** means a peer may need to prove more than the identity shown during the handshake. **spontaneous authentication** means the proof can be triggered by higher-layer protocol context.
-
-            **Real-world usage:** In a multiplexed protocol, one connection might serve several authorities or later operations. The application may need proof at the point where the operation becomes relevant.
+            **Terms:** **Verifier policy** decides what identity or attestation is acceptable. **Application-level meaning** is the tenant, service, task, or authorization decision attached to the proof.
 
             **Options:**
-            - A (correct): This matches the multiple-identity motivation.
-            - B (incorrect): Exported Authenticators do not remove certificate validation.
-            - C (correct): This matches spontaneous authentication driven by the application.
-            - D (incorrect): DNSSEC is not what RFC 9261 is for.
+            - A (correct): RFC 9261 does not know the intended tenant, workload, or policy.
+            - B (incorrect): The RFC does define connection-derived authentication material.
+            - C (correct): These are supplied outside the RFC mechanism.
+            - D (correct): Authenticators are independent and unidirectional; creating or validating one does not explicitly change TLS state.
 
-            **Related:** The design is especially interesting for protocols where TLS record boundaries do not line up with application message boundaries.
+            **Related keywords:**
+            - **verifier policy** : the rule that decides whether a presented identity is acceptable
+            - **application protocol** : the layer that carries requests and gives them meaning
+            - **TLS state** : the internal protocol state of the TLS connection
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q3: In a request-based flow, what is the correct shape of the interaction</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+        <header><h4>Q3: Which statements about certificate_request_context are correct. Select all</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. One peer creates an authenticator request, the other creates an authenticator, and the first validates it</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Both peers renegotiate TLS and replace the original session keys</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. The application sends a certificate chain without any connection-bound proof</label>
-          </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9261-q3-caption">
-            <figcaption id="rfc9261-q3-caption">Request-based Exported Authenticator flow: request, proof, validation.</figcaption>
-            <svg viewBox="0 0 760 140" role="img" aria-label="Authenticator request flows to peer, authenticator returns, requester validates">
-              <rect class="flow-box" x="20" y="38" width="170" height="64" rx="10"></rect>
-              <text class="flow-text" x="105" y="62">Requester</text>
-              <text class="flow-label" x="105" y="82">creates request</text>
-              <line class="flow-arrow" x1="190" y1="70" x2="285" y2="70"></line>
-              <polygon class="flow-arrow-head" points="285,70 273,64 273,76"></polygon>
-              <text class="flow-label" x="238" y="54">request</text>
-              <rect class="flow-box" x="285" y="38" width="190" height="64" rx="10"></rect>
-              <text class="flow-text" x="380" y="62">Peer</text>
-              <text class="flow-label" x="380" y="82">creates proof</text>
-              <line class="flow-arrow" x1="475" y1="70" x2="570" y2="70"></line>
-              <polygon class="flow-arrow-head" points="570,70 558,64 558,76"></polygon>
-              <text class="flow-label" x="522" y="54">authenticator</text>
-              <rect class="flow-box" x="570" y="38" width="170" height="64" rx="10"></rect>
-              <text class="flow-text" x="655" y="62">Requester</text>
-              <text class="flow-label" x="655" y="82">validates proof</text>
-            </svg>
-          </figure>
-          <div class="explain">
-            **Explanation:**
-
-            **Context (why chosen):** RFC 9261 defines both **authenticator requests** and **authenticators**. Many mistakes come from treating the authenticator as just a certificate blob.
-
-            **Terms:** An **authenticator request** defines what proof is being requested. An **authenticator** carries the certificate-related proof and is later validated by the receiving peer.
-
-            **Real-world usage:** This helps when designing application protocol messages: you need room for request transport, authenticator transport, and error handling around validation.
-
-            **Options:**
-            - A (correct): This matches the request-based sequence.
-            - B (incorrect): RFC 9261 avoids changing the TLS layer state machine in this way.
-            - C (incorrect): A certificate chain alone does not prove possession of the private key in the connection context.
-
-            **Related:** RFC 9261 also allows spontaneous server authentication, where the server can send an authenticator without a preceding request.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2">
-        <header><h4>Q4: Why is RFC 9261 different from simply using TLS 1.3 post-handshake authentication</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. It makes all authentication happen before the TLS handshake begins</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. It removes the need for an application protocol to define support negotiation and error handling</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. It creates application-carried proof without requiring additional state inside the TLS state machine</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. It identifies the authenticator request and is echoed by the authenticator</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. It can be reused freely on the same connection</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. It must be unique within a connection</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. It should be unpredictable to the peer</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** RFC 9261 is motivated partly by the limits of older renegotiation and TLS 1.3 post-handshake authentication for higher-layer protocols.
+            **Question intent:** Treat a small request field as a security control, not as harmless metadata.
 
-            **Terms:** **post-handshake authentication** is authentication after the TLS handshake. **TLS state machine** means the internal state the TLS layer tracks while processing protocol messages.
-
-            **Real-world usage:** This matters for multiplexed protocols such as HTTP/2-like designs, where TLS record boundaries may not match application message boundaries.
+            **Terms:** **certificate_request_context** is an opaque value attached to the request and echoed in the authenticator. **Opaque** means the protocol treats it as bytes, not as a human-readable name.
 
             **Options:**
-            - A (incorrect): RFC 9261 is specifically about authentication after the connection is established.
-            - B (incorrect): Applications still need to define support signaling and error behavior.
-            - C (correct): This is the practical architectural difference.
+            - A (correct): It connects the request to the response.
+            - B (incorrect): Reuse can create replay or context-confusion risk.
+            - C (correct): Uniqueness is required inside the connection scope.
+            - D (correct): Unpredictability helps against precomputation when a temporary private key is exposed.
 
-            **Related:** Exported Authenticators are a building block. They do not by themselves define a complete application protocol.
+            **Related keywords:**
+            - **certificate_request_context** : opaque request identifier echoed in the authenticator
+            - **replay resistance** : preventing an old proof from being accepted in the wrong place
+            - **context confusion** : accepting a proof for a different request or purpose
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
-        <header><h4>Q5: What is an authenticator made from at a high level</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2">
+        <header><h4>Q4: What must be checked for a non-empty authenticator</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. A raw private key followed by a DNS name and an HTTP status code</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. TLS-style Certificate, CertificateVerify, and Finished messages serialized together</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. A compressed copy of every TLS record sent since the handshake</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Only the certificate chain, because the signature is ordinary TLS metadata</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Certificate, CertificateVerify, and Finished, using connection-derived and transcript-derived values</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Only the DNS name in the certificate, because the TLS connection already succeeded</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9261-q5-caption">
-            <figcaption id="rfc9261-q5-caption">An authenticator reuses the TLS 1.3 Certificate, CertificateVerify, and Finished pattern.</figcaption>
-            <svg viewBox="0 0 760 136" role="img" aria-label="Certificate, CertificateVerify, and Finished messages form an authenticator">
+          <figure class="flow-diagram" aria-labelledby="rfc9261-q4-caption">
+            <figcaption id="rfc9261-q4-caption">A non-empty authenticator is more than a certificate chain.</figcaption>
+            <svg viewBox="0 0 760 136" role="img" aria-label="Certificate, CertificateVerify, and Finished form a non-empty authenticator">
               <rect class="flow-box" x="28" y="38" width="190" height="60" rx="10"></rect>
               <text class="flow-text" x="123" y="63">Certificate</text>
               <text class="flow-label" x="123" y="82">identity chain</text>
@@ -252,159 +210,208 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** The structure intentionally resembles the TLS 1.3 authentication pattern, which helps reuse already-analyzed ideas.
+            **Question intent:** Avoid reducing a real Exported Authenticator to "certificate plus signature."
 
-            **Terms:** **Certificate** carries the identity. **CertificateVerify** proves possession of the corresponding private key. **Finished** provides a MAC over the authenticator transcript using exporter-derived material.
-
-            **Real-world usage:** This helps implementers review whether an API returns a real authenticator or only a certificate chain with no cryptographic binding.
+            **Terms:** **CertificateVerify** proves possession of the private key over an authenticator transcript. **Finished** checks a MAC derived from the TLS connection and authenticator transcript.
 
             **Options:**
-            - A (incorrect): Private keys are never sent.
-            - B (correct): This is the high-level construction described by RFC 9261.
-            - C (incorrect): Exported Authenticators do not archive TLS records.
+            - A (incorrect): This omits the proof and transcript checks.
+            - B (correct): RFC 9261 validation depends on the connection, the request, and the authenticator transcript.
+            - C (incorrect): Certificate name checks are not enough.
 
-            **Related:** The authenticator is encoded as TLS handshake messages, but without TLS record-layer framing.
+            **Related keywords:**
+            - **CertificateVerify** : signature proving private-key possession in the right transcript
+            - **Finished** : MAC check over authenticator transcript material
+            - **transcript** : ordered bytes that the proof is computed over
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,d" data-difficulty="L3">
-        <header><h4>Q6: What should a developer remember about certificate_request_context (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q5: How should cross-connection reuse be judged</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. It identifies the authenticator request and is echoed in the authenticator</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. It can be reused freely across authenticator requests on the same connection</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. It is a human-readable certificate subject name chosen by the CA</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. It must be unique within the connection scope and should be unpredictable to the peer</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. It should succeed as long as both connections use the same certificate</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. A reduced model that omits CertificateVerify and Finished is enough to prove RFC 9261 channel binding is broken</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Full RFC 9261 validation should fail because the Handshake Context will not match</label>
           </fieldset>
+          <figure class="flow-diagram" aria-labelledby="rfc9261-q5-caption">
+            <figcaption id="rfc9261-q5-caption">A proof generated on one connection should not validate on another connection.</figcaption>
+            <svg viewBox="0 0 760 150" role="img" aria-label="Authenticator from connection A fails validation on connection B">
+              <rect class="flow-box" x="24" y="36" width="210" height="74" rx="10"></rect>
+              <text class="flow-text" x="129" y="63">Connection A</text>
+              <text class="flow-label" x="129" y="84">generates authenticator</text>
+              <line class="flow-arrow" x1="234" y1="73" x2="345" y2="73"></line>
+              <polygon class="flow-arrow-head" points="345,73 333,67 333,79"></polygon>
+              <text class="flow-label" x="290" y="56">reuse attempt</text>
+              <rect class="flow-box" x="345" y="36" width="190" height="74" rx="10"></rect>
+              <text class="flow-text" x="440" y="63">Connection B</text>
+              <text class="flow-label" x="440" y="84">validates proof</text>
+              <line class="flow-arrow" x1="535" y1="73" x2="630" y2="73"></line>
+              <polygon class="flow-arrow-head" points="630,73 618,67 618,79"></polygon>
+              <rect class="flow-box" x="630" y="44" width="106" height="58" rx="10"></rect>
+              <text class="flow-text" x="683" y="69">Fail</text>
+              <text class="flow-label" x="683" y="88">context mismatch</text>
+            </svg>
+          </figure>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** The **certificate_request_context** is a small field with large security consequences. Reuse can create replay or context-confusion risk.
+            **Question intent:** Keep the formal-model claim narrower than a claim about breaking the full RFC mechanism.
 
-            **Terms:** **certificate_request_context** is an opaque value that identifies the request. **Opaque** means the protocol treats it as bytes rather than as a parsed name.
-
-            **Real-world usage:** When building an API, you need to generate request contexts carefully and track which ones have already been used on the connection.
-
-            **Options:**
-            - A (correct): The context links the request to the resulting authenticator.
-            - B (incorrect): Reuse on the same connection is exactly what the uniqueness rule is meant to avoid.
-            - C (incorrect): It is not a CA-issued subject name.
-            - D (correct): RFC 9261 requires uniqueness and recommends unpredictability.
-
-            **Related:** This is similar in spirit to nonce handling: the value may look simple, but its lifecycle matters.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q7: What does connection binding mean for validation</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. Any peer with the same certificate can validate the authenticator on any unrelated TLS connection</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. Validation depends only on the DNS name inside the certificate</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. If generation and validation use different TLS connection secrets, CertificateVerify validation fails</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            **Context (why chosen):** Exported Authenticators are not portable certificate receipts. They are bound to the initial TLS or DTLS connection using exporter-derived material.
-
-            **Terms:** **connection binding** means the proof is tied to secrets from the specific connection. **CertificateVerify** signs a transcript that includes the exported Handshake Context.
-
-            **Real-world usage:** This becomes visible with TLS-terminating proxies. If the application path assumes one TLS connection but validation uses another, the proof will not match.
+            **Terms:** **Handshake Context** is derived from the connection and authenticator data. **Channel binding** means the proof is tied to one specific TLS or DTLS connection.
 
             **Options:**
             - A (incorrect): Same certificate is not enough.
-            - B (incorrect): Certificate name validation is necessary but not the whole proof.
-            - C (correct): Different connection secrets lead to a different Handshake Context and failed validation.
+            - B (incorrect): Omitting the full validation path leaves a proof obligation, not a complete RFC break.
+            - C (correct): RFC 9261 says validation fails when generation and validation use different connections.
 
-            **Related:** Debugging a failed Exported Authenticator may require confirming that both sides are referring to the same underlying TLS connection.
+            **Related keywords:**
+            - **Handshake Context** : connection-derived value used in validation
+            - **channel binding** : tying proof to a specific connection
+            - **reduced model** : simplified model that cannot prove every RFC validation property
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q8: What is an empty authenticator for</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2">
+        <header><h4>Q6: What does an empty authenticator mean</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. It is an authenticated refusal when the endpoint has no suitable identity or does not want to return one</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. It is a successful anonymous authentication that should be treated as a valid identity</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. It is a signal that the peer has upgraded from TLS 1.2 to TLS 1.3</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. It is an authenticated refusal, not successful identity authentication</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. It is anonymous identity authentication that should be treated as success</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. It means the peer upgraded the connection from TLS 1.2 to TLS 1.3</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** A refusal can still need integrity. RFC 9261 defines **empty authenticator** so the refusal is not just an unauthenticated absence of data.
+            **Question intent:** Distinguish "valid protocol object" from "identity was authenticated."
 
-            **Terms:** An **empty authenticator** contains a Finished message without Certificate or CertificateVerify. It authenticates the refusal, but it does not authenticate an identity.
-
-            **Real-world usage:** This matters for application UX and error handling. The app can distinguish a well-formed refusal from a broken or missing response.
+            **Terms:** **Empty authenticator** contains a Finished message without Certificate or CertificateVerify. **Authenticated refusal** means the refusal has integrity, but it does not prove an identity.
 
             **Options:**
-            - A (correct): This is the intended role.
-            - B (incorrect): A well-formed empty authenticator is returned as invalid for identity validation.
-            - C (incorrect): It has nothing to do with version upgrade signaling.
+            - A (correct): RFC 9261 treats a well-formed empty authenticator as a refusal; validation APIs return it as invalid for identity validation.
+            - B (incorrect): No attestation or identity is authenticated.
+            - C (incorrect): It is unrelated to version upgrade signaling.
 
-            **Related:** Treat empty authenticators as part of protocol flow, not as proof that the requested identity exists.
+            **Related keywords:**
+            - **empty authenticator** : Finished-only refusal object
+            - **authenticated refusal** : protected refusal, not identity success
+            - **identity validation** : deciding that a presented identity was proven
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,b,d" data-difficulty="L2">
-        <header><h4>Q9: Which responsibilities remain with the application protocol (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q7" data-type="ms" data-answer="a,b,d" data-difficulty="L3">
+        <header><h4>Q7: For an aTLS deployment, which policy checks follow from empty-authenticator handling. Select all</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Advertising whether Exported Authenticators are supported</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Transporting authenticator requests and authenticators at the application layer</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Replacing certificate-chain validation with a boolean from the TLS exporter</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Defining how authentication errors are handled and reported</label>
+            <label class="choice"><input type="checkbox" name="Q7" value="a"> A. "Attestation required" must not be reported as success when no attestation identity is returned</label>
+            <label class="choice"><input type="checkbox" name="Q7" value="b"> B. The implementation should distinguish valid EA processing from attestation verified</label>
+            <label class="choice"><input type="checkbox" name="Q7" value="c"> C. Any well-formed empty authenticator should satisfy attestation policy</label>
+            <label class="choice"><input type="checkbox" name="Q7" value="d"> D. The caller needs a clear failure or no-identity result</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** RFC 9261 explicitly says Exported Authenticators are a building block. The application still has protocol design work to do.
+            **Question intent:** Translate the RFC behavior into the application policy question without calling it an RFC violation by itself.
 
-            **Terms:** **application protocol** means the layer above TLS or DTLS that decides message formats, capability signaling, and user-visible behavior.
-
-            **Real-world usage:** If you are designing a protocol extension, you must decide how peers discover support, where messages are carried, and what failure means.
+            **Terms:** **Attestation required** is a policy decision by the application. **No attestation identity** means the protocol object did not return an identity that the policy can approve.
 
             **Options:**
-            - A (correct): Support advertisement is outside TLS here.
-            - B (correct): The request and authenticator can be sent through the application layer.
-            - C (incorrect): Certificate-chain validation is still required.
-            - D (correct): Error handling is application protocol policy.
+            - A (correct): Required attestation cannot be successful if no identity is returned.
+            - B (correct): Processing a valid EA object and verifying attestation are different outcomes.
+            - C (incorrect): Empty authenticators are valid refusals, not attestation success.
+            - D (correct): A caller needs an unambiguous result to enforce policy.
 
-            **Related:** A TLS library can provide the cryptographic API, but the application defines the surrounding contract.
+            **Related keywords:**
+            - **aTLS deployment** : the application setting where attestation policy is being evaluated
+            - **attestation identity** : identity evidence that a verifier policy can approve
+            - **policy result** : the application-visible success, refusal, or failure decision
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,c,d" data-difficulty="L3">
-        <header><h4>Q10: Which validation and API guardrails matter for RFC 9261 (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3">
+        <header><h4>Q8: How should the current same-endpoint formal models be read</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. APIs should fail for TLS or DTLS versions earlier than 1.2</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. TLS 1.2 use is fine even when extended master secret was not negotiated</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. Signature and MAC validation should use constant-time comparisons</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. The TLS library is a good place to implement creation and validation APIs</label>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. As proof that RFC 9261 Exported Authenticators generally fail under key leakage</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. As reduced-model evidence for a proof obligation, because parts of RFC 9261 validation are abstracted away</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. As evidence that CertificateVerify and Finished are optional in the RFC</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** RFC 9261 is not only a wire format. It also gives implementation guidance that prevents fragile security APIs.
+            **Question intent:** Keep model conclusions aligned with what the model actually includes.
 
-            **Terms:** **extended master secret** protects TLS 1.2 connections from key synchronization problems. **constant-time comparison** reduces timing leakage during signature or MAC checks.
-
-            **Real-world usage:** These guardrails matter when choosing whether to expose Exported Authenticator support from a TLS library or build it around lower-level exporter access.
+            **Terms:** **Reduced model** means a simpler model that leaves out some details. **Proof obligation** means something that still needs to be shown in the full system.
 
             **Options:**
-            - A (correct): RFC 9261 APIs must fail for TLS or DTLS 1.1 and earlier.
-            - B (incorrect): TLS 1.2 requires the extended master secret extension for this use.
-            - C (correct): Constant-time validation is recommended for signature and MAC checks.
-            - D (correct): RFC 9261 recommends TLS-library APIs for this behavior.
+            - A (incorrect): That is stronger than the model supports.
+            - B (correct): The model omits the full CertificateVerify and Finished transcript checks.
+            - C (incorrect): Those checks are central to non-empty authenticator validation.
 
-            **Related:** The boundary between library and application should be deliberate: the TLS library can handle certificate and extension logic, while the application handles protocol semantics.
+            **Related keywords:**
+            - **same-endpoint model** : model focused on one endpoint setting
+            - **abstraction** : simplifying away details to study a narrower property
+            - **proof obligation** : claim that still needs full-system validation
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3">
+        <header><h4>Q9: How should an exporter-label finding in this report be scoped</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. It proves that RFC 9261 registered exporter labels are wrong</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. It means exporter labels are never part of verifier policy</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. It concerns deployment-specific attestation-binder parameters and verifier policy</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Question intent:** Prevent a deployment-specific parameter issue from being misread as a defect in RFC 9261 labels.
+
+            **Terms:** **Exporter label** names a TLS exporter use. **Attestation binder** is a deployment-specific value that links attestation evidence to the protocol context.
+
+            **Options:**
+            - A (incorrect): The finding is not a claim that RFC 9261's registered labels are incorrect.
+            - B (incorrect): Labels and binder parameters can matter to policy design.
+            - C (correct): The scope is deployment-specific parameters and verifier policy.
+
+            **Related keywords:**
+            - **exporter label** : string separating one TLS exporter use from another
+            - **attestation binder** : application-specific value tying evidence to context
+            - **verifier policy** : rule that decides whether evidence is acceptable
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
+        <header><h4>Q10: How should the missing-attestation finding be classified</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. As an application policy question about distinguishing no attestation from verified attestation</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. As an RFC 9261 violation whenever an empty authenticator is sent</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. As evidence that RFC 9261 forbids authenticated refusals</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            **Question intent:** State the report claim precisely: the risk is policy interpretation, not the existence of empty authenticators.
+
+            **Terms:** **Missing attestation** means no attestation identity was returned to satisfy policy. **Verified attestation** means the verifier accepted evidence under its policy.
+
+            **Options:**
+            - A (correct): The application must not collapse no-attestation into attestation success.
+            - B (incorrect): RFC 9261 allows empty authenticators.
+            - C (incorrect): Authenticated refusals are part of the protocol.
+
+            **Related keywords:**
+            - **missing attestation** : absence of identity evidence needed by policy
+            - **verified attestation** : evidence accepted by the verifier
+            - **RFC violation** : behavior that contradicts the RFC itself
           </div>
         </div>
       </article>
