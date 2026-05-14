@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOLOZU — Framework-agnostic Vision Model Evaluation Toolkit</title>
+  <meta name="description" content="YOLOZU is an Apache-2.0 toolkit for framework-agnostic vision model evaluation using stable predictions.json interface contracts across PyTorch, ONNX Runtime, TensorRT, and custom inference backends." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="color-scheme" content="dark light" />
+  <link rel="canonical" href="https://www.toppymicros.com/yolozu/" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="YOLOZU — Framework-agnostic Vision Model Evaluation Toolkit" />
+  <meta property="og:description" content="Predictions-first evaluation for detection, segmentation, keypoints, monocular depth, and 6DoF pose across PyTorch, ONNX Runtime, TensorRT, and custom inference backends." />
+  <meta property="og:url" content="https://www.toppymicros.com/yolozu/" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="YOLOZU — Framework-agnostic Vision Model Evaluation Toolkit" />
+  <meta name="twitter:description" content="Apache-2.0 predictions-first vision model evaluation for teams that need fair cross-framework reports." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.toppymicros.com/#organization",
+      "name": "ToppyMicroServices OÜ",
+      "url": "https://www.toppymicros.com/",
+      "email": "info@toppymicros.com",
+      "logo": "https://www.toppymicros.com/216722720.png",
+      "sameAs": [
+        "https://github.com/ToppyMicroServices"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.toppymicros.com/yolozu/#software",
+      "name": "YOLOZU",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "softwareVersion": "4.4.0",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "description": "YOLOZU is a framework-agnostic vision model evaluation toolkit centered on stable predictions.json interface contracts.",
+      "url": "https://www.toppymicros.com/yolozu/",
+      "publisher": {
+        "@id": "https://www.toppymicros.com/#organization"
+      },
+      "codeRepository": "https://github.com/ToppyMicroServices/YOLOZU",
+      "sameAs": [
+        "https://pypi.org/project/yolozu/",
+        "https://doi.org/10.5281/zenodo.18744756",
+        "https://doi.org/10.5281/zenodo.18744926"
+      ],
+      "keywords": "vision model evaluation, object detection, instance segmentation, keypoints, monocular depth, 6DoF pose, ONNX Runtime, TensorRT"
+    }
+  ]
+}
+  </script>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --fg: #edf4ff;
+      --muted: #a4b3cb;
+      --card: #0d1a30;
+      --card-soft: #10213d;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --border: rgba(147, 197, 253, 0.18);
+      --shadow: 0 18px 50px rgba(3, 9, 20, 0.34);
+      --maxw: 1040px;
+      --navh: 64px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f9ff;
+        --fg: #0f1f38;
+        --muted: #5d708f;
+        --card: #ffffff;
+        --card-soft: #eef6ff;
+        --accent: #0369a1;
+        --accent-2: #15803d;
+        --border: rgba(30, 64, 175, 0.14);
+        --shadow: 0 20px 60px rgba(37, 99, 235, 0.08);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      color: var(--fg);
+      background:
+        radial-gradient(960px 560px at 10% -10%, rgba(56, 189, 248, 0.18), transparent 58%),
+        radial-gradient(840px 520px at 88% 0%, rgba(34, 197, 94, 0.14), transparent 54%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible, .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.92em;
+    }
+    pre {
+      overflow: auto;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #07111f;
+      color: #edf4ff;
+    }
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .sr-only:focus {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      clip: auto;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #06111f;
+      display: inline-block;
+      font-weight: 700;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: var(--navh);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: saturate(150%) blur(12px);
+      background: color-mix(in hsl, var(--bg) 86%, transparent);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--fg);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    .brand:hover { text-decoration: none; }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
+    .nav-links a { color: var(--fg); opacity: 0.92; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: color-mix(in hsl, var(--card) 86%, transparent);
+      color: var(--fg);
+      font-weight: 700;
+      transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn:hover {
+      border-color: var(--accent);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+    .btn.primary {
+      border: none;
+      color: #04111f;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 16px 34px rgba(14, 165, 233, 0.24);
+    }
+    .btn.quiet { color: var(--muted); }
+    main { padding-bottom: 48px; }
+    section {
+      padding: 34px 0;
+      border-top: 1px solid var(--border);
+      scroll-margin-top: calc(var(--navh) + 12px);
+    }
+    .hero {
+      padding: 62px 0 42px;
+      border-top: 0;
+    }
+    .hero-grid {
+      display: grid;
+      gap: 24px;
+      align-items: start;
+      grid-template-columns: minmax(0, 1.55fr) minmax(290px, 0.9fr);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: color-mix(in hsl, var(--card) 86%, transparent);
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.06;
+      letter-spacing: -0.035em;
+    }
+    h2 { margin: 0 0 10px; font-size: clamp(24px, 3vw, 32px); line-height: 1.2; }
+    h3 { margin: 0 0 6px; font-size: 18px; }
+    p { margin-top: 0; }
+    .tagline {
+      margin: 0 0 14px;
+      max-width: 64ch;
+      font-size: clamp(18px, 2vw, 22px);
+      color: var(--fg);
+      font-weight: 700;
+    }
+    .lead,
+    .section-copy,
+    .panel p,
+    .summary-card p,
+    .note {
+      color: var(--muted);
+    }
+    .lead { max-width: 68ch; font-size: 17px; }
+    .hero-actions,
+    .link-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .summary-card,
+    .panel,
+    .notice {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(180deg, color-mix(in hsl, var(--card-soft) 84%, transparent), var(--card));
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .summary-list,
+    .check-list {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .summary-list li,
+    .check-list li { margin: 7px 0; }
+    .feature-grid,
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .kicker {
+      margin: 0 0 6px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .pill {
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: color-mix(in hsl, var(--card) 82%, transparent);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .step {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: color-mix(in hsl, var(--card) 86%, transparent);
+    }
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      padding: 24px 0 40px;
+    }
+    .footer-row,
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    @media (max-width: 820px) {
+      .hero-grid,
+      .feature-grid,
+      .resource-grid,
+      .workflow {
+        grid-template-columns: 1fr;
+      }
+      .nav {
+        flex-wrap: wrap;
+      }
+      .nav-links {
+        width: 100%;
+      }
+    }
+  </style>
+  <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+  <script defer src="/assets/global.js"></script>
+</head>
+<body>
+  <a href="#main" class="sr-only">Skip to content</a>
+
+  <header>
+    <nav class="container nav" aria-label="Main">
+      <a href="/" class="brand" aria-label="ToppyMicroServices home">
+        <img src="/216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" />
+        <span>ToppyMicroServices</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#resources">Resources</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" aria-label="YOLOZU overview">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Apache-2.0 vision evaluation toolkit</div>
+          <h1>YOLOZU — Framework-agnostic vision model evaluation toolkit</h1>
+          <p class="tagline">Bring your own inference. Export once. Evaluate fairly.</p>
+          <p class="lead">YOLOZU evaluates vision model outputs through a stable <code>predictions.json</code> interface contract instead of tying reports to one training or inference framework. It is built for teams comparing PyTorch, ONNX Runtime, TensorRT, and custom inference backends without silent metric drift.</p>
+          <div class="hero-actions" aria-label="Primary links">
+            <a class="btn primary" href="https://github.com/ToppyMicroServices/YOLOZU" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+            <a class="btn" href="https://pypi.org/project/yolozu/" target="_blank" rel="noopener noreferrer">PyPI package</a>
+            <a class="btn" href="#quickstart">Quickstart</a>
+          </div>
+          <div class="pill-row" aria-label="Supported evaluation areas">
+            <span class="pill">Detection</span>
+            <span class="pill">Instance segmentation</span>
+            <span class="pill">Keypoints</span>
+            <span class="pill">Monocular depth</span>
+            <span class="pill">6DoF pose</span>
+          </div>
+        </div>
+
+        <aside class="summary-card" aria-label="Why YOLOZU exists">
+          <h2>Why predictions-first?</h2>
+          <p>Framework-native evaluation is convenient inside one stack, but cross-stack comparisons can drift when preprocessing, thresholds, metadata, or report formats move. YOLOZU keeps the evaluation boundary explicit: validate prediction artifacts first, then evaluate them with pinned settings.</p>
+          <ul class="summary-list">
+            <li>Stable wrapped <code>predictions.json</code> interface contract</li>
+            <li>Protocol-pinned <code>meta.export_settings</code></li>
+            <li>Human-readable diagnostics with <code>yolozu doctor --explain</code></li>
+            <li>Visible PNG evidence in the instance-seg quickstart path</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-labelledby="fit-title">
+      <p class="kicker">Use cases</p>
+      <h2 id="fit-title">What YOLOZU is for</h2>
+      <p class="section-copy">YOLOZU is the evaluation lane for teams that already have, or can export, prediction artifacts and need comparable reports across model families or runtime backends.</p>
+      <div class="feature-grid">
+        <article class="panel">
+          <h3>Fair cross-framework evaluation</h3>
+          <p>Compare outputs from Ultralytics, RT-DETR, Detectron2, MMDetection, or custom inference through the same prediction artifact path.</p>
+        </article>
+        <article class="panel">
+          <h3>Backend parity checks</h3>
+          <p>Qualify PyTorch, ONNX Runtime, TensorRT, TorchScript, and adapter targets while labeling real, placeholder, skipped, and dry-run support clearly.</p>
+        </article>
+        <article class="panel">
+          <h3>Reproducible reports</h3>
+          <p>Keep dataset split, metric protocol, export settings, and artifact paths explicit enough for review and follow-up debugging.</p>
+        </article>
+        <article class="panel">
+          <h3>Beginner-friendly diagnostics</h3>
+          <p>Use <code>yolozu guide</code> and <code>yolozu doctor --explain</code> when a JSON-only diagnostic is too dense for a first run.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="quickstart" aria-labelledby="quickstart-title">
+      <p class="kicker">Quickstart</p>
+      <h2 id="quickstart-title">Install and run a visible demo</h2>
+      <p class="section-copy">The shortest path checks the environment, runs an instance-segmentation demo, and writes both a JSON report and PNG overlays.</p>
+      <pre><code>python3 -m pip install -U yolozu
+yolozu doctor --explain
+yolozu demo instance-seg --run-dir reports/quickstart_instance_seg --progress</code></pre>
+      <ul class="check-list">
+        <li>Report: <code>reports/quickstart_instance_seg/instance_seg_demo_report.json</code></li>
+        <li>Images: <code>reports/quickstart_instance_seg/overlays/*.png</code></li>
+        <li>Next-step help: <code>yolozu guide</code> or <code>yolozu guide --goal evaluate</code></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="workflow-title">
+      <p class="kicker">Evaluation flow</p>
+      <h2 id="workflow-title">How the lane works</h2>
+      <div class="workflow" aria-label="YOLOZU workflow">
+        <div class="step">
+          <strong>1. Export</strong>
+          <span>Bring predictions from any framework or runtime.</span>
+        </div>
+        <div class="step">
+          <strong>2. Validate</strong>
+          <span>Check the predictions interface contract before scoring.</span>
+        </div>
+        <div class="step">
+          <strong>3. Evaluate</strong>
+          <span>Run the pinned metric protocol for the task.</span>
+        </div>
+        <div class="step">
+          <strong>4. Compare</strong>
+          <span>Review reports, PNG evidence, and parity artifacts.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="resources" aria-labelledby="resources-title">
+      <p class="kicker">Resources</p>
+      <h2 id="resources-title">Official links</h2>
+      <p class="section-copy">These are the canonical public surfaces for installation, source review, archived releases, and the manual.</p>
+      <div class="resource-grid">
+        <article class="panel">
+          <h3>Source and issues</h3>
+          <p>Review the Apache-2.0 repository, file issues, and inspect the current README and documentation map.</p>
+          <div class="link-actions">
+            <a class="btn" href="https://github.com/ToppyMicroServices/YOLOZU" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a class="btn quiet" href="https://github.com/ToppyMicroServices/YOLOZU/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+          </div>
+        </article>
+        <article class="panel">
+          <h3>Install package</h3>
+          <p>Install the current Python package from PyPI and use the CLI entrypoint <code>yolozu</code>.</p>
+          <div class="link-actions">
+            <a class="btn" href="https://pypi.org/project/yolozu/" target="_blank" rel="noopener noreferrer">PyPI</a>
+          </div>
+        </article>
+        <article class="panel">
+          <h3>Manual and DOI records</h3>
+          <p>Use the archived software and manual records when you need a stable citation trail.</p>
+          <div class="link-actions">
+            <a class="btn" href="https://doi.org/10.5281/zenodo.18744756" target="_blank" rel="noopener noreferrer">Software DOI</a>
+            <a class="btn quiet" href="https://doi.org/10.5281/zenodo.18744926" target="_blank" rel="noopener noreferrer">Manual DOI</a>
+          </div>
+        </article>
+        <article class="panel">
+          <h3>Interface contract</h3>
+          <p>Start with the predictions schema when wiring a new model, runtime, or export adapter into the evaluation lane.</p>
+          <div class="link-actions">
+            <a class="btn" href="https://github.com/ToppyMicroServices/YOLOZU/blob/main/docs/predictions_schema.md" target="_blank" rel="noopener noreferrer">Predictions schema</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="license-title">
+      <p class="kicker">License</p>
+      <h2 id="license-title">Apache-2.0 boundary</h2>
+      <div class="notice">
+        <p>YOLOZU is published under Apache-2.0. The primary lane is framework-agnostic prediction validation and evaluation; optional adapters and research paths are labeled separately so production users can choose the stable surface first.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <img src="/216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" loading="lazy" decoding="async" />
+        <div>© 2026 ToppyMicroServices OÜ</div>
+      </div>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="/">Home</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/security-policy.html">Security Policy</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms-legal-notice.html">Terms / Legal Notice</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
