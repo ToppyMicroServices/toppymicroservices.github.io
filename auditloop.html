@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AuditLoop | ToppyMicroServices</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="AuditLoop is ToppyMicroServices' business-facing interpretation layer for AI reliability: evaluation boundaries, failure-mode reports, and delivery artifacts." />
+<meta name="robots" content="index,follow" />
+<meta name="theme-color" content="#0b1221" />
+<meta name="color-scheme" content="dark light" />
+<link rel="canonical" href="https://www.toppymicros.com/auditloop.html" />
+
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="AuditLoop | ToppyMicroServices" />
+<meta property="og:description" content="Evaluation boundaries, failure-mode reports, and delivery artifacts for AI reliability work." />
+<meta property="og:url" content="https://www.toppymicros.com/auditloop.html" />
+<meta property="og:site_name" content="ToppyMicroServices" />
+<meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AuditLoop | ToppyMicroServices" />
+<meta name="twitter:description" content="Evaluation boundaries, failure-mode reports, and delivery artifacts for AI reliability work." />
+<meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+<style>
+  :root {
+    --bg: #0b1221;
+    --fg: #e6e9f2;
+    --muted: #a7b0c3;
+    --card: #121a2e;
+    --accent: #5aa7ff;
+    --accent-2: #72e5b6;
+    --border: #1b2540;
+    --maxw: 1040px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #ffffff;
+      --fg: #0b1221;
+      --muted: #5b667a;
+      --card: #f7f9fc;
+      --accent: #0056cc;
+      --accent-2: #088a5b;
+      --border: #e6e9f2;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+  header { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--border); backdrop-filter: blur(8px) saturate(150%); background: color-mix(in hsl, var(--bg) 88%, transparent); }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--fg); font-weight: 700; white-space: nowrap; }
+  .brand-logo { height: 28px; width: auto; border-radius: 6px; }
+  .links { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+  .links a { color: var(--fg); opacity: .9; }
+  .btn { display: inline-block; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--fg); font-weight: 600; }
+  .btn:hover { border-color: var(--accent); text-decoration: none; }
+  .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #0b1221; border: none; }
+  .hero { padding: 52px 0 24px; }
+  .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
+  h1 { font-size: clamp(32px, 5vw, 58px); line-height: 1.05; margin: 0 0 12px; letter-spacing: 0; }
+  h2 { font-size: 24px; margin: 0 0 10px; }
+  h3 { font-size: 18px; margin: 0 0 6px; }
+  p { margin: 0 0 10px; }
+  .lead { max-width: 780px; font-size: 18px; color: var(--muted); margin: 0 0 14px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  section { padding: 30px 0; border-top: 1px solid var(--border); }
+  .section-kicker { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
+  .section-lead { color: var(--muted); margin: 0 0 14px; max-width: 760px; }
+  .grid { display: grid; gap: 16px; }
+  .card { padding: 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); }
+  .card p:last-child { margin-bottom: 0; }
+  ul { margin: 0; padding-left: 18px; color: var(--muted); }
+  ul li + li { margin-top: 8px; }
+  footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+  .footer-row { display: flex; align-items: center; gap: 10px; }
+  .footer-logo { height: 28px; width: auto; border-radius: 6px; }
+  @media (min-width: 760px) {
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    .nav { flex-wrap: wrap; }
+    .links { width: 100%; }
+  }
+</style>
+<script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+<script defer src="/assets/global.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="container nav" aria-label="Main">
+      <a href="/" class="brand" aria-label="ToppyMicroServices home">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" />
+        <span>ToppyMicroServices OÜ</span>
+      </a>
+      <div class="links">
+        <a href="/">Home</a>
+        <a href="/#proof">Proof</a>
+        <a href="/#services">Services</a>
+        <a href="/contact.html" class="btn">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-label="AuditLoop hero">
+      <p class="eyebrow">AuditLoop</p>
+      <h1>Business-facing AI reliability work, not a raw research link</h1>
+      <p class="lead">AuditLoop is the interpretation layer between Toppy's calibration research and practical delivery: it defines what to measure, what to report, and what a small team can operate after launch.</p>
+      <div class="actions">
+        <a class="btn primary" href="/contact.html">Discuss an evaluation</a>
+        <a class="btn" href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">Read background paper</a>
+      </div>
+    </section>
+
+    <section aria-label="What AuditLoop is">
+      <p class="section-kicker">Definition</p>
+      <h2>What AuditLoop is</h2>
+      <p class="section-lead">AuditLoop is a practical reliability workflow for model-mediated operations. It turns model behavior into testable evidence, failure-mode notes, and escalation rules that can be reviewed by operators.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>What it measures</h3>
+          <ul>
+            <li>Task boundaries, refusal behavior, confidence, and ambiguous cases.</li>
+            <li>Failure modes, severity, recurrence, and operational impact.</li>
+            <li>Human escalation points and evidence needed for review.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What it produces</h3>
+          <ul>
+            <li>Evaluation criteria and test cases.</li>
+            <li>Failure-mode report with unresolved risks.</li>
+            <li>Escalation map and implementation priorities.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Research relationship">
+      <p class="section-kicker">Research link</p>
+      <h2>Where the arXiv paper fits</h2>
+      <p class="section-lead">The overconfidence and calibration paper is theoretical background, not the delivered product by itself. AuditLoop uses that line of reasoning to make practical questions explicit: when a model sounds stable, where can it still be miscalibrated, and what evidence would let a team notice?</p>
+      <div class="actions">
+        <a class="btn" href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">Paper</a>
+        <a class="btn" href="https://doi.org/10.5281/zenodo.17358362" target="_blank" rel="noopener noreferrer">Zenodo concept</a>
+      </div>
+    </section>
+
+    <section aria-label="Delivery">
+      <p class="section-kicker">Delivery</p>
+      <h2>What an engagement can look like</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Evaluation sprint</h3>
+          <p>Short, bounded review of one model-mediated workflow, ending in test cases, failure modes, escalation rules, and unresolved risks.</p>
+        </div>
+        <div class="card">
+          <h3>Reliability review</h3>
+          <p>Deeper review for teams preparing a launch, vendor decision, governance discussion, or internal automation rollout.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async" />
+        <div>© 2026 ToppyMicroServices OÜ</div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
