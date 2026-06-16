@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Session-Bound Identity for Agent Protocols | ToppyMicroServices</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Reader-facing entry point for the Hardware-Aware TLS Identity Binding Profile: a security-hardening profile and implementation experiment for binding delegated agent identity to a TLS and attestation session." />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta name="theme-color" content="#10100f" />
+<meta name="color-scheme" content="dark light" />
+<link rel="canonical" href="https://www.toppymicros.com/hwtls-identity-binding.html" />
+
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Session-Bound Identity for Agent Protocols | ToppyMicroServices" />
+<meta property="og:description" content="A short technical note and entry point for a hardware-aware TLS identity-binding security profile." />
+<meta property="og:url" content="https://www.toppymicros.com/hwtls-identity-binding.html" />
+<meta property="og:site_name" content="ToppyMicroServices" />
+<meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Session-Bound Identity for Agent Protocols | ToppyMicroServices" />
+<meta name="twitter:description" content="A short technical note and entry point for a hardware-aware TLS identity-binding security profile." />
+<meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Session-Bound Identity for Agent Protocols",
+  "description": "Reader-facing entry point for the Hardware-Aware TLS Identity Binding Profile.",
+  "url": "https://www.toppymicros.com/hwtls-identity-binding.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ToppyMicroServices OÜ",
+    "url": "https://www.toppymicros.com/"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Akira",
+    "url": "https://github.com/thinksyncs"
+  },
+  "sameAs": "https://github.com/thinksyncs/hardware-aware-tls-identity-binding"
+}
+</script>
+
+<style>
+  :root {
+    --bg: #10100f;
+    --fg: #fff8ec;
+    --muted: #c8bdae;
+    --card: #181715;
+    --card-2: #221f1a;
+    --accent: #f97316;
+    --accent-2: #8bd3a7;
+    --accent-3: #f5cf66;
+    --border: rgba(255, 248, 236, 0.17);
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.30);
+    --maxw: 1040px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fbf7ef;
+      --fg: #171411;
+      --muted: #675d51;
+      --card: rgba(255,255,255,0.84);
+      --card-2: rgba(255,253,248,0.96);
+      --accent: #c2410c;
+      --accent-2: #0f766e;
+      --accent-3: #92400e;
+      --border: rgba(23, 20, 17, 0.14);
+      --shadow: 0 20px 60px rgba(120, 53, 15, 0.10);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, system-ui, sans-serif;
+    background:
+      radial-gradient(900px 560px at 12% -12%, rgba(249, 115, 22, 0.18), transparent 60%),
+      radial-gradient(820px 520px at 92% 0%, rgba(139, 211, 167, 0.12), transparent 55%),
+      var(--bg);
+    color: var(--fg);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.95em;
+    padding: 0.12em 0.35em;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: color-mix(in hsl, var(--card) 72%, var(--bg) 28%);
+    white-space: nowrap;
+  }
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px) saturate(150%);
+    background: color-mix(in hsl, var(--bg) 88%, transparent);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--fg); font-weight: 700; white-space: nowrap; }
+  .brand-logo { height: 28px; width: auto; border-radius: 6px; }
+  .links { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+  .links a { color: var(--fg); opacity: .9; }
+  .btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: color-mix(in hsl, var(--card) 86%, transparent);
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .btn:hover { border-color: var(--accent); text-decoration: none; }
+  .btn.primary {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #10100f;
+    border: none;
+  }
+  main { padding-bottom: 32px; }
+  .hero { padding: 52px 0 26px; }
+  .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
+  h1 { font-size: clamp(32px, 5vw, 58px); line-height: 1.05; margin: 0 0 12px; letter-spacing: 0; max-width: 900px; }
+  h2 { font-size: 24px; margin: 0 0 10px; letter-spacing: 0; }
+  h3 { font-size: 18px; margin: 0 0 6px; letter-spacing: 0; }
+  p { margin: 0 0 10px; }
+  .lead { max-width: 780px; font-size: 18px; color: var(--muted); margin: 0 0 14px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  section { padding: 30px 0; border-top: 1px solid var(--border); }
+  .section-kicker { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
+  .section-lead { color: var(--muted); margin: 0 0 14px; max-width: 780px; }
+  .grid { display: grid; gap: 16px; }
+  .card {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card-2) 86%, transparent);
+    box-shadow: var(--shadow);
+  }
+  .card p:last-child { margin-bottom: 0; }
+  .note {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-2);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card) 82%, transparent);
+    color: var(--muted);
+  }
+  .muted { color: var(--muted); }
+  ul { margin: 0; padding-left: 20px; color: var(--muted); }
+  li + li { margin-top: 8px; }
+  .link-list {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    margin-top: 14px;
+  }
+  .link-list .btn { text-align: center; }
+  footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+  .footer-row { display: flex; align-items: center; gap: 10px; }
+  .footer-logo { height: 28px; width: auto; border-radius: 6px; }
+  .footer-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  @media (min-width: 760px) {
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    .nav { flex-wrap: wrap; }
+    .links { width: 100%; }
+  }
+</style>
+<script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+<script defer src="/assets/global.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="container nav" aria-label="Main">
+      <a href="/" class="brand" aria-label="ToppyMicroServices home">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" />
+        <span>ToppyMicroServices OÜ</span>
+      </a>
+      <div class="links">
+        <a href="/">Home</a>
+        <a href="/#proof">Proof</a>
+        <a href="/#research">Lab</a>
+        <a href="/security-policy.html">Security</a>
+        <a href="/contact.html" class="btn">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-label="Hardware-aware TLS identity-binding profile">
+      <p class="eyebrow">Technical note</p>
+      <h1>Session-Bound Identity for Agent Protocols</h1>
+      <p class="lead">Binding delegated agent identity to the actual TLS and attestation session.</p>
+      <p class="section-lead">We propose this as a security profile, implementation experiment, and optional hardening layer for agent protocols such as AGTP or A2A. It is not a replacement for those protocols.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+      </div>
+    </section>
+
+    <section aria-label="Source of truth">
+      <p class="section-kicker">Source of truth</p>
+      <h2>This page is an entry point, not the specification</h2>
+      <p class="note">The only source of truth for the profile is <code>docs/SSOT.md</code> in the GitHub repository. This ToppyMicroServices page is a short reader-facing note and link hub. If this page and the SSOT ever differ, the SSOT wins.</p>
+    </section>
+
+    <section aria-label="Problem">
+      <p class="section-kicker">Problem</p>
+      <h2>TLS and attestation do not name the whole delegation</h2>
+      <p class="section-lead">A valid TLS session or attested platform can still be the wrong session, wrong task, wrong delegation, or wrong authority boundary for the receiving application.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Valid credentials are not enough</h3>
+          <p class="muted">A peer can present valid cryptographic material while still causing replay, relay, diversion, wrong-agent, or confused-deputy failures.</p>
+        </div>
+        <div class="card">
+          <h3>Peer metadata is not policy</h3>
+          <p class="muted">The receiver should not turn service, tenant, task, scope, or agent metadata supplied by the peer into local authorization policy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Approach">
+      <p class="section-kicker">Approach</p>
+      <h2>Separate authority from session proof</h2>
+      <p class="section-lead">This profile separates who is allowed to authorize a delegated identity from who proves possession in the live TLS or attestation-bound session.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Two signed materials</h3>
+          <ul>
+            <li>Identity Grant: Manager or policy authority signs the intended agent, task, delegation, scope, and related values.</li>
+            <li>Session Binding Statement: the holder of the authorized confirmation key binds that exact grant to the accepted session.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Three key roles</h3>
+          <ul>
+            <li>Manager or policy-authority key for Identity Grants.</li>
+            <li>Agent confirmation key for Session Binding Statements.</li>
+            <li>TLS endpoint key for the accepted TLS or exported-authenticator endpoint.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Local policy comparison</h3>
+          <p class="muted">The receiver compares signed and session-bound material against local expected policy. Observed peer values do not become expected policy by themselves.</p>
+        </div>
+        <div class="card">
+          <h3>Optional hardening profile</h3>
+          <p class="muted">For AGTP/A2A-style agent protocols, this is an optional security-hardening profile layered around identity, delegation, and session binding.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Implemented work">
+      <p class="section-kicker">Implemented work</p>
+      <h2>What the repository currently contains</h2>
+      <p class="section-lead">The implementation tests focus on fail-closed acceptance: attacker-shaped input should be rejected before an application treats the observed identity as accepted.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Token profiles</h3>
+          <ul>
+            <li>JWT/JWS Identity Grant and Session Binding Statement profile.</li>
+            <li>CWT/COSE verifier coverage for the same trust model.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Verifier and cache safety</h3>
+          <ul>
+            <li>Local expected-policy comparison before acceptance.</li>
+            <li>Response-cache safety policy for caller-dependent results.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Red-team coverage</h3>
+          <ul>
+            <li>Live-style red-team tests for replay, relay, diversion, wrong-agent, key-role confusion, grant substitution, and cache misuse.</li>
+            <li>Separate notes for boundaries that remain outside the direct-Agent profile.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Readable specification artifact</h3>
+          <p class="muted">The repository includes the Markdown SSOT and a rendered PDF for review.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View test notes</a>
+      </div>
+    </section>
+
+    <section aria-label="Boundaries">
+      <p class="section-kicker">Boundaries</p>
+      <h2>What is not claimed</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Not a standard</h3>
+          <ul>
+            <li>This is not an IETF standard or consensus document.</li>
+            <li>This is not AGTP or A2A core protocol text.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Not a deployment claim</h3>
+          <ul>
+            <li>This page does not claim hardware confidential-VM evidence has been measured across all environments.</li>
+            <li>Gateway-routed deployments remain separate design work because the gateway trust model is different.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Links">
+      <p class="section-kicker">Links</p>
+      <h2>Repository entry points</h2>
+      <p class="section-lead">Use the repository documents for the current profile text, rendered specification, and red-team evidence.</p>
+      <div class="link-list">
+        <a class="btn primary" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding" target="_blank" rel="noopener noreferrer">View GitHub repository</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async" />
+        <div>© 2026 ToppyMicroServices OÜ</div>
+      </div>
+      <div>Karamelli tn 2, 11317 Tallinn, Harju County, Estonia</div>
+      <div>Registry code: 16551297</div>
+      <div class="footer-links" aria-label="Legal links">
+        <a href="/">Home</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/security-policy.html">Security Policy</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms-legal-notice.html">Terms / Legal Notice</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
