@@ -201,6 +201,97 @@
     box-shadow: var(--shadow);
     overflow: hidden;
     min-width: 0;
+    padding: 14px;
+  }
+  .lane-board {
+    display: grid;
+    gap: 14px;
+  }
+  .flow-lane {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card) 82%, transparent);
+  }
+  .flow-lane.good { border-left: 4px solid var(--accent-2); }
+  .flow-lane.bad { border-left: 4px solid var(--danger); }
+  .flow-lane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .flow-lane-title {
+    margin: 0;
+    font-size: 17px;
+  }
+  .flow-lane-note {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .flow-steps {
+    display: grid;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .flow-card {
+    display: grid;
+    gap: 7px;
+    align-content: start;
+    min-height: 108px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card-2) 92%, transparent);
+    opacity: .76;
+  }
+  .flow-card strong {
+    display: block;
+    color: var(--fg);
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .flow-card span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .packet-pill {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .packet-pill.grant { border-color: var(--accent-3); }
+  .packet-pill.binding { border-color: var(--accent-2); }
+  .packet-pill.metadata { border-color: var(--danger); }
+  .outcome-card {
+    display: grid;
+    place-items: center;
+    min-height: 108px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid currentColor;
+    font-weight: 800;
+    letter-spacing: .04em;
+    opacity: .82;
+  }
+  .outcome-card.accept {
+    color: var(--accent-2);
+    background: color-mix(in hsl, var(--accent-2) 15%, var(--card) 85%);
+  }
+  .outcome-card.reject {
+    color: var(--danger);
+    background: color-mix(in hsl, var(--danger) 13%, var(--card) 87%);
   }
   .flow-svg {
     display: block;
@@ -258,6 +349,8 @@
     stroke: var(--danger);
   }
   .session-demo.is-playing .flow-step,
+  .session-demo.is-playing .flow-card,
+  .session-demo.is-playing .outcome-card,
   .session-demo.is-playing .check-item,
   .session-demo.is-playing .result-badge {
     animation: stepPulse 1.25s ease-out both;
@@ -357,6 +450,12 @@
   @media (min-width: 760px) {
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .demo-layout { grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); align-items: stretch; }
+    .flow-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 759px) {
+    .flow-steps { grid-template-columns: minmax(0, 1fr); }
+    .flow-card,
+    .outcome-card { min-height: auto; }
   }
   @media (max-width: 760px) {
     .nav { flex-wrap: wrap; }
@@ -430,94 +529,57 @@
       <div class="session-demo is-playing" data-session-demo>
         <div class="demo-layout">
           <div class="demo-canvas">
-            <svg class="flow-svg" viewBox="0 0 980 560" role="img" aria-labelledby="session-demo-svg-title session-demo-svg-desc">
-              <title id="session-demo-svg-title">Session-bound identity happy path and attack path</title>
-              <desc id="session-demo-svg-desc">Manager issues an Identity Grant to Agent. Agent starts a TLS and attestation session with Alice Verifier and sends a Session Binding Statement. Alice accepts the happy path and rejects replay, grant substitution, and metadata injection attempts from Attacker.</desc>
-              <defs>
-                <marker id="arrow-happy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-2)"></path>
-                </marker>
-                <marker id="arrow-attack" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--danger)"></path>
-                </marker>
-              </defs>
+            <div class="lane-board" role="img" aria-label="Session-bound identity flow: happy path accepts, attack path rejects">
+              <div class="flow-lane good">
+                <div class="flow-lane-head">
+                  <h3 class="flow-lane-title">Happy path</h3>
+                  <span class="flow-lane-note">grant and live session match</span>
+                </div>
+                <div class="flow-steps">
+                  <div class="flow-card step-1">
+                    <strong>1. Manager</strong>
+                    <span>Issues the delegated identity.</span>
+                    <span class="packet-pill grant">Identity Grant packet</span>
+                  </div>
+                  <div class="flow-card step-2">
+                    <strong>2. Agent</strong>
+                    <span>Starts the TLS / attestation session.</span>
+                    <span class="packet-pill binding">live session</span>
+                  </div>
+                  <div class="flow-card step-3">
+                    <strong>3. Agent → Alice</strong>
+                    <span>Sends proof for this grant and this session.</span>
+                    <span class="packet-pill binding">Session Binding Statement packet</span>
+                  </div>
+                  <div class="outcome-card accept step-5">Result: ACCEPT</div>
+                </div>
+              </div>
 
-              <text x="42" y="34" class="label-text">Happy path</text>
-              <text x="42" y="326" class="label-text">Attack path</text>
-
-              <g class="actor manager">
-                <rect class="actor-box" x="42" y="58" width="168" height="72" rx="10"></rect>
-                <text x="126" y="90" text-anchor="middle" class="label-text">Manager</text>
-                <text x="126" y="112" text-anchor="middle" class="small-text">policy authority</text>
-              </g>
-              <g class="actor agent">
-                <rect class="actor-box agent-box" x="394" y="58" width="168" height="72" rx="10"></rect>
-                <text x="478" y="90" text-anchor="middle" class="label-text">Agent</text>
-                <text x="478" y="112" text-anchor="middle" class="small-text">confirmation key</text>
-              </g>
-              <g class="actor alice">
-                <rect class="actor-box alice-box" x="762" y="58" width="176" height="72" rx="10"></rect>
-                <text x="850" y="90" text-anchor="middle" class="label-text">Alice Verifier</text>
-                <text x="850" y="112" text-anchor="middle" class="small-text">local expected policy</text>
-              </g>
-              <g class="actor attacker">
-                <rect class="actor-box attacker-box" x="394" y="390" width="168" height="72" rx="10"></rect>
-                <text x="478" y="422" text-anchor="middle" class="label-text">Attacker</text>
-                <text x="478" y="444" text-anchor="middle" class="small-text">replay / injection</text>
-              </g>
-
-              <g class="flow-step step-1">
-                <path class="flow-line happy-line" d="M212 94 C270 94 326 94 390 94" marker-end="url(#arrow-happy)"></path>
-                <rect class="packet-box grant-box" x="238" y="58" width="126" height="44" rx="9"></rect>
-                <text x="301" y="77" text-anchor="middle" class="small-text">Identity Grant</text>
-                <text x="301" y="94" text-anchor="middle" class="small-text">manager-signed</text>
-              </g>
-
-              <g class="flow-step step-2">
-                <path class="flow-line happy-line" d="M506 132 C548 192 712 194 805 132" marker-end="url(#arrow-happy)"></path>
-                <rect class="packet-box binding-box" x="556" y="170" width="190" height="44" rx="9"></rect>
-                <text x="651" y="189" text-anchor="middle" class="small-text">TLS / attestation session</text>
-                <text x="651" y="206" text-anchor="middle" class="small-text">fresh endpoint context</text>
-              </g>
-
-              <g class="flow-step step-3">
-                <path class="flow-line happy-line" d="M564 94 C628 94 692 94 758 94" marker-end="url(#arrow-happy)"></path>
-                <rect class="packet-box binding-box" x="604" y="58" width="124" height="52" rx="9"></rect>
-                <text x="666" y="77" text-anchor="middle" class="small-text">Session Binding</text>
-                <text x="666" y="94" text-anchor="middle" class="small-text">Statement</text>
-              </g>
-
-              <g class="flow-step step-4">
-                <rect class="packet-box binding-box" x="716" y="172" width="220" height="74" rx="10"></rect>
-                <text x="826" y="196" text-anchor="middle" class="label-text">Alice checklist</text>
-                <text x="826" y="218" text-anchor="middle" class="small-text">grant_hash, Agent key, TLS binding,</text>
-                <text x="826" y="235" text-anchor="middle" class="small-text">attestation binder, local policy</text>
-              </g>
-
-              <g class="result-badge accept-badge step-5">
-                <rect x="762" y="266" width="176" height="52" rx="12"></rect>
-                <text x="850" y="298" text-anchor="middle" class="label-text">Result: ACCEPT</text>
-              </g>
-
-              <g class="flow-step step-a1">
-                <path class="flow-line attack-line" d="M564 410 C650 380 710 322 782 250" marker-end="url(#arrow-attack)"></path>
-                <rect class="packet-box grant-box" x="588" y="328" width="160" height="46" rx="9"></rect>
-                <text x="668" y="348" text-anchor="middle" class="small-text">replay / grant</text>
-                <text x="668" y="365" text-anchor="middle" class="small-text">substitution</text>
-              </g>
-
-              <g class="flow-step step-a2">
-                <path class="flow-line attack-line" d="M564 446 C670 446 740 396 820 330" marker-end="url(#arrow-attack)"></path>
-                <rect class="packet-box metadata-box" x="628" y="428" width="146" height="44" rx="9"></rect>
-                <text x="701" y="447" text-anchor="middle" class="small-text">Metadata packet</text>
-                <text x="701" y="464" text-anchor="middle" class="small-text">peer supplied</text>
-              </g>
-
-              <g class="result-badge reject-badge step-a3">
-                <rect x="762" y="374" width="176" height="52" rx="12"></rect>
-                <text x="850" y="406" text-anchor="middle" class="label-text">Result: REJECT</text>
-              </g>
-            </svg>
+              <div class="flow-lane bad">
+                <div class="flow-lane-head">
+                  <h3 class="flow-lane-title">Attack path</h3>
+                  <span class="flow-lane-note">valid-looking material, wrong binding</span>
+                </div>
+                <div class="flow-steps">
+                  <div class="flow-card step-a1">
+                    <strong>1. Attacker</strong>
+                    <span>Replays a binding or substitutes a grant.</span>
+                    <span class="packet-pill grant">old / wrong grant</span>
+                  </div>
+                  <div class="flow-card step-a2">
+                    <strong>2. Attacker → Alice</strong>
+                    <span>Adds peer-supplied service or task metadata.</span>
+                    <span class="packet-pill metadata">Metadata packet</span>
+                  </div>
+                  <div class="flow-card step-a3">
+                    <strong>3. Alice Verifier</strong>
+                    <span>Detects grant_hash, key, session, or policy mismatch.</span>
+                    <span class="packet-pill binding">local expected policy wins</span>
+                  </div>
+                  <div class="outcome-card reject step-a3">Result: REJECT</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <aside class="check-panel card" aria-label="Alice verifier checklist">
