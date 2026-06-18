@@ -56,6 +56,7 @@
     --accent: #f97316;
     --accent-2: #8bd3a7;
     --accent-3: #f5cf66;
+    --danger: #fb7185;
     --border: rgba(255, 248, 236, 0.17);
     --shadow: 0 18px 50px rgba(0, 0, 0, 0.30);
     --maxw: 1040px;
@@ -70,6 +71,7 @@
       --accent: #c2410c;
       --accent-2: #0f766e;
       --accent-3: #92400e;
+      --danger: #be123c;
       --border: rgba(23, 20, 17, 0.14);
       --shadow: 0 20px 60px rgba(120, 53, 15, 0.10);
     }
@@ -167,16 +169,213 @@
     margin-top: 14px;
   }
   .link-list .btn { text-align: center; }
+  .session-demo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+    min-width: 0;
+  }
+  .demo-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .replay-btn {
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .demo-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    min-width: 0;
+  }
+  .demo-canvas {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, color-mix(in hsl, var(--card-2) 90%, transparent), color-mix(in hsl, var(--card) 86%, transparent));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    min-width: 0;
+  }
+  .flow-svg {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+  .flow-svg text {
+    font-family: inherit;
+    fill: var(--fg);
+    letter-spacing: 0;
+  }
+  .flow-svg .small-text { font-size: 13px; fill: var(--muted); }
+  .flow-svg .label-text { font-size: 15px; font-weight: 700; }
+  .flow-svg .actor-box {
+    fill: color-mix(in hsl, var(--card-2) 92%, transparent);
+    stroke: var(--border);
+    stroke-width: 2;
+  }
+  .flow-svg .agent-box { stroke: var(--accent-2); }
+  .flow-svg .alice-box { stroke: var(--accent-3); }
+  .flow-svg .attacker-box { stroke: var(--danger); }
+  .flow-svg .flow-line {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--muted);
+    stroke: currentColor;
+    opacity: .72;
+  }
+  .flow-svg .happy-line { color: var(--accent-2); }
+  .flow-svg .attack-line { color: var(--danger); }
+  .flow-svg .packet-box {
+    fill: color-mix(in hsl, var(--card) 92%, var(--bg) 8%);
+    stroke: var(--border);
+    stroke-width: 2;
+  }
+  .flow-svg .grant-box { stroke: var(--accent-3); }
+  .flow-svg .binding-box { stroke: var(--accent-2); }
+  .flow-svg .metadata-box { stroke: var(--danger); }
+  .flow-step { opacity: .52; }
+  .result-badge {
+    opacity: .72;
+  }
+  .result-badge rect {
+    stroke-width: 2;
+  }
+  .accept-badge rect {
+    fill: color-mix(in hsl, var(--accent-2) 24%, var(--card) 76%);
+    stroke: var(--accent-2);
+  }
+  .reject-badge rect {
+    fill: color-mix(in hsl, var(--danger) 22%, var(--card) 78%);
+    stroke: var(--danger);
+  }
+  .session-demo.is-playing .flow-step,
+  .session-demo.is-playing .check-item,
+  .session-demo.is-playing .result-badge {
+    animation: stepPulse 1.25s ease-out both;
+  }
+  .session-demo.is-playing .step-1 { animation-delay: .1s; }
+  .session-demo.is-playing .step-2 { animation-delay: 1.0s; }
+  .session-demo.is-playing .step-3 { animation-delay: 1.9s; }
+  .session-demo.is-playing .step-4 { animation-delay: 2.8s; }
+  .session-demo.is-playing .step-5 { animation-delay: 3.7s; }
+  .session-demo.is-playing .step-a1 { animation-delay: 4.8s; }
+  .session-demo.is-playing .step-a2 { animation-delay: 5.7s; }
+  .session-demo.is-playing .step-a3 { animation-delay: 6.6s; }
+  @keyframes stepPulse {
+    0% { opacity: .28; filter: none; }
+    24% { opacity: 1; filter: drop-shadow(0 0 12px color-mix(in hsl, var(--accent-2) 42%, transparent)); }
+    74% { opacity: 1; }
+    100% { opacity: .82; filter: none; }
+  }
+  .check-panel {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+  .check-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .check-item {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card) 78%, transparent);
+    color: var(--muted);
+    opacity: .78;
+  }
+  .check-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-2);
+    color: var(--accent-2);
+    font-weight: 800;
+    line-height: 1;
+  }
+  .result-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card-2) 86%, transparent);
+    max-width: 100%;
+    min-width: 0;
+  }
+  .result-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+    font-size: 14px;
+  }
+  .result-table th,
+  .result-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .result-table tr:last-child td { border-bottom: 0; }
+  .result-table th {
+    color: var(--fg);
+    background: color-mix(in hsl, var(--card) 90%, transparent);
+  }
+  .result-tag {
+    display: inline-block;
+    min-width: 74px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: .04em;
+  }
+  .result-tag.accept { color: var(--accent-2); }
+  .result-tag.reject { color: var(--danger); }
   footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
   .footer-row { display: flex; align-items: center; gap: 10px; }
   .footer-logo { height: 28px; width: auto; border-radius: 6px; }
   .footer-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
   @media (min-width: 760px) {
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .demo-layout { grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); align-items: stretch; }
   }
   @media (max-width: 760px) {
     .nav { flex-wrap: wrap; }
     .links { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .session-demo *,
+    .session-demo *::before,
+    .session-demo *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    .session-demo .flow-step,
+    .session-demo .check-item,
+    .session-demo .result-badge {
+      opacity: 1 !important;
+      filter: none !important;
+    }
   }
 </style>
 <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
@@ -216,6 +415,179 @@
       <p class="section-kicker">Source of truth</p>
       <h2>This page is an entry point, not the specification</h2>
       <p class="note">The only source of truth for the profile is <code>docs/SSOT.md</code> in the GitHub repository. This ToppyMicroServices page is a short reader-facing note and link hub. If this page and the SSOT ever differ, the SSOT wins.</p>
+    </section>
+
+    <section aria-labelledby="session-binding-demo-title">
+      <div class="demo-toolbar">
+        <div>
+          <p class="section-kicker">Animated explainer</p>
+          <h2 id="session-binding-demo-title">Valid credentials still need session binding</h2>
+        </div>
+        <button class="btn replay-btn" type="button" data-replay-session-demo>Replay</button>
+      </div>
+      <p class="section-lead">The receiver accepts only when the Identity Grant and the Session Binding Statement match the current TLS or attestation-bound session and Alice's local expected policy. Replayed bindings, substituted grants, wrong keys, and peer-supplied metadata fail closed.</p>
+
+      <div class="session-demo is-playing" data-session-demo>
+        <div class="demo-layout">
+          <div class="demo-canvas">
+            <svg class="flow-svg" viewBox="0 0 980 560" role="img" aria-labelledby="session-demo-svg-title session-demo-svg-desc">
+              <title id="session-demo-svg-title">Session-bound identity happy path and attack path</title>
+              <desc id="session-demo-svg-desc">Manager issues an Identity Grant to Agent. Agent starts a TLS and attestation session with Alice Verifier and sends a Session Binding Statement. Alice accepts the happy path and rejects replay, grant substitution, and metadata injection attempts from Attacker.</desc>
+              <defs>
+                <marker id="arrow-happy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-2)"></path>
+                </marker>
+                <marker id="arrow-attack" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--danger)"></path>
+                </marker>
+              </defs>
+
+              <text x="42" y="34" class="label-text">Happy path</text>
+              <text x="42" y="326" class="label-text">Attack path</text>
+
+              <g class="actor manager">
+                <rect class="actor-box" x="42" y="58" width="168" height="72" rx="10"></rect>
+                <text x="126" y="90" text-anchor="middle" class="label-text">Manager</text>
+                <text x="126" y="112" text-anchor="middle" class="small-text">policy authority</text>
+              </g>
+              <g class="actor agent">
+                <rect class="actor-box agent-box" x="394" y="58" width="168" height="72" rx="10"></rect>
+                <text x="478" y="90" text-anchor="middle" class="label-text">Agent</text>
+                <text x="478" y="112" text-anchor="middle" class="small-text">confirmation key</text>
+              </g>
+              <g class="actor alice">
+                <rect class="actor-box alice-box" x="762" y="58" width="176" height="72" rx="10"></rect>
+                <text x="850" y="90" text-anchor="middle" class="label-text">Alice Verifier</text>
+                <text x="850" y="112" text-anchor="middle" class="small-text">local expected policy</text>
+              </g>
+              <g class="actor attacker">
+                <rect class="actor-box attacker-box" x="394" y="390" width="168" height="72" rx="10"></rect>
+                <text x="478" y="422" text-anchor="middle" class="label-text">Attacker</text>
+                <text x="478" y="444" text-anchor="middle" class="small-text">replay / injection</text>
+              </g>
+
+              <g class="flow-step step-1">
+                <path class="flow-line happy-line" d="M212 94 C270 94 326 94 390 94" marker-end="url(#arrow-happy)"></path>
+                <rect class="packet-box grant-box" x="238" y="58" width="126" height="44" rx="9"></rect>
+                <text x="301" y="77" text-anchor="middle" class="small-text">Identity Grant</text>
+                <text x="301" y="94" text-anchor="middle" class="small-text">manager-signed</text>
+              </g>
+
+              <g class="flow-step step-2">
+                <path class="flow-line happy-line" d="M506 132 C548 192 712 194 805 132" marker-end="url(#arrow-happy)"></path>
+                <rect class="packet-box binding-box" x="556" y="170" width="190" height="44" rx="9"></rect>
+                <text x="651" y="189" text-anchor="middle" class="small-text">TLS / attestation session</text>
+                <text x="651" y="206" text-anchor="middle" class="small-text">fresh endpoint context</text>
+              </g>
+
+              <g class="flow-step step-3">
+                <path class="flow-line happy-line" d="M564 94 C628 94 692 94 758 94" marker-end="url(#arrow-happy)"></path>
+                <rect class="packet-box binding-box" x="604" y="58" width="124" height="52" rx="9"></rect>
+                <text x="666" y="77" text-anchor="middle" class="small-text">Session Binding</text>
+                <text x="666" y="94" text-anchor="middle" class="small-text">Statement</text>
+              </g>
+
+              <g class="flow-step step-4">
+                <rect class="packet-box binding-box" x="716" y="172" width="220" height="74" rx="10"></rect>
+                <text x="826" y="196" text-anchor="middle" class="label-text">Alice checklist</text>
+                <text x="826" y="218" text-anchor="middle" class="small-text">grant_hash, Agent key, TLS binding,</text>
+                <text x="826" y="235" text-anchor="middle" class="small-text">attestation binder, local policy</text>
+              </g>
+
+              <g class="result-badge accept-badge step-5">
+                <rect x="762" y="266" width="176" height="52" rx="12"></rect>
+                <text x="850" y="298" text-anchor="middle" class="label-text">Result: ACCEPT</text>
+              </g>
+
+              <g class="flow-step step-a1">
+                <path class="flow-line attack-line" d="M564 410 C650 380 710 322 782 250" marker-end="url(#arrow-attack)"></path>
+                <rect class="packet-box grant-box" x="588" y="328" width="160" height="46" rx="9"></rect>
+                <text x="668" y="348" text-anchor="middle" class="small-text">replay / grant</text>
+                <text x="668" y="365" text-anchor="middle" class="small-text">substitution</text>
+              </g>
+
+              <g class="flow-step step-a2">
+                <path class="flow-line attack-line" d="M564 446 C670 446 740 396 820 330" marker-end="url(#arrow-attack)"></path>
+                <rect class="packet-box metadata-box" x="628" y="428" width="146" height="44" rx="9"></rect>
+                <text x="701" y="447" text-anchor="middle" class="small-text">Metadata packet</text>
+                <text x="701" y="464" text-anchor="middle" class="small-text">peer supplied</text>
+              </g>
+
+              <g class="result-badge reject-badge step-a3">
+                <rect x="762" y="374" width="176" height="52" rx="12"></rect>
+                <text x="850" y="406" text-anchor="middle" class="label-text">Result: REJECT</text>
+              </g>
+            </svg>
+          </div>
+
+          <aside class="check-panel card" aria-label="Alice verifier checklist">
+            <div>
+              <p class="section-kicker">Alice checklist</p>
+              <h3>Accept only if every local check passes</h3>
+            </div>
+            <ul class="check-list">
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Manager signature validates the Identity Grant.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Agent confirmation key matches the authorized agent key.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span><code>grant_hash</code> binds the statement to the exact grant.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>TLS/session binding and attestation binder match the accepted session.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Local expected policy matches the signed and bound material.</span></li>
+            </ul>
+            <p class="muted">Peer metadata can be evidence to inspect, but it is not Alice's policy source.</p>
+          </aside>
+        </div>
+
+        <div>
+          <h3>Verifier outcomes</h3>
+          <div class="result-table-wrap" role="region" aria-label="Verifier result table" tabindex="0">
+            <table class="result-table">
+              <thead>
+                <tr>
+                  <th scope="col">Case</th>
+                  <th scope="col">Result</th>
+                  <th scope="col">Why</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>valid grant + valid binding</td>
+                  <td><span class="result-tag accept">ACCEPT</span></td>
+                  <td>The signed grant, Agent key, <code>grant_hash</code>, session binding, and local policy all match.</td>
+                </tr>
+                <tr>
+                  <td>replayed binding</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The statement does not bind to Alice's current TLS or attestation session.</td>
+                </tr>
+                <tr>
+                  <td>grant_hash mismatch</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The binding statement points at a different Identity Grant.</td>
+                </tr>
+                <tr>
+                  <td>wrong Agent key</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The confirmation key does not match the agent authorized by the grant.</td>
+                </tr>
+                <tr>
+                  <td>Manager key reused as Agent key</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>Manager authority and Agent confirmation roles are separate.</td>
+                </tr>
+                <tr>
+                  <td>missing attestation binder</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The receiver cannot bind the statement to the attested session evidence.</td>
+                </tr>
+                <tr>
+                  <td>peer metadata injection</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>Alice uses local expected policy, not peer-supplied metadata, as the acceptance policy.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section aria-label="Problem">
@@ -298,7 +670,7 @@
       </div>
       <div class="actions">
         <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
-        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View test notes</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
       </div>
     </section>
 
@@ -328,10 +700,11 @@
       <h2>Repository entry points</h2>
       <p class="section-lead">Use the repository documents for the current profile text, rendered specification, and red-team evidence.</p>
       <div class="link-list">
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
         <a class="btn primary" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
         <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
         <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
-        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding" target="_blank" rel="noopener noreferrer">View GitHub repository</a>
+        <a class="btn" href="https://github.com/thinksyncs/hardware-aware-tls-identity-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
       </div>
     </section>
   </main>
@@ -353,5 +726,17 @@
       </div>
     </div>
   </footer>
+  <script>
+    (function () {
+      var demo = document.querySelector('[data-session-demo]');
+      var replay = document.querySelector('[data-replay-session-demo]');
+      if (!demo || !replay) return;
+      replay.addEventListener('click', function () {
+        demo.classList.remove('is-playing');
+        void demo.offsetWidth;
+        demo.classList.add('is-playing');
+      });
+    }());
+  </script>
 </body>
 </html>
