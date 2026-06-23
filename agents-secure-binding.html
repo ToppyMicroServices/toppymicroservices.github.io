@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Agents Secure Binding | ToppyMicroServices</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Reader-facing entry point for Agents Secure Binding: an independent security profile for binding delegated agent identity, session context, attestation evidence, and local policy." />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta name="theme-color" content="#10100f" />
+<meta name="color-scheme" content="dark light" />
+<link rel="canonical" href="https://www.toppymicros.com/agents-secure-binding.html" />
+
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Agents Secure Binding | ToppyMicroServices" />
+<meta property="og:description" content="A short technical note and entry point for an agent identity and session-binding security profile." />
+<meta property="og:url" content="https://www.toppymicros.com/agents-secure-binding.html" />
+<meta property="og:site_name" content="ToppyMicroServices" />
+<meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Agents Secure Binding | ToppyMicroServices" />
+<meta name="twitter:description" content="A short technical note and entry point for an agent identity and session-binding security profile." />
+<meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Agents Secure Binding",
+  "description": "Reader-facing entry point for the Agents Secure Binding security profile.",
+  "url": "https://www.toppymicros.com/agents-secure-binding.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ToppyMicroServices OÜ",
+    "url": "https://www.toppymicros.com/"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Akira",
+    "url": "https://github.com/thinksyncs"
+  },
+  "sameAs": "https://github.com/thinksyncs/agents-secure-binding"
+}
+</script>
+
+<style>
+  :root {
+    --bg: #10100f;
+    --fg: #fff8ec;
+    --muted: #c8bdae;
+    --card: #181715;
+    --card-2: #221f1a;
+    --accent: #f97316;
+    --accent-2: #8bd3a7;
+    --accent-3: #f5cf66;
+    --danger: #fb7185;
+    --border: rgba(255, 248, 236, 0.17);
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.30);
+    --maxw: 1040px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fbf7ef;
+      --fg: #171411;
+      --muted: #675d51;
+      --card: rgba(255,255,255,0.84);
+      --card-2: rgba(255,253,248,0.96);
+      --accent: #c2410c;
+      --accent-2: #0f766e;
+      --accent-3: #92400e;
+      --danger: #be123c;
+      --border: rgba(23, 20, 17, 0.14);
+      --shadow: 0 20px 60px rgba(120, 53, 15, 0.10);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, system-ui, sans-serif;
+    background:
+      radial-gradient(900px 560px at 12% -12%, rgba(249, 115, 22, 0.18), transparent 60%),
+      radial-gradient(820px 520px at 92% 0%, rgba(139, 211, 167, 0.12), transparent 55%),
+      var(--bg);
+    color: var(--fg);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.95em;
+    padding: 0.12em 0.35em;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: color-mix(in hsl, var(--card) 72%, var(--bg) 28%);
+    white-space: nowrap;
+  }
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px) saturate(150%);
+    background: color-mix(in hsl, var(--bg) 88%, transparent);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--fg); font-weight: 700; white-space: nowrap; }
+  .brand-logo { height: 28px; width: auto; border-radius: 6px; }
+  .links { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+  .links a { color: var(--fg); opacity: .9; }
+  .btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: color-mix(in hsl, var(--card) 86%, transparent);
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .btn:hover { border-color: var(--accent); text-decoration: none; }
+  .btn.primary {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #10100f;
+    border: none;
+  }
+  main { padding-bottom: 32px; }
+  .hero { padding: 52px 0 26px; }
+  .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
+  h1 { font-size: clamp(32px, 5vw, 58px); line-height: 1.05; margin: 0 0 12px; letter-spacing: 0; max-width: 900px; }
+  h2 { font-size: 24px; margin: 0 0 10px; letter-spacing: 0; }
+  h3 { font-size: 18px; margin: 0 0 6px; letter-spacing: 0; }
+  p { margin: 0 0 10px; }
+  .lead { max-width: 780px; font-size: 18px; color: var(--muted); margin: 0 0 14px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  section { padding: 30px 0; border-top: 1px solid var(--border); }
+  .section-kicker { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
+  .section-lead { color: var(--muted); margin: 0 0 14px; max-width: 780px; }
+  .grid { display: grid; gap: 16px; }
+  .card {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card-2) 86%, transparent);
+    box-shadow: var(--shadow);
+  }
+  .card p:last-child { margin-bottom: 0; }
+  .note {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-2);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card) 82%, transparent);
+    color: var(--muted);
+  }
+  .muted { color: var(--muted); }
+  ul { margin: 0; padding-left: 20px; color: var(--muted); }
+  li + li { margin-top: 8px; }
+  .link-list {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    margin-top: 14px;
+  }
+  .link-list .btn { text-align: center; }
+  .session-demo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+    min-width: 0;
+  }
+  .demo-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .replay-btn {
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .demo-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    min-width: 0;
+  }
+  .demo-canvas {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, color-mix(in hsl, var(--card-2) 90%, transparent), color-mix(in hsl, var(--card) 86%, transparent));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    min-width: 0;
+    padding: 14px;
+  }
+  .lane-board {
+    display: grid;
+    gap: 14px;
+  }
+  .flow-lane {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card) 82%, transparent);
+  }
+  .flow-lane.good { border-left: 4px solid var(--accent-2); }
+  .flow-lane.bad { border-left: 4px solid var(--danger); }
+  .flow-lane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .flow-lane-title {
+    margin: 0;
+    font-size: 17px;
+  }
+  .flow-lane-note {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .flow-steps {
+    display: grid;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .flow-card {
+    display: grid;
+    gap: 7px;
+    align-content: start;
+    min-height: 108px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card-2) 92%, transparent);
+    opacity: .76;
+  }
+  .flow-card strong {
+    display: block;
+    color: var(--fg);
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .flow-card span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .packet-pill {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .packet-pill.grant { border-color: var(--accent-3); }
+  .packet-pill.binding { border-color: var(--accent-2); }
+  .packet-pill.metadata { border-color: var(--danger); }
+  .outcome-card {
+    display: grid;
+    place-items: center;
+    min-height: 108px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid currentColor;
+    font-weight: 800;
+    letter-spacing: .04em;
+    opacity: .82;
+  }
+  .outcome-card.accept {
+    color: var(--accent-2);
+    background: color-mix(in hsl, var(--accent-2) 15%, var(--card) 85%);
+  }
+  .outcome-card.reject {
+    color: var(--danger);
+    background: color-mix(in hsl, var(--danger) 13%, var(--card) 87%);
+  }
+  .flow-svg {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+  .flow-svg text {
+    font-family: inherit;
+    fill: var(--fg);
+    letter-spacing: 0;
+  }
+  .flow-svg .small-text { font-size: 13px; fill: var(--muted); }
+  .flow-svg .label-text { font-size: 15px; font-weight: 700; }
+  .flow-svg .actor-box {
+    fill: color-mix(in hsl, var(--card-2) 92%, transparent);
+    stroke: var(--border);
+    stroke-width: 2;
+  }
+  .flow-svg .agent-box { stroke: var(--accent-2); }
+  .flow-svg .alice-box { stroke: var(--accent-3); }
+  .flow-svg .attacker-box { stroke: var(--danger); }
+  .flow-svg .flow-line {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--muted);
+    stroke: currentColor;
+    opacity: .72;
+  }
+  .flow-svg .happy-line { color: var(--accent-2); }
+  .flow-svg .attack-line { color: var(--danger); }
+  .flow-svg .packet-box {
+    fill: color-mix(in hsl, var(--card) 92%, var(--bg) 8%);
+    stroke: var(--border);
+    stroke-width: 2;
+  }
+  .flow-svg .grant-box { stroke: var(--accent-3); }
+  .flow-svg .binding-box { stroke: var(--accent-2); }
+  .flow-svg .metadata-box { stroke: var(--danger); }
+  .flow-step { opacity: .52; }
+  .result-badge {
+    opacity: .72;
+  }
+  .result-badge rect {
+    stroke-width: 2;
+  }
+  .accept-badge rect {
+    fill: color-mix(in hsl, var(--accent-2) 24%, var(--card) 76%);
+    stroke: var(--accent-2);
+  }
+  .reject-badge rect {
+    fill: color-mix(in hsl, var(--danger) 22%, var(--card) 78%);
+    stroke: var(--danger);
+  }
+  .session-demo.is-playing .flow-step,
+  .session-demo.is-playing .flow-card,
+  .session-demo.is-playing .outcome-card,
+  .session-demo.is-playing .check-item,
+  .session-demo.is-playing .result-badge {
+    animation: stepPulse 1.25s ease-out both;
+  }
+  .session-demo.is-playing .step-1 { animation-delay: .1s; }
+  .session-demo.is-playing .step-2 { animation-delay: 1.0s; }
+  .session-demo.is-playing .step-3 { animation-delay: 1.9s; }
+  .session-demo.is-playing .step-4 { animation-delay: 2.8s; }
+  .session-demo.is-playing .step-5 { animation-delay: 3.7s; }
+  .session-demo.is-playing .step-a1 { animation-delay: 4.8s; }
+  .session-demo.is-playing .step-a2 { animation-delay: 5.7s; }
+  .session-demo.is-playing .step-a3 { animation-delay: 6.6s; }
+  @keyframes stepPulse {
+    0% { opacity: .28; filter: none; }
+    24% { opacity: 1; filter: drop-shadow(0 0 12px color-mix(in hsl, var(--accent-2) 42%, transparent)); }
+    74% { opacity: 1; }
+    100% { opacity: .82; filter: none; }
+  }
+  .check-panel {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+  .check-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .check-item {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card) 78%, transparent);
+    color: var(--muted);
+    opacity: .78;
+  }
+  .check-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-2);
+    color: var(--accent-2);
+    font-weight: 800;
+    line-height: 1;
+  }
+  .result-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in hsl, var(--card-2) 86%, transparent);
+    max-width: 100%;
+    min-width: 0;
+  }
+  .result-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+    font-size: 14px;
+  }
+  .result-table th,
+  .result-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .result-table tr:last-child td { border-bottom: 0; }
+  .result-table th {
+    color: var(--fg);
+    background: color-mix(in hsl, var(--card) 90%, transparent);
+  }
+  .result-tag {
+    display: inline-block;
+    min-width: 74px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: .04em;
+  }
+  .result-tag.accept { color: var(--accent-2); }
+  .result-tag.reject { color: var(--danger); }
+  footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+  .footer-row { display: flex; align-items: center; gap: 10px; }
+  .footer-logo { height: 28px; width: auto; border-radius: 6px; }
+  .footer-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  @media (min-width: 760px) {
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .demo-layout { grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); align-items: stretch; }
+    .flow-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 759px) {
+    .flow-steps { grid-template-columns: minmax(0, 1fr); }
+    .flow-card,
+    .outcome-card { min-height: auto; }
+  }
+  @media (max-width: 760px) {
+    .nav { flex-wrap: wrap; }
+    .links { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .session-demo *,
+    .session-demo *::before,
+    .session-demo *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    .session-demo .flow-step,
+    .session-demo .check-item,
+    .session-demo .result-badge {
+      opacity: 1 !important;
+      filter: none !important;
+    }
+  }
+</style>
+<script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+<script defer src="/assets/global.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="container nav" aria-label="Main">
+      <a href="/" class="brand" aria-label="ToppyMicroServices home">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" />
+        <span>ToppyMicroServices OÜ</span>
+      </a>
+      <div class="links">
+        <a href="/">Home</a>
+        <a href="/#proof">Proof</a>
+        <a href="/#research">Lab</a>
+        <a href="/security-policy.html">Security</a>
+        <a href="/contact.html" class="btn">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-label="Agents Secure Binding profile">
+      <p class="eyebrow">Technical note</p>
+      <h1>Agents Secure Binding</h1>
+      <p class="lead">Binding delegated agent identity to the actual TLS and attestation session.</p>
+      <p class="section-lead">We propose this as a security profile, implementation experiment, and optional hardening layer for agent protocols such as AGTP or A2A. It is not a replacement for those protocols.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+      </div>
+    </section>
+
+    <section aria-label="Source of truth">
+      <p class="section-kicker">Source of truth</p>
+      <h2>This page is an entry point, not the specification</h2>
+      <p class="note">The only source of truth for the profile is <code>docs/SSOT.md</code> in the GitHub repository. This ToppyMicroServices page is a short reader-facing note and link hub. If this page and the SSOT ever differ, the SSOT wins.</p>
+    </section>
+
+    <section aria-labelledby="session-binding-demo-title">
+      <div class="demo-toolbar">
+        <div>
+          <p class="section-kicker">Animated explainer</p>
+          <h2 id="session-binding-demo-title">Valid credentials still need session binding</h2>
+        </div>
+        <button class="btn replay-btn" type="button" data-replay-session-demo>Replay</button>
+      </div>
+      <p class="section-lead">The receiver accepts only when the Identity Grant and the Session Binding Statement match the current TLS or attestation-bound session and Alice's local expected policy. Replayed bindings, substituted grants, wrong keys, and peer-supplied metadata fail closed.</p>
+
+      <div class="session-demo is-playing" data-session-demo>
+        <div class="demo-layout">
+          <div class="demo-canvas">
+            <div class="lane-board" role="img" aria-label="Session-bound identity flow: happy path accepts, attack path rejects">
+              <div class="flow-lane good">
+                <div class="flow-lane-head">
+                  <h3 class="flow-lane-title">Happy path</h3>
+                  <span class="flow-lane-note">grant and live session match</span>
+                </div>
+                <div class="flow-steps">
+                  <div class="flow-card step-1">
+                    <strong>1. Manager</strong>
+                    <span>Issues the delegated identity.</span>
+                    <span class="packet-pill grant">Identity Grant packet</span>
+                  </div>
+                  <div class="flow-card step-2">
+                    <strong>2. Agent</strong>
+                    <span>Starts the TLS / attestation session.</span>
+                    <span class="packet-pill binding">live session</span>
+                  </div>
+                  <div class="flow-card step-3">
+                    <strong>3. Agent → Alice</strong>
+                    <span>Sends proof for this grant and this session.</span>
+                    <span class="packet-pill binding">Session Binding Statement packet</span>
+                  </div>
+                  <div class="outcome-card accept step-5">Result: ACCEPT</div>
+                </div>
+              </div>
+
+              <div class="flow-lane bad">
+                <div class="flow-lane-head">
+                  <h3 class="flow-lane-title">Attack path</h3>
+                  <span class="flow-lane-note">valid-looking material, wrong binding</span>
+                </div>
+                <div class="flow-steps">
+                  <div class="flow-card step-a1">
+                    <strong>1. Attacker</strong>
+                    <span>Replays a binding or substitutes a grant.</span>
+                    <span class="packet-pill grant">old / wrong grant</span>
+                  </div>
+                  <div class="flow-card step-a2">
+                    <strong>2. Attacker → Alice</strong>
+                    <span>Adds peer-supplied service or task metadata.</span>
+                    <span class="packet-pill metadata">Metadata packet</span>
+                  </div>
+                  <div class="flow-card step-a3">
+                    <strong>3. Alice Verifier</strong>
+                    <span>Detects grant_hash, key, session, or policy mismatch.</span>
+                    <span class="packet-pill binding">local expected policy wins</span>
+                  </div>
+                  <div class="outcome-card reject step-a3">Result: REJECT</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="check-panel card" aria-label="Alice verifier checklist">
+            <div>
+              <p class="section-kicker">Alice checklist</p>
+              <h3>Accept only if every local check passes</h3>
+            </div>
+            <ul class="check-list">
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Manager signature validates the Identity Grant.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Agent confirmation key matches the authorized agent key.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span><code>grant_hash</code> binds the statement to the exact grant.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>TLS/session binding and attestation binder match the accepted session.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Local expected policy matches the signed and bound material.</span></li>
+            </ul>
+            <p class="muted">Peer metadata can be evidence to inspect, but it is not Alice's policy source.</p>
+          </aside>
+        </div>
+
+        <div>
+          <h3>Verifier outcomes</h3>
+          <div class="result-table-wrap" role="region" aria-label="Verifier result table" tabindex="0">
+            <table class="result-table">
+              <thead>
+                <tr>
+                  <th scope="col">Case</th>
+                  <th scope="col">Result</th>
+                  <th scope="col">Why</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>valid grant + valid binding</td>
+                  <td><span class="result-tag accept">ACCEPT</span></td>
+                  <td>The signed grant, Agent key, <code>grant_hash</code>, session binding, and local policy all match.</td>
+                </tr>
+                <tr>
+                  <td>replayed binding</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The statement does not bind to Alice's current TLS or attestation session.</td>
+                </tr>
+                <tr>
+                  <td>grant_hash mismatch</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The binding statement points at a different Identity Grant.</td>
+                </tr>
+                <tr>
+                  <td>wrong Agent key</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The confirmation key does not match the agent authorized by the grant.</td>
+                </tr>
+                <tr>
+                  <td>Manager key reused as Agent key</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>Manager authority and Agent confirmation roles are separate.</td>
+                </tr>
+                <tr>
+                  <td>missing attestation binder</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>The receiver cannot bind the statement to the attested session evidence.</td>
+                </tr>
+                <tr>
+                  <td>peer metadata injection</td>
+                  <td><span class="result-tag reject">REJECT</span></td>
+                  <td>Alice uses local expected policy, not peer-supplied metadata, as the acceptance policy.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Problem">
+      <p class="section-kicker">Problem</p>
+      <h2>TLS and attestation do not name the whole delegation</h2>
+      <p class="section-lead">A valid TLS session or attested platform can still be the wrong session, wrong task, wrong delegation, or wrong authority boundary for the receiving application.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Valid credentials are not enough</h3>
+          <p class="muted">A peer can present valid cryptographic material while still causing replay, relay, diversion, wrong-agent, or confused-deputy failures.</p>
+        </div>
+        <div class="card">
+          <h3>Peer metadata is not policy</h3>
+          <p class="muted">The receiver should not turn service, tenant, task, scope, or agent metadata supplied by the peer into local authorization policy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Approach">
+      <p class="section-kicker">Approach</p>
+      <h2>Separate authority from session proof</h2>
+      <p class="section-lead">This profile separates who is allowed to authorize a delegated identity from who proves possession in the live TLS or attestation-bound session.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Two signed materials</h3>
+          <ul>
+            <li>Identity Grant: Manager or policy authority signs the intended agent, task, delegation, scope, and related values.</li>
+            <li>Session Binding Statement: the holder of the authorized confirmation key binds that exact grant to the accepted session.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Three key roles</h3>
+          <ul>
+            <li>Manager or policy-authority key for Identity Grants.</li>
+            <li>Agent confirmation key for Session Binding Statements.</li>
+            <li>TLS endpoint key for the accepted TLS or exported-authenticator endpoint.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Local policy comparison</h3>
+          <p class="muted">The receiver compares signed and session-bound material against local expected policy. Observed peer values do not become expected policy by themselves.</p>
+        </div>
+        <div class="card">
+          <h3>Optional hardening profile</h3>
+          <p class="muted">For AGTP/A2A-style agent protocols, this is an optional security-hardening profile layered around identity, delegation, and session binding.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Implemented work">
+      <p class="section-kicker">Implemented work</p>
+      <h2>What the repository currently contains</h2>
+      <p class="section-lead">The implementation tests focus on fail-closed acceptance: attacker-shaped input should be rejected before an application treats the observed identity as accepted.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Token profiles</h3>
+          <ul>
+            <li>JWT/JWS Identity Grant and Session Binding Statement profile.</li>
+            <li>CWT/COSE verifier coverage for the same trust model.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Verifier and cache safety</h3>
+          <ul>
+            <li>Local expected-policy comparison before acceptance.</li>
+            <li>Response-cache safety policy for caller-dependent results.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Red-team coverage</h3>
+          <ul>
+            <li>Live-style red-team tests for replay, relay, diversion, wrong-agent, key-role confusion, grant substitution, and cache misuse.</li>
+            <li>Separate notes for boundaries that remain outside the direct-Agent profile.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Readable specification artifact</h3>
+          <p class="muted">The repository includes the Markdown SSOT and a rendered PDF for review.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
+      </div>
+    </section>
+
+    <section aria-label="Boundaries">
+      <p class="section-kicker">Boundaries</p>
+      <h2>What is not claimed</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Not a standard</h3>
+          <ul>
+            <li>This is not an IETF standard or consensus document.</li>
+            <li>This is not AGTP or A2A core protocol text.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Not a deployment claim</h3>
+          <ul>
+            <li>This page does not claim hardware confidential-VM evidence has been measured across all environments.</li>
+            <li>Gateway-routed deployments remain separate design work because the gateway trust model is different.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Links">
+      <p class="section-kicker">Links</p>
+      <h2>Repository entry points</h2>
+      <p class="section-lead">Use the repository documents for the current profile text, rendered specification, and red-team evidence.</p>
+      <div class="link-list">
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+        <a class="btn primary" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
+        <a class="btn" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async" />
+        <div>© 2026 ToppyMicroServices OÜ</div>
+      </div>
+      <div>Karamelli tn 2, 11317 Tallinn, Harju County, Estonia</div>
+      <div>Registry code: 16551297</div>
+      <div class="footer-links" aria-label="Legal links">
+        <a href="/">Home</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/security-policy.html">Security Policy</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms-legal-notice.html">Terms / Legal Notice</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      var demo = document.querySelector('[data-session-demo]');
+      var replay = document.querySelector('[data-replay-session-demo]');
+      if (!demo || !replay) return;
+      replay.addEventListener('click', function () {
+        demo.classList.remove('is-playing');
+        void demo.offsetWidth;
+        demo.classList.add('is-playing');
+      });
+    }());
+  </script>
+</body>
+</html>
