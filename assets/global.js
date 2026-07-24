@@ -116,7 +116,10 @@
 
   function normalizePath(pathname){
     if(!pathname) return '/';
-    if(pathname.endsWith('index.html')) return '/';
+    if(pathname === '/index.html' || pathname === 'index.html') return '/';
+    if(pathname.endsWith('/index.html')){
+      return pathname.slice(0, -'index.html'.length);
+    }
     return pathname;
   }
 
