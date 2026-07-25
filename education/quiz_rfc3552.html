@@ -101,7 +101,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** The purpose is to help readers reason about security properties and failure modes
+
+            **Context (why chosen):** A Security Considerations section is not a formality added after the protocol is designed. It should let implementers and users understand the relevant threats and the limits of the design.
+
+            **Terms:** A **Security Considerations section** connects the protocol to its security properties, threats, failure modes, assumptions, and countermeasures.
+
+            **Correct (B):** RFC 3552 says the section should inform readers of relevant security issues and clearly describe foreseeable threats, protections, and residual risks.
+
+            **Options:**
+            - A (incorrect): Repeating the protocol does not identify its security consequences.
+            - B (correct): Realistic threats, assumptions, and mitigations give readers information they can act on.
+            - C (incorrect): No protocol is simply “secure” in every threat model. The section must state scope and limitations.
+
+            **Related:** The useful question is not “does the document claim security,” but “under which assumptions does it provide which protections.”
           </div>
         </div>
       </article>
@@ -110,16 +122,27 @@
         <header><h4>Q2: Useful items to include are (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Threat model and attacker capabilities</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Privacy and metadata exposure notes</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Operational considerations like key rotation and logging guidance</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Attacks that are in scope and out of scope</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Which data is protected and whether the protection is confidentiality, integrity, or authentication</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Residual risks after mitigations are deployed</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Marketing claims about compliance</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** Security is not only cryptography, it is also deployment and ops
+
+            **Context (why chosen):** RFC 3552 gives concrete content requirements. This question distinguishes those requirements from useful but generic security advice.
+
+            **Terms:** **In scope** identifies attacks the design considers. **Protection properties** say what cryptography or another mechanism actually provides. **Residual risk** is what can still go wrong after mitigation.
+
+            **Correct (A,B,C):** RFC 3552 calls for the scope of attacks, the portions and properties protected by security mechanisms, and a clear description of remaining risk.
+
             **Options:**
-            - D (incorrect): Avoid marketing language
+            - A (correct): Readers need to know which attacks are considered and which are excluded, including why.
+            - B (correct): Saying only that data is “protected” is insufficient; the document should distinguish confidentiality, integrity, authentication, and related properties.
+            - C (correct): Mitigation does not erase all risk, so the remaining exposure must be stated.
+            - D (incorrect): Compliance marketing is not a substitute for security analysis.
+
+            **Related:** Operational and privacy guidance can still be valuable when relevant, but those topics should not be presented as RFC 3552's specific checklist when the document does not say so.
           </div>
         </div>
       </article>
@@ -134,7 +157,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** Even "simple" specs can introduce risks via deployment or composition
+
+            **Context (why chosen):** A small protocol change can still create risk through deployment, composition, or misuse. An unsupported “no considerations” statement hides those assumptions.
+
+            **Terms:** An **assumption** is a condition on which the analysis depends. **Residual risk** is exposure that remains after the stated countermeasures.
+
+            **Correct (A):** If the impact is genuinely limited, explain why, identify the assumptions, and state what the protocol does not address.
+
+            **Options:**
+            - A (correct): It gives readers enough information to test whether the conclusion applies to their deployment.
+            - B (incorrect): Leaving the section blank prevents implementers and users from assessing risk.
+            - C (incorrect): Repeating the word “secure” provides no threat or protection analysis.
+
+            **Related:** RFC 3552 requires due diligence about known or foreseeable threats, even though no protocol must be immune to every attack.
           </div>
         </div>
       </article>
@@ -149,7 +184,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** Vague advice is hard to implement and easy to misapply
+
+            **Context (why chosen):** Advice that names a security mechanism without saying what it must accomplish is easy to implement incorrectly.
+
+            **Terms:** **Security goals** include confidentiality, data integrity, and peer authentication. A lower-layer security mechanism can provide some of these without providing all of them.
+
+            **Correct (C):** “Use strong crypto” does not identify the threat, protected data, required property, or deployment assumptions.
+
+            **Options:**
+            - A (incorrect): Clear definitions reduce ambiguity.
+            - B (incorrect): Concrete examples can make attacks and failure modes easier to understand.
+            - C (correct): Vague mechanism names are not actionable security requirements.
+
+            **Related:** RFC 3552 says that relying on a lower-layer security protocol is insufficient unless the expected protections and the resulting combined-system properties are specified.
           </div>
         </div>
       </article>
@@ -165,20 +212,42 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** Good guidance is scoped, actionable, and honest about limitations
+
+            **Context (why chosen):** A list of countermeasure names is not enough for an implementer to decide whether a mitigation fits a deployment.
+
+            **Terms:** A **mitigation** reduces a threat; a **trade-off** is its performance, complexity, or operational cost; **out of scope** identifies what the mitigation is not intended to solve.
+
+            **Correct (A,B,C):** Useful guidance explains the defended threat, the cost or constraints, and the remaining limits.
+
             **Options:**
-            - D (incorrect): Security is never absolute
+            - A (correct): Without the threat, readers cannot evaluate whether the mitigation is relevant.
+            - B (correct): Costs and constraints affect whether a countermeasure can be deployed correctly.
+            - C (correct): Explicit limits show where another control or a different threat model is needed.
+            - D (incorrect): RFC 3552 explicitly does not require immunity to every form of attack.
+
+            **Related:** A mitigation can be valuable without being complete. Clear residual-risk text prevents it from being mistaken for a guarantee.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$|^threat$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$" data-difficulty="L1">
         <header><h4>Q6: Name the concept that describes assumed attackers and capabilities (two words)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
           <div class="explain">
             **Explanation:**
-            **Correct:** threat model
+
+            **Context (why chosen):** The first step in reading security text is to identify who the attacker is assumed to be and what that attacker can do.
+
+            **Real-world usage:** Protocol reviews and incident analysis use the threat model to decide whether a mitigation covers the attacker and deployment in question.
+
+            **Terms:** A **threat model** describes attacker capabilities, available resources, relevant assets, trust assumptions, and explicit exclusions.
+
+            **Correct:** **threat model**.
+
+            **Why this matters:** A countermeasure that is adequate against passive observation might fail against an active attacker who can insert, delete, or modify messages.
+
+            **Related:** RFC 3552 uses the threat model both to identify attacks of concern and to state which attacks are explicitly out of scope.
           </div>
         </div>
       </article>

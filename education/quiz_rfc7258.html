@@ -36,7 +36,7 @@
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7258",
       SKILL_SUBTITLE: "Pervasive Monitoring Is an Attack",
-      GOAL_DESCRIPTION: "Understand what it means to treat large scale passive monitoring as an attacker",
+      GOAL_DESCRIPTION: "Understand what it means to treat indiscriminate, large-scale monitoring of protocol content and metadata as an attack",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -96,12 +96,24 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Monitoring is illegal everywhere</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Protocol designers should assume large scale passive observers exist and reduce exposure</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Treat indiscriminate, large-scale surveillance of protocol content and metadata as a technical attack to mitigate where possible</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. Encryption is forbidden because it blocks debugging</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** It is a threat model position, not a legal claim
+
+            **Context (why chosen):** RFC 7258 changes the technical baseline for protocol design. It is important not to reduce that position to either a legal statement or a passive-eavesdropper-only model.
+
+            **Terms:** **Pervasive monitoring (PM)** is indiscriminate, very large-scale collection of protocol artifacts. It can use active or passive wiretaps, traffic analysis, and subversion of cryptographic keys.
+
+            **Correct (B):** The IETF treats PM as a technical attack on privacy and seeks protocol designs that make it significantly more expensive or infeasible where possible.
+
+            **Options:**
+            - A (incorrect): RFC 7258 does not decide whether monitoring is legal. The attack classification is technical and independent of the actor's motivation.
+            - B (correct): It captures the scale, the content and metadata exposure, and the qualified mitigation goal.
+            - C (incorrect): Encryption is a useful mitigation, although it is not sufficient by itself.
+
+            **Related:** “Mitigate” does not mean completely prevent. A design can be worthwhile if it raises cost, makes covert collection overt, or improves detectability.
           </div>
         </div>
       </article>
@@ -111,30 +123,55 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Encrypt by default for data in transit</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Minimize cleartext metadata when feasible</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Avoid protocol ossification on exposed fields when possible</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Protect protocol metadata and reduce traffic-analysis signals where feasible</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Minimize unnecessary data and long-lived identifiers</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Add new cleartext identifiers for easier correlation</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** The goal is to make passive observation less useful and harder to scale
+
+            **Context (why chosen):** Content encryption is important, but RFC 7258 also identifies protocol metadata, traffic analysis, and data minimization as separate concerns.
+
+            **Terms:** **Protocol metadata** includes information such as headers and identifiers. **Traffic analysis** infers information from correlation, timing, or packet sizes. **Data minimization** avoids exposing information that the protocol does not need.
+
+            **Correct (A,B,C):** These choices reduce the artifacts available for indiscriminate collection and make correlation more difficult.
+
             **Options:**
-            - D (incorrect): That increases linkability
+            - A (correct): Protecting content in transit reduces direct disclosure.
+            - B (correct): Encrypted payloads can still leak useful structure through metadata and observable traffic patterns.
+            - C (correct): Unnecessary data and stable identifiers increase linkability without helping the core protocol function.
+            - D (incorrect): New cleartext identifiers make sessions and users easier to correlate.
+
+            **Related:** RFC 7258 does not prescribe one fixed mechanism for every protocol. Designers must explain whether PM is relevant and justify the architectural decisions they make.
           </div>
         </div>
       </article>
 
       <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q3: A common misunderstanding is that encryption</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q3: Which statement best describes what encryption contributes against pervasive monitoring</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Makes authentication automatic</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Eliminates all metadata</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Solves every security problem</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. It guarantees authentication and endpoint integrity</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. It removes all metadata and traffic patterns</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. It reduces content exposure, while metadata, traffic analysis, and endpoint compromise can remain</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** Encryption helps, but many threats remain, including endpoint compromise and traffic analysis
+
+            **Context (why chosen):** Encryption is essential in many PM mitigations, but treating it as a complete solution hides the information that remains observable.
+
+            **Real-world usage:** Protocol and privacy reviews use this separation to check content protection, metadata exposure, endpoint security, and key management independently.
+
+            **Terms:** **Traffic analysis** draws inferences from timing, volume, and packet sizes. **Endpoint compromise** exposes information before encryption or after decryption.
+
+            **Correct (C):** Encryption can hide content from observers, but it does not automatically hide metadata, eliminate correlation, authenticate peers, or protect compromised endpoints.
+
+            **Options:**
+            - A (incorrect): Authentication and endpoint integrity require separate properties and controls.
+            - B (incorrect): Observable endpoints, timing, sizes, and identifiers can remain even when the payload is encrypted.
+            - C (correct): It states both the benefit and the residual exposure.
+
+            **Related:** A useful PM analysis explicitly lists what becomes confidential and what an observer can still learn.
           </div>
         </div>
       </article>
@@ -143,13 +180,25 @@
         <header><h4>Q4: Your protocol sends user identifiers in cleartext to allow caching. Under the RFC 7258 mindset, what is a reasonable next step</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Re evaluate whether the identifier can be avoided, encrypted, or replaced with a less linkable token</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Re-evaluate whether the identifier can be avoided, encrypted, or replaced with a less linkable token</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Add more identifiers to improve analytics</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Assume observers cannot collect traffic at scale</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** Pervasive monitoring focuses on large scale correlation value of metadata
+
+            **Context (why chosen):** A cleartext identifier can be convenient for caching or analytics while also making large-scale correlation cheap.
+
+            **Terms:** **Linkability** is the ability to connect separate protocol events to the same user, device, or relationship.
+
+            **Correct (A):** The design should revisit whether the identifier is necessary and whether a less exposed or less stable representation can meet the functional requirement.
+
+            **Options:**
+            - A (correct): It lowers correlation value while preserving room to meet the caching requirement.
+            - B (incorrect): More stable identifiers increase the observer's ability to link events.
+            - C (incorrect): Assuming collection cannot happen at scale contradicts the PM threat model.
+
+            **Related:** RFC 7258 asks designers to make this trade-off early because architectural exposure is expensive to remove after deployment.
           </div>
         </div>
       </article>
@@ -164,7 +213,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** It frames PM as an attacker class to be considered
+
+            **Context (why chosen):** RFC 7258 establishes a design responsibility; it does not mandate one universal privacy technology or regulate monitoring equipment.
+
+            **Terms:** An **architectural decision** includes the selection and placement of protocol mechanisms that can expose or protect content and metadata.
+
+            **Correct (B):** IETF specifications should consider whether PM is relevant and, when it is, be able to justify related design decisions.
+
+            **Options:**
+            - A (incorrect): The IETF document does not create a legal ban on equipment.
+            - B (correct): It accurately describes the consensus and the protocol-design obligation.
+            - C (incorrect): RFC 7258 does not require onion routing or any other single mechanism in every system.
+
+            **Related:** The RFC says a separate “pervasive monitoring considerations” section is not required; what is required is a good answer about relevance and design treatment.
           </div>
         </div>
       </article>
@@ -175,7 +236,16 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** metadata
+
+            **Context (why chosen):** Payload confidentiality does not remove all information that can support surveillance and correlation.
+
+            **Terms:** **Metadata** includes protocol headers, endpoints, identifiers, sizes, timing, and routing information that describe a communication rather than its application content.
+
+            **Correct:** **metadata**.
+
+            **Why this matters:** At large scale, metadata can reveal relationships, behavior, and activity patterns even when the content is not readable.
+
+            **Related:** PM review should examine content, metadata, traffic-analysis signals, and key-management assumptions separately.
           </div>
         </div>
       </article>

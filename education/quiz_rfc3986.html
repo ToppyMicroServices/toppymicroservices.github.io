@@ -102,6 +102,10 @@
           <div class="explain">
             **Explanation:**
 
+            **Context (why chosen):** The `//` marker determines whether the next characters are parsed as an authority or as part of another path form.
+
+            **Real-world usage:** URI parsers, reverse proxies, routers, and security filters all need to agree on this boundary to avoid routing and validation differences.
+
             **Terms:** authority, delimiter, scheme. In the generic URI syntax, the authority component is preceded by "//" and is followed by path, query, or fragment delimiters.
 
             **Correct (C):** "//" signals that the following part is an authority, which can include userinfo, host, and port.
@@ -113,7 +117,7 @@
             - B (incorrect): ? introduces the query component.
             - C (correct): // is the authority introducer in the generic syntax.
 
-            **Related:** Not all schemes use an authority. For example, some schemes use an opaque path without //.
+            **Related:** Not all URIs use an authority. An authority-less URI can use a path-rootless form, as in `mailto:user@example.com`, without `//`.
           </div>
         </div>
       </article>
@@ -129,6 +133,10 @@
           <div class="explain">
             **Explanation:**
 
+            **Context (why chosen):** Developers often call only the host the “authority,” which drops userinfo or port data that is part of the component grammar.
+
+            **Real-world usage:** Correct authority boundaries matter in proxy configuration, origin comparison, access logs, and URL security review.
+
             **Terms:** authority, userinfo, host, port. The authority component is the part after // up to the next /, ?, or # and it can include userinfo and port.
 
             **Correct (A):** In this example the authority includes userinfo (user:pass), host (example.com), and port (8443).
@@ -141,7 +149,7 @@
 
             - C (incorrect): /a is path, not authority.
 
-            **Related:** Userinfo is discouraged in many contexts for security reasons, but it is part of the grammar.
+            **Related:** The `user:password` form is deprecated by RFC 3986. Applications should not render the password in cleartext or store it unencrypted; it appears here only to illustrate the authority grammar.
           </div>
         </div>
       </article>
@@ -157,6 +165,10 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
+
+            **Context (why chosen):** “Reserved” is frequently mistaken for “forbidden” or “unsafe,” even though it describes characters with possible delimiter roles.
+
+            **Real-world usage:** Query builders, routers, signature code, and redirect validation depend on preserving the distinction between delimiters and data.
 
             **Terms:** reserved, unreserved, gen-delims, sub-delims. Reserved characters have special meaning as delimiters in some URI components and may need percent-encoding when used as data.
 
@@ -181,12 +193,16 @@
         <header><h4>Q4: When should you percent-encode a character in a URI</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Always encode all non-ASCII characters in every component</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Percent-encode every reserved character, including delimiters that define the URI structure</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Never encode reserved characters because they are required delimiters</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Encode when the character is not allowed in that component or when you need a reserved character to be treated as data</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
+
+            **Context (why chosen):** Percent-encoding is component-sensitive. A blanket encoder can change structure, while failing to encode data can make it look like a delimiter.
+
+            **Real-world usage:** This distinction appears in signed URLs, redirect targets, API path parameters, and defenses against parser differentials.
 
             **Terms:** percent-encoding, component, delimiter vs data. Percent-encoding is a mechanism to represent octets using %HH so that the URI remains syntactically valid and unambiguous.
 
@@ -194,13 +210,13 @@
 
             **Options:**
 
-            - A (incorrect): RFC 3986 defines a generic syntax and percent-encoding of octets, but handling of non-ASCII depends on scheme and IRI processing. Blanket rules can break round-tripping.
+            - A (incorrect): Reserved characters that serve as delimiters must remain literal. Encoding them changes the URI structure or meaning.
 
             - B (incorrect): Reserved characters can appear as data, but then they should be percent-encoded to avoid delimiter interpretation.
 
             - C (correct): This captures the core rule and the reason behind it.
 
-            **Related:** Many bugs happen when code decodes too early and loses the ability to distinguish delimiter vs data.
+            **Related:** Many bugs happen when code decodes too early and loses the ability to distinguish delimiter from data. Non-ASCII text also requires a defined character-to-octet mapping or IRI processing; RFC 3986 does not justify one blanket rule for every component.
           </div>
         </div>
       </article>
@@ -215,6 +231,10 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
+
+            **Context (why chosen):** URI normalization can improve comparison, but an unsafe transformation can point to a different resource.
+
+            **Real-world usage:** Cache keys, allowlists, routing tables, deduplication, and signed URLs all depend on normalization choices.
 
             **Terms:** normalization, scheme, host, path, fragment. Normalization is changing the textual form while attempting to preserve the same reference.
 
@@ -238,6 +258,10 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
+
+            **Context (why chosen):** The fragment is easy to confuse with query or path data because it appears in the same displayed URI but has different processing semantics.
+
+            **Real-world usage:** Browser navigation, document anchors, client-side routers, and URI comparison all need to treat the fragment as its own component.
 
             **Terms:** fragment component. In RFC 3986 the fragment is the part after # and it identifies a secondary resource or client-side reference.
 

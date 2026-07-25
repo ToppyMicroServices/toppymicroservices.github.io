@@ -102,6 +102,10 @@
           <div class="explain">
             **Explanation:**
 
+            **Context (why chosen):** HTTP semantics remain shared across protocol versions, while framing and transport mechanisms change.
+
+            **Real-world usage:** API design, proxy behavior, client libraries, and cache review depend on method and response meaning rather than the wire format.
+
             **Terms:** semantics, transport, method meaning. Semantics describe what a request means and what a response means, regardless of whether it is carried by HTTP/1.1, HTTP/2, or HTTP/3.
             **Correct (A):** Safety, idempotency, cacheability, and status code meaning are semantic concepts.
             **Options:**
@@ -125,14 +129,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** safe method. A safe method is intended to be read-only and not cause state change on the origin server.
-            **Correct (A):** GET is defined as safe. It should not have side effects beyond logging and similar incidental effects.
+            **Context (why chosen):** Safe is often misread as “the server performs no write,” rather than a property of the action requested by the client.
+
+            **Terms:** safe method. A safe method has essentially read-only defined semantics: the client does not request or expect a state change. Incidental server-side effects such as logging can still occur.
+            **Correct (A):** GET is defined as safe because its requested semantics are retrieval, even though an implementation can have incidental effects that the client did not request.
             **Options:**
 
-            - A (correct): GET retrieves a representation and is safe.
+            - A (correct): GET has safe defined semantics.
             - B (incorrect): POST is not safe. It is generally used to create or process resources and can change server state.
             - C (incorrect): DELETE is not safe. It removes a resource and changes state.
-            **Related:** Safe is not the same as cacheable. Some safe responses are cacheable depending on headers.
+            **Related:** Safe describes the client's requested semantics, not a guarantee that the server performs no writes internally. It is also separate from cacheability.
           </div>
         </div>
       </article>
@@ -149,8 +155,10 @@
           <div class="explain">
             **Explanation:**
 
+            **Context (why chosen):** Idempotency is commonly confused with identical responses or with a guarantee that every retry is operationally risk-free.
+
             **Terms:** idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
-            **Correct (A,C):** PUT and DELETE are defined as idempotent. Retrying them is generally safe at the semantic level, even though the first attempt might partially fail in practice.
+            **Correct (A,C):** PUT and DELETE are defined as idempotent. Repeating the same request has the same intended effect as one request, although individual responses and incidental side effects can differ.
             **Options:**
 
             - A (correct): PUT replaces the target state with the provided representation, so repeating should converge to the same result.
@@ -173,6 +181,10 @@
           <div class="explain">
             **Explanation:**
 
+            **Context (why chosen):** The status-code class is the first layer of response meaning, before the client applies code-specific behavior.
+
+            **Real-world usage:** Clients, gateways, monitoring, and retry logic use status classes to choose broad handling paths before examining a specific code.
+
             **Terms:** status code class. The first digit indicates a broad category of response semantics.
             **Correct (B):** 3xx responses are redirections: the client may need to take additional action or use another URI.
             **Options:**
@@ -186,24 +198,30 @@
       </article>
 
       <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q5: What does Cache-Control: no-store mean</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q5: When should a server evaluate request preconditions such as If-Match</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. The response can be cached but must be revalidated every time</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only shared caches are forbidden from storing the response</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Caches should not store the response in any form</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Before checking whether the request would otherwise succeed</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. After performing the requested action</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. After normal request checks, immediately before processing request content or performing the action</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** cache, store, revalidate. Cache-Control directives influence whether responses may be stored and under what conditions they may be reused.
-            **Correct (C):** no-store is the strongest instruction: do not store the response.
-            **Options:**
+            **Context (why chosen):** Conditional requests are used both for cache validation and to prevent lost updates. Evaluating them at the wrong stage can change error precedence or allow an action to occur before its guard is checked.
 
-            - A (incorrect): That is closer to no-cache behavior, where storage is allowed but reuse requires validation.
-            - B (incorrect): no-store applies broadly. If you want a shared-cache-specific rule, other directives like private are relevant.
-            - C (correct): no-store tells caches not to keep a copy.
-            **Related:** Use no-store for highly sensitive data where persistence in browser caches or proxies is unacceptable.
+            **Real-world usage:** Document editing, configuration APIs, and administrative updates use If-Match to prevent one client from silently overwriting a newer state.
+
+            **Terms:** A **request precondition** such as **If-Match** makes method execution conditional on the current selected representation. **Normal request checks** are checks that can reject or redirect the request before significant processing.
+
+            **Correct (C):** RFC 9110 says to evaluate received preconditions after successful normal request checks and just before processing request content or performing the method's action, except where the specification excludes evaluation.
+
+            **Options:**
+            - A (incorrect): A redirect or failure detectable before significant processing takes precedence; the server ignores preconditions when the unconditional response would be neither 2xx nor 412.
+            - B (incorrect): Checking after the action is too late to prevent a lost update or another guarded state change.
+            - C (correct): This preserves normal error precedence while applying the condition before the action.
+
+            **Related:** When several conditional fields are present, RFC 9110 Section 13.2.2 defines their evaluation order. Cache-Control directives such as no-store are specified in RFC 9111 instead.
           </div>
         </div>
       </article>
@@ -214,6 +232,10 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
           <div class="explain">
             **Explanation:**
+
+            **Context (why chosen):** Representation metadata fields have nearby names but different roles, so using the wrong one can make a recipient interpret bytes incorrectly.
+
+            **Real-world usage:** API clients, browsers, upload handlers, and security filters use Content-Type when selecting parsers and decoding behavior.
 
             **Terms:** representation, media type. The media type tells the recipient how to interpret the payload bytes.
             **Correct:** Content-Type. It describes the format of the representation data.

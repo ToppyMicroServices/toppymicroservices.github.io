@@ -122,27 +122,27 @@
         <header><h4>Q2: 入れると有用になりやすい観点はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. threat modelとattacker capability</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. privacyとmetadata露出の注意</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. key rotationやloggingなど運用上の注意</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. in-scopeとout-of-scopeのattack</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. 保護されるdataと, confidentiality, integrity, authenticationのどれを提供するか</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. mitigationを適用した後にも残るresidual risk</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. complianceのmarketing claim</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Security Considerations が crypto の話だけで終わると, 実運用で壊れるポイントを拾えません. threat, privacy, operations を同時に扱えるかを見る問題です.
+            **問題を出した背景:** RFC 3552 はSecurity Considerationsに書く内容を具体的に示しています. 一般に有用なsecurity adviceと, このRFCが明示する項目を区別する問題です.
 
-            **用語:** **threat model** は attacker と capability の前提, **metadata exposure** は payload 以外から何が漏れるか, **operational guidance** は rotation, logging, monitoring など現場運用の注意点です.
+            **用語:** **in scope** は設計が考慮するattack, **protection property** はmechanismが実際に提供する性質, **residual risk** はmitigation後にも残るriskです.
 
-            **Correct (A,B,C):** これらは全部, section を実務で役立つものにします. protocol の安全性は design だけでなく deployment と operations にも依存します.
+            **Correct (A,B,C):** RFC 3552はattackのscope, security mechanismが保護する部分と性質, mitigation後のresidual riskを記述するよう求めています.
 
             **選択肢:**
-            - A (correct): attacker が何をできる前提かを書かないと, 防御の妥当性を評価できません.
-            - B (correct): privacy や metadata 露出は, 暗号化していても残る論点です.
-            - C (correct): key rotation や logging の扱いを外すと, 運用で事故ります.
+            - A (correct): どのattackを扱い, どれをなぜscope外にするかを読者へ示します.
+            - B (correct): 単に"protected"と書かず, confidentiality, integrity, authenticationなどを区別します.
+            - C (correct): mitigationで全riskが消えるわけではないため, 残る露出を明示します.
             - D (incorrect): compliance や marketing claim は security analysis ではありません. 安全性を証明する代わりにもなりません.
 
-            **関連:** 「使うべき暗号」だけでなく, 「鍵が漏れたらどうなるか」「ログに何を残すか」まで書けると section の価値が上がります.
+            **関連:** privacyやoperationsの記述も関連する仕様では有用です. ただしRFC 3552にない項目を, このRFC固有のchecklistとして提示すべきではありません.
           </div>
         </div>
       </article>
@@ -187,6 +187,8 @@
 
             **問題を出した背景:** security guidance の失敗は, 間違ったことを書くより, 曖昧で使えないことが多いです. 読み手が何をすればよいか分からない指示は, 実装のばらつきと誤用を生みます.
 
+            **実務での機会:** protocol reviewやimplementation requirementの作成で, mechanism名だけでなくsecurity goalと適用条件を具体化します.
+
             **用語:** **strong crypto** のような表現は耳触りは良いですが, algorithm, key size, threat, deployment 条件が不明なら actionable ではありません.
 
             **Correct (C):** これが典型的な失敗です. 目的も文脈も示さず曖昧な助言だけを書くと, 実装者ごとに別解釈になります.
@@ -230,7 +232,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$|^threat$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$" data-difficulty="L1">
         <header><h4>Q6: attackerとcapabilityの前提をまとめた概念を何と呼ぶ (英語2語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
@@ -238,6 +240,8 @@
             **Explanation:**
 
             **問題を出した背景:** security 文書を読むとき, まず確認すべきなのが「誰を attacker と見ているか」です. その前提をまとめる語を正しく言えるようにするための設問です.
+
+            **実務での機会:** protocol reviewやincident analysisでは, mitigationが対象attackerとdeploymentをcoverするかthreat modelで判断します.
 
             **用語:** **threat model** は attacker, capability, asset, trust boundary, assumption をまとめた考え方です. 何を怖がる仕様なのかを定義します.
 

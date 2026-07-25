@@ -93,7 +93,7 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
-        <header><h4>Q1: Which response policy best fits a personalized bank account summary page</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: Which response policy best fits a personalized bank account summary when cache persistence, including in a browser, is unacceptable</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Cache-Control: public, max-age=600</label>
@@ -105,7 +105,7 @@
 
             **Context (why chosen):** Teams often treat every HTML page as just another cacheable document and forget that sensitivity matters more than latency on some endpoints.
 
-            **Terms:** **no-store** means caches should not keep a copy. **private** limits reuse to a private cache such as a browser, but it still allows storage.
+            **Terms:** **no-store** tells conforming private and shared caches not to store the response. **private** prevents storage by shared caches but still allows a private cache such as a browser to store it.
 
             **Real-world usage:** In practice this appears in reviews for account dashboards, admin consoles, and pages that can leak personal data through browser history or shared devices.
 
@@ -114,7 +114,7 @@
             - B (incorrect): **private** avoids shared-cache reuse, but it still permits storage in the browser and is weaker than needed for highly sensitive content.
             - C (correct): **no-store** matches the risk model when persistence itself is unacceptable.
 
-            **Related:** Caching is not only a performance decision. It is also a data-handling and privacy decision.
+            **Related:** Caching is not only a performance decision. It is also a data-handling decision. RFC 9111 warns that no-store alone is not a reliable or sufficient privacy mechanism against malicious or compromised caches and network eavesdropping.
           </div>
         </div>
       </article>
@@ -337,7 +337,7 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q9" value="a"> A. The response may only be stored if it also has an ETag</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. Shared caches should not store it for reuse across users</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. A shared cache must not store the response</label>
             <label class="choice"><input type="radio" name="Q9" value="c"> C. The response must be revalidated every time</label>
           </fieldset>
           <div class="explain">
@@ -345,16 +345,16 @@
 
             **Context (why chosen):** Teams often reach for **private** when they mean “sensitive” or “must not be stored anywhere,” but that is not what the directive says.
 
-            **Terms:** **private** restricts shared-cache storage and reuse. It does not automatically forbid a browser from storing the response.
+            **Terms:** The unqualified **private** response directive means a shared cache must not store the response. A private cache can still store it subject to the normal caching constraints.
 
             **Real-world usage:** This is common in user dashboards, personalized homepages, and BFF-style endpoints that are safe in a browser but not in a CDN.
 
             **Options:**
             - A (incorrect): Validators are unrelated to the meaning of **private**.
-            - B (correct): The core meaning is “not for shared reuse.”
+            - B (correct): This is the normative effect of the unqualified directive.
             - C (incorrect): Revalidation-on-every-use is closer to **no-cache** behavior.
 
-            **Related:** If browser persistence is also unacceptable, **no-store** is usually the stronger and more appropriate instruction.
+            **Related:** If persistence in conforming private caches is also unacceptable, **no-store** is the stronger instruction. Neither directive guarantees message confidentiality.
           </div>
         </div>
       </article>
@@ -553,7 +553,7 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q17" value="a"> A. It provides a replacement body with less bandwidth</label>
-            <label class="choice"><input type="radio" name="Q17" value="b"> B. It can update stored metadata without transferring the representation body</label>
+            <label class="choice"><input type="radio" name="Q17" value="b"> B. A 200 HEAD response can update or invalidate selectable stored GET responses without transferring content</label>
             <label class="choice"><input type="radio" name="Q17" value="c"> C. It forces all validators to become weak validators</label>
           </fieldset>
           <div class="explain">
@@ -561,16 +561,16 @@
 
             **Context (why chosen):** HEAD is often taught as a curiosity, but it matters when thinking about cheap metadata refresh and cache bookkeeping.
 
-            **Terms:** **HEAD** returns the headers that would accompany a GET response, without the response body. That makes it useful for metadata-oriented checks.
+            **Terms:** **HEAD** returns the headers that would accompany an equivalent GET response without content. After a 200 HEAD response, a cache can update matching selectable GET responses or mark them stale when validators or Content-Length do not match.
 
             **Real-world usage:** This can matter for large objects, CDN metadata refresh, and monitoring systems that need state hints without full download cost.
 
             **Options:**
             - A (incorrect): HEAD does not transfer the representation body.
-            - B (correct): Metadata can be refreshed or compared while avoiding the full payload.
+            - B (correct): RFC 9111 defines this conditional update-or-invalidate behavior for stored GET responses that could have been selected for the HEAD request.
             - C (incorrect): HEAD does not redefine validator strength.
 
-            **Related:** Even when HEAD is supported, you still need to reason carefully about which stored metadata remains trustworthy.
+            **Related:** This is not an unconditional metadata refresh for every stored GET response. Selection, validator, and Content-Length conditions determine whether a stored response is updated or considered stale.
           </div>
         </div>
       </article>

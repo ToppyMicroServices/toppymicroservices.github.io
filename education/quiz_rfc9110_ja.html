@@ -125,6 +125,10 @@
           <div class="explain">
             **Explanation:**
 
+            **問題を出した背景:** HTTP semanticsはprotocol version間で共通ですが, framingとtransport mechanismは変わります.
+
+            **実務での機会:** API設計, proxy動作, client library, cache reviewではwire formatでなくmethodとresponseの意味を扱います.
+
             **Terms:** semantics(セマンティクス), transport, methodの意味. ここでのセマンティクスは, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味/ルール"の話.
 
             **RFCを読むときの見方:** RFC 9110 を読むときは, 「どう運ぶか」ではなく「何を意味するか」を読んでいると意識すると迷いにくいです. 同じ GET でも, HTTP/1.1 の text line, HTTP/2 の frame, HTTP/3 の QUIC stream という違いはありますが, safe や idempotent の意味は共通です.
@@ -154,17 +158,21 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** safe method. safeは, origin serverの状態変化を意図しないread-only操作であること.
+            **問題を出した背景:** safeは"serverが一切writeしない"ではなく, clientが要求するactionの性質です. この境界を確認します.
 
-            **Correct (A):** GETはsafe. ログなどの付随効果はあり得るが, リソース状態を変える意図は持たない.
+            **実務での機会:** crawler, prefetch, link checker, cache最適化では, user確認なしに自動実行してよいmethodかを判断します.
+
+            **Terms:** safe method. safeはdefined semanticsが本質的にread-onlyで, clientがstate changeを要求・期待しないことです. loggingなどclientが要求していない付随効果はあり得ます.
+
+            **Correct (A):** GETは取得を要求するsafe methodです. implementation内部で付随効果が起き得ることとは両立します.
 
             **Options:**
 
-            - A (correct): GETは取得でありsafe.
+            - A (correct): GETのdefined semanticsはsafeです.
             - B (incorrect): POSTは一般に状態変化を伴いsafeではない.
             - C (incorrect): DELETEは削除でありsafeではない.
 
-            **Related:** safeとcacheableは別概念. cache可能かはheaderなどの条件に依存する.
+            **Related:** safeはclientが要求するsemanticsの性質で, server内部に一切writeがないという保証ではありません. cacheableとも別概念です.
           </div>
         </div>
       </article>
@@ -181,9 +189,11 @@
           <div class="explain">
             **Explanation:**
 
+            **問題を出した背景:** idempotencyは同一responseや, 全retryが運用上無条件に安全という保証と混同されやすい概念です.
+
             **Terms:** idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.
 
-            **Correct (A,C):** PUTとDELETEはidempotentとして定義される. 実運用では部分失敗もあり得るが, 仕様上は再試行が想定される.
+            **Correct (A,C):** PUTとDELETEはidempotentとして定義されます. 同じrequestを繰り返したときのintended effectが1回と同じという意味で, 各responseや付随効果まで同じとは限りません.
 
             **Options:**
 
@@ -211,6 +221,10 @@
           <div class="explain">
             **Explanation:**
 
+            **問題を出した背景:** status-code classは, clientがcode固有の処理を行う前に読むresponse meaningの第一層です.
+
+            **実務での機会:** client, gateway, monitoring, retry logicは, 個別codeを見る前にstatus classで大きな処理経路を選びます.
+
             **Terms:** status code class. 先頭の数字は仕様上の大分類を示す.
             **Correct (B):** 3xxはredirectionで, クライアントが追加の動作や別URIの使用を求められる.
 
@@ -225,24 +239,30 @@
       </article>
 
       <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q5: Cache-Control: no-store の意味として最も正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q5: If-Matchなどのrequest preconditionは, serverがいつ評価すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. cacheは保存できるが毎回revalidateしなければならない</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. shared cacheだけが保存を禁止される</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. cacheは応答をいかなる形でも保存しない</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. requestが通常処理可能か確認する前</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. requested actionを実行した後</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 通常のrequest checkの後, request content処理またはaction実行の直前</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** cache, store, revalidate. Cache-Controlは保存や再利用条件を制御する.
-            **Correct (C):** no-storeは強い指示で, 保存しないことを求める.
-            **Options:**
+            **問題を出した背景:** conditional requestはcache validationだけでなくlost update防止にも使います. 評価時点を誤ると, errorの優先順を変えたりguard確認前にactionを実行したりします.
 
-            - A (incorrect): これはno-cacheに近い. no-cacheは保存はできるが再利用時に検証が必要.
-            - B (incorrect): no-storeは原則として広く適用される. shared cache限定ならprivateなど別の指示が関係.
-            - C (correct): 応答を保持しない.
-            **Related:** 秘匿性の高いデータにはno-storeを使い, ブラウザcacheやプロキシに残らないようにする.
+            **実務での機会:** document編集, 設定変更API, admin画面で, If-Matchを使って新しいstateの上書き事故を防ぎます.
+
+            **用語:** **request precondition**は, **If-Match**などで現在のselected representationを条件にmethod実行をguardする仕組みです. **normal request check**は, significant processing前にrejectやredirectを決められる確認です.
+
+            **Correct (C):** RFC 9110は, 除外条件を除き, normal request check成功後かつrequest content処理またはmethod actionの直前にpreconditionを評価するよう定めています.
+
+            **Options:**
+            - A (incorrect): significant processing前に分かるredirectやfailureが優先されます. unconditional responseが2xxでも412でもない場合, serverはpreconditionを無視します.
+            - B (incorrect): action後ではlost updateなどのstate changeを防ぐには遅すぎます.
+            - C (correct): normal error precedenceを保ちつつaction前にconditionを適用できます.
+
+            **Related:** conditional fieldが複数ある場合の評価順はRFC 9110 Section 13.2.2が定めます. no-storeなどCache-Control directiveはRFC 9111の範囲です.
           </div>
         </div>
       </article>
@@ -253,6 +273,10 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
           <div class="explain">
             **Explanation:**
+
+            **問題を出した背景:** representation metadata fieldは名前が近くても役割が違い, 選択を誤るとrecipientがbyte列を誤解釈します.
+
+            **実務での機会:** API client, browser, upload handler, security filterは, parserとdecode処理を選ぶときContent-Typeを使います.
 
             **Terms:** representation, media type. media typeはpayloadの解釈方法を受信側に伝える.
 

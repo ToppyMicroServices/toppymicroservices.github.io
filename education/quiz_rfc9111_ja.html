@@ -93,7 +93,7 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
-        <header><h4>Q1: 個人の残高や取引履歴を出す口座サマリー画面に, 最も合う方針はどれ</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: browserを含むcacheへの保存を許容できない個人向け口座サマリーに, 最も合う方針はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Cache-Control: public, max-age=600</label>
@@ -105,7 +105,7 @@
 
             **問題を出した背景:** cache は速くする道具として語られがちですが, 実際には「保存してよいか」の判断が先に来る場面が多いです.
 
-            **用語:** **no-store** は保存自体をさせない強い指示です. **private** は shared cache では使わせないという意味で, browser 側の保存までは止めません.
+            **用語:** **no-store** はconformingなprivate cacheとshared cacheへresponseを保存しないよう指示します. **private** はshared cacheでの保存を禁止しますが, browserなどprivate cacheでの保存は許します.
 
             **実務での機会:** 口座情報, 管理画面, 医療情報, 社内ポータルのレビューで, 「shared cache だけ防げば十分か」が論点になります.
 
@@ -114,7 +114,7 @@
             - B (incorrect): **private** は shared cache 事故は避けられますが, 保存そのものを嫌う画面には弱いです.
             - C (correct): **no-store** が, 残してはいけないデータという前提に最も合います.
 
-            **関連:** cache 設計は性能だけでなく, 漏えい面と操作端末の共有リスクも含めて考えます.
+            **関連:** cache設計は性能だけでなくdata handlingの判断です. RFC 9111は, maliciousまたはcompromisedなcacheやnetwork eavesdroppingに対し, no-storeだけでは信頼できる十分なprivacy mechanismにならないと注意しています.
           </div>
         </div>
       </article>
@@ -337,7 +337,7 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q9" value="a"> A. ETag が無いと保存できない</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. shared cache では使わせない</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. shared cacheはresponseを保存してはならない</label>
             <label class="choice"><input type="radio" name="Q9" value="c"> C. 毎回 revalidate させる</label>
           </fieldset>
           <div class="explain">
@@ -345,16 +345,16 @@
 
             **問題を出した背景:** **private** を「機密情報なので保存禁止」と読み違えるケースが多いです.
 
-            **用語:** **private** は shared cache での保存や再利用を止める指示です. browser 側の保存まで必ず止めるわけではありません.
+            **用語:** qualifierなしの**private** response directiveは, shared cacheがresponseを保存してはならないという意味です. private cacheは通常のcache条件に従って保存できます.
 
             **実務での機会:** user 向け dashboard, personalized top page, BFF endpoint の policy を決めるときによく使います.
 
             **選択肢:**
             - A (incorrect): validator の有無とは別問題です.
-            - B (correct): まず shared cache での利用制限を意味します.
+            - B (correct): これがqualifierなしdirectiveのnormativeな効果です.
             - C (incorrect): それは **no-cache** に近い考え方です.
 
-            **関連:** browser 保存も避けたいなら, **private** だけでなく **no-store** を検討します.
+            **関連:** conformingなprivate cacheでの保存も許容できないなら, **no-store**がより強い指示です. どちらもmessage confidentialityを保証しません.
           </div>
         </div>
       </article>
@@ -553,7 +553,7 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q17" value="a"> A. body を短くした置き換え版として使えるから</label>
-            <label class="choice"><input type="radio" name="Q17" value="b"> B. body を送らずに metadata を見直せるから</label>
+            <label class="choice"><input type="radio" name="Q17" value="b"> B. 200 HEAD responseで, 選択可能なstored GET responseをcontent転送なしにupdateまたはinvalidateできるから</label>
             <label class="choice"><input type="radio" name="Q17" value="c"> C. validator を全部 weak に変えるから</label>
           </fieldset>
           <div class="explain">
@@ -561,16 +561,16 @@
 
             **問題を出した背景:** HEAD は「body が無い GET」程度にしか覚えられず, cache 観点の価値が見落とされがちです.
 
-            **用語:** **HEAD** は GET なら返る header 群を, body なしで返す method です. そのため metadata 中心の確認に向きます.
+            **用語:** **HEAD** はequivalentなGETで返るheaderをcontentなしで返します. 200 HEAD responseを受けたcacheは, 選択可能なstored GET responseについてvalidatorやContent-Lengthが一致すればupdateし, 一致しなければstaleとみなせます.
 
             **実務での機会:** 大きな object の存在確認, metadata refresh, monitoring で, 本体転送なしに状態を見たいときに使われます.
 
             **選択肢:**
             - A (incorrect): body の簡略版ではありません.
-            - B (correct): metadata を更新・比較したいときに価値があります.
+            - B (correct): RFC 9111は, HEAD requestで選択可能だったstored GET responseに対する条件付きのupdateまたはinvalidateを定めています.
             - C (incorrect): validator の強さを変える機能ではありません.
 
-            **関連:** HEAD を使うときも, どの metadata を stored GET に反映してよいかは慎重に扱う必要があります.
+            **関連:** 全stored GET responseを無条件にmetadata refreshする機能ではありません. selection, validator, Content-Lengthの条件でupdateかstale扱いかが決まります.
           </div>
         </div>
       </article>

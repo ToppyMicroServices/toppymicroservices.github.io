@@ -102,6 +102,10 @@
           <div class="explain">
             **Explanation:**
 
+            **問題を出した背景:** `//`は, 後続文字列をauthorityとしてparseするか, 別のpath formとしてparseするかを決める境界です.
+
+            **実務での機会:** URI parser, reverse proxy, router, security filterの解釈を揃えないと, routingやvalidationの差になります.
+
             **Terms:** authority, delimiter, scheme. generic syntaxでは, authorityは"//"に続いて現れ, その後にpath, query, fragmentへ進む.
 
             **Correct (C):** "//"がauthorityの開始を示す. authorityは userinfo, host, port を含み得る.
@@ -114,7 +118,7 @@
 
             - C (correct): //がauthority introducer.
 
-            **Related:** 全てのschemeがauthorityを使うわけではない. 例えばschemeによっては//を使わないopaqueな形式もある.
+            **Related:** 全てのURIがauthorityを使うわけではない. `mailto:user@example.com`のように, authorityなしでpath-rootlessを使うURIもある.
           </div>
         </div>
       </article>
@@ -160,6 +164,10 @@
           <div class="explain">
             **Explanation:**
 
+            **問題を出した背景:** hostだけをauthorityと呼ぶ誤解が多く, component grammarに含まれるuserinfoやportを落としやすいためです.
+
+            **実務での機会:** authority境界はproxy設定, origin比較, access log, URL security reviewで使います.
+
             **Terms:** authority, userinfo, host, port. authorityは `//` の直後から, 次の `/`, `?`, `#` の手前までです. その中に userinfo, host, port が含まれます.
 
             **RFCを読むときの見方:** URI の問題で迷ったら, まず `scheme -> authority -> path -> query -> fragment` の順に線を引くように見ます. RFC 3986 は component ごとの責務を定義しているので, 文字列全体を一気に読もうとするより, 区切り記号ごとに切る方が理解しやすいです.
@@ -172,7 +180,7 @@
             - B (incorrect): `example.com` は host 部分だけで, authority 全体ではありません.
             - C (incorrect): `/a` は authority の後ろに来る path です.
 
-            **Related:** userinfoはセキュリティ上の理由で推奨されないことが多いが, 文法としては存在する.
+            **Related:** `user:password`形式はRFC 3986でdeprecatedです. applicationはpasswordをcleartext表示したり暗号化せず保存したりすべきではありません. ここではauthority grammarの説明だけに使っています.
           </div>
         </div>
       </article>
@@ -188,6 +196,10 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
+
+            **問題を出した背景:** reservedは, forbiddenやunsafeではなく, delimiter roleを持ち得る分類です. この違いを確認します.
+
+            **実務での機会:** query builder, router, signature処理, redirect validationではdelimiterとdataの区別が必要です.
 
             **Terms:** reserved, unreserved, gen-delims, sub-delims. reservedは, コンポーネントによって区切りとして意味を持ち得るため, データとして使うならpercent-encodingが必要になることがある.
 
@@ -212,12 +224,16 @@
         <header><h4>Q4: URIでpercent-encodingすべきタイミングとして最も正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. 全ての非ASCII文字は常に全コンポーネントで必ずエンコードする</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. URI構造を示すdelimiterも含め, reserved characterを常に全てpercent-encodeする</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. reservedは必須の区切りなので, データとして現れても決してエンコードしない</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. そのコンポーネントで許されない文字や, reservedをデータとして扱いたい場合にエンコードする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
+
+            **問題を出した背景:** percent-encodingはcomponent依存です. 一律encodeは構造を変え, encode不足はdataをdelimiterに見せます.
+
+            **実務での機会:** signed URL, redirect target, API path parameter, parser differential対策でこの判断を使います.
 
             **Terms:** percent-encoding, component, delimiter vs data. percent-encodingは%HHでoctetを表し, 構文を壊さず曖昧性を無くす仕組み.
 
@@ -225,12 +241,12 @@
 
             **Options:**
 
-            - A (incorrect): schemeやIRI処理などで扱いが変わる. 一律ルールはround-tripを壊し得る.
+            - A (incorrect): delimiterとして働くreserved characterはliteralのまま必要です. encodeするとURIの構造や意味が変わります.
 
             - B (incorrect): reservedはデータとして出したいこともある. その場合はエンコードして区切り解釈を避ける.
 
             - C (correct): 目的が"構文的に正しい"と"意図した意味"を両立させること.
-            **Related:** 早すぎるdecodeは, 区切りとデータの区別を失ってバグの原因になる.
+            **Related:** 早すぎるdecodeは, 区切りとデータの区別を失ってバグの原因になります. 非ASCII textにはcharacterからoctetへの定義やIRI処理も必要で, RFC 3986だけから全component共通の一律ルールは導けません.
           </div>
         </div>
       </article>
@@ -245,6 +261,10 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
+
+            **問題を出した背景:** URI normalizationは比較に役立ちますが, 安全でない変換は別resourceを参照させます.
+
+            **実務での機会:** cache key, allowlist, routing table, deduplication, signed URLの処理でnormalizationを選びます.
 
             **Terms:** normalization, scheme, host, path, fragment. 正規化は表記を変えつつ同じ参照を維持しようとする操作.
 
@@ -268,6 +288,10 @@
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
+
+            **問題を出した背景:** fragmentは同じURI表示内にありますが, queryやpathとは処理semanticsが違います.
+
+            **実務での機会:** browser navigation, document anchor, client-side router, URI比較でfragmentを独立componentとして扱います.
 
             **Terms:** fragment component. RFC 3986では, #の後ろはfragmentで, 二次リソースやクライアント側参照を指す.
 
