@@ -87,6 +87,14 @@
   function setupCTAEvents(){
     document.addEventListener('click', event => {
       if(!(event.target instanceof Element)) return;
+      const docsTarget = event.target.closest('[data-docs-event]');
+      if(docsTarget){
+        sendEvent(docsTarget.getAttribute('data-docs-event') || 'Docs link click', {
+          target: docsTarget.getAttribute('data-event-target') || 'unknown',
+          page: normalizePath(window.location.pathname)
+        });
+        return;
+      }
       const pocTarget = event.target.closest('[data-track="poc-cta"]');
       if(pocTarget){
         const location = pocTarget.getAttribute('data-location') || 'unknown';
@@ -108,7 +116,10 @@
 
   function normalizePath(pathname){
     if(!pathname) return '/';
-    if(pathname.endsWith('index.html')) return '/';
+    if(pathname === '/index.html' || pathname === 'index.html') return '/';
+    if(pathname.endsWith('/index.html')){
+      return pathname.slice(0, -'index.html'.length);
+    }
     return pathname;
   }
 
