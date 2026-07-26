@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc4949_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc4949.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 4949",
       SKILL_SUBTITLE: "Internet Security Glossary",
-      GOAL_DESCRIPTION: "Use precise security vocabulary in reviews and incident analysis",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc4949" target="_blank" rel="noopener noreferrer">RFC 4949: Internet Security Glossary</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: distinguish commonly confused terms like authentication vs authorization.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,37 +89,49 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Separate proving an identity from deciding what that identity may do.">
         <header><h4>Q1: Checking that a user is who they claim to be is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. authentication</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. authorization</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. compression</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. identification</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** Authentication is about identity, authorization is about permissions
+
+            RFC 4949 defines authentication as verifying a claim that an entity or resource has a particular attribute value. For a login, that attribute is commonly the user's claimed identity.
+
+            **Options:**
+            - A (correct): Authentication is the verification step applied to the claimed identity.
+            - B (incorrect): Authorization grants or evaluates approval to access a resource after relevant attributes are known.
+            - C (incorrect): Identification presents the claimed value, such as a user identifier; it does not by itself verify the claim.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="The identity has already been established; focus on the later access-control decision.">
         <header><h4>Q2: Deciding whether an authenticated user may delete a record is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. authentication</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. authorization</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. fragmentation</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. accounting</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Authorization is an access control decision
+
+            Authorization is an approval, or the process of granting approval, for an entity to access a resource. The requested operation can be evaluated only after the system has an identity and the applicable policy.
+
+            **Options:**
+            - A (incorrect): Authentication verifies an attribute claim; it does not grant deletion permission.
+            - B (correct): Deciding whether this entity may perform this action is an authorization decision.
+            - C (incorrect): Accounting records or measures activity and is not the permission decision itself.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Ask which security objective concerns disclosure, not modification or service access.">
         <header><h4>Q3: Protecting data so outsiders cannot read it is most closely</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -131,48 +141,69 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** Confidentiality is about preventing disclosure
+
+            Confidentiality concerns keeping information from being disclosed to unauthorized entities. It is distinct from preserving correctness and from keeping a service usable.
+
+            **Options:**
+            - A (incorrect): Availability concerns whether an authorized entity can access or use a resource when needed.
+            - B (incorrect): Integrity concerns unauthorized modification or destruction of data.
+            - C (correct): Preventing unauthorized reading is a confidentiality objective.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask which objective lets a receiver detect unauthorized changes.">
         <header><h4>Q4: Detecting that a message was modified in transit is most closely</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. confidentiality</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. integrity</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. deniability</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. availability</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Integrity means tampering can be detected or prevented
+
+            Data integrity is the property that data has not been changed or destroyed in an unauthorized manner. An integrity mechanism can let a receiver detect modification during transit.
+
+            **Options:**
+            - A (incorrect): Confidentiality limits disclosure but does not by itself establish that received data is unchanged.
+            - B (correct): Detecting unauthorized modification is an integrity function.
+            - C (incorrect): Availability concerns access or operation on demand, not whether a message was altered.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q5: A one time value used to prevent replay is commonly called a</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Look for a fresh value whose role is to make each protocol instance unique.">
+        <header><h4>Q5: A random or non-repeating value included in a protocol exchange to help detect replay is called a</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. nonce</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. cookie</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. banner</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. credential</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. checksum</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** A nonce is a number used once, often in challenge response flows
+
+            RFC 4949 defines a nonce as a random or non-repeating value included in protocol data, usually to provide liveness and protect against replay. Its freshness, rather than secrecy, is the key property in this use.
+
+            **Options:**
+            - A (correct): A nonce supplies the random or non-repeating value described in the stem.
+            - B (incorrect): A credential carries evidence or attributes used in security decisions; it is not inherently fresh.
+            - C (incorrect): A checksum can detect some data changes but does not inherently make a protocol exchange non-repeating.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^authentication$" data-difficulty="L1">
-        <header><h4>Q6: What is the term for verifying identity (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^replay attack$" data-difficulty="L1" data-hint="Name the attack on freshness, not the mechanism used to make an old transmission look valid.">
+        <header><h4>Q6: What attack maliciously repeats a valid data transmission? (two words)</h4><span class="type">Short Text</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
           <div class="explain">
             **Explanation:**
-            **Correct:** authentication
+
+            **Correct:** **replay attack**.
+
+            The glossary defines it as malicious or fraudulent repetition of a valid data transmission, either by its originator or by an interceptor who retransmits it. Freshness mechanisms such as nonces can help a receiver reject previously used protocol data.
           </div>
         </div>
       </article>
@@ -186,7 +217,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 4949</strong> to “<em id="footer-goal">security vocabulary</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

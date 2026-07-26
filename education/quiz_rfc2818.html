@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc2818_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc2818.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 2818",
       SKILL_SUBTITLE: "HTTP Over TLS (HTTPS)",
-      GOAL_DESCRIPTION: "Understand what HTTPS means for URLs, ports, and security expectations",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc2818" target="_blank" rel="noopener noreferrer">RFC 2818: HTTP Over TLS</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: map https URLs to connection behavior and security expectations.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate the URI scheme's transport semantics from unrelated policies the host might have.">
         <header><h4>Q1: A URL with scheme https implies</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,15 +99,18 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** HTTPS means HTTP over TLS, with the usual TLS server identity checks
+
+            RFC 2818 defines HTTPS as HTTP carried over TLS. When the server hostname is known from the URI, the client generally checks it against the identity presented in the server certificate.
+
             **Options:**
-            - A (incorrect): A host can serve both http and https
-            - C (incorrect): Base64 is not the security mechanism
+            - A (incorrect): The scheme describes this resource access; it does not permanently prohibit the same host from serving HTTP.
+            - B (correct): It combines HTTP over TLS with the endpoint-identification expectations specified for HTTPS.
+            - C (incorrect): Base64 is an encoding and provides neither TLS encryption nor server authentication.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Recall the registered default; it does not require every deployment to use that port.">
         <header><h4>Q2: The default port for https URLs is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -119,12 +120,18 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** If no port is specified, https maps to 443
+
+            RFC 2818 records **443** as the default TCP port for HTTP over TLS. A URL can still contain another explicit port; default does not mean mandatory for every deployment.
+
+            **Options:**
+            - A (correct): `443` is the registered default for an HTTPS URL with no explicit port.
+            - B (incorrect): `80` is the conventional default for plain HTTP.
+            - C (incorrect): `22` is commonly associated with SSH, not HTTPS.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Consider channel properties and endpoint identification separately from application permissions.">
         <header><h4>Q3: TLS provides which properties for HTTP messages (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -135,29 +142,40 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** TLS protects the channel, but it does not decide who is authorized
+
+            TLS gives HTTP a protected channel and supports endpoint authentication. It does not determine application identities, roles, or permissions after that channel has been established.
+
             **Options:**
-            - D (incorrect): Authorization is an application concern
+            - A (correct): Encryption protects message confidentiality against passive network observation.
+            - B (correct): TLS record protection detects unauthorized modification in transit.
+            - C (correct): Certificate validation and hostname checking support server authentication.
+            - D (incorrect): Application authorization remains a responsibility of the service using HTTPS.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q4: Your app builds an absolute URL from user input. Which check helps prevent mixed scheme confusion</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify which input changes the security boundary before the request carries credentials.">
+        <header><h4>Q4: Your app builds a destination URL from user input and may attach an access token. Which validation policy best prevents an HTTP downgrade?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Replace all https with http for consistency</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Strip the host and always use localhost</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Explicitly require https when credentials or tokens are in scope</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Accept either scheme and rely on a later redirect to upgrade the request</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Validate the host against an allowlist but leave the scheme unrestricted</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Validate the host and require https before attaching the token</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** Security sensitive flows should enforce https and avoid downgrade paths
+
+            Scheme validation must happen before a sensitive request is sent. A trusted host alone is insufficient because an `http` URL would place the first request, including any attached token, outside TLS protection.
+
+            **Options:**
+            - A (incorrect): A redirect occurs only after the initial insecure request has already left the client.
+            - B (incorrect): Host validation limits destinations but does not prevent plaintext transport to an allowed host.
+            - C (correct): Checking both destination and scheme before adding the token closes the downgrade path in the scenario.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A URI scheme identifies how a resource is accessed; it does not dictate an authentication method or all redirect behavior.">
         <header><h4>Q5: A correct statement about the https scheme is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -167,18 +185,27 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** http and https are different schemes, which matters for origin and default port
+
+            RFC 2818 distinguishes HTTP over TLS by using the `https` protocol identifier in place of `http`. The scheme carries transport and default-port meaning; it does not select an HTTP authentication scheme or impose a universal redirect policy.
+
+            **Options:**
+            - A (correct): `https` and `http` are distinct URI schemes with different access semantics.
+            - B (incorrect): Basic authentication is an independent HTTP authentication mechanism and is not required by HTTPS.
+            - C (incorrect): Redirect handling is not categorically prohibited by the `https` scheme.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^443$" data-difficulty="L1">
-        <header><h4>Q6: What is the default port number for https</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ipaddress$" data-difficulty="L1" data-hint="Look at RFC 2818's special endpoint-identification rule for a URI written with an IP literal rather than a DNS name.">
+        <header><h4>Q6: When an HTTPS URI uses an IP address, which subjectAltName type must exactly match it? (one token)</h4><span class="type">Short Text</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a number" />
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one token" />
           <div class="explain">
             **Explanation:**
-            **Correct:** 443
+
+            **Correct:** **iPAddress**.
+
+            RFC 2818 requires an `iPAddress` subjectAltName when the URI identifies the server by an IP address, and that value must exactly match the URI's address. A `dNSName` entry is used for DNS hostnames instead.
           </div>
         </div>
       </article>
@@ -192,7 +219,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 2818</strong> to “<em id="footer-goal">HTTPS basics</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

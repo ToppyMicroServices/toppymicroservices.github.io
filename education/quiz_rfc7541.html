@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7541_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7541.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7541",
       SKILL_SUBTITLE: "HPACK",
-      GOAL_DESCRIPTION: "Understand header compression primitives and pitfalls for HTTP/2",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -73,7 +72,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc7541" target="_blank" rel="noopener noreferrer">RFC 7541: HPACK</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9113" target="_blank" rel="noopener noreferrer">RFC 9113: HTTP/2</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: explain static vs dynamic tables, indexing, and security considerations.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -92,7 +90,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Compare reducing bytes on the wire with providing confidentiality or peer authentication.">
         <header><h4>Q1: What is the main purpose of HPACK in HTTP/2</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -102,18 +100,22 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** header compression, static table, dynamic table, indexing
-            **Correct (B):** HPACK compresses header fields, often by referring to entries in a static or dynamic table
+
+            **Terms:** HPACK represents HTTP/2 header fields as indexed references or literals. Its static table is fixed by the specification; its dynamic table is synchronized for a connection.
+
+            **Correct (B):** Reusing table entries and compact literal encodings reduces repeated header bytes, which is HPACK's purpose.
+
             **Options:**
-            - A (incorrect): Encryption is provided by TLS, not HPACK
-            - B (correct): This is the core design goal
-            - C (incorrect): Authenticity is not guaranteed by HPACK
-            **Related:** HTTP/3 uses QPACK instead of HPACK because transport properties differ
+            - A (incorrect): HPACK can reduce the encoded size of a header block, but it does not encrypt header fields; transport confidentiality is a separate concern.
+            - B (correct): Indexed and literal representations remove redundancy while allowing the decoder to reconstruct the same ordered header list.
+            - C (incorrect): HPACK does not authenticate the server or replace certificate validation.
+
+            **Related:** HTTP/3 uses QPACK, whose table synchronization is adapted to QUIC's stream delivery model.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="One table is fixed by the specification; the other is synchronized as header blocks are processed.">
         <header><h4>Q2: Which table is shared state that changes over time on a connection</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -123,91 +125,112 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** dynamic table, connection state
-            **Correct (C):** The dynamic table is updated by header blocks as requests and responses flow
+
+            **Terms:** The static and dynamic tables share one index address space, but only the dynamic table is updated by encoder instructions.
+
+            **Correct (C):** Entries are inserted into and evicted from the dynamic table as header blocks are encoded and decoded.
+
             **Options:**
-            - A (incorrect): The static table is fixed by the specification
-            - B (incorrect): Unrelated to HPACK
-            - C (correct): The dynamic table evolves per connection
-            **Related:** Wrong dynamic table state leads to decompression failures and protocol errors
+            - A (incorrect): The static table's entries and indices are fixed by RFC 7541 and do not evolve with traffic.
+            - B (incorrect): A DNS cache is not part of HPACK's encoding or decoding context.
+            - C (correct): The encoder and decoder maintain matching connection-specific dynamic-table state.
+
+            **Related:** If their dynamic-table state diverges, indexed references can decode to the wrong field or produce a compression error.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3">
-        <header><h4>Q3: Which header values are commonly treated as sensitive and should avoid indexing (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Classify the values by whether they contain reusable credentials or session identifiers, not merely by their field names.">
+        <header><h4>Q3: Which example values contain reusable credential or session material and therefore warrant a never-indexed representation (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Authorization</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Accept</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Cookie</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. Set-Cookie</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Authorization: Bearer &lt;token&gt;</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Accept: application/json</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Cookie: session=&lt;identifier&gt;</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. Set-Cookie: session=&lt;identifier&gt;</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** sensitive header field, never indexed, side channel
-            **Correct (A,C,D):** Credentials and session identifiers are high value targets and can amplify compression side channels
+
+            **Terms:** A literal header field marked **never indexed** is intended for values that should not be inserted into a compression table. RFC 7541 uses credentials and cookies as examples of sensitive fields.
+
+            **Correct (A,C,D):** These example values carry bearer or session material that can be reused if exposed.
+
             **Options:**
-            - A (correct): Often contains secrets
-            - B (incorrect): Usually low sensitivity
-            - C (correct): Often contains session identifiers
-            - D (correct): Often sets session identifiers
-            **Related:** Compression plus attacker influence can leak information, so treat secrets carefully
+            - A (correct): A bearer token is a reusable credential, so retaining it in compression state increases exposure.
+            - B (incorrect): This media-type preference is not a credential or session identifier in the stated example.
+            - C (correct): A session cookie can authorize later requests and should be treated as secret material.
+            - D (correct): A response that sets a session identifier carries the same kind of reusable secret.
+
+            **Related:** Sensitivity is a property of the value and threat model. A field name alone is not a universal rule for every deployment.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q4: What limits the maximum size of the HPACK dynamic table for a peer</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Look for the control sent by the decoder that bounds how much encoder-managed state it is willing to maintain.">
+        <header><h4>Q4: In HTTP/2, what bounds the maximum HPACK dynamic-table size an encoder may use</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. A negotiated setting for header table size</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. The HTTP status code</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. The URI scheme</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. The decoder's SETTINGS_HEADER_TABLE_SIZE limit</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. The number of entries defined in the static table</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. The maximum size of one HTTP/2 frame fragment</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** SETTINGS, dynamic table size
-            **Correct (A):** Peers advertise limits and the encoder must respect them
+
+            **Terms:** In HTTP/2, the decoder advertises a maximum with **SETTINGS_HEADER_TABLE_SIZE**. The encoder can choose a smaller current size but cannot exceed that bound.
+
+            **Correct (A):** The acknowledged setting is the protocol-defined maximum for the encoder's dynamic table.
+
             **Options:**
-            - A (correct): This prevents unbounded memory usage
-            - B (incorrect): Unrelated
-            - C (incorrect): Unrelated
-            **Related:** Encoders can also send dynamic table size updates within header blocks
+            - A (correct): It lets the decoder bound persistent compression state and therefore its memory commitment.
+            - B (incorrect): The static table is a separate fixed table; its entry count does not bound the dynamic table.
+            - C (incorrect): A header block can span frames, and frame payload size is not the dynamic-table capacity limit.
+
+            **Related:** The encoder signals a chosen lower size with a dynamic table size update at the start of a header block.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^huffman$" data-difficulty="L2">
-        <header><h4>Q5: HPACK can encode strings with which common prefix free coding (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^huffman$" data-difficulty="L2" data-hint="RFC 7541 Appendix B fixes one named code table derived from header statistics.">
+        <header><h4>Q5: Which named static code can HPACK use for string literals (one word)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Terms:** Huffman coding
-            **Correct:** Huffman
-            **Related:** HPACK defines a specific Huffman code table for efficiency
+
+            **Terms:** A string literal carries a flag indicating whether its octets use HPACK's fixed **Huffman** code.
+
+            **Correct:** **Huffman**.
+
+            **Why this matters:** RFC 7541 defines one static table in Appendix B, so the code is not learned or negotiated per connection. The decoder must also validate padding and the end-of-string rules.
+
+            **Related:** Huffman coding of a literal is separate from whether the resulting header field is indexed in the dynamic table.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Imagine an attacker varying guesses and observing only the encoded length of each result.">
         <header><h4>Q6: A classic risk when compressing secrets together with attacker influenced data is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. Increased DNS TTL</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. Loss of TLS authentication</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. Side channel leakage via compression behavior</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The encoder directly reveals the TLS traffic keys in the header block</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. The compressed header block loses transport authentication even when TLS is used</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Encoded lengths can act as an oracle for guesses about the secret</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** compression side channel, attacker chosen input
-            **Correct (C):** Size and compression ratio can leak information about secrets in some threat models
+
+            **Terms:** A **compression oracle** exists when an attacker can influence part of the input and observe how encoded length changes relative to a secret in the same compression context.
+
+            **Correct (C):** Repeated length observations can reveal whether an attacker-controlled guess shares structure with the secret.
+
             **Options:**
-            - A (incorrect): Unrelated
-            - B (incorrect): TLS authentication is separate
-            - C (correct): This is a known category of risk
-            **Related:** Treat cookies and credentials as sensitive and consider never indexed encodings
+            - A (incorrect): The side channel leaks information through size behavior; HPACK does not place TLS traffic keys into header blocks.
+            - B (incorrect): TLS can still authenticate the encrypted record; authenticated transport does not remove information exposed through a length oracle.
+            - C (correct): This is the probing risk described in RFC 7541's security considerations.
+
+            **Related:** Never-indexed representations and separating compression contexts reduce some risks, but the design still needs an explicit attacker-influence analysis.
           </div>
         </div>
       </article>
@@ -221,7 +244,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7541</strong> to “<em id="footer-goal">HPACK literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

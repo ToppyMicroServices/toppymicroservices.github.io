@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 6455（WebSocket）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 6455 ドリル: WebSocketハンドシェイク、ws と wss、Origin チェックを整理する。" />
+  <meta name="description" content="RFC 6455 ドリル: WebSocketハンドシェイク, ws と wss, Origin チェックを整理する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc6455_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 6455（WebSocket）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 6455 ドリル: WebSocketハンドシェイク、ws と wss、Origin チェックを整理する。" />
+  <meta property="og:description" content="RFC 6455 ドリル: WebSocketハンドシェイク, ws と wss, Origin チェックを整理する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc6455_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 6455（WebSocket）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 6455 ドリル: WebSocketハンドシェイク、ws と wss、Origin チェックを整理する。" />
+  <meta name="twitter:description" content="RFC 6455 ドリル: WebSocketハンドシェイク, ws と wss, Origin チェックを整理する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc6455.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6455_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6455.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 6455",
       SKILL_SUBTITLE: "WebSocket protocol",
-      GOAL_DESCRIPTION: "HTTP Upgradeハンドシェイクと、ws と wss のセキュリティ上の違いを説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6455" target="_blank" rel="noopener noreferrer">RFC 6455: The WebSocket Protocol</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: ハンドシェイクとOriginチェックを理解し、セキュリティ境界を設計できるようにする。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,26 +89,24 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="opening handshakeと, connection成立後に使うframingを分けて考えてください.">
         <header><h4>Q1: WebSocket接続は通常どの形で始まる</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. DNS TXT recordの交換</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. UDP broadcast</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. clientがsupportするWebSocket subprotocolを通知するDNS request</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. serverとの双方向message channelを確立するUDP datagram</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. connection upgradeを要求するHTTP request</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** WebSocket を「いきなり別 protocol で始まるもの」と思うと, proxy や CDN 配下の挙動を説明できません. まず HTTP handshake から始まることを押さえる問題です.
 
             **用語:** RFC 6455 の WebSocket は, 最初に **HTTP request** を送り, `Upgrade: websocket` などで protocol 切替を要求します. ここが browser, proxy, origin の責務境界になります.
 
             **Correct (C):** 通常の始まり方は, connection upgrade を要求する HTTP request です. その handshake が成立したあとに WebSocket framing へ切り替わります.
 
             **選択肢:**
-            - A (incorrect): DNS TXT record の交換では始まりません. 名前解決の仕組みと接続開始手順は別です.
-            - B (incorrect): UDP broadcast で始まる protocol ではありません.
+            - A (incorrect): DNSはserver名の解決に使われますが, WebSocket subprotocolの通知やopening handshakeは行いません.
+            - B (incorrect): RFC 6455はUDP datagramでmessage channelを確立しません.
             - C (correct): HTTP handshake から始めて protocol を切り替える, という要点を正しく言っています.
 
             **関連:** ここを理解していると, なぜ HTTP/2 では別の bootstrapping が必要になるのかも追いやすくなります.
@@ -118,7 +114,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="secureなvariantでは, baseのWebSocket schemeに1文字加わります.">
         <header><h4>Q2: WebSocketとTLS上のWebSocketに対応するschemeの組はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -128,8 +124,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** `ws` と `wss` を `http` と `https` の対応として即答できると, browser security と network path の説明が安定します.
 
             **用語:** **`ws`** は plaintext の WebSocket, **`wss`** は TLS 上の WebSocket です. つまり `wss` は confidentiality と integrity の面で `https` に近い期待値を持ちます.
 
@@ -145,7 +139,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="browserはambient credentialを付けられるため, serverはhandshakeを開始したsiteを評価する必要があります.">
         <header><h4>Q3: browserからvictimのcookieを使ってprivilegedなWebSocketを開かれるのを避けたい. 関連するcheckはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -156,8 +150,6 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** browser からの WebSocket は cookie を伴って飛ぶことがあるので, CSRF に似た cross-site 問題を起こせます. そのため Origin check が重要になります.
-
             **用語:** **Origin header** は browser が送る「この script がどの origin から来たか」の情報です. server 側では allowlist と照合して, 想定外 origin から privileged WebSocket を開けないようにします.
 
             **Correct (B):** browser から victim の cookie を使った接続を防ぎたいなら, **Origin header を allowlist と照合する**のが基本です.
@@ -167,12 +159,12 @@
             - B (correct): server 側で Origin を検証するのが一般的な防御です.
             - C (incorrect): `Accept-Language` は言語嗜好の header で, cross-site 制御には使えません.
 
-            **関連:** Origin check だけで十分とは限りません. app 認証, authorization, CSRF に近い設計判断も併せて必要です.
+            **関連:** non-browser clientは任意のheader valueを送れるため, Origin checkをclient identityの証明にはできません. app認証とauthorizationは別に必要です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="challenge-responseの向きを追ってください. clientが入力を送り, serverがresponseを導出します.">
         <header><h4>Q4: Sec-WebSocket-Accept計算の元になるrandom valueをclientが送るheaderはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -182,8 +174,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** `Sec-WebSocket-Key` と `Sec-WebSocket-Accept` は名前が似ているので, client と server のどちらがどちらを送るかを混同しやすいです. handshake の最小限の流れを固める問題です.
 
             **用語:** client は **`Sec-WebSocket-Key`** を送り, server はそれを使って **`Sec-WebSocket-Accept`** を計算して返します. これにより, 相手が WebSocket handshake を理解していることを確かめやすくなります.
 
@@ -199,28 +189,26 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="transport setup, handshake後のframing, channel protection, application identityを分けてください.">
         <header><h4>Q5: WebSocketについて正しい説明はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q5" value="a"> A. handshake後はWebSocket framingでmessageを送る</label>
             <label class="choice"><input type="checkbox" name="Q5" value="b"> B. wssは盗聴やtamperingへの耐性を高める</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. handshakeはHTTP requestで開始される</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. clientはserverへ送る全frameをmaskする</label>
             <label class="choice"><input type="checkbox" name="Q5" value="d"> D. protocolがapplication認証を保証する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** WebSocket は handshake の仕組みと, 接続後の framing と, app security がそれぞれ別論点です. 1つにまとめて理解すると review で抜け漏れが出やすいので, 要素を分ける問題です.
+            **用語:** opening handshake, data framing, channel protection, application identityは別のlayerです. connectionがOPENになるとWebSocket frameを使い, client-to-server frameはmaskされ, `wss`ではTLSがchannelを保護します.
 
-            **用語:** **framing** は接続後の message 形式, **handshake** は開始手順, **app authentication** は接続先 service が user をどう識別するかです.
-
-            **Correct (A,B,C):** どれも正しい説明です. handshake 後は WebSocket framing で message を送り, `wss` は channel 保護を強め, handshake 自体は HTTP request から始まります.
+            **Correct (A,B,C):** いずれもRFC 6455のprotocol boundaryを正しく述べています.
 
             **選択肢:**
             - A (correct): HTTP の request/response のまま話し続けるわけではなく, WebSocket framing に切り替わります.
             - B (correct): `wss` は盗聴や tampering への耐性を高めます.
-            - C (correct): handshake は HTTP request として開始されます.
+            - C (correct): RFC 6455は, TLSの有無にかかわらずclientがserverへ送る全frameのmaskを要求します.
             - D (incorrect): protocol 自体が app 認証を保証するわけではありません. 認証方式は app と deployment に依存します.
 
             **関連:** `wss` を使っても, Origin check や token 検証が不要になるわけではありません. transport protection と app security は別です.
@@ -228,14 +216,12 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^origin$" data-difficulty="L2">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^origin$" data-difficulty="L2" data-hint="serverが許可siteのlistと照合するrequest metadataを考えてください.">
         <header><h4>Q6: browser origin制御でよく使うrequest header名は何 (1語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** browser 経由の WebSocket では, cross-site 接続の可否をどう判定するかが実務上の論点になります. そのときに最初に見る header 名を答える問題です.
 
             **用語:** **`Origin`** header は browser が送る接続元 origin の情報で, server は allowlist と照合して想定外 site からの接続を弾けます.
 
@@ -255,7 +241,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 6455</strong> to “<em id="footer-goal">WebSocket handshake fluency</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 2818（HTTPS）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 2818 ドリル: httpsスキーム、既定ポート、TLSが提供する性質を整理する。" />
+  <meta name="description" content="RFC 2818 ドリル: httpsスキーム, 既定ポート, TLSが提供する性質を整理する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc2818_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 2818（HTTPS）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 2818 ドリル: httpsスキーム、既定ポート、TLSが提供する性質を整理する。" />
+  <meta property="og:description" content="RFC 2818 ドリル: httpsスキーム, 既定ポート, TLSが提供する性質を整理する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc2818_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 2818（HTTPS）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 2818 ドリル: httpsスキーム、既定ポート、TLSが提供する性質を整理する。" />
+  <meta name="twitter:description" content="RFC 2818 ドリル: httpsスキーム, 既定ポート, TLSが提供する性質を整理する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc2818.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc2818_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc2818.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 2818",
       SKILL_SUBTITLE: "HTTP over TLS (HTTPS)",
-      GOAL_DESCRIPTION: "https URLが意味する接続動作と、セキュリティ上の期待値を説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc2818" target="_blank" rel="noopener noreferrer">RFC 2818: HTTP Over TLS</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: https URLから、既定ポートとTLS前提の期待値を導けるようにする。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="URI schemeが示すtransportの意味と, hostが持ち得る別のpolicyを分けて考えてください.">
         <header><h4>Q1: schemeがhttpsのURLが意味することとして最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,8 +99,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** `https` を「暗号化っぽい URL」くらいに理解していると, redirect, mixed content, cert validation の議論が全部ぼやけます. まず scheme が何を意味するかを固める問題です.
 
             **用語:** **HTTPS** は **HTTP over TLS** です. つまり application protocol は HTTP のままで, transport の下に TLS が入ります. その結果, confidentiality, integrity, server authentication を期待できる, という理解が土台になります.
 
@@ -118,7 +114,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="登録されたdefaultを思い出してください. 全deploymentにそのportを強制する意味ではありません.">
         <header><h4>Q2: https URLのdefault portはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -128,8 +124,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** default port は暗記問題に見えますが, origin 判定, reverse proxy 設定, redirect の説明で頻繁に出ます. `https` を読んだときに client がどこへ connect する想定かを押さえるための設問です.
 
             **用語:** **default port** は URL に port が明示されていないときに scheme から補われる既定値です. `https://example.com` は `https://example.com:443` と同じ接続先を指す想定で扱われます.
 
@@ -145,7 +139,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="通信路の性質とendpoint識別を, applicationの権限判定とは分けて考えてください.">
         <header><h4>Q3: TLSがHTTP messageに対して提供する性質として正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -156,8 +150,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** TLS の役割を広く言い過ぎると, 「TLS だから認可も安全」のような危ない議論になります. channel security と application logic の境界を分けるための問題です.
 
             **用語:** **confidentiality** は盗み見の防止, **integrity** は改ざん検知/防止, **server authentication** は接続相手が想定した server かを確認することです. 一方で **authorization** は「その user が何をしてよいか」を決める application 側の判断です.
 
@@ -174,34 +166,28 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q4: user inputからabsolute URLを組み立てる. credentialやtokenが関わるなら有効な対策はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="credentialを運ぶrequestより前に, どの入力がsecurity boundaryを変えるかを特定してください.">
+        <header><h4>Q4: user inputから送信先URLを作り, access tokenを付けることがある. HTTP downgradeを防ぐvalidation policyはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. 統一のためhttpsをhttpへ置換する</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. hostを削って常にlocalhostへ向ける</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. httpsを明示的に要求し, downgrade pathを避ける</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. どちらのschemeも許可し, 後のredirectでupgradeする</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. hostはallowlistと照合するが, schemeは制限しない</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. hostを検証し, tokenを付ける前にhttpsを必須にする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** user input から absolute URL を作る処理は, open redirect, downgrade, token 漏えいの入り口になりやすいです. credential や token が載る flow では「どの scheme を許すか」を先に固定する必要があります.
-
-            **用語:** **downgrade path** は, 本来 HTTPS で扱うべき flow が HTTP に落ちる経路です. 1回でも平文へ流れると confidentiality も integrity も失われます.
-
-            **Correct (C):** security sensitive な flow では, `https` を明示的に要求し, HTTP へ落ちる経路を作らないのが基本です. token を query や redirect で運ぶなら特に重要です.
+            scheme validationはsensitive requestを送る前に行う必要があります. trusted hostでも`http` URLなら, tokenを含む最初のrequestがTLS protectionの外へ出ます.
 
             **選択肢:**
-            - A (incorrect): `https` を `http` へ置換すると, わざわざ protection を外す方向です.
-            - B (incorrect): 常に `localhost` に向けるのは URL 組み立ての一般解ではなく, 問題の本質である scheme 制約も解決しません.
-            - C (correct): 最低限, sensitive flow を HTTP downgrade から守る前提になります.
-
-            **関連:** ここで必要なのは「URL を作れること」ではなく, 許可する origin と scheme を policy として固定することです.
+            - A (incorrect): redirectは最初のinsecure requestを送った後にしか届かず, そのrequestを保護できません.
+            - B (incorrect): host validationは送信先を絞りますが, 許可hostへのplaintext transportを防ぎません.
+            - C (correct): tokenを付ける前に送信先とschemeを検証すれば, scenarioのdowngrade pathを閉じられます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="URI schemeはresourceへのaccess方法を識別します. 認証方式やredirect全般を決めるものではありません.">
         <header><h4>Q5: https schemeについて正しい説明はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -211,8 +197,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** `http` と `https` を「同じ URL の secure 版」とだけ覚えると, origin, cookie, mixed content, redirect policy の差を説明しにくくなります. scheme 自体が別物であることを押さえる問題です.
 
             **用語:** **distinct URI scheme** とは, `http` と `https` が別々の scheme として定義されている, という意味です. scheme が違えば既定 port も origin も扱いが変わります.
 
@@ -228,22 +212,16 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^443$" data-difficulty="L1">
-        <header><h4>Q6: httpsのdefault port番号は何</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ipaddress$" data-difficulty="L1" data-hint="DNS nameではなくIP literalを使うURIについて, RFC 2818のendpoint identification ruleを確認してください.">
+        <header><h4>Q6: HTTPS URIがIP addressを使う場合, どのsubjectAltName typeがexact matchする必要がある? (token 1つ)</h4><span class="type">Short Text</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a number" />
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one token" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** 数字だけ覚える問題ではなく, `https` を見たときに client がどの接続先を想定するかを即答できるようにするための設問です.
+            **Correct:** **iPAddress**.
 
-            **用語:** **default port** は URL に明示されない port 番号を scheme から補うための既定値です.
-
-            **Correct:** **443**.
-
-            **Why this matters:** `https://example.com` を読むとき, browser や client library は `:443` を前提に接続します. reverse proxy, firewall, redirect 設定でもこの前提が基準になります.
-
-            **関連:** `http` の既定 port は **80** です. scheme と port をセットで覚えると, origin や redirect の説明が安定します.
+            RFC 2818はserverをIP addressで指定するURIについて, certificateに`iPAddress` subjectAltNameが存在し, URIのaddressとexact matchすることを求めます. DNS hostnameには`dNSName`を使います.
           </div>
         </div>
       </article>
@@ -257,7 +235,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 2818</strong> to “<em id="footer-goal">HTTPS basics</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

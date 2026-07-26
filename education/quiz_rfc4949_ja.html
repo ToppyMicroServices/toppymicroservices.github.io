@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 4949（セキュリティ用語）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 4949 ドリル: セキュリティ用語をシナリオで区別できるようにする。" />
+  <meta name="description" content="RFC 4949 ドリル: セキュリティ用語をシナリオで区別できるようにする." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc4949_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 4949（セキュリティ用語）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 4949 ドリル: セキュリティ用語をシナリオで区別できるようにする。" />
+  <meta property="og:description" content="RFC 4949 ドリル: セキュリティ用語をシナリオで区別できるようにする." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc4949_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 4949（セキュリティ用語）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 4949 ドリル: セキュリティ用語をシナリオで区別できるようにする。" />
+  <meta name="twitter:description" content="RFC 4949 ドリル: セキュリティ用語をシナリオで区別できるようにする." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc4949.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc4949_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc4949.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 4949",
       SKILL_SUBTITLE: "Internet Security Glossary",
-      GOAL_DESCRIPTION: "レビューやインシデント分析で、セキュリティ用語を正確に使えるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc4949" target="_blank" rel="noopener noreferrer">RFC 4949: Internet Security Glossary</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: 認証（authentication）と認可（authorization）など、混同しやすい語を区別する。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,18 +89,16 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="identityを確かめる処理と, そのidentityに許す操作を決める処理を分けてください.">
         <header><h4>Q1: userが主張するidentityが正しいか確認する行為はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. authentication</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. authorization</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. compression</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. identification</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** `authentication` と `authorization` は security review で最も混同されやすい基本語です. 最初にここを外すと, 後続の議論が全部ずれます.
 
             **用語:** **authentication** は「その主体が本当に誰かを確認すること」, **authorization** は「確認済みの主体に何を許すかを決めること」です.
 
@@ -111,25 +107,23 @@
             **選択肢:**
             - A (correct): identity verification そのものを指します.
             - B (incorrect): **authorization** は権限判断です. 本人確認が終わった後に「その user に delete を許すか」を決めます.
-            - C (incorrect): **compression** はデータ量を減らす処理で, security の主体確認とは無関係です.
+            - C (incorrect): **identification** はuser identifierなどのclaimed valueを提示する段階で, claimの検証そのものではありません.
 
             **関連:** login は authentication の入口ですが, login 済みだから何でもできるわけではありません. その先に authorization が続きます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="identityの確認は済んでいます. その後のaccess-control判断に注目してください.">
         <header><h4>Q2: authentication済みuserがrecordをdeleteできるか決める行為はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. authentication</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. authorization</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. fragmentation</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. accounting</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** 実務では「認証済みです」と「その操作を許可します」が同じ意味で話されがちです. でも設計上は別判断なので, 用語も分けて扱う必要があります.
 
             **用語:** **authorization** は access control decision です. 認証済みの user に対して, resource や action ごとに許可/拒否を決めます.
 
@@ -138,14 +132,14 @@
             **選択肢:**
             - A (incorrect): **authentication** は本人確認であり, delete 許可の判断までは含みません.
             - B (correct): operation ごとの access control を決めるのでこれが正解です.
-            - C (incorrect): **fragmentation** は network や message 分割の話で, access control とは無関係です.
+            - C (incorrect): **accounting** はactivityの記録や計測であり, permission decisionそのものではありません.
 
             **関連:** admin 画面で「ログインできたが削除はできない」は正常です. authentication と authorization が別だからです.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="変更の検知やserviceの利用可能性ではなく, 情報の開示を扱うsecurity objectiveを探してください.">
         <header><h4>Q3: outsiderがdataを読めないように守る性質はどれに近い</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -155,8 +149,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** **CIA** の 3語は security の基本ですが, confidentiality と integrity を逆に覚えると対策選定まで崩れます. まず何を守りたい性質なのかを固める問題です.
 
             **用語:** **confidentiality** は unauthorized disclosure, つまり見てはいけない人に読まれないことを守る性質です. encryption はその代表的な手段です.
 
@@ -172,18 +164,16 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="受信者が許可されていない変更を検知するための性質を考えてください.">
         <header><h4>Q4: messageがtransit中に改ざんされたことを検知する性質はどれに近い</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. confidentiality</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. integrity</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. deniability</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. availability</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** security incident の切り分けでは, 「読まれた」のか「書き換えられた」のかを最初に分ける必要があります. integrity はその後者を扱う中心語です.
 
             **用語:** **integrity** は data や message が unauthorized に改変されていないことを守る性質です. MAC, signature, checksum の一部はこの検証に関わります.
 
@@ -192,54 +182,48 @@
             **選択肢:**
             - A (incorrect): **confidentiality** は見えないようにする性質で, 改ざん検知そのものは主目的ではありません.
             - B (correct): tampering の防止や検知に関わるので正解です.
-            - C (incorrect): **deniability** はこの文脈の基本 3語とは別の概念で, transit 改ざん検知を直接表しません.
+            - C (incorrect): **availability** は必要なときのaccessやoperationを扱い, messageが改変されたかは示しません.
 
             **関連:** encryption だけでは integrity が十分でない場合があります. 「読めない」と「書き換えられない」は別に確認する癖が大切です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q5: replayを防ぐために使うone time valueは何と呼ばれることが多い</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="各protocol instanceを一意にするためのfreshな値を探してください.">
+        <header><h4>Q5: replay検知のためprotocol exchangeへ入れるrandomまたはnon-repeatingな値は何と呼ぶ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. nonce</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. cookie</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. banner</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. credential</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. checksum</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** replay 防止を語るときに, nonce, timestamp, sequence number が混ざりやすいです. ここでは一番基礎的な「一度だけ使う値」の語を押さえます.
-
-            **用語:** **nonce** は **number used once** の略として使われることが多く, challenge/response や AEAD などで再利用を避けるための一回性の値です.
+            **用語:** RFC 4949の**nonce**は, protocolで交換するdataへ入れるrandomまたはnon-repeatingな値です. 通常はlivenessを保証し, replay attackを検知または防止するために使います.
 
             **Correct (A):** replay を防ぐ one-time value として最もよく出る語は **nonce** です.
 
             **選択肢:**
             - A (correct): 一回性を持たせる値として代表的です.
-            - B (incorrect): **cookie** は state を client に持たせる仕組みであり, replay 防止専用語ではありません.
-            - C (incorrect): **banner** は通知や表示文の意味で, cryptographic freshness の用語ではありません.
+            - B (incorrect): **credential** はsecurity判断に使うevidenceやattributeを運びますが, 固有にfreshとは限りません.
+            - C (incorrect): **checksum** はdata changeを検知できる場合がありますが, protocol exchangeをnon-repeatingにはしません.
 
             **関連:** nonce 自体は秘密でなくてもよいことがあります. 重要なのは, 同じ文脈で再利用しないことです.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^authentication$" data-difficulty="L1">
-        <header><h4>Q6: identity検証を指す用語は何 (英語1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^replay attack$" data-difficulty="L1" data-hint="freshnessを破るattackの名前を答えてください. 古いtransmissionをvalidに見せるmechanismの名前ではありません.">
+        <header><h4>Q6: validなdata transmissionを悪意をもって繰り返すattackを何と呼ぶ (英語2語)</h4><span class="type">Short Text</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** security glossary の最初の1語を即答できることは, 仕様や設計レビューの読みやすさに直結します.
+            **Correct:** **replay attack**.
 
-            **用語:** **authentication** は claimed identity の確認です. password, certificate, token 検証などはこの行為を支える手段です.
-
-            **Correct:** **authentication**.
-
-            **Why this matters:** 「誰かを確認する」のか, 「何を許すかを決める」のかを混同すると, auth 設計の説明が崩れます. この1語を起点に vocabulary を揃えるのが大切です.
+            RFC 4949は, 有効なdata transmissionをoriginatorまたはinterceptorが悪意または不正に繰り返すattackと定義しています. nonceなどのfreshness mechanismは, 以前使われたprotocol dataをreceiverが拒否する助けになります.
           </div>
         </div>
       </article>
@@ -253,7 +237,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 4949</strong> to “<em id="footer-goal">security vocabulary</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

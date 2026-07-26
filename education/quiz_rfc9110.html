@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9110_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9110.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9110",
       SKILL_SUBTITLE: "HTTP Semantics",
-      GOAL_DESCRIPTION: "Reason about HTTP methods, status codes, caching, and header meaning",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: choose correct methods and headers, and interpret responses consistently.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Ask whether the rule keeps the same meaning across HTTP versions or instead describes one version's wire encoding.">
         <header><h4>Q1: Which topic is HTTP semantics rather than HTTP transport details</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -102,7 +100,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** HTTP semantics remain shared across protocol versions, while framing and transport mechanisms change.
+            **Why it matters:** HTTP semantics remain shared across protocol versions, while framing and transport mechanisms change.
 
             **Real-world usage:** API design, proxy behavior, client libraries, and cache review depend on method and response meaning rather than the wire format.
 
@@ -118,7 +116,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="A safe method has read-only intent from the client's perspective, even though incidental server-side effects can still occur.">
         <header><h4>Q2: Which method is defined as safe in HTTP semantics</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -129,7 +127,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Safe is often misread as “the server performs no write,” rather than a property of the action requested by the client.
+            **Why it matters:** Safe is often misread as “the server performs no write,” rather than a property of the action requested by the client.
 
             **Terms:** safe method. A safe method has essentially read-only defined semantics: the client does not request or expect a state change. Incidental server-side effects such as logging can still occur.
             **Correct (A):** GET is defined as safe because its requested semantics are retrieval, even though an implementation can have incidental effects that the client did not request.
@@ -143,7 +141,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="For each method, compare the intended server effect of one identical request with that of several identical requests.">
         <header><h4>Q3: Which methods are idempotent (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -155,7 +153,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Idempotency is commonly confused with identical responses or with a guarantee that every retry is operationally risk-free.
+            **Why it matters:** Idempotency is commonly confused with identical responses or with a guarantee that every retry is operationally risk-free.
 
             **Terms:** idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
             **Correct (A,C):** PUT and DELETE are defined as idempotent. Repeating the same request has the same intended effect as one request, although individual responses and incidental side effects can differ.
@@ -170,7 +168,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Use the first digit to identify the response class before considering any individual status code.">
         <header><h4>Q4: What does a 3xx status code generally indicate</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -181,7 +179,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** The status-code class is the first layer of response meaning, before the client applies code-specific behavior.
+            **Why it matters:** The status-code class is the first layer of response meaning, before the client applies code-specific behavior.
 
             **Real-world usage:** Clients, gateways, monitoring, and retry logic use status classes to choose broad handling paths before examining a specific code.
 
@@ -197,18 +195,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Place precondition evaluation in the processing sequence so it does not override an earlier failure and still occurs before the requested state change.">
         <header><h4>Q5: When should a server evaluate request preconditions such as If-Match</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Before checking whether the request would otherwise succeed</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. After performing the requested action</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. After normal request checks, immediately before processing request content or performing the action</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Before checking whether the method, target, authorization, and other normal request conditions would allow success</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only after content processing and the requested state change have both completed</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. After deciding it would otherwise succeed, but before processing content or performing the action</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Conditional requests are used both for cache validation and to prevent lost updates. Evaluating them at the wrong stage can change error precedence or allow an action to occur before its guard is checked.
+            **Why it matters:** Conditional requests are used both for cache validation and to prevent lost updates. Evaluating them at the wrong stage can change error precedence or allow an action to occur before its guard is checked.
 
             **Real-world usage:** Document editing, configuration APIs, and administrative updates use If-Match to prevent one client from silently overwriting a newer state.
 
@@ -226,14 +224,14 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1" data-hint="Look for the representation metadata field whose value is a media type such as text/html or application/json.">
         <header><h4>Q6: Which header field indicates the media type of the representation</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Representation metadata fields have nearby names but different roles, so using the wrong one can make a recipient interpret bytes incorrectly.
+            **Why it matters:** Representation metadata fields have nearby names but different roles, so using the wrong one can make a recipient interpret bytes incorrectly.
 
             **Real-world usage:** API clients, browsers, upload handlers, and security filters use Content-Type when selecting parsers and decoding behavior.
 
@@ -254,7 +252,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9110</strong> to “<em id="footer-goal">Correct HTTP semantics</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

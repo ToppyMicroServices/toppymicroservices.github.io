@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8441_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8441.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 8441",
       SKILL_SUBTITLE: "Bootstrapping WebSockets with HTTP/2",
-      GOAL_DESCRIPTION: "Understand the extended CONNECT approach for WebSockets over HTTP/2",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8441" target="_blank" rel="noopener noreferrer">RFC 8441: Bootstrapping WebSockets with HTTP/2</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: reason about WebSocket over HTTP/2 without the HTTP/1.1 Upgrade mechanism.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Compare the connection-wide HTTP/1.1 upgrade model with a mechanism that can operate on one HTTP/2 stream.">
         <header><h4>Q1: In HTTP/2, WebSockets are bootstrapped primarily using</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,47 +99,62 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** HTTP/2 does not use the same connection upgrade model as HTTP/1.1, so extended CONNECT is used
+            **Terms:** extended CONNECT, HTTP/2 stream
+            **Correct (B):** RFC 8441 bootstraps a WebSocket with the extended CONNECT mechanism on an HTTP/2 stream.
+            **Options:**
+            - A (incorrect): HTTP/2 does not use the HTTP/1.1 connection-wide Upgrade mechanism.
+            - B (correct): Extended CONNECT adds a protocol pseudo-header and stream-scoped tunnel semantics.
+            - C (incorrect): DNS service discovery does not establish a WebSocket over an HTTP/2 stream.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Focus on HTTP/2 stream multiplexing and whether each WebSocket needs its own transport connection.">
         <header><h4>Q2: What does using WebSockets over HTTP/2 avoid compared to the HTTP/1.1 upgrade approach</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Any need for encryption</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Any HTTP semantics</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Tying a WebSocket to a dedicated TCP connection</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Protecting WebSocket traffic with transport encryption</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Applying HTTP setup and WebSocket framing semantics</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Reserving a separate TCP connection for every WebSocket</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** HTTP/2 multiplexes streams over one connection, so a WebSocket can live in a stream
+            **Terms:** multiplexing, stream, TCP connection
+            **Correct (C):** HTTP/2 can carry multiple streams on one connection, so each bootstrapped WebSocket does not inherently require a dedicated TCP connection.
+            **Options:**
+            - A (incorrect): RFC 8441 does not remove transport-security requirements.
+            - B (incorrect): The exchange still uses HTTP semantics for setup and WebSocket semantics after a successful response.
+            - C (correct): A WebSocket is associated with an HTTP/2 stream and can coexist with other streams on the connection.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q3: A client uses an HTTP/2 CONNECT for a WebSocket. What should it signal as the target protocol</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="The :protocol pseudo-header identifies the application protocol intended for the extended CONNECT stream.">
+        <header><h4>Q3: Which value belongs in the :protocol pseudo-header when extended CONNECT bootstraps a WebSocket</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. websocket</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. http</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. tls</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. websocket, the registered WebSocket protocol token</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. http, the token for the surrounding HTTP/2 protocol</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. tls, a token naming the channel-security protocol</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** The target protocol is indicated as websocket in the extended CONNECT mechanism
+            **Terms:** :protocol pseudo-header, extended CONNECT
+            **Correct (A):** The client sends :protocol with the value websocket to identify the protocol intended for the stream.
+            **Options:**
+            - A (correct): websocket is the protocol value defined by RFC 8441 for this use.
+            - B (incorrect): http names the surrounding protocol, not the WebSocket protocol being bootstrapped.
+            - C (incorrect): TLS is not the :protocol value used to request WebSocket semantics.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Separate the changed HTTP bootstrap from the WebSocket and application rules that apply after the stream is accepted.">
         <header><h4>Q4: Which are still relevant for WebSocket semantics when using HTTP/2 bootstrapping (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. WebSocket message framing and opcode rules</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. The need for origin based authorization checks in browsers</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Server validation of the browser-supplied Origin header</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Application authentication and authorization design</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. The HTTP/1.1 Connection header requirement</label>
           </fieldset>
@@ -149,33 +162,42 @@
             **Explanation:**
             **Correct (A,B,C):** The bootstrapping changes, but the security and application concerns remain
             **Options:**
-            - D (incorrect): HTTP/2 does not use the same Connection header model
+            - A (correct): WebSocket frames and opcodes still define the data carried after a successful handshake.
+            - B (correct): A browser still supplies Origin, and the server validates it according to its origin policy.
+            - C (correct): The bootstrap does not decide which users or operations the application authorizes.
+            - D (incorrect): HTTP/2 forbids the connection-specific Connection header and does not reuse the HTTP/1.1 Upgrade sequence.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Determine whether the proxy explicitly opts in to extended CONNECT before choosing an HTTP/2 WebSocket path.">
         <header><h4>Q5: A proxy only supports HTTP/2 and blocks Upgrade. What is a practical consequence for WebSockets</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. WebSockets become impossible</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. You may need the HTTP/2 bootstrapping approach instead of HTTP/1.1 upgrade</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. You must always downgrade to long polling</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Translate the request into an ordinary HTTP/2 GET without WebSocket framing</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Check for extended CONNECT support and use that path if available</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Send HTTP/1.1 Connection and Upgrade headers inside an HTTP/2 stream</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** HTTP/2 environments can use extended CONNECT to establish the WebSocket semantics
+            **Correct (B):** Blocking HTTP/1.1 Upgrade does not establish whether RFC 8441 is available. The client must determine whether the HTTP/2 peer advertises extended CONNECT support.
+            **Options:**
+            - A (incorrect): An ordinary GET does not establish WebSocket framing and semantics.
+            - B (correct): A peer that advertises the setting can accept the extended CONNECT bootstrap.
+            - C (incorrect): Connection and Upgrade are connection-specific HTTP/1.1 fields and cannot be used this way in HTTP/2.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^connect$" data-difficulty="L1">
-        <header><h4>Q6: Which HTTP method is central to the HTTP/2 WebSocket bootstrapping approach (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^settings_enable_connect_protocol$" data-difficulty="L2" data-hint="Look for the HTTP/2 SETTINGS parameter that opts a peer in before extended CONNECT may be sent.">
+        <header><h4>Q6: Which HTTP/2 setting must a server send with value 1 before a client uses extended CONNECT (exact name)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** CONNECT
+            **Terms:** SETTINGS_ENABLE_CONNECT_PROTOCOL, peer opt-in
+            **Correct:** SETTINGS_ENABLE_CONNECT_PROTOCOL. A server advertises value 1 to indicate support for extended CONNECT; a client must not send the :protocol pseudo-header before receiving that setting.
+            **Related:** The setting enables the extended form of CONNECT. The request still uses the CONNECT method and supplies :protocol for the target application protocol.
           </div>
         </div>
       </article>
@@ -189,7 +211,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 8441</strong> to “<em id="footer-goal">WebSocket over H2 reasoning</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

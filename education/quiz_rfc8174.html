@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8174_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8174.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 8174",
       SKILL_SUBTITLE: "BCP 14 case-sensitivity update",
-      GOAL_DESCRIPTION: "Interpret MUST/SHOULD/MAY correctly and write requirements that are unambiguous",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -73,7 +72,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc8174" target="_blank" rel="noopener noreferrer">RFC 8174: Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc2119" target="_blank" rel="noopener noreferrer">RFC 2119: Key words for use in RFCs to Indicate Requirement Levels</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: make requirements testable and avoid surprises for implementers.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -92,7 +90,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Check both the capitalization of the word and whether the document declares an interpretation convention.">
         <header><h4>Q1: A spec says "Clients must validate certificates" but does not define BCP 14 keyword interpretation. What is the most likely problem</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -119,32 +117,32 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q2: You are writing a spec and you want MUST to be normative even when written as "must". What is the best action</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="BCP 14 uses two parts of the signal together: an explicit interpretation notice and a particular capitalization.">
+        <header><h4>Q2: You want a requirement to carry the special BCP 14 meaning of MUST. What is the clearest way to write it</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Include the BCP 14 boilerplate that defines keyword interpretation and avoid relying on case alone</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Use lowercase only because it is friendlier</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Avoid any normative keywords and rely on examples only</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Write MUST in all capitals and include the BCP 14 interpretation boilerplate</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Write must in lowercase because the boilerplate gives both forms the same meaning</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Replace the requirement with an example and omit normative wording</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** MUST, normative keyword, BCP 14 boilerplate, case sensitivity. The key is making the interpretation rule explicit, not assuming readers will infer it from capitalization.
+            **Terms:** MUST, normative keyword, BCP 14 boilerplate, case sensitivity.
 
-            **Correct (A):** BCP 14 provides a clear pattern: include boilerplate that defines how to interpret the keywords, then write requirements so implementers can test conformance. Case alone should not be the signal.
+            **Correct (A):** RFC 8174's boilerplate says that the listed words are to be interpreted as described in BCP 14 when, and only when, they appear in all capitals. Both the declaration and the capitalized keyword make the intended convention clear.
 
             **Options:**
 
-            - A (correct): This makes "must" unambiguous as a normative MUST, as long as the document states the interpretation rules. It also helps reviewers and toolchains.
-            - B (incorrect): Lowercase by itself increases ambiguity, which RFC 8174 is trying to reduce.
-            - C (incorrect): Examples are helpful, but replacing normative requirements with examples makes conformance and interoperability fragile.
-            **Related:** A good spec makes requirements machine-checkable where possible and human-checkable otherwise, with explicit normative language.
+            - A (correct): All-capitals MUST satisfies the capitalization condition, and the boilerplate declares the BCP 14 interpretation.
+            - B (incorrect): Under RFC 8174's standard boilerplate, lowercase must does not receive the special BCP 14 meaning.
+            - C (incorrect): An example can illustrate behavior, but it does not state the mandatory conformance condition.
+            **Related:** A document can define a different convention explicitly, but it should not claim that RFC 8174's standard boilerplate assigns BCP 14 meanings to lowercase forms.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Separate an explicit interpretation convention, testable requirements, and documented exceptions from unlabeled prose.">
         <header><h4>Q3: Which practices reduce ambiguity for implementers (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -171,70 +169,71 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2">
-        <header><h4>Q4: A sentence says "Clients must validate certificates" without any BCP 14 boilerplate. What is the risk</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Apply the document's phrase only in all capitals literally to the spelling used later.">
+        <header><h4>Q4: A specification says BCP 14 keywords have their defined meanings only in all capitals. Later it says "clients should retry." How should lowercase "should" be interpreted</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. The requirement is automatically equivalent to RFC 2119 MUST</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. The sentence becomes invalid and must be removed</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Readers may disagree whether "must" is normative or descriptive</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. As normative SHOULD regardless of capitalization</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. As ordinary English unless separately defined by the document</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. As normative MAY because lowercase signals optional behavior</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** must (lowercase), normative vs descriptive, BCP 14 boilerplate. The key risk is interpretive ambiguity, which RFC 8174 targets.
+            **Terms:** **SHOULD** is the BCP 14 keyword. Lowercase **should** has its normal English meaning when the document adopts the RFC 8174 all-capitals rule.
 
-            **Correct (C):** Without the boilerplate, different readers may treat "must" as a strong suggestion rather than a normative MUST. That leads to inconsistent implementations and interoperability issues.
+            **Correct (B):** RFC 8174 gives the defined BCP 14 meanings only to the all-capitals forms. A document can define another convention, but the stated boilerplate does not turn lowercase **should** into normative **SHOULD**.
 
             **Options:**
 
-            - A (incorrect): Lowercase "must" is not automatically the RFC 2119 keyword unless the document states that rule.
-            - B (incorrect): The sentence can stay, but the document should clarify whether it is normative.
-            - C (correct): Ambiguity is exactly the problem, and it is resolved by explicit rules and consistent keyword usage.
-            **Related:** For security statements (like certificate validation), ambiguity is especially costly, because implementers might ship non-conformant behavior.
+            - A (incorrect): The all-capitals condition makes capitalization material; it does not cover every spelling of the word.
+            - B (correct): The lowercase word is ordinary language unless the document explicitly assigns it another meaning.
+            - C (incorrect): Lowercase does not map one BCP 14 keyword to another; it removes the special BCP 14 meaning under this boilerplate.
+
+            **Related:** Normative text can still be written without BCP 14 keywords, but its requirement must be established by the text rather than inferred from lowercase keyword spelling.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L1">
-        <header><h4>Q5: Which phrase is most aligned with BCP 14 style in a normative section</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Compare whether each sentence states a testable mandatory condition or leaves its normative force and exceptions unclear.">
+        <header><h4>Q5: A document adopts the standard BCP 14 boilerplate. Which sentence most clearly states a testable mandatory requirement</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. It might be nice if the server responds quickly</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. The server MUST reject malformed input</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. The server could maybe reject malformed input</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The server should usually reject a request that fails the syntax in Section 4</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. The server MUST reject a request that fails the syntax in Section 4</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. The server SHOULD reject malformed input unless it chooses not to do so</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             **Terms:** BCP 14 style, normative section, MUST. RFC 8174 and RFC 2119 are about writing clear normative requirements using keywords like MUST.
 
-            **Correct (B):** MUST is a clear, testable requirement. "Reject malformed input" can be turned into conformance tests and improves interoperability and safety.
+            **Correct (B):** MUST marks the behavior as mandatory, and the referenced syntax gives an implementation-independent condition that a conformance test can exercise.
 
             **Options:**
 
-            - A (incorrect): "might be nice" is subjective and not testable. It does not express a requirement.
-            - B (correct): MUST signals a mandatory requirement with no exceptions (unless explicitly stated).
-            - C (incorrect): "could maybe" is ambiguous and does not communicate conformance criteria.
-            **Related:** If you want flexibility, use SHOULD with explicit exceptions rather than informal hedging.
+            - A (incorrect): Lowercase should is ordinary English under the standard boilerplate, and usually leaves the normative force unclear.
+            - B (correct): All-capitals MUST has the declared BCP 14 meaning and applies to a specific, testable condition.
+            - C (incorrect): SHOULD permits exceptions, but this sentence gives no substantive condition for taking one.
+            **Related:** When exceptions are legitimate, use SHOULD with a rationale and explicit conditions instead of a circular escape clause.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-answer="MUST" data-difficulty="L1">
-        <header><h4>Q6: Pick the normative keyword. If an implementation is required for interoperability, it ___ implement the rule</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-answer="MAY" data-difficulty="L1" data-hint="Distinguish truly optional behavior from an absolute requirement and from a recommendation with valid exceptions.">
+        <header><h4>Q6: Which BCP 14 keyword says an implementation is genuinely free to include or omit a behavior (one word)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one keyword (e.g., MUST)" />
           <div class="explain">
             **Explanation:**
 
-            **Terms:** required for interoperability, normative keyword, MUST. In BCP 14, MUST indicates an absolute requirement needed for interoperability or safety.
+            **Terms:** optional behavior, normative keyword, MAY. BCP 14 uses MAY when an item is truly optional.
 
-            **Correct:** MUST is used when the rule is mandatory and implementations cannot skip it without breaking interoperability or correctness.
+            **Correct:** MAY allows an implementation to include or omit the behavior, while still requiring implementations to interoperate with peers that make the other choice when the specification says so.
 
-            **Why others are wrong:** SHOULD allows valid exceptions, and MAY indicates optional behavior. If the statement says "required for interoperability", it should be MUST, not SHOULD or MAY.
+            **Why others are wrong:** MUST marks an absolute requirement. SHOULD expresses a recommendation that can have valid exceptions. Neither means that the feature itself is freely optional.
 
-            **Related:** When you write a MUST, also define what "interoperability" means in that context, such as message parsing, security checks, or protocol state machines.
+            **Related:** Optional features still need defined behavior at interoperability boundaries, including how a peer detects or handles their absence.
           </div>
         </div>
       </article>
@@ -248,7 +247,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 8174</strong> to “<em id="footer-goal">Interpret MUST/SHOULD/MAY correctly</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 7541（HPACK）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 7541 ドリル: HTTP/2のHPACK（ヘッダー圧縮）の概念を練習する。" />
+  <meta name="description" content="RFC 7541 ドリル: HTTP/2のHPACK(ヘッダー圧縮)の概念を練習する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc7541_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 7541（HPACK）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 7541 ドリル: HTTP/2のHPACK（ヘッダー圧縮）の概念を練習する。" />
+  <meta property="og:description" content="RFC 7541 ドリル: HTTP/2のHPACK(ヘッダー圧縮)の概念を練習する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc7541_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 7541（HPACK）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 7541 ドリル: HTTP/2のHPACK（ヘッダー圧縮）の概念を練習する。" />
+  <meta name="twitter:description" content="RFC 7541 ドリル: HTTP/2のHPACK(ヘッダー圧縮)の概念を練習する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc7541.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7541_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7541.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7541",
       SKILL_SUBTITLE: "HPACK",
-      GOAL_DESCRIPTION: "HTTP/2のヘッダー圧縮の仕組みと、落とし穴を説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -73,7 +72,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc7541" target="_blank" rel="noopener noreferrer">RFC 7541: HPACK</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9113" target="_blank" rel="noopener noreferrer">RFC 9113: HTTP/2</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: static table / dynamic table、indexing、セキュリティ上の注意点を押さえる。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -92,7 +90,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="wire上のbyte数を減らす機能と, confidentialityやpeer authenticationを提供する機能を分けます.">
         <header><h4>Q1: HPACKの主目的として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -100,7 +98,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. indexingを使ってheader sizeを減らす</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSなしでserver authenticityを保証する</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc7541-ja-q1-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc7541-ja-q1-caption">
             <figcaption id="rfc7541-ja-q1-caption">HPACK は, よく出る header を table に置き, 毎回文字列を丸ごと送らず index や短い表現で参照する仕組みです. RFC を読むときも, 「生の header を送る」のではなく「table を共有しながら参照する」と捉えると分かりやすくなります.</figcaption>
             <svg viewBox="0 0 760 190" role="img" aria-label="HPACK の encoder と decoder が table を使って header を圧縮する図">
               <rect class="flow-box" x="20" y="54" width="170" height="78" rx="12"></rect>
@@ -126,14 +124,14 @@
 
             **Terms:** header compression, static table, dynamic table, indexing. HPACK は, 頻出する header field を table に寄せ, その table を index で参照して wire 上の bytes を減らす仕組みです.
 
-            **RFCを読むときの見方:** RFC 7541 は, 文字列圧縮の文書というより, encoder と decoder が同じ table 状態を共有しながら header block をやり取りする文書だと考えると読みやすくなります. 「今この header は文字列そのものを送るのか, 既存 index を参照するのか」を追うのがコツです.
+            **判断のポイント:** HPACKではencoderとdecoderが同じtable状態を同期させながらheader blockを処理します. 各field representationがliteralを送るのか, 既存indexを参照するのかを追うとstate transitionが明確になります.
 
             **Correct (B):** 既知の header field を table 参照や短い literal で表し, wire 上のサイズを減らすのが主目的です. だから HPACK は帯域効率と遅延の改善に効きます.
 
             **Options:**
 
             - A (incorrect): header の **暗号化** は TLS の役割です. HPACK は圧縮であって, 秘密を守る仕組みではありません.
-            - B (correct): これが HPACK の中心です.
+            - B (correct): table参照とcompactなliteral表現で冗長なheader byteを減らし, decoderが同じheader listを復元できるようにします.
             - C (incorrect): server authenticity は TLS や certificate validation の仕事で, HPACK は保証しません.
 
             **Related:** HTTP/3 では ordered delivery 前提が変わるため, HPACK ではなく **QPACK** が使われます.
@@ -141,7 +139,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="一方のtableは仕様で固定され, 他方はheader blockの処理に合わせて同期されます.">
         <header><h4>Q2: connection内で共有され, 時間と共に変化するtableはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -162,80 +160,97 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3">
-        <header><h4>Q3: 一般にsensitive扱いで, indexingを避けたいheaderはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="field nameだけでなく, 値に再利用可能なcredentialまたはsession identifierが含まれるかで分類します.">
+        <header><h4>Q3: 再利用可能なcredentialまたはsession materialを含み, never-indexed表現が妥当な例はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Authorization</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Accept</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Cookie</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. Set-Cookie</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Authorization: Bearer &lt;token&gt;</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Accept: application/json</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Cookie: session=&lt;identifier&gt;</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. Set-Cookie: session=&lt;identifier&gt;</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** sensitive header field, never indexed, side channel
-            **Correct (A,C,D):** credentialやsession identifierは高価値で, 圧縮のside channelも意識したい
+
+            **Terms:** **never indexed**を指定したliteral header fieldは, compression tableへ入れないsensitiveな値に使います. RFC 7541はcredentialやcookieを代表例として挙げます.
+
+            **Correct (A,C,D):** これらの例は, 漏れると再利用され得るbearer tokenまたはsession materialを含みます.
+
             **Options:**
-            - A (correct): secretを含み得る
-            - B (incorrect): 低感度なことが多い
-            - C (correct): session identifierを含み得る
-            - D (correct): session identifierを設定することが多い
-            **Related:** attacker controlled inputとsecretが同一圧縮文脈にあると情報が漏れることがある
+            - A (correct): bearer tokenは再利用可能なcredentialであり, compression stateへ保持すると露出面が増えます.
+            - B (incorrect): このmedia-type preferenceは, 問題の例ではcredentialやsession identifierではありません.
+            - C (correct): session cookieは後続requestをauthorizeし得るため, secretとして扱います.
+            - D (correct): responseが設定するsession identifierも, 同種の再利用可能なsecretです.
+
+            **Related:** sensitivityは値とthreat modelで決まります. field nameだけを一律の規則として使うべきではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q4: peerのHPACK dynamic tableの最大サイズを制約するものはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="decoderが送り, encoder-managed stateの許容量を制約するcontrolを探します.">
+        <header><h4>Q4: HTTP/2でencoderが使えるHPACK dynamic tableの最大サイズを制約するものはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. header table sizeの設定上限</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. HTTP status code</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. URI scheme</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. decoderのSETTINGS_HEADER_TABLE_SIZE limit</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. static tableに定義されたentry数</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 1つのHTTP/2 frame fragmentの最大size</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** SETTINGS, dynamic table size
-            **Correct (A):** limitを交渉し, encoderはそれを守る必要がある
+
+            **Terms:** HTTP/2ではdecoderが**SETTINGS_HEADER_TABLE_SIZE**でmaximumを提示します. encoderは現在値をそれより小さくできますが, 上限を超えられません.
+
+            **Correct (A):** acknowledgeされたsettingが, encoderのdynamic tableに対するprotocol上のmaximumです.
+
             **Options:**
-            - A (correct): memoryの暴走を防ぐ
-            - B (incorrect): 無関係
-            - C (incorrect): 無関係
-            **Related:** encoderはdynamic table size updateも送れる
+            - A (correct): decoderがpersistent compression stateとmemory commitmentを制約できます.
+            - B (incorrect): static tableは別の固定tableであり, そのentry数はdynamic table capacityを決めません.
+            - C (incorrect): header blockは複数frameにまたがり得るため, frame payload sizeはdynamic table capacityの上限ではありません.
+
+            **Related:** encoderはheader blockの先頭でdynamic table size updateを送り, 許容上限以下のcurrent sizeを示せます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^huffman$" data-difficulty="L2">
-        <header><h4>Q5: HPACKが文字列の符号化で使えるprefix free codingは何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^huffman$" data-difficulty="L2" data-hint="RFC 7541 Appendix Bは, header統計から作られた1つのnamed code tableを固定しています.">
+        <header><h4>Q5: HPACKがstring literalに使えるnamed static codeは何 (1語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Terms:** Huffman coding
-            **Correct:** Huffman
-            **Related:** HPACKは専用のHuffman tableを定義している
+
+            **Terms:** string literalには, octet列をHPACK固定の**Huffman** codeで符号化したかを示すflagがあります.
+
+            **Correct:** **Huffman**.
+
+            **Why this matters:** RFC 7541 Appendix Bが1つのstatic tableを定義するため, connectionごとにcodeを学習または交渉しません. decoderはpaddingとend-of-stringの規則も検証します.
+
+            **Related:** literalをHuffman符号化するかと, そのheader fieldをdynamic tableへindexするかは別の判断です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="attackerがguessを変え, 結果のencoded lengthだけを繰り返し観測する状況を考えます.">
         <header><h4>Q6: secretとattackerが影響できるdataを同じ圧縮文脈で扱うと起き得る典型リスクはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. DNS TTLが増える</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. TLS authenticationが失われる</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. 圧縮の挙動から情報が漏れるside channel</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. encoderがheader block内へTLS traffic keyを直接出力する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. TLSを使ってもcompressed header blockのtransport authenticationが失われる</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. encoded lengthがsecretに対するguessのoracleになり得る</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** compression side channel, attacker chosen input
-            **Correct (C):** サイズ差などがsecret推測に使われることがある
+
+            **Terms:** **compression oracle**は, attackerが入力の一部へ影響し, 同じcompression context内のsecretとの関係によるencoded lengthの変化を観測できる状況です.
+
+            **Correct (C):** lengthを繰り返し比較すると, attacker-controlledなguessがsecretと構造を共有するか推定できる場合があります.
+
             **Options:**
-            - A (incorrect): 無関係
-            - B (incorrect): TLSの話
-            - C (correct): 圧縮の副作用として知られる
-            **Related:** cookieやcredentialをsensitive扱いにして, indexing方針を設計する
+            - A (incorrect): side channelはsize behaviorを通じて情報を漏らしますが, HPACKがTLS traffic keyをheader blockへ入れるわけではありません.
+            - B (incorrect): TLS recordはauthenticationできます. authenticated transportでもlength oracleは別の観測面として残り得ます.
+            - C (correct): RFC 7541のsecurity considerationsが扱うprobing riskです.
+
+            **Related:** never-indexed表現やcompression contextの分離で一部のriskを減らせますが, attacker influenceを明示的に分析する必要があります.
           </div>
         </div>
       </article>
@@ -249,7 +264,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7541</strong> to “<em id="footer-goal">HPACK literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

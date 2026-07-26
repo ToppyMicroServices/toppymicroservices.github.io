@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9114_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9114.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9114",
       SKILL_SUBTITLE: "HTTP/3",
-      GOAL_DESCRIPTION: "Understand how HTTP/3 maps HTTP to QUIC and what problems it solves",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -73,7 +72,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc9114" target="_blank" rel="noopener noreferrer">RFC 9114: HTTP/3</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC Transport Protocol</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: understand why HTTP/3 behaves differently under loss and mobility.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -92,7 +90,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Identify the transport whose independent streams and integrated TLS support the HTTP/3 mapping.">
         <header><h4>Q1: HTTP/3 runs over which transport protocol</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -115,15 +113,15 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare what one lost transport packet does to otherwise independent HTTP streams over TCP and over QUIC.">
         <header><h4>Q2: Which problem is HTTP/3 designed to reduce compared to HTTP/2 over TCP</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. DNS lookup latency</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. The need for TLS encryption</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Transport-level head-of-line blocking when packets are lost</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Delay from resolving an origin hostname before connection setup</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. The requirement to authenticate and encrypt HTTP exchanges with TLS</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Transport-wide head-of-line blocking after packet loss stalls unrelated streams</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9114-q2-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9114-q2-caption">
             <figcaption id="rfc9114-q2-caption">HTTP/2 multiplexes many requests over one TCP byte stream, so one loss can stall every stream. QUIC keeps stream progress more independent.</figcaption>
             <svg viewBox="0 0 760 200" role="img" aria-label="TCP packet loss stalling all HTTP/2 streams versus QUIC loss affecting one stream while another keeps moving">
               <rect class="flow-box" x="20" y="24" width="220" height="62" rx="12"></rect>
@@ -161,13 +159,13 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate HTTP field compression from authentication and transport congestion control.">
         <header><h4>Q3: What is the role of QPACK in HTTP/3</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. It performs request authentication</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. It authenticates requests before the server opens a request stream</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. It compresses header fields in a way suitable for QUIC</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. It provides congestion control for HTTP streams</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. It controls congestion across HTTP request and response streams</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
@@ -184,7 +182,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Look for the term describing one logical connection continuing while its peer address or network path changes.">
         <header><h4>Q4: QUIC allows a connection to survive changes in the network path. What is this called</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -207,7 +205,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Judge early requests under replay: ask whether processing the same request more than once preserves the application's intended effect.">
         <header><h4>Q5: Which statements about 0-RTT data are generally true (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -232,7 +230,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^quic$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^quic$" data-difficulty="L1" data-hint="Separate the HTTP version name from the transport protocol named by the HTTP/3 mapping.">
         <header><h4>Q6: The transport protocol used by HTTP/3 is called</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
@@ -256,7 +254,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9114</strong> to “<em id="footer-goal">HTTP/3 literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

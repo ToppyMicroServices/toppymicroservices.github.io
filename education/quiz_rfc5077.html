@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc5077_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc5077.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 5077",
       SKILL_SUBTITLE: "TLS Session Resumption via Session Tickets",
-      GOAL_DESCRIPTION: "Understand how session tickets enable stateless resumption and what key management risks exist",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc5077" target="_blank" rel="noopener noreferrer">RFC 5077: Session Tickets and TLS Extensions</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: understand what a ticket is, who encrypts it, and what happens if keys leak.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Compare where resumption state lives: a server cache versus an opaque value returned to the client.">
         <header><h4>Q1: A TLS session ticket is primarily used to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,12 +99,18 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** Tickets allow the server to offload state into an encrypted blob the client can present later
+
+            A server places the state needed for resumption, including the master secret and negotiated parameters, in a ticket that it encrypts and integrity-protects. The client stores the opaque ticket and presents it in a later ClientHello.
+
+            **Options:**
+            - A (incorrect): A ticket does not replace certificate or endpoint validation in the handshake that establishes the session.
+            - B (incorrect): Session tickets operate inside TLS and do not enable plaintext HTTP.
+            - C (correct): Returning protected state to the client lets the server resume without retaining a per-client session-cache entry.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The client stores the value but must not be able to read or modify the server's encoded session state.">
         <header><h4>Q2: Who protects the confidentiality and integrity of the ticket contents</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -116,67 +120,92 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** The server issues the ticket and must manage the keys used to protect it
+
+            The ticket is opaque to the client. The server creates it with confidentiality and integrity protection under secret ticket-protection keys, and later decrypts and validates it before using the recovered state.
+
+            **Options:**
+            - A (incorrect): The client stores and returns the ticket; it does not encrypt the server's session state with a client private key.
+            - B (correct): Ticket construction, protection, validation, and key management are server responsibilities.
+            - C (incorrect): DNSSEC protects DNS data and has no role in signing a TLS session ticket.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Trace what an attacker could recover from recorded traffic after obtaining the protection key.">
         <header><h4>Q3: A major operational risk of long lived ticket keys is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. If the key leaks, past captured sessions may become decryptable depending on TLS version and configuration</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. The key leak only affects future sessions</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Ticket keys cannot be rotated</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. The leak affects only tickets issued later, never tickets already protected by that key</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Rotating the ticket key invalidates the server certificate and cannot be done independently</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** Ticket key compromise can undermine forward secrecy goals for resumed sessions
-            **Related:** Key rotation and lifetime management matter
+
+            A ticket can contain the TLS master secret. As an operational inference, compromise of a long-lived ticket-protection key can expose state in captured tickets and, for affected TLS versions and configurations, enable decryption of associated recorded resumed traffic. This is why RFC 5077 recommends changing ticket keys regularly.
+
+            **Options:**
+            - A (correct): It captures the possible backward-looking impact while correctly making it conditional on the TLS construction.
+            - B (incorrect): Previously issued tickets protected by the compromised key can also be affected.
+            - C (incorrect): Ticket-protection keys are separate from the certificate, and RFC 5077 recommends changing them regularly.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Consider the confidentiality window, key distribution across nodes, and how long old resumption state stays usable.">
         <header><h4>Q4: Good hygiene for session tickets includes (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Rotate ticket protection keys</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Limit ticket lifetime</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Set a ticket lifetime appropriate to the deployment's security and operational needs</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Ensure all relevant servers share keys if resumption across nodes is needed</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Store ticket keys in client side localStorage</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** Tickets are a key management story, not just a performance story
+
+            Stateless resumption replaces per-session server storage with protected client-held state and server-side key management. A cluster must make an explicit choice about the lifetime and the nodes that can decrypt a ticket.
+
             **Options:**
-            - D (incorrect): Ticket keys are server secrets
+            - A (correct): RFC 5077 recommends changing ticket-protection keys regularly and when the format or algorithms change.
+            - B (correct): The server controls acceptable lifetime based on the deployment's operational and security requirements.
+            - C (correct): Cross-node acceptance requires the relevant servers to have access to compatible protection keys, with the resulting sharing risk managed.
+            - D (incorrect): Ticket keys are server secrets; exposing them to client storage would destroy the protection boundary.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Compare operational state: per-session server storage versus shared protection-key management.">
         <header><h4>Q5: A difference between server side session caches and tickets is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Tickets require UDP</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. A session cache avoids server state, while a ticket requires one server entry per client</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Tickets can be stateless for the server at the cost of managing ticket keys</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Tickets remove the need for TLS</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. A ticket needs no protection key because the surrounding TLS connection protects stored state</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Server cache needs state storage, tickets move state to the client plus server key management
+
+            A stateful session cache retains an entry for each resumable session. A ticket moves that state into a client-held opaque value, while the server retains the smaller set of keys needed to protect and recover ticket contents.
+
+            **Options:**
+            - A (incorrect): The state placement is reversed: a cache stores per-session server entries, while a ticket moves that state to the client.
+            - B (correct): It states the storage-versus-key-management tradeoff that distinguishes stateless tickets.
+            - C (incorrect): The server still needs a key to protect the confidentiality and integrity of ticket contents.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ticket$|^session ticket$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ticket$|^session ticket$" data-difficulty="L1" data-hint="RFC 5077 names the extension and the opaque value after the state it carries.">
         <header><h4>Q6: What do you call the encrypted blob the client stores to resume a TLS session</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one or two words" />
           <div class="explain">
             **Explanation:**
-            **Correct:** ticket or session ticket
+
+            **Correct:** **ticket** or **session ticket**.
+
+            RFC 5077 defines the ticket as an opaque structure that carries session-specific state. The client must not inspect it under an assumed internal format; it stores the value and presents it in the `SessionTicket` extension when requesting resumption.
           </div>
         </div>
       </article>
@@ -190,7 +219,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 5077</strong> to “<em id="footer-goal">TLS resumption literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

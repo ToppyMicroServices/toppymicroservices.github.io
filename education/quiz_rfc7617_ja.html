@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 7617（HTTP Basic認証）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 7617 ドリル: HTTP Basic認証の形式と、TLSが必須な理由を理解する。" />
+  <meta name="description" content="RFC 7617 ドリル: HTTP Basic認証の形式と, TLSが必須な理由を理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc7617_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 7617（HTTP Basic認証）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 7617 ドリル: HTTP Basic認証の形式と、TLSが必須な理由を理解する。" />
+  <meta property="og:description" content="RFC 7617 ドリル: HTTP Basic認証の形式と, TLSが必須な理由を理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc7617_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 7617（HTTP Basic認証）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 7617 ドリル: HTTP Basic認証の形式と、TLSが必須な理由を理解する。" />
+  <meta name="twitter:description" content="RFC 7617 ドリル: HTTP Basic認証の形式と, TLSが必須な理由を理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc7617.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7617_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7617.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7617",
       SKILL_SUBTITLE: "HTTP Basic認証",
-      GOAL_DESCRIPTION: "Basic認証のワイヤ形式（wire format）と、TLSとセットで使う理由を説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7617" target="_blank" rel="noopener noreferrer">RFC 7617: The "Basic" HTTP Authentication Scheme</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: エンコーディングとチャレンジフロー、運用上の落とし穴を押さえる。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="serverのresponse challengeと, clientのcredential-bearing requestを分けて追います.">
         <header><h4>Q1: Basic認証のcredentialを送るrequest headerはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,33 +99,47 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** clientはAuthorizationにBasic schemeでcredentialを入れて送る
+
+            **Terms:** Basic challengeは`WWW-Authenticate`で運ばれ, clientのcredential responseは`Authorization` request headerを使います.
+
+            **Correct (A):** clientは`Authorization: Basic <token68>`を送ります.
+
             **Options:**
-            - A (correct): request header
-            - B (incorrect): challengeはresponseのWWW-Authenticate
-            - C (incorrect): cookieは別の仕組み
+            - A (correct): `Authorization`はHTTP authentication frameworkがcredential用に定義するrequest fieldです.
+            - B (incorrect): `Authenticate`というrequest fieldはなく, server challengeには`WWW-Authenticate`を使います.
+            - C (incorrect): `Cookie`は別のstate mechanismであり, Basic credential fieldではありません.
+
+            **Related:** proxy authenticationでは`Authorization`ではなく`Proxy-Authorization`を使います.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="まずuser-pass sequenceを作り, character-to-octet encodingとencryptionを区別します.">
         <header><h4>Q2: Basic認証のcredentialは一般にどう符号化される</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. usernameとpasswordのhash</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. server public keyで暗号化したblob</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. username colon passwordをBase64</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. user-id, colon, passwordのsequenceをoctet化してBase64</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** Base64, colon separator
-            **Correct (C):** Base64はencodingで, confidentialityはない
-            **Related:** reversibleなので, TLSなしは危険
+
+            **Terms:** Basicはuser-id, 1つのcolon, passwordを連結して`user-pass`を作り, character sequenceをoctetへ変換してからBase64で符号化します.
+
+            **Correct (C):** Base64は表現を変えるだけで, confidentialityを提供しません.
+
+            **Options:**
+            - A (incorrect): wire上のBasic tokenはpassword hashではなく, Base64から元のuser-pass octetを復元できます.
+            - B (incorrect): Basicはserver public keyでcredentialを暗号化しません.
+            - C (correct): character encodingの段階とBase64の段階を分けたconstructionです.
+
+            **Related:** default character encodingは一意に固定されておらず, challengeは`charset="UTF-8"`を提示できます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="credential transformがone-wayかreversibleか, network pathを何が保護するかを確認します.">
         <header><h4>Q3: TLSなしのBasic認証が危険な理由として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -137,16 +149,22 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Base64は暗号化ではない
+
+            **Terms:** Base64はreversibleなbinary-to-text encodingであり, decodeにsecret keyを必要としません.
+
+            **Correct (B):** unprotectedなBasic credentialをpassive observerが取得すると, user-idとpasswordを復元できます.
+
             **Options:**
-            - A (incorrect): HTTPのセマンティクス(意味/ルール)の話なのでversionに依らない
-            - B (correct): credential保護にTLSが必要
-            - C (incorrect): 無関係
+            - A (incorrect): BasicはHTTP authentication semanticsで動き, HTTP/2と本質的に非互換ではありません.
+            - B (correct): credentialをin transitで守るにはTLSなどのexternal secure channelが必要です.
+            - C (incorrect): Basic自体がbrowser cookieをcross-siteへ送信させるわけではありません.
+
+            **Related:** passwordを使い回していると, 1つのBasic credential漏えいが別systemのaccountにも波及します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="origin serverのauthentication challengeを, partial content, redirect, proxy authenticationから区別します.">
         <header><h4>Q4: Basic認証challengeでよく使うstatus codeはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -157,7 +175,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Basic 認証でも, challenge を出す側と credential を送る側で header と status code の役割が分かれています. ここを混同しないための問題です.
+            **判断のポイント:** origin serverは401 responseの`WWW-Authenticate`でchallengeを送り, clientは後続requestの`Authorization`でcredentialを返します.
 
             **用語:** 認証 challenge では server が **401 Unauthorized** と **`WWW-Authenticate`** header を返し, client が次の request で **`Authorization`** header を送ります.
 
@@ -173,7 +191,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="値をreusable secretとして扱い, forwarding, redirect, loggingの各boundaryを確認します.">
         <header><h4>Q5: Basic認証credentialの運用上のbest practiceとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -184,7 +202,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Basic credential は扱いを雑にすると, debug, redirect, proxy log などから簡単に漏れます. 単に TLS を使うだけでなく, 運用上どう扱うかも大事です.
+            **判断のポイント:** Basic credentialは再利用可能なsecretなので, TLSで通信経路を保護するだけでなく, redirect, debug output, proxy logへの転送や記録も制限します.
 
             **用語:** **Authorization header** は credential を直接含む sensitive data です. untrusted origin への転送や log 出力は, そのまま secret 漏えいになります.
 
@@ -200,20 +218,20 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^authorization$" data-difficulty="L1">
-        <header><h4>Q6: Basic認証でcredentialを送るrequest header名は何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^charset$" data-difficulty="L2" data-hint="serverのBasic challengeで, user-pass characterをoctetへ変換する方法を提示するparameterを探します.">
+        <header><h4>Q6: serverがuser-passにUTF-8を期待すると提示するBasic challenge parameterは何 (1語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Basic 認証では, どの header に credential を入れるかを即答できることが仕様読解の入口です.
+            **用語:** optionalな**`charset`** authentication parameterはBasic challengeに現れます. RFC 7617で定義される値はcase-insensitiveな`UTF-8`だけです.
 
-            **用語:** **`Authorization`** は client が credential を送る request header です. Basic では値の先頭に `Basic` scheme 名が付きます.
+            **Correct:** **charset**.
 
-            **Correct:** **Authorization**.
+            **Why this matters:** このparameterはadvisoryであり, Base64より前にuser-pass characterをoctetへ変換する方法を扱います. encryption settingでもcredential token内のfieldでもありません.
 
-            **Why this matters:** challenge の `WWW-Authenticate` と対で出てくるので, 役割を取り違えないことが重要です.
+            **Related:** character encodingについて合意できないと, non-ASCIIのuser-idやpasswordでinteroperability failureが起きます.
           </div>
         </div>
       </article>
@@ -227,7 +245,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7617</strong> to “<em id="footer-goal">Basic auth literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

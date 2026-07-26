@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 7616（HTTP Digest認証）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 7616 ドリル: HTTP Digest認証のnonceやパラメータと、実運用の難しさを理解する。" />
+  <meta name="description" content="RFC 7616 ドリル: HTTP Digest認証のnonceやパラメータと, 実運用の難しさを理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc7616_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 7616（HTTP Digest認証）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 7616 ドリル: HTTP Digest認証のnonceやパラメータと、実運用の難しさを理解する。" />
+  <meta property="og:description" content="RFC 7616 ドリル: HTTP Digest認証のnonceやパラメータと, 実運用の難しさを理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc7616_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 7616（HTTP Digest認証）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 7616 ドリル: HTTP Digest認証のnonceやパラメータと、実運用の難しさを理解する。" />
+  <meta name="twitter:description" content="RFC 7616 ドリル: HTTP Digest認証のnonceやパラメータと, 実運用の難しさを理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc7616.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7616_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7616.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7616",
       SKILL_SUBTITLE: "HTTP Digest認証",
-      GOAL_DESCRIPTION: "Digest認証のnonceやパラメータの役割と、運用上の落とし穴を説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7616" target="_blank" rel="noopener noreferrer">RFC 7616: HTTP Digest Access Authentication</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: nonce / realm / qop を押さえ、何が難しいのか言語化する。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="wireへ送るcredential表現と, serverが検証に使うsecret materialを分けて考えます.">
         <header><h4>Q1: Digest認証が狙う性質として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -102,7 +100,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Digest 認証は「Basic より secure」で終わらせると誤解が残ります. まず何を改善し, 何を改善しないのかを言葉にできる必要があります.
+            **判断のポイント:** Digest認証はpasswordそのものを送らずchallenge-responseを使いますが, secure channelやserver authenticationまで置き換えるものではありません.
 
             **用語:** **Digest auth** は challenge/response を使い, password そのものをそのまま wire に載せないようにする仕組みです. ただし channel 全体を守るわけではありません.
 
@@ -118,7 +116,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="serverからclientへのchallengeと, clientからserverへのcredential responseの向きを分けて追います.">
         <header><h4>Q2: Digest challengeを運ぶresponse headerはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -129,7 +127,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Digest の header 名は request 側と response 側で役割が逆なので, `WWW-Authenticate` と `Authorization` を取り違えやすいです. challenge の流れを固める問題です.
+            **判断のポイント:** serverのchallengeはresponseの`WWW-Authenticate`, clientのcredential responseはrequestの`Authorization`に入ります.
 
             **用語:** server は 401 response で **`WWW-Authenticate`** header を返し, client はそれに応じて **`Authorization`** header を送ります.
 
@@ -145,46 +143,46 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="protection spaceのlabel, hash algorithmのselector, server-controlled challenge valueを区別します.">
         <header><h4>Q3: Digestのnonceの主な役割として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. headerを圧縮する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. TLS key exchangeを置き換える</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. 応答をserverのfreshなchallengeへ結び付ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. userへ示すprotection spaceをlabel付けする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Digest計算に使うhash algorithmを選ぶ</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. responseを, validityを検査できるserver challengeへ結び付ける</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Digest の `nonce` をただの飾り parameter だと思うと, replay resistance の話が抜け落ちます. challenge freshness を支える役割を確認する問題です.
+            **判断のポイント:** `nonce`はserverがchallengeへ入れ, responseを特定のchallengeへ結び付けます. 生成と期限管理はreplay resistanceに影響します.
 
             **用語:** **replay resistance** は, 過去の認証応答をそのまま再利用されにくくする性質です. **nonce** は server が freshness を持たせるための challenge value です.
 
             **Correct (C):** nonce の主な役割は, client 応答を server の fresh な challenge に結び付け, replay を制限しやすくすることです.
 
             **選択肢:**
-            - A (incorrect): header 圧縮の parameter ではありません.
-            - B (incorrect): TLS key exchange を置き換えるものでもありません.
-            - C (correct): freshness と replay 制御に関わる, という説明が正しいです.
+            - A (incorrect): protection spaceをlabel付けするのは`realm`であり, `nonce`ではありません.
+            - B (incorrect): digest algorithmを選ぶのは`algorithm` parameterであり, challenge valueとは別です.
+            - C (correct): nonceの役割を説明しつつ, 全てのnonce policyが全replayを防ぐとは主張していません.
 
             **関連:** nonce をどう生成し, いつ失効させるかは server 実装の重要な運用論点です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="parser surface, server-side credential material, transport protectionを別々の運用論点として評価します.">
         <header><h4>Q4: Digest認証が実運用で難しい理由として正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. parameterやedge caseが多い</label>
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. serverがpassword相当materialへアクセスが必要になり得る</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. 交換全体の保護にTLSが依然有効</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 全てのphishingを自動で防ぐ</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. server identityをauthenticateする必要をなくす</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Digest は「Basic より少し賢い」だけではなく, parameter, credential storage, TLS 依存が絡むため実運用が重くなります. 現代で敬遠されがちな理由を問う問題です.
+            **判断のポイント:** Digestは複数parameterの状態管理, password-equivalentなcredential materialの保護, TLSとの併用を要し, 実装と運用の複雑さが増します.
 
             **用語:** **password 相当 material** とは, raw password そのものではなくても同等に扱うべき secret です. Digest では server 側保存形式や algorithm choice が運用の負担になります.
 
@@ -194,21 +192,21 @@
             - A (correct): parameter と corner case が多く, 相互運用性を保つのが難しくなりがちです.
             - B (correct): server がどの形で credential material を保持するかが難題になります.
             - C (correct): Digest だけでは channel 全体を守れないので, TLS の価値は残ります.
-            - D (incorrect): phishing を自動で防ぐ仕組みではありません.
+            - D (incorrect): counterfeit serverもchallengeを提示できるため, serverとchannelのauthenticationは依然必要です.
 
             **関連:** そのため現代では, TLS 上の token scheme や federated auth が選ばれることが多くなっています.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^nonce$" data-difficulty="L1">
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^nonce$" data-difficulty="L1" data-hint="生成, expiration, reuse policyをserverが管理するchallenge parameterを探します.">
         <header><h4>Q5: Digestでserver challenge valueを指すparameter名は何 (1語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Digest の parameter 名を正しく言えることは, packet trace や auth failure の debug で効きます. 通称ではなくそのままの token を答える問題です.
+            **判断のポイント:** packet traceやauthentication failureの切り分けでは, realm, algorithm, nonceをそれぞれの役割で識別する必要があります.
 
             **用語:** **`nonce`** は server challenge value で, freshness と replay 制御の手掛かりになります.
 
@@ -219,7 +217,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="authentication response内のproofと, HTTP exchange全体のconfidentiality/integrityを分けます.">
         <header><h4>Q6: DigestとTLSの関係として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -230,7 +228,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** Digest があるから TLS 不要, という誤解は今でも出ます. auth scheme と secure channel の役割分担を分けて理解する問題です.
+            **判断のポイント:** DigestはHTTP authentication schemeであり, transport confidentiality, integrity, server authenticationを担うTLSとは責務が異なります.
 
             **用語:** **TLS** は channel confidentiality / integrity / server authentication に効きます. Digest は主に credential をそのまま送らない工夫であり, transport protection の代わりではありません.
 
@@ -255,7 +253,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7616</strong> to “<em id="footer-goal">Digest auth literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

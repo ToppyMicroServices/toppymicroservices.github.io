@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6066_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6066.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 6066",
       SKILL_SUBTITLE: "TLS Extensions",
-      GOAL_DESCRIPTION: "Understand why TLS has extensions and what SNI enables",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6066" target="_blank" rel="noopener noreferrer">RFC 6066: Transport Layer Security (TLS) Extensions</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: know what extensions do and how SNI affects deployment and privacy.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,53 +89,70 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Think about adding capabilities without preventing an endpoint that lacks an extension from completing an ordinary handshake.">
         <header><h4>Q1: The main purpose of TLS extensions is to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Replace certificates</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Move certificate validation from the TLS handshake into the application protocol</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. Add optional capabilities in a backward compatible way</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Disable negotiation</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Require every peer to support each new capability before a handshake can succeed</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Extensions let clients and servers negotiate additional features without breaking older implementations
+
+            RFC 6066 uses the TLS extension framework to add capabilities such as server-name indication, fragment-length negotiation, and certificate-status requests. These extensions are designed so supporting endpoints can still communicate with peers that do not support them.
+
+            **Options:**
+            - A (incorrect): Some extensions influence certificate handling, but the framework does not move validation into the application protocol.
+            - B (correct): Backward-compatible capability negotiation is the shared design purpose.
+            - C (incorrect): Optional extensions are designed to coexist with peers that do not support every new capability.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q2: In virtual hosting, which extension helps the server choose the right certificate for a hostname</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Look for the extension that requests certificate-status information during the TLS handshake, rather than fetching a separate revocation list.">
+        <header><h4>Q2: Which RFC 6066 extension lets a client ask the server to send certificate-status information such as an OCSP response during the handshake?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. server_name</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. cookie</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. transfer_encoding</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. trusted_ca_keys</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. status_request</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. client_certificate_url</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** SNI
-            **Correct (A):** The server_name extension carries the hostname so the server can select the right cert
+
+            The `status_request` extension negotiates delivery of server-certificate status information in the TLS handshake. RFC 6066 defines the corresponding `CertificateStatus` handshake message and an OCSP response form.
+
+            **Options:**
+            - A (incorrect): `trusted_ca_keys` indicates CA root keys possessed by the client.
+            - B (correct): `status_request` is the extension for requesting certificate-status information.
+            - C (incorrect): `client_certificate_url` lets a client offer URLs in place of sending its certificate chain directly.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q3: A privacy tradeoff commonly discussed about SNI is</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Check the allowed name type and its on-wire representation; IP literals and trailing dots have explicit rules.">
+        <header><h4>Q3: Which value follows RFC 6066's encoding rules for server_name HostName?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. It prevents TLS from using encryption</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. It forces HTTP/1.1 semantics</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. The hostname can be observable to on path entities depending on TLS version and deployment</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. A literal IPv6 address encoded as text</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. A fully qualified DNS hostname encoded in ASCII without a trailing dot</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. A UTF-8 DNS hostname ending in a trailing dot</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** The hostname indication can leak metadata even when payload is encrypted
+
+            RFC 6066 defines `HostName` as the fully qualified DNS hostname understood by the client, encoded as an ASCII byte string without a trailing dot. Internationalized names use A-labels, and literal IPv4 and IPv6 addresses are not permitted in this field.
+
+            **Options:**
+            - A (incorrect): Literal IP addresses are expressly excluded from `HostName`.
+            - B (correct): It satisfies both the DNS-name and encoding constraints.
+            - C (incorrect): The field is ASCII without a trailing dot, not a raw UTF-8 name ending in one.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Evaluate extension design for backward compatibility, explicit negotiation semantics, and its own security analysis.">
         <header><h4>Q4: A well designed extension negotiation should (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -148,35 +163,53 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** Extensibility should not become a downgrade or interop hazard
+
+            Extension design needs explicit compatibility and failure semantics. RFC 6066 demonstrates backward-compatible optional features and provides feature-specific security considerations; it does not justify assuming every new extension is harmless.
+
             **Options:**
-            - D (incorrect): Extensions can add attack surface
+            - A (correct): Defined handling of unsupported extensions preserves communication with older peers where the extension is optional.
+            - B (correct): Peers need to know whether lack of support permits fallback or requires handshake failure.
+            - C (correct): New inputs and behavior create security properties and failure modes that must be analyzed.
+            - D (incorrect): An extension can add attack surface, privacy exposure, or downgrade risk.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
-        <header><h4>Q5: A practical reason an ops team cares about SNI is</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The needed field identifies the requested host; protocol selection and resumption state answer different questions.">
+        <header><h4>Q5: A TLS server hosts two names on one IP and uses a different certificate for each. Before any HTTP request arrives, which ClientHello information lets it select the certificate</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. It makes TCP unnecessary</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. It enables many hostnames to share one IP while still serving the right certificate</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. It makes cookies obsolete</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The ALPN protocol identifiers</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. The SNI server_name value</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. The session_ticket extension</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Without SNI, virtual hosting with different certs is much harder
+
+            **Terms:** SNI carries the requested DNS hostname in the ClientHello **server_name** extension, before the server sends its certificate.
+
+            **Correct (B):** RFC 6066 allows a server to use the server_name information to guide selection of the certificate returned to the client.
+
+            **Options:**
+            - A (incorrect): ALPN identifies the application protocol, such as HTTP/2, rather than the requested hostname.
+            - B (correct): The SNI server_name distinguishes the virtual host early enough for certificate selection.
+            - C (incorrect): A session ticket carries resumption state; it is not the hostname selector for a new virtual-host connection.
+
+            **Related:** This is why name-based HTTPS virtual hosting can serve different certificates from one IP address.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^server_name$" data-difficulty="L2">
-        <header><h4>Q6: Name the TLS extension that carries the hostname (one word with underscore)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^max_fragment_length$" data-difficulty="L2" data-hint="Use the extension-type name for negotiating a smaller TLS plaintext fragment limit.">
+        <header><h4>Q6: Which RFC 6066 extension negotiates a smaller maximum TLS plaintext fragment length? (one token)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** server_name
+
+            **Correct:** **max_fragment_length**.
+
+            Constrained clients can offer this extension with one of the sizes defined by RFC 6066. A server accepts by echoing the same requested value; a different or unsupported value causes an `illegal_parameter` failure under the specified rules.
           </div>
         </div>
       </article>
@@ -190,7 +223,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 6066</strong> to “<em id="footer-goal">TLS extension literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

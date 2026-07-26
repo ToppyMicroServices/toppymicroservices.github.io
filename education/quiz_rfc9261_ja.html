@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9261_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9261.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9261",
       SKILL_SUBTITLE: "Exported Authenticators in TLS",
-      GOAL_DESCRIPTION: "TLS 接続後に追加 identity を証明する仕組みと, application がどう検証すべきかを説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -74,7 +73,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc5705" target="_blank" rel="noopener noreferrer">RFC 5705: Keying Material Exporters for TLS</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: handshake 後の identity proof, connection に結びついた検証, TLS library と application protocol の責務境界を説明できるようにする.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -93,36 +91,32 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="handshake後のcertificate key possessionの証明を, 新しいcertificate systemやapplication identity frameworkの定義と分けてください.">
         <header><h4>Q1: RFC 9261 の Exported Authenticator は何をする仕組みか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. TLS 用に X.509 を置き換える新しい証明書形式を定義する</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. TLS または DTLS 接続の確立後に, peer が identity を扱えることを証明する</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. attested infrastructure, workload, Agent2Agent identity まで含む完成済み framework を定義する</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. TLS接続確立後だけで使うcertificateとsignature形式でX.509を置き換える</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. TLSまたはDTLS接続の確立後に, peerが追加のcertificate identityに対応するprivate keyの所有を証明する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS authenticationの上位に, 完成済みのattested-infrastructureとAgent2Agent identity frameworkを提供する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** 小さな TLS の仕組みと, その上に作る identity・attestation・authorization の仕組みを分けて読めるようにします.
+            **判断のポイント:** RFC 9261が提供するのはconnection-boundな暗号部品であり, tenant identity, attestationの意味, authorizationはapplication側で定めます.
 
-            **用語:** **Exported Authenticator** は, peer が identity を扱えることを handshake 後に示す proof です. **post-handshake** は, TLS または DTLS の接続がすでにできた後という意味です.
+            **用語:** **Exported Authenticator**はcertificate identityに対応するprivate keyの所有を証明します. **post-handshake**はTLSまたはDTLS connectionがすでに確立した後という意味です.
 
             **選択肢:**
             - A (incorrect): RFC 9261 は X.509 を置き換えません. X.509 certificate などの identity を使います.
-            - B (correct): RFC 9261 の中心はここです.
+            - B (correct): CertificateVerifyがprivate key possessionを証明し, authenticatorは既存connectionとauthenticator transcriptへ結びつきます.
             - C (incorrect): tenant, workload, agent, authorization policy などは application protocol や verifier policy 側で定義します.
 
-            **関連キーワード:**
-            - **Exported Authenticator** : 既存の TLS/DTLS connection に結びついた identity proof
-            - **post-handshake** : secure connection が確立した後
-            - **building block** : application protocol が組み込んで使う部品
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
-        <header><h4>Q2: RFC 9261 だけでは決まらないものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="各項目をcryptographic authenticator mechanismの一部か, deployment上の意味・authorization policy・TLS state変更かに分類してください.">
+        <header><h4>Q2: RFC 9261自体が提供しない責務または効果はどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. peer を意図した tenant, service, workload, task, authorization policy に結びつけること</label>
@@ -133,7 +127,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** RFC が提供する暗号部品と, system 側が決める policy を混同しないようにします.
+            **判断のポイント:** RFCはconnection-boundなauthenticatorの作成・検証を定めますが, application上の意味は割り当てず, underlying TLS connection stateも変更しません.
 
             **用語:** **verifier policy** は提示された identity や attestation を受け入れるかを決める規則です. **application-level meaning** は tenant, service, task などの文脈です.
 
@@ -143,15 +137,11 @@
             - C (correct): これは application, verifier, deployment が決めます.
             - D (correct): authenticator は independent かつ unidirectional で, 作成や検証で TLS state が明示的に変わるわけではありません.
 
-            **関連キーワード:**
-            - **verifier policy** : evidence を受け入れるかを決める規則
-            - **application protocol** : request を運び, その意味を定義する層
-            - **TLS state** : TLS connection が内部で持つ protocol 状態
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="requestとauthenticatorをどう対応づけ, 1 connection内の曖昧さや再利用をどう防ぐか考えてください.">
         <header><h4>Q3: certificate_request_context について正しいものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -163,7 +153,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** 小さな field でも replay や文脈の取り違えを防ぐ security control になることを押さえます.
+            **判断のポイント:** certificate_request_contextのuniquenessとunpredictabilityは, replayとcontext confusionを防ぐsecurity controlです.
 
             **用語:** **certificate_request_context** は request を識別する opaque value です. **opaque** は protocol が中身を名前として解釈しない byte string という意味です.
 
@@ -173,15 +163,11 @@
             - C (correct): 同じ connection 内で unique である必要があります.
             - D (correct): 一時的な private key exposure による precomputation を避ける意味があります.
 
-            **関連キーワード:**
-            - **certificate_request_context** : request を識別し authenticator に echo される opaque value
-            - **replay resistance** : 古い proof を別の場面で通さない性質
-            - **context confusion** : 別の request や目的の proof を誤って受け入れること
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="このcontextではcertificate chainだけではkey possessionを証明できません. non-empty authenticatorの完全なtranscriptを確認してください.">
         <header><h4>Q4: non-empty authenticator で検証すべきものはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -189,7 +175,7 @@
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Certificate, CertificateVerify, Finished を, connection・request・transcript 由来の値で検証する</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. TLS connection が成功しているので certificate 内の DNS name だけ見ればよい</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9261-ja-q4-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9261-ja-q4-caption">
             <figcaption id="rfc9261-ja-q4-caption">non-empty authenticator は certificate chain だけではありません.</figcaption>
             <svg viewBox="0 0 760 136" role="img" aria-label="Certificate, CertificateVerify, Finished が non-empty authenticator を構成する図">
               <rect class="flow-box" x="28" y="38" width="190" height="60" rx="10"></rect>
@@ -210,7 +196,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** Exported Authenticator を「certificate と signature だけ」と単純化しすぎないようにします.
+            **判断のポイント:** non-empty authenticatorはcertificate validation, private key possessionの証明, connectionとtranscriptへ結びつくFinishedを組み合わせます.
 
             **用語:** **CertificateVerify** は authenticator transcript に対して private key の所有を示します. **Finished** は TLS connection と transcript から導いた材料で MAC を確認します.
 
@@ -219,15 +205,11 @@
             - B (correct): RFC 9261 の non-empty authenticator validation は connection, request, authenticator transcript に依存します.
             - C (incorrect): certificate name check だけでは足りません.
 
-            **関連キーワード:**
-            - **CertificateVerify** : 正しい transcript 上で private key の所有を示す signature
-            - **Finished** : authenticator transcript material に対する MAC check
-            - **transcript** : proof の計算対象になる順序付き byte 列
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="current connectionから導出され, connectionが変われば一致しなくなるvalidation inputを探してください.">
         <header><h4>Q5: cross-connection reuse はどう評価すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -235,7 +217,7 @@
             <label class="choice"><input type="radio" name="Q5" value="b"> B. CertificateVerify と Finished を省いた reduced model だけで RFC 9261 の channel binding 破綻を証明できる</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. full RFC 9261 validation では Handshake Context が合わず失敗するはずである</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9261-ja-q5-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9261-ja-q5-caption">
             <figcaption id="rfc9261-ja-q5-caption">別 connection で作った proof は, そのまま別 connection で通るべきではありません.</figcaption>
             <svg viewBox="0 0 760 150" role="img" aria-label="connection A で作った authenticator を connection B で検証すると失敗する図">
               <rect class="flow-box" x="24" y="36" width="210" height="74" rx="10"></rect>
@@ -257,7 +239,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** 形式モデルの主張を, full RFC 9261 の破綻という強すぎる主張に広げないようにします.
+            **判断のポイント:** cross-connection validationはconnection-derivedなHandshake Contextを使うため, transcript checkを省いたreduced modelだけではfull mechanismの破綻を示せません.
 
             **用語:** **Handshake Context** は connection と authenticator data から導かれる値です. **channel binding** は proof を特定の TLS/DTLS connection に結びつけることです.
 
@@ -266,15 +248,11 @@
             - B (incorrect): full validation path を省いた model は proof obligation を示すもので, RFC 9261 全体の破綻証明ではありません.
             - C (correct): generation と validation が別 connection なら CertificateVerify validation は失敗します.
 
-            **関連キーワード:**
-            - **Handshake Context** : validation に使われる connection-derived value
-            - **channel binding** : proof を特定 connection に結びつける性質
-            - **reduced model** : full validation の一部を省いた簡略モデル
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="syntaxとauthenticationが有効なrequest responseと, 追加identityのauthentication成功を分けてください.">
         <header><h4>Q6: empty authenticator は何を意味するか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -285,7 +263,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** valid protocol object と identity が認証されたことを分けて理解します.
+            **判断のポイント:** empty authenticatorはprotocol-definedなauthenticated refusalです. validate APIはwell-formedなempty authenticatorをinvalidとして返し, 追加identityを返しません.
 
             **用語:** **empty authenticator** は Certificate や CertificateVerify を持たない Finished-only の object です. **authenticated refusal** は, 拒否そのものに integrity があるという意味です.
 
@@ -294,15 +272,11 @@
             - B (incorrect): identity や attestation は認証されていません.
             - C (incorrect): TLS version upgrade とは関係ありません.
 
-            **関連キーワード:**
-            - **empty authenticator** : Finished だけを持つ refusal object
-            - **authenticated refusal** : 保護された拒否であり identity success ではない
-            - **identity validation** : 提示された identity が証明されたと判断すること
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="ms" data-answer="a,b,d" data-difficulty="L3">
+      <article class="q card" data-id="Q7" data-type="ms" data-answer="a,b,d" data-difficulty="L3" data-hint="protocol処理の成功, attestation identityの有無, application policyの充足を別々のresult stateとして扱ってください.">
         <header><h4>Q7: aTLS deployment で empty authenticator を扱うときの policy check はどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -314,7 +288,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** RFC の allowed behavior を, application 側の policy 判定にどう接続するかを考えます.
+            **判断のポイント:** attestationを必須とするapplicationは, authenticator処理の成功とattestation verificationの成功を分ける必要があります.
 
             **用語:** **attestation required** は application 側の policy です. **no attestation identity** は, policy が承認できる identity evidence が返っていない状態です.
 
@@ -324,17 +298,14 @@
             - C (incorrect): empty authenticator は refusal であって attestation success ではありません.
             - D (correct): policy enforcement のために結果を明確に分ける必要があります.
 
-            **関連キーワード:**
-            - **aTLS deployment** : attestation policy を評価する application 側の文脈
-            - **attestation identity** : verifier policy が承認する identity evidence
-            - **policy result** : success, refusal, failure など caller に見える判断
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3">
-        <header><h4>Q8: current same-endpoint formal model はどう読むべきか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="formal-modelの結果を一般化する前に, RFC validationのどのstepを含み, どこを抽象化したか確認してください.">
+        <header><h4>Q8: modelの結果をどこまで一般化できるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">same-endpointのformal analysisが, full CertificateVerifyとFinished transcript checkを含むRFC 9261 validationの一部を省いたreduced modelを使っているとします.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q8" value="a"> A. RFC 9261 の Exported Authenticator が key leakage で一般に破綻する証明として読む</label>
             <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 9261 validation の一部を抽象化した reduced-model evidence として読む</label>
@@ -343,7 +314,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** model が含んでいる範囲と, report が言える範囲を揃えます.
+            **判断のポイント:** reduced modelはproof obligationを示せますが, 省略したRFC validation stepがfull-system claimの強さを制限します.
 
             **用語:** **reduced model** は一部の詳細を省いた model です. **proof obligation** は full system でまだ確認すべき主張です.
 
@@ -352,17 +323,14 @@
             - B (correct): full CertificateVerify / Finished transcript check を抽象化しているため, proof obligation として読むのが適切です.
             - C (incorrect): non-empty authenticator validation ではそれらの check が重要です.
 
-            **関連キーワード:**
-            - **same-endpoint model** : 同じ endpoint の設定に焦点を当てた model
-            - **abstraction** : 詳細を省いて狭い性質を見ること
-            - **proof obligation** : full system で確認が必要な主張
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q9: exporter-label finding はどう scope すべきか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="RFC登録済みのexporter labelと, 特定のattestation binding deploymentが導入したparameterを分けてください.">
+        <header><h4>Q9: このfindingをどうscopeすべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">deployment-specificなattestation analysisが, 独自attestation binderで使うexporter-label parameterを指摘しています. RFC 9261のregistered label自体の誤りは指摘していません.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q9" value="a"> A. RFC 9261 の registered exporter label が誤っているという主張である</label>
             <label class="choice"><input type="radio" name="Q9" value="b"> B. exporter label は verifier policy には一切関係しないという主張である</label>
@@ -371,7 +339,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** deployment-specific な parameter の論点を, RFC 9261 の label 自体の欠陥と読み違えないようにします.
+            **判断のポイント:** deployment-specificなbinder parameterとRFC登録済みexporter labelは別のnamespaceであり, 支えるclaimも異なります.
 
             **用語:** **exporter label** は TLS exporter の用途を分ける文字列です. **attestation binder** は attestation evidence を protocol context に結びつける application-specific value です.
 
@@ -380,17 +348,14 @@
             - B (incorrect): label や binder parameter は policy design に関係することがあります.
             - C (correct): scope は deployment-specific な parameter と verifier policy です.
 
-            **関連キーワード:**
-            - **exporter label** : TLS exporter の用途を分ける string
-            - **attestation binder** : evidence を context に結びつける application-specific value
-            - **verifier policy** : evidence を受け入れるかを決める規則
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q10: missing-attestation finding はどう分類すべきか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="protocol-definedなauthenticated refusalと, application-levelのattestation successを分けてください.">
+        <header><h4>Q10: このmissing-attestation caseをどう分類すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">deploymentがauthenticated refusalを表すwell-formedなempty authenticatorを受信しました. application policyはattestation successを返す前にattestation identityを必須としています.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q10" value="a"> A. no attestation と verified attestation を区別する application policy の論点</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. empty authenticator が送られた時点で RFC 9261 violation になるという話</label>
@@ -399,7 +364,7 @@
           <div class="explain">
             **Explanation:**
 
-            **出題意図:** report claim を正確に置きます. 問題は empty authenticator の存在ではなく, policy 上の解釈です.
+            **判断のポイント:** RFC 9261はauthenticated refusalを許します. そのresultがattestation requirementを満たすかはapplication policyで判断します.
 
             **用語:** **missing attestation** は policy が必要とする attestation identity が返っていない状態です. **verified attestation** は verifier が policy に基づいて evidence を承認した状態です.
 
@@ -408,10 +373,6 @@
             - B (incorrect): RFC 9261 は empty authenticator を許しています.
             - C (incorrect): authenticated refusal は protocol の一部です.
 
-            **関連キーワード:**
-            - **missing attestation** : policy が必要とする identity evidence がない状態
-            - **verified attestation** : verifier が evidence を承認した状態
-            - **RFC violation** : RFC そのものに反する動作
           </div>
         </div>
       </article>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 9110（HTTP Semantics）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 9110 ドリル: HTTPのセマンティクス（method、status code、header、caching）を正しく理解する。" />
+  <meta name="description" content="RFC 9110 ドリル: HTTPのセマンティクス（method, status code, header, caching）を正しく理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9110_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 9110（HTTP Semantics）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 9110 ドリル: HTTPのセマンティクス（method、status code、header、caching）を正しく理解する。" />
+  <meta property="og:description" content="RFC 9110 ドリル: HTTPのセマンティクス（method, status code, header, caching）を正しく理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9110_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 9110（HTTP Semantics）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 9110 ドリル: HTTPのセマンティクス（method、status code、header、caching）を正しく理解する。" />
+  <meta name="twitter:description" content="RFC 9110 ドリル: HTTPのセマンティクス（method, status code, header, caching）を正しく理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9110.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9110_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9110.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9110",
       SKILL_SUBTITLE: "HTTP Semantics",
-      GOAL_DESCRIPTION: "method、status code、caching、headerの意味を誤解せずに扱えるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: 適切なmethodとheaderを選び、レスポンスの意味を一貫して解釈する。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,15 +89,15 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="HTTP versionが変わっても意味が保たれるruleか, 特定versionのwire encodingを説明する話かで分けてください.">
         <header><h4>Q1: 次のうち, HTTPのtransport詳細ではなくHTTPのセマンティクス(意味/ルール)に当たる話題はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. GETがsafeであり条件によりcache可能という意味</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTP/2フレームのwire上のエンコード</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. QUICパケットの再送制御</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. QUIC packetをUDP上でloss recoveryする方法</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9110-ja-q1-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9110-ja-q1-caption">
             <figcaption id="rfc9110-ja-q1-caption">RFC 9110 は, HTTP/1.1, HTTP/2, HTTP/3 の下回りではなく, それらに共通する「意味」を定義します. まず semantics と framing/transport を層で分けると読みやすくなります.</figcaption>
             <svg viewBox="0 0 760 210" role="img" aria-label="HTTP semantics と framing transport を分けて示す図">
               <rect class="flow-box" x="180" y="20" width="400" height="60" rx="12"></rect>
@@ -125,13 +123,13 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** HTTP semanticsはprotocol version間で共通ですが, framingとtransport mechanismは変わります.
+            **判断のポイント:** HTTP semanticsはprotocol version間で共通ですが, framingとtransport mechanismは変わります.
 
             **実務での機会:** API設計, proxy動作, client library, cache reviewではwire formatでなくmethodとresponseの意味を扱います.
 
             **Terms:** semantics(セマンティクス), transport, methodの意味. ここでのセマンティクスは, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味/ルール"の話.
 
-            **RFCを読むときの見方:** RFC 9110 を読むときは, 「どう運ぶか」ではなく「何を意味するか」を読んでいると意識すると迷いにくいです. 同じ GET でも, HTTP/1.1 の text line, HTTP/2 の frame, HTTP/3 の QUIC stream という違いはありますが, safe や idempotent の意味は共通です.
+            **Protocol boundary:** HTTP/1.1のtext line, HTTP/2のframe, HTTP/3のQUIC streamではwire表現が異なりますが, GETのsafeやidempotentといったmethod semanticsは共通です.
 
             **Correct (A):** safe, idempotent, cacheable, status codeの意味はセマンティクスの中心です. これは transport が変わっても変わらない, HTTP そのものの意味づけです.
 
@@ -147,7 +145,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="safe methodはclientから見た意図がread-onlyかで判断します. server側の付随的な処理が一切ないという意味ではありません.">
         <header><h4>Q2: safeと定義されるmethodはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -158,7 +156,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** safeは"serverが一切writeしない"ではなく, clientが要求するactionの性質です. この境界を確認します.
+            **判断のポイント:** safeは"serverが一切writeしない"という実装条件ではなく, clientが要求するactionの性質です.
 
             **実務での機会:** crawler, prefetch, link checker, cache最適化では, user確認なしに自動実行してよいmethodかを判断します.
 
@@ -177,7 +175,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="同一requestを1回送ったときと複数回送ったときで, serverに意図する効果が同じかをmethodごとに比べてください.">
         <header><h4>Q3: idempotentなmethodはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -189,7 +187,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** idempotencyは同一responseや, 全retryが運用上無条件に安全という保証と混同されやすい概念です.
+            **判断のポイント:** idempotencyは同一responseや, 全retryが運用上無条件に安全という保証と混同されやすい概念です.
 
             **Terms:** idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.
 
@@ -210,7 +208,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="個別のstatus codeを見る前に, 先頭の数字が示すresponse classを確認してください.">
         <header><h4>Q4: 3xxのstatus codeが一般に示すものはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -221,7 +219,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** status-code classは, clientがcode固有の処理を行う前に読むresponse meaningの第一層です.
+            **判断のポイント:** status-code classは, clientがcode固有の処理を行う前に読むresponse meaningの第一層です.
 
             **実務での機会:** client, gateway, monitoring, retry logicは, 個別codeを見る前にstatus classで大きな処理経路を選びます.
 
@@ -238,18 +236,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="preconditionが先に見つかった別failureを上書きせず, かつrequested stateを変える前に評価される位置を考えてください.">
         <header><h4>Q5: If-Matchなどのrequest preconditionは, serverがいつ評価すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. requestが通常処理可能か確認する前</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. requested actionを実行した後</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 通常のrequest checkの後, request content処理またはaction実行の直前</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. method, target, authorizationなど, 通常のrequest条件で成功できるかを確認する前</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. content処理とrequested state changeの両方を完了した後</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. ほかの条件では成功すると判断した後, content処理またはaction実行の前</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** conditional requestはcache validationだけでなくlost update防止にも使います. 評価時点を誤ると, errorの優先順を変えたりguard確認前にactionを実行したりします.
+            **判断のポイント:** conditional requestはcache validationだけでなくlost update防止にも使います. 評価時点を誤ると, errorの優先順を変えたりguard確認前にactionを実行したりします.
 
             **実務での機会:** document編集, 設定変更API, admin画面で, If-Matchを使って新しいstateの上書き事故を防ぎます.
 
@@ -267,14 +265,14 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1" data-hint="text/htmlやapplication/jsonのようなmedia typeを値に持つrepresentation metadata fieldを探してください.">
         <header><h4>Q6: representationのmedia typeを示すheader fieldはどれ</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** representation metadata fieldは名前が近くても役割が違い, 選択を誤るとrecipientがbyte列を誤解釈します.
+            **判断のポイント:** representation metadata fieldは名前が近くても役割が違い, 選択を誤るとrecipientがbyte列を誤解釈します.
 
             **実務での機会:** API client, browser, upload handler, security filterは, parserとdecode処理を選ぶときContent-Typeを使います.
 
@@ -297,7 +295,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9110</strong> to “<em id="footer-goal">Correct HTTP semantics</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 6265（Cookies）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 6265 ドリル: Cookieの基礎と、Secure/HttpOnlyなどの属性を理解する。" />
+  <meta name="description" content="RFC 6265 ドリル: Cookieの基礎と, Secure/HttpOnlyなどの属性を理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc6265_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 6265（Cookies）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 6265 ドリル: Cookieの基礎と、Secure/HttpOnlyなどの属性を理解する。" />
+  <meta property="og:description" content="RFC 6265 ドリル: Cookieの基礎と, Secure/HttpOnlyなどの属性を理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc6265_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 6265（Cookies）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 6265 ドリル: Cookieの基礎と、Secure/HttpOnlyなどの属性を理解する。" />
+  <meta name="twitter:description" content="RFC 6265 ドリル: Cookieの基礎と, Secure/HttpOnlyなどの属性を理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc6265.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6265_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6265.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 6265",
       SKILL_SUBTITLE: "Cookies",
-      GOAL_DESCRIPTION: "Set-CookieとCookie、Secure/SameSiteなどの属性を正しく使えるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6265" target="_blank" rel="noopener noreferrer">RFC 6265: HTTP State Management Mechanism</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: セッションCookieに必要な属性を、脅威モデルとセットで説明できるようにする。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="保存stateを作成または更新するresponse側の指示と, それを返すrequest headerを区別してください.">
         <header><h4>Q1: browserへcookieを設定するresponse headerはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,54 +99,64 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** serverはSet-Cookie, clientはCookie
+
+            `Set-Cookie` は, cookieを保存または更新するようuser agentへ指示するresponse headerです. `Cookie` は反対向きで, 保存済みcookieのうちrequestに適用できるものをuser agentがserverへ返すときに使います.
+
             **Options:**
-            - A (incorrect): Cookieはrequest header
-            - B (correct): cookieを作る, 更新する
-            - C (incorrect): 標準headerではない
+            - A (incorrect): `Cookie` は保存済みcookieをserverへ返すrequest headerです.
+            - B (correct): `Set-Cookie` はcookie stateの作成または更新に使うresponse headerです.
+            - C (incorrect): `Accept-Cookie` はRFC 6265で定義されたheaderではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="各名称がHTTP cachingではなくSet-Cookie syntaxに属するかを確認してください.">
         <header><h4>Q2: cookie attributeとして一般的なものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Secure</label>
             <label class="choice"><input type="checkbox" name="Q2" value="b"> B. HttpOnly</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. SameSite</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Path</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Max-Age</label>
             <label class="choice"><input type="checkbox" name="Q2" value="e"> E. Cache-Control</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C,D):** transportとscript accessとcross site挙動, lifetimeに影響する
+
+            RFC 6265は, cookieのtransport, APIへの露出, path scope, lifetimeを制御するattributeを定義しています. HTTP cache directiveは別のheader fieldに属し, `Set-Cookie`内のcookie attributeにはなりません.
+
             **Options:**
-            - E (incorrect): Cache-ControlはHTTP cacheのheader
+            - A (correct): `Secure` はuser agentがsecureと判断するprotocolに送信を制限します.
+            - B (correct): `HttpOnly` は通常のscript accessなど, non-HTTP APIからcookieを除外します.
+            - C (correct): `Path` はcookieを適用できるrequest pathを制限します.
+            - D (correct): `Max-Age` はcookieのlifetimeを秒で指定し, `Expires`より優先されます.
+            - E (incorrect): `Cache-Control` はHTTP cachingを制御するheaderで, `Set-Cookie` attributeではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="user agentがどのAPIからのaccessを拒むかに注目してください. 保存値を暗号化するattributeではありません.">
         <header><h4>Q3: HttpOnlyの主な効果はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. client side scriptからcookieへアクセスしにくくする</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. cookie valueを暗号化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. cross siteで必ず送るよう強制する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. cookieを1つのrequest pathに制限する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** XSSでcookieが盗まれるリスクを下げる
+
+            `HttpOnly` はcookieのhttp-only flagを設定します. conformingなuser agentはnon-HTTP API用のcookie stringを作るときにそのcookieを除外するため, 通常のclient-side scriptからのaccessを減らせます. valueを暗号化したり, script injection自体を解消したりする機能ではありません.
+
             **Options:**
-            - B (incorrect): 暗号化は含意されない
-            - C (incorrect): cross site挙動はSameSite
-            **Related:** HttpOnlyはXSS対策の一部で, XSS自体は別に防ぐ必要がある
+            - A (correct): non-HTTP APIからcookieを隠すことがhttp-only flagの役割です.
+            - B (incorrect): `HttpOnly` は保存時にも送信時にもcookieを暗号化しません.
+            - C (incorrect): request pathのscopeは`Path` attributeが制御します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="user agentがcookieを送る条件を制約するattributeです. 署名や保存期間の制御ではありません.">
         <header><h4>Q4: Secure attributeの意味として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -159,55 +167,49 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** `Secure` は名前が強いので, 「署名される」「改ざん不能になる」と誤解されやすい属性です. 実際に制御しているのは送信経路だけなので, そこを明確にする問題です.
-
-            **用語:** **Secure attribute** は, cookie を **HTTPS のような secure transport でのみ送る**よう browser に求める属性です. cookie value 自体を暗号化したり署名したりする意味ではありません.
-
-            **Correct (C):** `Secure` の正しい意味は, cookie が secure transport 上でのみ送信されることです. 平文 HTTP へ流れてしまうリスクを減らします.
+            `Secure` はcookieのsecure-only flagを設定します. user agentはrequest URIがsecureと判断するprotocol, 通常はHTTPSを使う場合にだけそのcookieを送ります. valueへの署名, 変更不能化, expiryの指定ではありません.
 
             **選択肢:**
-            - A (incorrect): browser が cookie へ署名する, という意味ではありません.
-            - B (incorrect): 削除不能にする属性でもありません.
-            - C (correct): transport 上の送信条件を制御する説明として正しいです.
+            - A (incorrect): RFC 6265は`Secure` cookieをbrowserが署名する処理を定義していません.
+            - B (incorrect): 削除とexpiryはcookieの置換, `Max-Age`, `Expires`, storage ruleが制御します.
+            - C (correct): secure protocolへの送信制限がsecure-only flagの役割です.
 
-            **関連:** session cookie では, `Secure`, `HttpOnly`, `SameSite` を役割分担で組み合わせて設計するのが基本です.
+            `Secure`の保護範囲には限界があります. RFC 6265は, active network attackerがinsecure channelからSecure cookieを上書きできる点も述べています.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3">
-        <header><h4>Q5: CSRFを減らしつつ, 多くの通常遷移も保ちたい時に選ばれがちなSameSite modeはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Domain attributeを省いたcookieと, domainを明示したcookieを比べてください.">
+        <header><h4>Q5: serverがDomain attributeなしでcookieを設定した. RFC 6265ではどのscopeになる?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. None</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Lax</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Unlimited</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 現在のhostの全subdomainへ送られる</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. host-onlyとなり, origin serverにだけ返される</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 同じpathを使う任意のhostへ送られる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** CSRF, cross site request
-            **Correct (B):** 多くのcross site subrequestを抑えつつ, 典型のtop level navigationは通す
+
+            `Domain`がない場合, RFC 6265はhost-only flagを設定し, canonicalizeしたrequest hostをcookieのdomainにします. 後続requestのhostがそのdomainと同一の場合だけcookieを返します.
+
             **Options:**
-            - A (incorrect): Noneはcross site送信を許すため, CSRFリスクが上がり得る
-            - C (incorrect): modeではない
+            - A (incorrect): subdomainへのdomain-matchは, 有効な`Domain` attributeがあるcookieに関係します.
+            - B (correct): attributeの省略によってorigin serverのhostに結び付くhost-only cookieになります.
+            - C (incorrect): `Path` matchは追加条件であり, 無関係なhostへcookieを許可しません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^cookie$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^cookie$" data-difficulty="L1" data-hint="response側のsetterではなく, request側のheader名を使ってください.">
         <header><h4>Q6: cookieをserverへ返すrequest header名は何 (1語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** `Set-Cookie` と `Cookie` は向きが逆なので, browser が受け取る header と送り返す header を取り違えやすいです.
-
-            **用語:** **`Cookie`** は request header で, browser が保存済み cookie のうち条件に合うものを server へ返すときに使います.
-
             **Correct:** **Cookie**.
 
-            **Why this matters:** browser は domain, path, `Secure`, `SameSite` などの条件に基づいて, どの cookie を `Cookie` header に入れるかを決めます. 名前を正しく区別できると debug が速くなります.
+            user agentはdomain, path, secure-only, http-onlyなどの条件がrequest contextに合う保存済みcookieから, `Cookie` request headerを組み立てます. `Set-Cookie`はresponse側のfieldなので, この問いの名前ではありません.
           </div>
         </div>
       </article>
@@ -221,7 +223,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 6265</strong> to “<em id="footer-goal">cookie security basics</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

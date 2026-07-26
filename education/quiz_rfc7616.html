@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7616_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7616.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7616",
       SKILL_SUBTITLE: "HTTP Digest Authentication",
-      GOAL_DESCRIPTION: "Understand Digest auth fields, nonces, and the operational pitfalls",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7616" target="_blank" rel="noopener noreferrer">RFC 7616: HTTP Digest Access Authentication</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: explain nonce, realm, qop, and why modern systems often prefer other schemes.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Compare the credential representation sent on the wire with the secret material the server uses to verify it.">
         <header><h4>Q1: Digest authentication aims to avoid sending</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,12 +99,22 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Digest uses a challenge response style computation instead of raw password transmission
+
+            **Terms:** Digest computes a response from values including the username, password-derived secret, server nonce, HTTP method, and request URI.
+
+            **Correct (B):** The client sends a computed Digest response instead of placing the password itself on the wire in clear form.
+
+            **Options:**
+            - A (incorrect): Digest still uses HTTP headers, including `WWW-Authenticate` for the challenge and `Authorization` for the response.
+            - B (correct): Avoiding clear-form password transmission is a central improvement over Basic authentication.
+            - C (incorrect): HTTP status codes remain part of the exchange; a challenge commonly arrives with 401.
+
+            **Related:** A password-derived Digest response is not a complete secure channel, and the server-side H(A1) value is itself sensitive credential material.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Track the direction of the server's challenge separately from the client's credential response.">
         <header><h4>Q2: Which response header carries a Digest challenge</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -116,58 +124,92 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** The server challenges with WWW-Authenticate, the client responds with Authorization
+
+            **Terms:** A server that lacks an acceptable credential response sends a 401 response with a `WWW-Authenticate: Digest ...` challenge.
+
+            **Correct (A):** `WWW-Authenticate` carries the server's Digest challenge parameters.
+
+            **Options:**
+            - A (correct): It is the response header that identifies the scheme and supplies values such as `realm`, `nonce`, and `algorithm`.
+            - B (incorrect): `Authorization` is the request header the client uses for its computed Digest response.
+            - C (incorrect): `Forwarded` describes proxy-related request information and does not carry an authentication challenge.
+
+            **Related:** Proxy authentication uses the parallel `Proxy-Authenticate` and `Proxy-Authorization` fields.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Distinguish the protection-space label, the hash-algorithm selector, and the server-controlled challenge value.">
         <header><h4>Q3: In Digest, a nonce is primarily used to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Compress headers</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Replace TLS key exchange</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Make the response depend on a fresh server challenge</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Label the protection space shown to the user</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Select the hash algorithm used in the Digest computation</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Bind the response to a server challenge whose validity can be checked</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** replay resistance
-            **Correct (C):** The server can rotate or validate nonces to limit replay
+
+            **Terms:** A **nonce** is an opaque server-specified challenge value. Its generation and validity policy can limit when or where a captured response is reusable.
+
+            **Correct (C):** The nonce is included in the Digest computation, so the server can rotate or validate it as part of replay control.
+
+            **Options:**
+            - A (incorrect): `realm`, not `nonce`, labels the protection space.
+            - B (incorrect): The `algorithm` parameter selects the digest algorithm; it is distinct from the challenge value.
+            - C (correct): It identifies the nonce's role without claiming that every nonce policy prevents every replay.
+
+            **Related:** Stronger replay protection can require short-lived or one-time nonces, with corresponding state and performance costs.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Evaluate the parser surface, server-side credential material, and transport protection as three separate operational concerns.">
         <header><h4>Q4: Why is Digest authentication considered tricky in practice (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. It has many parameters and edge cases</label>
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Servers may need access to password equivalent material</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It still benefits from TLS for confidentiality and integrity</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. It automatically blocks all phishing attacks</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. It removes the need to authenticate the server's identity</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** Implementation complexity and credential handling can be burdensome
+
+            **Terms:** Digest combines a parameter-rich challenge/response format, nonce policy, algorithm negotiation, and server-side password-derived state.
+
+            **Correct (A,B,C):** Each selected statement describes a separate deployment burden or residual protection need.
+
             **Options:**
-            - D (incorrect): It does not solve phishing
-            **Related:** Modern deployments often use token based schemes over TLS
+            - A (correct): Parsing and generating the many quoted parameters, algorithm variants, nonce counts, and stale-nonce paths creates interoperability edge cases.
+            - B (correct): A server can verify with H(A1), but compromise of that password-equivalent material can enable access within the realm.
+            - C (correct): Digest does not give general confidentiality or integrity to the HTTP exchange, so TLS remains valuable.
+            - D (incorrect): A counterfeit server can still present challenges; authenticating the server and channel remains necessary.
+
+            **Related:** These trade-offs are why many current deployments prefer simpler token-based authentication inside a protected TLS channel.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^nonce$" data-difficulty="L1">
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^nonce$" data-difficulty="L1" data-hint="Look for the challenge parameter whose generation, expiration, and reuse policy the server controls.">
         <header><h4>Q5: What is the parameter name for the server challenge value in Digest (one word)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** nonce
+
+            **Terms:** The server-specified challenge value is called a **nonce**. It is opaque to the client and participates in the Digest response computation.
+
+            **Correct:** **nonce**.
+
+            **Why this matters:** A server can embed or track validity information in a nonce to restrict time, resource, client, or reuse conditions. A stale nonce can trigger a new challenge without asking for the password again.
+
+            **Related:** `cnonce` is a separate client-chosen value; it must not be confused with the server's `nonce`.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate proof in an authentication response from confidentiality and integrity for the complete HTTP exchange.">
         <header><h4>Q6: A correct statement about Digest and TLS is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -177,7 +219,17 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Digest does not provide channel integrity or protect metadata from passive observers
+
+            **Terms:** Digest authenticates a computed response. TLS protects the HTTP exchange as a channel and normally authenticates the server.
+
+            **Correct (B):** TLS remains valuable because Digest does not provide general confidentiality or integrity for HTTP messages.
+
+            **Options:**
+            - A (incorrect): Not sending the raw password does not make request headers, response bodies, or most message fields confidential or tamper resistant.
+            - B (correct): TLS protects the enclosing traffic, including the authentication exchange, while Digest supplies its own credential proof.
+            - C (incorrect): TLS transports HTTP bytes securely; it does not rewrite the Digest input fields in a way that inherently invalidates the response.
+
+            **Related:** TLS hides HTTP-level fields from passive observers, though network endpoints, timing, and traffic volume can remain observable.
           </div>
         </div>
       </article>
@@ -191,7 +243,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7616</strong> to “<em id="footer-goal">Digest auth literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

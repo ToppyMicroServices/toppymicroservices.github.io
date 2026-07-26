@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 8441（extended CONNECT）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 8441 ドリル: HTTP/2上でWebSocketを成立させるextended CONNECTを理解する。" />
+  <meta name="description" content="RFC 8441 ドリル: HTTP/2上でWebSocketを成立させるextended CONNECTを理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc8441_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 8441（extended CONNECT）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 8441 ドリル: HTTP/2上でWebSocketを成立させるextended CONNECTを理解する。" />
+  <meta property="og:description" content="RFC 8441 ドリル: HTTP/2上でWebSocketを成立させるextended CONNECTを理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc8441_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 8441（extended CONNECT）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 8441 ドリル: HTTP/2上でWebSocketを成立させるextended CONNECTを理解する。" />
+  <meta name="twitter:description" content="RFC 8441 ドリル: HTTP/2上でWebSocketを成立させるextended CONNECTを理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc8441.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8441_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8441.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 8441",
       SKILL_SUBTITLE: "HTTP/2でのWebSocket bootstrapping",
-      GOAL_DESCRIPTION: "HTTP/2でUpgradeが使えない状況でも、extended CONNECTでWebSocketを成立させる考え方を説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8441" target="_blank" rel="noopener noreferrer">RFC 8441: Bootstrapping WebSockets with HTTP/2</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: HTTP/1.1のUpgradeに頼らず、HTTP/2のストリーム上でWebSocketのセマンティクス(意味/ルール)を成立させる。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="HTTP/1.1のconnection全体を切り替える方式と, 1本のHTTP/2 stream上で動く方式を比べます.">
         <header><h4>Q1: HTTP/2でWebSocketをbootstrappingする中心的な仕組みはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -102,7 +100,7 @@
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** WebSocket の bootstrap を HTTP/1.1 の `Upgrade` だけで覚えると, HTTP/2-only の環境で説明が止まります. RFC 8441 の中核である extended CONNECT を最初に押さえる問題です.
+            **判断のポイント:** HTTP/1.1の`Upgrade`はconnection全体を切り替えますが, HTTP/2ではstream単位でWebSocketを開始できる仕組みが必要です.
 
             **用語:** **extended CONNECT** は, HTTP/2 上で tunnel 的な接続を張るための拡張です. HTTP/1.1 の `Upgrade` model をそのまま持ち込めないため, 別の bootstrap が必要になります.
 
@@ -118,18 +116,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="HTTP/2のstream multiplexingと, WebSocketごとにtransport connectionが必要かに注目します.">
         <header><h4>Q2: HTTP/2でWebSocketを扱うことで, HTTP/1.1 upgradeと比べて避けられることとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. encryptionの必要</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. HTTPのセマンティクス(意味/ルール)</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. WebSocketごとに専用TCP connectionへ縛られること</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. transport encryptionでWebSocket trafficを保護すること</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. HTTP setupとWebSocket framingのsemanticsを適用すること</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. WebSocketごとに別のTCP connectionを確保すること</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** HTTP/2 で WebSocket を扱う価値は, header 名が変わることではなく, 接続の持ち方が変わることです. multiplexing の利点を見られるかを問う問題です.
+            **判断のポイント:** HTTP/2では複数のstreamを1本のconnectionで多重化できるため, WebSocketごとにtransport connectionを占有する必要がありません.
 
             **用語:** **multiplexing** は, 1 本の HTTP/2 connection 上で複数 stream を並行利用することです. HTTP/1.1 のように WebSocket ごとに専用 TCP connection を増やす前提から外れられます.
 
@@ -145,20 +143,20 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q3: HTTP/2 CONNECTでWebSocketを作るとき, target protocolとしてsignalすべき値はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint=":protocol pseudo-headerは, extended CONNECT streamで使用するapplication protocolを識別します.">
+        <header><h4>Q3: extended CONNECTでWebSocketを開始するとき, :protocol pseudo-headerに入れる値はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. websocket</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. http</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. tls</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. websocket, 登録されたWebSocket protocol token</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. http, 外側のHTTP/2 protocolを表すtoken</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. tls, channel-security protocolを表すtoken</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** extended CONNECT を使うときは, 「この tunnel で何の protocol を話すのか」を明示する必要があります. 値を正しく言えるかを確認する問題です.
+            **判断のポイント:** extended CONNECTでは, streamで使用するapplication protocolを`:protocol` pseudo-headerで明示します.
 
-            **用語:** extended CONNECT では target protocol を示すために **`websocket`** という値を signal します. `http` や `tls` では意味が変わってしまいます.
+            **用語:** extended CONNECTではtarget protocolを示すために **`websocket`** という値をsignalします. `http`や`tls`では意味が変わります.
 
             **Correct (A):** WebSocket を作るなら signal すべき値は **`websocket`** です.
 
@@ -172,19 +170,19 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="変更されたHTTP bootstrapと, stream成立後も残るWebSocketおよびapplicationの規則を分けます.">
         <header><h4>Q4: HTTP/2 bootstrappingでもWebSocketのセマンティクスとして依然重要なものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. message framingやopcodeの規則</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. browserでのOrigin based check</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. browserが送るOrigin headerのserver側validation</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. app認証とauthorization設計</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. HTTP/1.1 Connection headerの必須要件</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** RFC 8441 を読むと, つい bootstrapping の違いばかりに目が行きます. でも WebSocket の security と app 設計の論点は残り続けます. そこを確認する問題です.
+            **判断のポイント:** RFC 8441が変更するのはHTTP/2上のbootstrapです. WebSocket framing, Origin policy, application authorizationの責務は残ります.
 
             **用語:** **bootstrapping** は接続開始手順, **WebSocket semantics** は message framing や app security のような接続成立後も続く性質です.
 
@@ -192,7 +190,7 @@
 
             **選択肢:**
             - A (correct): 接続後の framing 規則は依然として重要です.
-            - B (correct): browser 由来の security check は消えません.
+            - B (correct): browserはOriginを送り, serverは自身のorigin policyに従ってvalidateします.
             - C (correct): app 認証と authorization は protocol が自動で解決しません.
             - D (incorrect): HTTP/1.1 の `Connection` header 前提は HTTP/2 ではそのまま持ち込めません.
 
@@ -201,47 +199,47 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="HTTP/2 peerがextended CONNECTへ明示的にopt inしているかを確認してから経路を選びます.">
         <header><h4>Q5: proxyがHTTP/2のみ対応でUpgradeをblockする. WebSocketに起きることとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. WebSocketは不可能になる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. HTTP/1.1 upgradeの代わりにH2 bootstrapping方式が必要になり得る</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 常にlong pollingへdowngradeしないといけない</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. WebSocket framingを使わず, 通常のHTTP/2 GETへ変換する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. extended CONNECT対応を確認し, 利用可能ならその経路を使う</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. HTTP/2 stream内でHTTP/1.1のConnectionとUpgrade headerを送る</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** corporate proxy や CDN で `Upgrade` が block されると, HTTP/1.1 前提の説明だけでは「WebSocket は無理」で止まりがちです. H2 bootstrapping の選択肢を知っているかを見る問題です.
+            **判断のポイント:** HTTP/1.1の`Upgrade`がblockされている事実だけでは, RFC 8441の利用可否は決まりません. HTTP/2 peerがextended CONNECT対応をadvertiseしているかを別に確認します.
 
             **用語:** **H2 bootstrapping** とは, HTTP/2 上で extended CONNECT を使って WebSocket 的な接続を成立させる考え方です.
 
-            **Correct (B):** proxy が HTTP/2 のみ対応なら, HTTP/1.1 `Upgrade` の代わりに H2 bootstrapping 方式が必要になり得ます. WebSocket 自体が不可能になるとは限りません.
+            **Correct (B):** peerが対応settingをadvertiseしていれば, HTTP/1.1 `Upgrade`の代わりにextended CONNECTを使えます.
 
             **選択肢:**
-            - A (incorrect): `Upgrade` が使えないだけで, WebSocket 全体が不可能とまでは言えません.
-            - B (correct): RFC 8441 がまさにその代替手段を与えます.
-            - C (incorrect): 常に long polling へ downgrade しなければならないわけではありません.
+            - A (incorrect): 通常のGETだけではWebSocket framingとsemanticsは成立しません.
+            - B (correct): 対応settingを受け取ったpeerには, extended CONNECTでbootstrapできます.
+            - C (incorrect): `Connection`と`Upgrade`はHTTP/1.1のconnection-specific fieldであり, HTTP/2 stream内ではこの方法で使えません.
 
             **関連:** deploy の失敗理由を正しく切り分けるには, 「HTTP/1.1 の制限」なのか「HTTP/2 bootstrapping 未対応」なのかを分けて考える必要があります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^connect$" data-difficulty="L1">
-        <header><h4>Q6: HTTP/2 WebSocket bootstrappingで中心になるHTTP methodは何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^settings_enable_connect_protocol$" data-difficulty="L2" data-hint="extended CONNECTを送る前にpeerがopt inするためのHTTP/2 SETTINGS parameterを探します.">
+        <header><h4>Q6: clientがextended CONNECTを使う前に, serverが値1で送るHTTP/2 settingは何 (正確な名前)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** RFC 8441 の議論では, どの HTTP method を中心に使うかをまず押さえないと packet trace や config を読みにくくなります.
+            **判断のポイント:** extended CONNECTはpeerの明示的なopt-in後にだけ利用できます. clientは対応settingを受信する前に`:protocol` pseudo-headerを送れません.
 
-            **用語:** HTTP/2 WebSocket bootstrapping の中心になる method は **`CONNECT`** です. extended CONNECT という名前もここから来ています.
+            **用語:** **SETTINGS_ENABLE_CONNECT_PROTOCOL** はextended CONNECT対応をadvertiseするsettingです.
 
-            **Correct:** **CONNECT**.
+            **Correct:** **SETTINGS_ENABLE_CONNECT_PROTOCOL**. serverが値1を送ることで対応を示します.
 
-            **Why this matters:** `Upgrade` を探すのではなく `CONNECT` 系の流れを見る, という観点に切り替わると, HTTP/2-only 環境の debug がかなりしやすくなります.
+            **関連:** settingが有効にするのはCONNECTの拡張形式です. request自体はCONNECT methodを使い, target application protocolを`:protocol`で示します.
           </div>
         </div>
       </article>
@@ -255,7 +253,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 8441</strong> to “<em id="footer-goal">WebSocket over H2 reasoning</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

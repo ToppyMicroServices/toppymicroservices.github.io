@@ -1,7 +1,6 @@
 window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   SKILL_NAME: "Your Skill Name",
   SKILL_SUBTITLE: "Your Drill Subtitle",
-  GOAL_DESCRIPTION: "Describe the learning goal",
   LEARNING_MODE_DEFAULT: true,
   BRAND_NAME: "ToppyMicroServices",
   BRAND_LOGO: "og-brand-clean.min.png",
@@ -14,8 +13,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   const escapeHtml=str=>(str??'').replace(/[&<>"']/g,ch=>ESCAPE_MAP[ch]||ch);
   const locale=(document.documentElement.lang||'').toLowerCase();
 	  const PREF_KEYS = {
-	    explainOnAnswer: 'quizExplainOnAnswer',
-	    showAllAnswers: 'quizShowAllAnswers'
+	    explainOnAnswer: 'quizExplainOnAnswer'
 	  };
 	  const UI_TEXT = locale.startsWith('ja') ? {
 	    learningMode: '学習モード',
@@ -31,7 +29,14 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       progressAnswered: '回答済み',
       progressCorrect: '正解',
       progressRemaining: '残り',
-      skipToQuestions: '設問へスキップ'
+      skipToQuestions: '設問へスキップ',
+      showHint: 'ヒントを見る',
+      hideHint: 'ヒントを閉じる',
+      checkAnswer: '回答を確定',
+      switchToDark: 'ダーク',
+      switchToLight: 'ライト',
+      switchToDarkAria: 'ダークテーマに切り替え',
+      switchToLightAria: 'ライトテーマに切り替え'
 	  } : {
 	    learningMode: 'Learning Mode',
 	    testMode: 'Test Mode',
@@ -46,7 +51,14 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       progressAnswered: 'Answered',
       progressCorrect: 'Correct',
       progressRemaining: 'Remaining',
-      skipToQuestions: 'Skip to questions'
+      skipToQuestions: 'Skip to questions',
+      showHint: 'Show hint',
+      hideHint: 'Hide hint',
+      checkAnswer: 'Check answer',
+      switchToDark: 'Dark',
+      switchToLight: 'Light',
+      switchToDarkAria: 'Switch to dark theme',
+      switchToLightAria: 'Switch to light theme'
 	  };
 	  const DETAIL_TEXT=locale.startsWith('ja')?
 	    { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
@@ -75,12 +87,73 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     };
   }
 
-  function updateThemeToggle(mode){const b=$('#themeToggle'); if(!b) return; const L=mode==='light'; b.textContent=L?'🌙 Dark':'🌞 Light'; b.setAttribute('aria-pressed',L?'true':'false');}
+  function makeThemeIcon(kind){
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '17');
+    svg.setAttribute('height', '17');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.innerHTML = kind === 'moon'
+      ? '<path d="M20.5 14.3A8 8 0 0 1 9.7 3.5 8.5 8.5 0 1 0 20.5 14.3Z" />'
+      : '<circle cx="12" cy="12" r="3.5" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />';
+    return svg;
+  }
+  function updateThemeToggle(mode){
+    const button = $('#themeToggle');
+    if(!button) return;
+    const switchToDark = mode === 'light';
+    const label = switchToDark ? UI_TEXT.switchToDark : UI_TEXT.switchToLight;
+    const text = document.createElement('span');
+    text.textContent = label;
+    button.replaceChildren(makeThemeIcon(switchToDark ? 'moon' : 'sun'), text);
+    button.setAttribute('aria-label', switchToDark ? UI_TEXT.switchToDarkAria : UI_TEXT.switchToLightAria);
+    button.setAttribute('aria-pressed', mode === 'dark' ? 'true' : 'false');
+  }
   function setTheme(m,persist=true){const n=m==='light'?'light':'dark'; document.body.setAttribute('data-theme',n); if(persist){try{localStorage.setItem(THEME_KEY,n);}catch(e){}} updateThemeToggle(n);}    
   function applyInitialTheme(){let s=null; try{s=localStorage.getItem(THEME_KEY);}catch(e){} const init=s||(prefersDark.matches?'dark':'light'); setTheme(init,false);}    
   function toggleTheme(){const c=document.body.getAttribute('data-theme')==='light'?'light':'dark'; setTheme(c==='light'?'dark':'light',true);}    
-  function applySettings(){const S=window.DRILL_SETTINGS||{}; const name=S.SKILL_NAME; const sub=S.SKILL_SUBTITLE; const goal=S.GOAL_DESCRIPTION; $('#title').textContent=(name?name+' ':'')+(sub?('— '+sub):''); $('#subtitle').textContent=goal||''; $('#footer-skill').textContent=name||'Skill'; $('#footer-goal').textContent=goal||''; const img=$('#brand-logo'); if(img&&S.BRAND_LOGO){img.src=S.BRAND_LOGO; img.style.display='inline-block'; img.alt=S.BRAND_NAME||'';} $('#brand-name').textContent=S.BRAND_NAME||''; $('#brand-link').href=S.BRAND_URL||'/'; $('#footer-brand').innerHTML='<strong>'+(S.BRAND_NAME||'')+'</strong>';}    
-	  function showExplain(q,show=true){const exp=q.querySelector('.explain'); if(!exp) return; exp.classList.toggle('show',!!show);}    
+  function removeRepeatedGoalCopy(){
+    const scope = document.querySelector('section.scope');
+    scope?.querySelectorAll(':scope > p.muted').forEach(p => {
+      if(/^(?:Goal|狙い)\s*[:：]/i.test((p.textContent || '').trim())){
+        p.remove();
+      }
+    });
+
+    const footerGoal = $('#footer-goal');
+    footerGoal?.closest('p')?.remove();
+  }
+
+  function applySettings(){
+    const S=window.DRILL_SETTINGS||{};
+    const name=S.SKILL_NAME;
+    const sub=S.SKILL_SUBTITLE;
+    const title=$('#title');
+    if(title) title.textContent=(name?name+' ':'')+(sub?('— '+sub):'');
+
+    // Learning goals belong on the quiz hub. Keep the concise subtitle authored
+    // in each detail page, but do not repeat GOAL_DESCRIPTION in the page chrome.
+    removeRepeatedGoalCopy();
+
+    const img=$('#brand-logo');
+    if(img&&S.BRAND_LOGO){
+      img.src=S.BRAND_LOGO;
+      img.style.display='inline-block';
+      img.alt=S.BRAND_NAME||'';
+    }
+    const brandName=$('#brand-name');
+    if(brandName) brandName.textContent=S.BRAND_NAME||'';
+    const brandLink=$('#brand-link');
+    if(brandLink) brandLink.href=S.BRAND_URL||'/';
+    const footerBrand=$('#footer-brand');
+    if(footerBrand) footerBrand.innerHTML='<strong>'+(S.BRAND_NAME||'')+'</strong>';
+  }
+	  function showExplain(q,show=true){
+	    q.querySelectorAll('.explain, .answer-figure').forEach(node => {
+	      node.classList.toggle('show',!!show);
+	    });
+	  }
 
 	  function normalizeExplainHtml(html){
 	    let out = String(html ?? '');
@@ -99,9 +172,10 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         out = out
           .replace(/<strong>Explanation:<\/strong>/g, '<strong>解説:<\/strong>')
           .replace(/<strong>Explanation<\/strong>/g, '<strong>解説<\/strong>')
-          .replace(/<strong>Question intent:<\/strong>/g, '<strong>出題意図:<\/strong>')
-          .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
-          .replace(/<strong>背景（なぜこの問題）:<\/strong>/g, '<strong>問題を出した背景:<\/strong>')
+          .replace(/<strong>Question intent:<\/strong>/g, '<strong>判断のポイント:<\/strong>')
+          .replace(/<strong>Context \(why chosen\):<\/strong>/g, '<strong>判断のポイント:<\/strong>')
+          .replace(/<strong>背景（なぜこの問題）:<\/strong>/g, '<strong>判断のポイント:<\/strong>')
+          .replace(/<strong>問題を出した背景:<\/strong>/g, '<strong>判断のポイント:<\/strong>')
           .replace(/<strong>Real-world usage:<\/strong>/g, '<strong>実務での機会:<\/strong>')
           .replace(/<strong>Common mistakes:<\/strong>/g, '<strong>よくある誤り:<\/strong>')
           .replace(/<strong>Terms:<\/strong>/g, '<strong>用語:<\/strong>')
@@ -117,7 +191,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    // Ensure section headings start on their own lines (even if authored inline).
 	    out = out
 	      .replace(/\s*(<strong>(?:Explanation|解説)(?::)?<\/strong>)/g, '\n$1')
-	      .replace(/\s*(<strong>(?:Question intent|出題意図):<\/strong>)/g, '\n\n$1')
+	      .replace(/\s*(<strong>(?:Question intent|出題意図|判断のポイント):<\/strong>)/g, '\n\n$1')
 	      .replace(/\s*(<strong>(?:Context \(why chosen\)|背景（なぜこの問題）|問題を出した背景):<\/strong>)/g, '\n\n$1')
 	      .replace(/\s*(<strong>(?:Real-world usage|実務での機会):<\/strong>)/g, '\n\n$1')
       .replace(/\s*(<strong>(?:Terms|用語):<\/strong>)/g, '\n\n$1')
@@ -1574,6 +1648,126 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     document.body.insertAdjacentElement('afterbegin', skip);
   }
 
+  function makeHintIcon(){
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '18');
+    svg.setAttribute('height', '18');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.innerHTML =
+      '<path d="M9.1 9a3 3 0 1 1 4.7 2.5c-1.1.7-1.8 1.3-1.8 2.5" />' +
+      '<path d="M12 18h.01" />' +
+      '<circle cx="12" cy="12" r="9" />';
+    return svg;
+  }
+
+  function injectAuthoredHints(){
+    $$('#questions .q[data-hint]').forEach((q, index) => {
+      if(!(q instanceof HTMLElement) || q.querySelector('.question-hint')) return;
+      const hint = String(q.dataset.hint || '').trim();
+      const body = q.querySelector('.body');
+      if(!hint || !(body instanceof HTMLElement)) return;
+
+      const questionId = String(q.dataset.id || index + 1).replace(/[^A-Za-z0-9_-]/g, '-');
+      const panelId = 'hint-' + questionId;
+      const region = document.createElement('div');
+      region.className = 'question-hint';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'hint-toggle';
+      button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-controls', panelId);
+      button.appendChild(makeHintIcon());
+
+      const label = document.createElement('span');
+      label.textContent = UI_TEXT.showHint;
+      button.appendChild(label);
+
+      const panel = document.createElement('div');
+      panel.id = panelId;
+      panel.className = 'hint-panel';
+      panel.setAttribute('aria-hidden', 'true');
+
+      const inner = document.createElement('div');
+      inner.className = 'hint-panel-inner';
+      const text = document.createElement('p');
+      text.textContent = hint;
+      inner.appendChild(text);
+      panel.appendChild(inner);
+
+      button.addEventListener('click', () => {
+        const open = button.getAttribute('aria-expanded') !== 'true';
+        region.classList.toggle('is-open', open);
+        button.setAttribute('aria-expanded', open ? 'true' : 'false');
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        label.textContent = open ? UI_TEXT.hideHint : UI_TEXT.showHint;
+      });
+
+      region.append(button, panel);
+      const answerContent = body.querySelector('.answer-figure, .explain');
+      if(answerContent instanceof HTMLElement){
+        answerContent.insertAdjacentElement('beforebegin', region);
+      } else {
+        body.appendChild(region);
+      }
+    });
+  }
+
+  function hasDraftAnswer(q){
+    const type = String(q.dataset.type || '').toLowerCase();
+    if(type === 'ms') return q.querySelectorAll('input[type="checkbox"]:checked').length > 0;
+    if(type === 'text') return !!q.querySelector('input[type="text"]')?.value.trim();
+    return false;
+  }
+
+  function updateQuestionSubmitButton(q){
+    const button = q.querySelector('.question-submit');
+    if(button instanceof HTMLButtonElement){
+      button.disabled = !hasDraftAnswer(q);
+    }
+  }
+
+  function injectQuestionSubmitControls(){
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      const type = String(q.dataset.type || '').toLowerCase();
+      if(!['ms', 'text'].includes(type) || q.querySelector('.question-submit')) return;
+      const body = q.querySelector('.body');
+      if(!(body instanceof HTMLElement)) return;
+
+      q.dataset.submitted = 'false';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'question-submit';
+      button.textContent = UI_TEXT.checkAnswer;
+      button.disabled = !hasDraftAnswer(q);
+      button.addEventListener('click', () => {
+        if(!hasDraftAnswer(q)) return;
+        q.dataset.submitted = 'true';
+        updateLiveScore();
+        applyRevealState();
+      });
+
+      const answerContent = body.querySelector('.question-hint, .answer-figure, .explain');
+      if(answerContent instanceof HTMLElement){
+        answerContent.insertAdjacentElement('beforebegin', button);
+      } else {
+        body.appendChild(button);
+      }
+
+      if(type === 'text'){
+        q.querySelector('input[type="text"]')?.addEventListener('keydown', event => {
+          if(event.key === 'Enter' && !button.disabled){
+            event.preventDefault();
+            button.click();
+          }
+        });
+      }
+    });
+  }
+
   function ensureProgressCard(){
     if(document.getElementById('quizProgress')) return;
     const anchor = document.querySelector('section.panel') || document.getElementById('questions');
@@ -1723,18 +1917,9 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       const exp = q.querySelector('.explain');
       if(!(exp instanceof HTMLElement)) return;
 
-      let out = normalizeExplainHtml(exp.innerHTML);
-	    out = enrichExplain(q, out);
-	    out = normalizeExplainHtml(out);
-	    const terms = extractTermsFromExplainHtml(out);
-	    const inferred = terms.length ? terms : inferQuestionTerms(q);
-	    const keywords = uniqueKeywords([
-	      ...getDefaultImportantKeywords(),
-	      ...inferred
-	    ]);
-	    out = boldifyKeywordsInHtml(out, keywords);
-	    out = normalizeExplainHtml(out);
-      exp.innerHTML = out;
+      // Explanations are authored and reviewed content. Normalize the supported
+      // markup only; never invent sections, claims, or option rationales at runtime.
+      exp.innerHTML = normalizeExplainHtml(exp.innerHTML);
     });
   }
 
@@ -1764,14 +1949,14 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     });
   }
 
-  function isAnswered(q){const t=q.dataset.type; if(t==='mc') return !!q.querySelector('input[type=radio]:checked'); if(t==='ms') return q.querySelectorAll('input[type=checkbox]:checked').length>0; if(t==='text'){const v=q.querySelector('input[type=text]')?.value.trim(); return !!v;} return false;}
+  function isAnswered(q){const t=q.dataset.type; if(t==='mc') return !!q.querySelector('input[type=radio]:checked'); if(t==='ms') return q.dataset.submitted==='true' && q.querySelectorAll('input[type=checkbox]:checked').length>0; if(t==='text'){const v=q.querySelector('input[type=text]')?.value.trim(); return q.dataset.submitted==='true' && !!v;} return false;}
 
   function cleanLabelText(text){ return (text||'').replace(/\s+/g,' ').trim(); }
   function readableChoiceLabel(label){ if(!label) return ''; return cleanLabelText(label.querySelector('.choice-main')?.textContent || label.dataset.choiceBase || label.textContent); }
   function describeChoiceList(q,values){ if(!values||!values.length) return ''; const map=v=>{const input=q.querySelector('input[value="'+CSS.escape(v)+'"]'); const label=input?.closest('label'); return label?readableChoiceLabel(label):v; }; return values.map(map).join(', '); }
   function describeChoiceLabel(q,value){ return describeChoiceList(q,[value]); }
 
-  function evaluateQuestion(q){const id=q.dataset.id; const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); let ok=null,user=null; if(type==='mc'){const p=q.querySelector('input[type=radio]:checked'); if(!p){ok=null;} else {user=p.value; ok=(user===ans);} } else if(type==='ms'){const picked=q.querySelectorAll('input[type=checkbox]:checked'); user=Array.from(picked).map(i=>i.value).sort(); if(!user.length){ok=null;} else {const gold=ans.split(',').map(s=>s.trim()).sort(); ok=JSON.stringify(user)===JSON.stringify(gold);} } else if(type==='text'){const t=q.querySelector('input[type=text]'); user=(t?.value||'').trim(); const mode=(q.dataset.eval||'exact').toLowerCase(); if(!user){ok=null;} else if(mode==='regex'){try{ok=new RegExp(ans,'i').test(user);}catch(e){ok=false;}} else {ok=(user===ans);} } return {id,type,ok,user};}
+  function evaluateQuestion(q){const id=q.dataset.id; const type=q.dataset.type; const ans=(q.dataset.answer||'').trim(); let ok=null,user=null; if(type==='mc'){const p=q.querySelector('input[type=radio]:checked'); if(!p){ok=null;} else {user=p.value; ok=(user===ans);} } else if(type==='ms'){const picked=q.querySelectorAll('input[type=checkbox]:checked'); user=Array.from(picked).map(i=>i.value).sort(); if(!user.length||q.dataset.submitted!=='true'){ok=null;} else {const gold=ans.split(',').map(s=>s.trim()).sort(); ok=JSON.stringify(user)===JSON.stringify(gold);} } else if(type==='text'){const t=q.querySelector('input[type=text]'); user=(t?.value||'').trim(); const mode=(q.dataset.eval||'exact').toLowerCase(); if(!user||q.dataset.submitted!=='true'){ok=null;} else if(mode==='regex'){try{ok=new RegExp(ans,'i').test(user);}catch(e){ok=false;}} else {ok=(user===ans);} } return {id,type,ok,user};}
 
   function formatUserAnswerDisplay(q,evaluation){ const type=q.dataset.type; if(type==='mc'){return evaluation.user?describeChoiceLabel(q,evaluation.user):'';} if(type==='ms'){const vals=Array.isArray(evaluation.user)?evaluation.user:[]; return vals.length?describeChoiceList(q,vals):'';} if(type==='text'){return evaluation.user||'';} return '';
   }
@@ -1865,11 +2050,12 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
         writeBoolPref(PREF_KEYS.explainOnAnswer, !!explainOnAnswer.checked);
         applyRevealState();
       });
-    }
+	    }
 	    if(showAllAnswers){
-	      showAllAnswers.checked = readBoolPref(PREF_KEYS.showAllAnswers, false);
+	      // "Show all" is page state, not a cross-quiz preference. A learner who
+	      // revealed one quiz must still get an unrevealed next quiz.
+	      showAllAnswers.checked = false;
 	      showAllAnswers.addEventListener('change', () => {
-	        writeBoolPref(PREF_KEYS.showAllAnswers, !!showAllAnswers.checked);
 	        applyRevealState();
 	      });
 	    }
@@ -1906,11 +2092,17 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    }
 	  }
 
-	  function bindAnswerChangeEvents(){
-	    const inputs = $$('#questions input');
-	    const handler = () => {
-	      updateLiveScore();
-	      applyRevealState();
+		  function bindAnswerChangeEvents(){
+		    const inputs = $$('#questions input');
+		    const handler = event => {
+		      const input = event.currentTarget;
+		      const q = input instanceof HTMLElement ? input.closest('.q') : null;
+		      if(q instanceof HTMLElement && ['ms', 'text'].includes(String(q.dataset.type || '').toLowerCase())){
+		        q.dataset.submitted = 'false';
+		        updateQuestionSubmitButton(q);
+		      }
+		      updateLiveScore();
+		      applyRevealState();
     };
     inputs.forEach(input => {
       const type = (input.getAttribute('type') || '').toLowerCase();
@@ -1946,9 +2138,8 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  if(bottomBtn){
 	    bottomBtn.addEventListener('click',()=>{
 	      const { showAllAnswers } = getRevealControls();
-	      if(showAllAnswers){
+	    if(showAllAnswers){
         showAllAnswers.checked = true;
-        writeBoolPref(PREF_KEYS.showAllAnswers, true);
       }
       applyRevealState(bottomBtn.dataset.resultsTarget);
     });
@@ -1959,12 +2150,11 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  applySettings();
 	  injectSkipLink();
 	  localizeStaticUiText();
-	  injectRfcHubLink();
-	  injectRfcCheatSheet();
-	  normalizeAllExplanations();
-	  injectKeywordsBlock();
-	  injectStudyPath();
-	  ensureProgressCard();
+		  injectRfcHubLink();
+		  normalizeAllExplanations();
+		  injectAuthoredHints();
+		  injectQuestionSubmitControls();
+		  ensureProgressCard();
 	  injectDifficultyBadges();
 	  initRevealControls();
 	  bindAnswerChangeEvents();

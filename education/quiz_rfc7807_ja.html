@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 7807（Problem Details）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 7807 ドリル: Problem Detailsで、HTTP APIのエラー表現を揃える。" />
+  <meta name="description" content="RFC 7807 ドリル: Problem Detailsで, HTTP APIのエラー表現を揃える." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc7807_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 7807（Problem Details）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 7807 ドリル: Problem Detailsで、HTTP APIのエラー表現を揃える。" />
+  <meta property="og:description" content="RFC 7807 ドリル: Problem Detailsで, HTTP APIのエラー表現を揃える." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc7807_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 7807（Problem Details）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 7807 ドリル: Problem Detailsで、HTTP APIのエラー表現を揃える。" />
+  <meta name="twitter:description" content="RFC 7807 ドリル: Problem Detailsで, HTTP APIのエラー表現を揃える." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc7807.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7807_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7807.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7807",
       SKILL_SUBTITLE: "Problem Details",
-      GOAL_DESCRIPTION: "problem+jsonの標準フィールドで、APIエラーを一貫した形にする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7807" target="_blank" rel="noopener noreferrer">RFC 7807: Problem Details for HTTP APIs</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: 標準フィールドと Content-Type を正しく使えるようにする。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="汎用のJSON containerと, Problem Detailsの意味を明示するmedia typeを区別します.">
         <header><h4>Q1: JSONのProblem Details responseのmedia typeはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -104,15 +102,15 @@
             **Terms:** media type, Problem Details
             **Correct (B):** payloadの意味を示すため, 専用media typeを定義している
             **Options:**
-            - A (incorrect): 動くことはあるが, Problem Detailsの意味は伝わらない
-            - B (correct): 標準
-            - C (incorrect): 定義されていない
+            - A (incorrect): 汎用JSONとして処理できますが, payloadがProblem Details vocabularyに従うことをmedia typeで示せません.
+            - B (correct): RFC 7807がJSON Problem Details用に登録したdedicated media typeです.
+            - C (incorrect): `text/problem+json`はRFC 7807で登録されていません.
             **Related:** XML向けにはapplication/problem+xmlがある
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2" data-hint="各memberがproblemの分類, 個別の発生事象, 実装内部のdebug情報のどれを表すか整理します.">
         <header><h4>Q2: Problem Details objectの標準memberはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -128,13 +126,18 @@
             **Terms:** members, extensibility
             **Correct (A,B,C,D,E):** これらが標準member
             **Options:**
-            - F (incorrect): 標準ではない, 露出も危険になりやすい
+            - A (correct): typeはURI referenceでproblem typeを識別します.
+            - B (correct): titleはproblem typeの短いhuman-readable summaryです.
+            - C (correct): statusはこの発生事象についてorigin serverが生成したHTTP status codeです.
+            - D (correct): detailはこの発生事象に固有のhuman-readable explanationです.
+            - E (correct): instanceは個別の発生事象を識別するURI referenceです.
+            - F (incorrect): stackTraceは標準memberではなく, 実装内部の情報を露出させるおそれもあります.
             **Related:** extension memberは追加できるが, 安定仕様として文書化する
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="個別の発生事象や数値statusではなく, 再利用できるproblem分類の安定した識別子を探します.">
         <header><h4>Q3: typeの意図として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -155,62 +158,64 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q4: payloadにstatusを入れる場合, 一般にどう扱うべき</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="payload内の数値memberを, origin serverが実際に生成したHTTP responseのstatus codeと比較します.">
+        <header><h4>Q4: RFC 7807では, status memberを含める場合に何を入れるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. HTTP response status codeの意味と整合させる</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. NOT_FOUNDのような文字列にする</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. 2xx responseでのみ使う</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. そのresponseについてorigin serverが生成したstatus codeを繰り返す</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. NOT_FOUNDのようなapplication固有の文字列を入れる</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. clientの次回retryで予想されるstatus codeを入れる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
             **Terms:** status member
-            **Correct (A):** client向けの便宜であり, 別系統のstatus channelではない
+            **Correct (A):** status memberを含める場合, この発生事象についてorigin serverが生成したHTTP status codeを入れます.
             **Options:**
-            - A (correct): status lineと揃える
-            - B (incorrect): 標準memberのstatusは数値
-            - C (incorrect): error表現に使う
-            **Related:** proxy等でstatusが変わるなら, 一貫性に注意
+            - A (correct): client向けの便宜として, origin responseのstatusをpayloadにも示します.
+            - B (incorrect): 標準memberのstatusは文字列ではなく数値です.
+            - C (incorrect): statusは今回の発生事象を記述するもので, 後のresponseを予測しません.
+            **Related:** intermediaryが転送中にresponse statusを変更する場合があるため, 汎用clientはpayloadを別系統のstatus authorityとせず, 実際のHTTP response statusを使います.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^title$" data-difficulty="L1">
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^title$" data-difficulty="L1" data-hint="problem typeの安定した短いsummaryと, 1回の発生事象を詳述する文字列を分けて考えます.">
         <header><h4>Q5: problemの短いhuman readable summaryを表すmemberは何 (1語)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the member name" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** `title` と `detail` はどちらも人間向け文字列なので, 役割を入れ替えやすい member です. summary と instance-specific detail を分けて理解する問題です.
-
             **用語:** **`title`** は problem の短い human-readable summary, **`detail`** はその発生事象に固有の説明です.
 
-            **Correct:** **title**.
+            **Correct:** **title**. localizationの場合を除き, 同じproblem typeの発生事象ごとに変えるものではありません.
 
-            **Why this matters:** client UI や log では, 安定した短い summary と個別事情の detail を分けて扱えると実装しやすくなります.
+            **Related:** **detail** は個別のrequestに応じて内容が変わり得ます. client UIやlogでは, 安定したsummaryと個別事情を分けて扱えます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2">
-        <header><h4>Q6: endpointごとにerror schemaがバラバラだと何が辛い</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="共通のbase vocabularyとproblem type固有のextensionを分け, 未知のextensionをどう扱うか確認します.">
+        <header><h4>Q6: 2つのエンドポイントがProblem Detailsの共通メンバーを返しつつ, それぞれ異なる拡張メンバーを定義している. 汎用クライアントが安全に仮定できることはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. TLSが必須になる</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. client側がendpointごとのparseを持つ必要が出る</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. 5xxが必ず消える</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 各エンドポイントの拡張で, 標準メンバーの意味を上書きできる</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 標準メンバーの意味は共通で, 拡張はproblem typeごとに解釈する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. 未知の拡張があれば, クライアントはProblem Details文書を拒否する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** interoperability, client UX
-            **Correct (B):** 一貫schemaは実装と運用の負担を減らす
-            **Options:**
-            - A (incorrect): 無関係
-            - B (correct): これが主要コスト
-            - C (incorrect): errorは防げない
-            **Related:** detailやextensionで内部情報を漏らさない
+
+            **用語:** Problem Detailsは共通の標準メンバーを定義します. problem typeは, その問題固有の情報を表す拡張メンバーを追加できます.
+
+            **Correct (B):** 汎用クライアントは標準メンバーを共通に処理できますが, 拡張を理解するには該当するproblem typeの定義が必要です.
+
+            **選択肢:**
+            - A (incorrect): 拡張はproblem type固有の情報を追加するものであり, エンドポイントごとに標準メンバーを再定義するものではありません.
+            - B (correct): 標準メンバーは共通に扱え, 拡張はproblem type固有の情報を表します.
+            - C (incorrect): RFC 7807は, 認識できない拡張メンバーを無視するようクライアントに求めており, problem typeを拡張可能にしています.
+
+            **関連:** クライアントが拡張に依存する場合は, 人が読むためのdetailを解析せず, problem typeを確認して処理を分けます.
           </div>
         </div>
       </article>
@@ -224,7 +229,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7807</strong> to “<em id="footer-goal">API error modeling</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7301_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7301.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7301",
       SKILL_SUBTITLE: "ALPN",
-      GOAL_DESCRIPTION: "Understand how TLS negotiates the application protocol, how ALPN differs from SNI, and what operational failures look like",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -74,7 +73,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc6066" target="_blank" rel="noopener noreferrer">RFC 6066: TLS Extensions</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: explain how ALPN negotiates application protocols inside the TLS handshake, how it differs from SNI, and what breaks when negotiation fails.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -93,34 +91,34 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Identify where protocol selection happens and whether a separate application-layer exchange would be needed.">
         <header><h4>Q1: What problem does ALPN primarily solve</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. It encrypts the server certificate separately from the rest of TLS</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. It advertises the target hostname so a virtual host and certificate can be selected</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. It lets client and server negotiate which application protocol to use on the same TLS port without an extra round trip</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. It replaces TCP port numbers with DNS records for protocol discovery</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. It lets the server announce its protocol list only after the TLS handshake, before application data starts</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** ALPN is often described only as “needed for HTTP/2,” but the deeper skill is seeing it as a negotiation mechanism for multiplexing multiple application protocols on the same secured endpoint.
+            **Why it matters:** ALPN is not specific to HTTP/2. It negotiates among multiple application protocols that can use the same secured endpoint.
 
             **Terms:** **ALPN** stands for **Application-Layer Protocol Negotiation**. It allows protocol selection to happen inside the TLS handshake instead of after the connection is already established.
 
             **Real-world usage:** In practice this matters on port 443 where a server may support HTTP/1.1, HTTP/2, or other protocols and wants to choose quickly without another round trip.
 
             **Options:**
-            - A (incorrect): Certificate protection is not the purpose of ALPN.
+            - A (incorrect): Advertising the target hostname is SNI's role; ALPN negotiates the application protocol.
             - B (correct): This is the central design goal of RFC 7301.
-            - C (incorrect): ALPN does not replace ports or DNS-based discovery.
+            - C (incorrect): ALPN completes protocol selection within the TLS hello exchange instead of adding a post-handshake negotiation.
 
             **Related:** The RFC was motivated in part by HTTP/2 over TLS, but the mechanism is general and can negotiate arbitrary application-layer protocols.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Track which endpoint advertises candidates and which endpoint returns one selected value.">
         <header><h4>Q2: In a normal ALPN exchange, what does the client send</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -131,7 +129,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Many implementation mistakes come from misunderstanding who proposes options and who makes the final selection.
+            **Why it matters:** The client proposes an ordered list, while the server makes the final selection from protocols it supports.
 
             **Terms:** In **ALPN**, the client advertises supported protocol identifiers in the **ClientHello**. The server selects one supported protocol from that list.
 
@@ -147,15 +145,15 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate the name of the intended server from the protocol to be spoken inside the secured connection.">
         <header><h4>Q3: Which statement best distinguishes ALPN from SNI</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. ALPN chooses the hostname, while SNI chooses the HTTP method</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Both are different names for the same TLS extension</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. ALPN identifies the target virtual host, while SNI selects the application protocol</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Both carry an application-protocol list, but one records client preference and the other server preference</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. SNI indicates which hostname the client is trying to reach, while ALPN negotiates which application protocol will run inside the TLS connection</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc7301-q3-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc7301-q3-caption">
             <figcaption id="rfc7301-q3-caption">The same ClientHello carries both signals, but one points to the host and the other points to the application protocol.</figcaption>
             <svg viewBox="0 0 720 180" role="img" aria-label="ClientHello branching to SNI for hostname selection and ALPN for application protocol selection">
               <rect class="flow-box" x="24" y="56" width="170" height="68" rx="12"></rect>
@@ -178,23 +176,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** ALPN and SNI are commonly mentioned together, so people often conflate routing by hostname with negotiating the protocol spoken after TLS comes up.
+            **Why it matters:** ALPN and SNI can appear in the same handshake, but hostname routing and application-protocol negotiation are distinct decisions.
 
             **Terms:** **SNI** identifies the target server name. **ALPN** identifies the application protocol to use within the TLS-protected connection.
 
             **Real-world usage:** This distinction matters in load balancers, TLS terminators, and certificate debugging where the hostname and protocol choice influence different parts of the stack.
 
             **Options:**
-            - A (incorrect): This mixes unrelated concepts.
-            - B (incorrect): They are separate extensions with different purposes.
-            - C (correct): This is the correct separation of responsibilities.
+            - A (incorrect): The responsibilities are reversed: SNI carries the server name, while ALPN negotiates the application protocol.
+            - B (incorrect): SNI does not carry an application-protocol preference list; it identifies the target server name.
+            - C (correct): It separates name-based virtual hosting from application-protocol selection on the TLS connection.
 
             **Related:** A server can use both pieces of information together, for example to route traffic and choose a certificate or protocol-specific backend behavior.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Check the required behavior when the advertised and supported protocol sets have an empty intersection.">
         <header><h4>Q4: If the server supports none of the ALPN protocols advertised by the client, what should happen according to RFC 7301</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -205,7 +203,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Operationally, this is the point where “TLS succeeded but the application did not” turns into an explicit handshake failure rather than a silent mismatch.
+            **Why it matters:** A failed protocol intersection becomes an explicit handshake failure instead of a completed TLS connection followed by an application mismatch.
 
             **Terms:** **no_application_protocol** is the alert used when there is no common application protocol between client and server.
 
@@ -221,7 +219,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Ask what the server learns early enough in the handshake to affect certificate or backend selection.">
         <header><h4>Q5: Why does RFC 7301 mention certificate selection as a design benefit of ALPN</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -232,7 +230,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** People often treat ALPN as a pure compatibility feature, but the RFC also frames it as a deployment tool that can influence certificate and backend choices.
+            **Why it matters:** ALPN can influence deployment decisions such as certificate selection and backend routing, not only protocol compatibility.
 
             **Terms:** **certificate selection** means the server may choose among possible certificates based on the negotiated application protocol. **routing behavior** can also differ by negotiated protocol.
 
@@ -248,7 +246,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2">
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Consider what an on-path observer can learn from each hello in different TLS versions, even before application data.">
         <header><h4>Q6: Which statements about ALPN visibility are generally true (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -260,7 +258,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** ALPN is easy to think of as “just a negotiation tool,” but the RFC explicitly discusses visibility and the risk of leaking protocol choice metadata.
+            **Why it matters:** The advertised and selected application protocols can expose metadata even though ALPN is a negotiation mechanism.
 
             **Terms:** An **externally visible marker** is something on-path systems may infer before application data is exchanged. ALPN protocol identifiers can become such markers depending on TLS version and deployment.
 
@@ -277,34 +275,34 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Treat the selected value as a connection contract rather than an advisory hint.">
         <header><h4>Q7: What does it mean that the protocol selected by ALPN is definitive for the connection</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. The server may advertise one protocol in ALPN and freely switch to another once application data starts</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. The selected protocol only applies until the first response header is sent</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. The chosen protocol binds the application behavior for that connection, and the server must not negotiate one protocol and then speak another</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. The value is advisory until the first application message selects the protocol again</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. The value applies only to TLS record handling, so intermediaries may reinterpret the application protocol</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. The value fixes the application protocol for the connection, so subsequent application data must follow it</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Engineers sometimes assume ALPN is an advisory hint. The RFC treats the server's selected protocol as binding for the connection.
+            **Why it matters:** The server's selected protocol is the definitive protocol for that connection, not an advisory hint.
 
             **Terms:** **definitive for the connection** means the selected application protocol is the one that governs application data exchange on that TLS connection.
 
             **Real-world usage:** This matters in reverse proxies and TLS terminators. If the front end reports `h2` but the backend logic speaks something else, failures become subtle and severe.
 
             **Options:**
-            - A (incorrect): That violates the point of explicit negotiation.
-            - B (incorrect): The selection is not limited to the first response.
-            - C (correct): This is the intended meaning.
+            - A (incorrect): A second implicit selection would reintroduce the ambiguity that ALPN resolves in the TLS handshake.
+            - B (incorrect): ALPN selects the application protocol for the connection; it is not merely a TLS record-layer label.
+            - C (correct): The ServerHello result determines what both endpoints are expected to speak on that connection.
 
             **Related:** Protocol negotiation is useful precisely because it reduces ambiguity about what both sides should speak after the handshake completes.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Decide whether the negotiated value belongs to the previous session state or to the current connection's handshake.">
         <header><h4>Q8: During session resumption, how should ALPN be treated according to RFC 7301</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -315,7 +313,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Resumption often causes incorrect mental models such as “the old session decides everything.” RFC 7301 explicitly says ALPN is a connection property, not a session property.
+            **Why it matters:** ALPN is a connection property. Resumption does not let the previous session's protocol selection replace negotiation in the current handshake.
 
             **Terms:** A **connection property** applies to the current handshake and connection instance. ALPN is negotiated per connection, even when resumption is used.
 
@@ -331,56 +329,52 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2">
-        <header><h4>Q9: A browser offers `h2` and `http/1.1`, but the TLS handshake succeeds and the site still behaves as plain HTTP/1.1. What is the most plausible ALPN explanation</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Distinguish a server that negotiated one offered value from a server that did not process the extension at all.">
+        <header><h4>Q9: A ClientHello offers `h2` and `http/1.1`. TLS completes, but the client reports that no ALPN value was negotiated. Which explanation is consistent</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q9" value="a"> A. SNI automatically forces HTTP/2, so the observed HTTP/1.1 behavior cannot involve ALPN</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. The server selected `http/1.1` from the client's list, which is still a valid successful negotiation result</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. ALPN requires the most modern protocol whenever it appears anywhere in the ClientHello list</label>
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. SNI selected `h2` but intentionally hid the negotiated ALPN result</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. The server did not process ALPN, so it returned no protocol selection</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. The server selected an unadvertised protocol that clients accept silently</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Real incidents often look like “TLS worked, but the wrong protocol was used.” That is usually a negotiation outcome or config mismatch, not evidence that ALPN failed to run.
+            **Why it matters:** A completed TLS handshake does not by itself prove that ALPN was negotiated. A peer that does not support or process the extension can complete TLS without returning an ALPN selection.
 
-            **Terms:** The client sends a **list** of acceptable protocols. The server selects one supported protocol. Success does not mean the most preferred client protocol was necessarily chosen.
+            **Terms:** A server that returns the ALPN extension selects exactly one protocol from the client's advertised list. A server that does not process the extension returns no ALPN selection.
 
-            **Real-world usage:** This is a standard investigation pattern when an origin, load balancer, or CDN unexpectedly serves HTTP/1.1 instead of HTTP/2.
+            **Real-world usage:** Diagnostic tools need to distinguish no ALPN selection from an explicit `http/1.1` selection because the two states can lead to similar application-level observations.
 
             **Options:**
-            - A (incorrect): SNI does not force HTTP/2.
-            - B (correct): A successful negotiation can still end on `http/1.1` if that is what the server chooses from the shared set.
-            - C (incorrect): ALPN does not require automatic selection of the newest protocol.
+            - A (incorrect): SNI carries the intended server name. It neither selects `h2` nor suppresses an ALPN result.
+            - B (correct): TLS extension compatibility permits a server that does not process ALPN to omit the response extension.
+            - C (incorrect): A server that returns ALPN must select exactly one protocol from the client's advertised list.
 
-            **Related:** Good debugging asks “what did the client offer, what did the server support, and what did the server choose,” rather than assuming success implies the fastest or newest protocol.
+            **Related:** Check the negotiated ALPN field directly instead of inferring it from the ClientHello offer or the resulting HTTP behavior.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3">
-        <header><h4>Q10: Which review comment shows the strongest ALPN understanding</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="First compute the common protocol set, then apply the selecting endpoint's preference order.">
+        <header><h4>Q10: A ClientHello advertises ALPN protocols `h2`, then `http/1.1`. The server supports both and prefers `http/1.1`, then `h2`. Which selection follows RFC 7301</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. We should review ALPN, SNI, certificate selection, and backend routing together, because they influence different layers of the same TLS connection setup</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Once SNI is configured correctly, ALPN no longer matters because the hostname already determines the protocol</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. If TLS succeeds, the application protocol is automatically trustworthy even if the negotiated value is not observed anywhere</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Select `h2` because the client placed it first in its advertised list</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Select `http/1.1` because it is the server's most-preferred common protocol</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Send `no_application_protocol` because the client and server preference orders differ</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** The end goal of learning RFC 7301 is to reason across configuration layers, not to memorize the extension type number.
-
-            **Terms:** **ALPN**, **SNI**, **certificate selection**, and **routing** solve different problems, but deployment failures often happen at their boundaries.
-
-            **Real-world usage:** This is the kind of high-value comment you want in ingress reviews, proxy configuration reviews, and TLS incident postmortems.
+            RFC 7301 Section 3.2 expects a server to maintain its own preference order. It should select its highest-preference protocol that it supports and that the client advertised.
 
             **Options:**
-            - A (correct): This is the most operationally mature framing.
-            - B (incorrect): SNI does not replace application-protocol negotiation.
-            - C (incorrect): TLS success alone does not prove the negotiated application protocol is the one you intended.
+            - A (incorrect): The client list communicates support and client preference, but RFC 7301 assigns the final selection to the server.
+            - B (correct): Both protocols are common, and `http/1.1` is first in the server's preference order.
+            - C (incorrect): The fatal alert applies when there is no common advertised protocol, not merely when the preference orders differ.
 
-            **Related:** Mature ALPN understanding means you can explain not only what the extension does, but also where the surrounding deployment can still go wrong.
+            **Related:** Once selected, the ServerHello ALPN value is definitive for the connection; the server must not later exchange application data using a different protocol.
           </div>
         </div>
       </article>
@@ -394,7 +388,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7301</strong> to “<em id="footer-goal">ALPN deployment literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

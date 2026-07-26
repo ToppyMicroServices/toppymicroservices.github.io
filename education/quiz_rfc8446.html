@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8446_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8446.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 8446",
       SKILL_SUBTITLE: "TLS 1.3",
-      GOAL_DESCRIPTION: "Understand TLS 1.3 handshake properties and where risks like 0-RTT replay appear",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: understand what TLS 1.3 guarantees and what it explicitly does not guarantee.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,30 +89,30 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Distinguish a long-term authentication key from the fresh shared secret established for one connection.">
         <header><h4>Q1: Which key exchange property is a baseline design goal in TLS 1.3</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Static RSA key exchange for speed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Plaintext application data to enable caching</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Forward secrecy via ephemeral key exchange</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Compatibility with static RSA key transport</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Reuse of one static Diffie-Hellman share across connections</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Forward secrecy from ephemeral key exchange</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             **Terms:** forward secrecy, ephemeral key exchange. Forward secrecy means compromising long-term keys later does not decrypt past sessions.
-            **Correct (C):** TLS 1.3 is built around ephemeral (EC)DHE and PSK modes that provide strong security properties.
+            **Correct (C):** TLS 1.3 removes static RSA and static Diffie-Hellman key exchange. Its public-key-based key exchanges use ephemeral (EC)DHE, so later compromise of a long-term authentication key does not reveal the past connection's shared secret.
             **Options:**
 
-            - A (incorrect): Static RSA key exchange is removed in TLS 1.3.
-            - B (incorrect): TLS is designed to protect confidentiality and integrity. Plaintext application data is contrary to its purpose.
-            - C (correct): Forward secrecy is a core property.
-            **Related:** Forward secrecy is especially important when traffic is recorded for later decryption attempts.
+            - A (incorrect): Static RSA key transport is removed in TLS 1.3.
+            - B (incorrect): Static Diffie-Hellman is removed, and reusing one static share would not provide the intended forward-secrecy property.
+            - C (correct): Fresh ephemeral Diffie-Hellman shares provide forward secrecy for public-key-based key exchange.
+            **Related:** A PSK-only exchange does not provide forward secrecy for application data. A PSK combined with (EC)DHE can provide it, so the selected PSK key-exchange mode matters.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Consider what can happen when application data is accepted before a fresh handshake has confirmed a unique connection.">
         <header><h4>Q2: What is the primary security risk of 0-RTT early data</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -132,18 +130,18 @@
             - A (correct): Replay is the main risk.
             - B (incorrect): Certificate expiration is unrelated to 0-RTT.
             - C (incorrect): This is backwards. 0-RTT has weaker properties in the replay dimension.
-            **Related:** A common policy is to accept 0-RTT only for idempotent operations.
+            **Related:** Accept early data only when repeated execution has no unacceptable effect, and apply replay defenses appropriate to the deployment. Idempotence is a useful starting property, but it does not by itself prove that every replay is safe.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Trace how TLS needs distinct secrets for handshake stages and for the two traffic directions.">
         <header><h4>Q3: TLS 1.3 derives keys through which general construction</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Base64 encoding of the shared secret</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. An HKDF-based key schedule</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Reusing a single session key for the entire connection lifetime</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Direct Base64 encoding of the shared secret</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. HKDF extract-and-expand derivation</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. One traffic key reused across every handshake stage</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
@@ -160,16 +158,16 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q4: After ServerHello, what happens to most handshake messages in TLS 1.3</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify the point where the peers have enough key-schedule state to protect the rest of the handshake.">
+        <header><h4>Q4: How are TLS 1.3 handshake messages sent after ServerHello protected</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. They remain plaintext for middlebox compatibility</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. They are compressed but not encrypted</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. They are encrypted using handshake traffic keys</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc8446-q4-caption">
-            <figcaption id="rfc8446-q4-caption">TLS 1.3 keeps the early handshake visible only until ServerHello establishes the next stage of secrets. After that point, most handshake messages are protected.</figcaption>
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc8446-q4-caption">
+            <figcaption id="rfc8446-q4-caption">TLS 1.3 keeps the early handshake visible through ServerHello. The key schedule then establishes traffic secrets that protect subsequent handshake messages.</figcaption>
             <svg viewBox="0 0 820 160" role="img" aria-label="ClientHello and ServerHello leading to handshake traffic keys that protect later handshake messages">
               <rect class="flow-box" x="20" y="44" width="150" height="72" rx="12"></rect>
               <text class="flow-text" x="95" y="66">ClientHello</text>
@@ -195,18 +193,18 @@
             **Explanation:**
 
             **Terms:** handshake traffic keys, encryption. TLS 1.3 encrypts much more of the handshake than earlier versions.
-            **Correct (C):** Once the endpoints have negotiated secrets, subsequent handshake messages are protected.
+            **Correct (C):** After ServerHello, the endpoints derive handshake traffic secrets and encrypt subsequent handshake messages with the corresponding traffic keys.
             **Options:**
 
             - A (incorrect): TLS 1.3 intentionally reduces plaintext handshake exposure.
             - B (incorrect): Compression is not the primary mechanism here.
-            - C (correct): Handshake messages are encrypted.
+            - C (correct): Handshake traffic keys protect the later handshake records.
             **Related:** Encrypted handshake improves privacy and reduces ossification pressure.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Separate transport-channel protections from application authorization and from early-data replay policy.">
         <header><h4>Q5: What does TLS provide to protect data in transit</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -229,7 +227,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^(ec)?dhe$" data-difficulty="L2">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^(ec)?dhe$" data-difficulty="L2" data-hint="Look for the ephemeral Diffie-Hellman family rather than a static key-transport mechanism or a PSK-only mode.">
         <header><h4>Q6: Name a common ephemeral key exchange used for forward secrecy in TLS 1.3</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type DHE or ECDHE" />
@@ -253,7 +251,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 8446</strong> to “<em id="footer-goal">TLS 1.3 literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

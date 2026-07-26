@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 6066（TLS Extensions）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 6066 ドリル: TLS拡張の目的と、SNIが何を可能にするかを整理する。" />
+  <meta name="description" content="RFC 6066 ドリル: TLS拡張の目的と, SNIが何を可能にするかを整理する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc6066_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 6066（TLS Extensions）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 6066 ドリル: TLS拡張の目的と、SNIが何を可能にするかを整理する。" />
+  <meta property="og:description" content="RFC 6066 ドリル: TLS拡張の目的と, SNIが何を可能にするかを整理する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc6066_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 6066（TLS Extensions）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 6066 ドリル: TLS拡張の目的と、SNIが何を可能にするかを整理する。" />
+  <meta name="twitter:description" content="RFC 6066 ドリル: TLS拡張の目的と, SNIが何を可能にするかを整理する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc6066.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6066_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6066.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 6066",
       SKILL_SUBTITLE: "TLS extensions",
-      GOAL_DESCRIPTION: "TLS拡張の目的と、SNIがデプロイとプライバシーに与える影響を説明できるようにする",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6066" target="_blank" rel="noopener noreferrer">RFC 6066: Transport Layer Security (TLS) Extensions</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: TLS拡張の役割と、SNIのデプロイ上の意味を押さえる。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,88 +89,74 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="extensionを持たないendpointも通常のhandshakeを完了できる形で, capabilityを追加する方法を考えてください.">
         <header><h4>Q1: TLS extensionの主な目的として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificateを不要にする</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate validationをTLS handshakeからapplication protocolへ移す</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. backward compatibleにoptional capabilityを追加する</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. negotiationを無効化する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 全peerが新capabilityをsupportしない限りhandshakeを失敗させる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** TLS extension を「機能が増える箱」くらいにしか捉えていないと, negotiation や backward compatibility の価値が見えません. 拡張設計の目的を押さえる最初の問題です.
 
             **用語:** **TLS extension** は, protocol version を増やさずに追加 capability を交渉する仕組みです. 古い実装が理解できない extension は無視できるように設計されることが重要です.
 
             **Correct (B):** これが最も近い説明です. 拡張を optional capability として交渉できるから, protocol 全体を壊さず進化させられます.
 
             **選択肢:**
-            - A (incorrect): extension は certificate を不要にする仕組みではありません.
+            - A (incorrect): certificate関連のextensionはありますが, validationをapplication protocolへ移すframeworkではありません.
             - B (correct): backward compatibility を保ちながら機能追加する, という本質を表しています.
-            - C (incorrect): negotiation を無効化するのではなく, 何を使えるかを明示的に交渉しやすくします.
+            - C (incorrect): optional extensionは, 全peerが新capabilityをsupportしなくても共存できるよう設計されます.
 
             **関連:** 拡張が増えるほど attack surface も増えます. だから negotiation の失敗時挙動や security considerations もセットで設計する必要があります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q2: virtual hostingで, hostnameに応じたcertificate選択を助けるextensionはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="別にrevocation listを取得するのではなく, TLS handshake中にcertificate statusを要求するextensionを探してください.">
+        <header><h4>Q2: OCSP responseなどのcertificate status情報をhandshake中に送るようserverへ要求できるRFC 6066 extensionはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. server_name</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. cookie</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. transfer_encoding</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. trusted_ca_keys</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. status_request</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. client_certificate_url</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** SNI を知らないと, 1 IP に複数 hostname を載せる modern な HTTPS 運用がなぜ成立するのか説明できません. virtual hosting と cert selection の接点を押さえる設問です.
-
-            **用語:** **SNI** は **Server Name Indication** です. extension 名としては **`server_name`** が使われ, client が接続したい hostname を handshake 中に示します.
-
-            **Correct (A):** `server_name` extension により, server はどの hostname 向けの接続かを早い段階で知り, 適切な certificate を選びやすくなります.
+            `status_request` extensionは, server certificateのstatus情報をTLS handshake内で配送するために使います. RFC 6066は対応する`CertificateStatus` handshake messageとOCSP response形式を定義しています.
 
             **選択肢:**
-            - A (correct): hostname 別 certificate を返すための extension なので正解です.
-            - B (incorrect): `cookie` は HTTP の state 管理であり, TLS handshake で certificate 選択を助けるものではありません.
-            - C (incorrect): `transfer_encoding` は HTTP message framing の話で, TLS extension 名ではありません.
-
-            **関連:** extension の通称が **SNI**, wire 上の extension 名が **`server_name`** という対応を区別して覚えると混乱しにくくなります.
+            - A (incorrect): `trusted_ca_keys`はclientが保持するCA root keyを示します.
+            - B (correct): `status_request`がcertificate status情報を要求するextensionです.
+            - C (incorrect): `client_certificate_url`はclient certificate chainを直接送る代わりにURLを提示するために使います.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q3: SNIについてよく議論されるprivacy tradeoffとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="許可されるname typeとwire表現を確認してください. IP literalとtrailing dotには明示的なruleがあります.">
+        <header><h4>Q3: RFC 6066のserver_name HostName encoding ruleに従う値はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. TLSのencryptionが使えなくなる</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. HTTP/1.1の挙動を強制する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. TLS versionとdeployment次第でhostnameが観測可能になり得る</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. textとしてencodeしたliteral IPv6 address</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. trailing dotなしでASCII encodeしたfully qualified DNS hostname</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. trailing dotで終わるUTF-8 DNS hostname</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** 「TLS だから hostname も全部隠れる」と思い込むと privacy review を誤ります. SNI は deployment を助ける一方で metadata を露出し得る, という tradeoff を理解する必要があります.
-
-            **用語:** **privacy tradeoff** とは, 運用上の利便性を得る代わりに観測可能になる情報がある, という意味です. SNI では接続先 hostname が metadata として見え得ます.
-
-            **Correct (C):** payload が暗号化されていても, TLS version や deployment 次第では hostname が観測され得ます. これが SNI でよく話題になる privacy 論点です.
+            RFC 6066は`HostName`を, clientが理解するfully qualified DNS hostnameのASCII byte stringとして定義し, trailing dotを認めません. internationalized nameはA-labelを使い, literal IPv4とIPv6 addressはこのfieldに入れられません.
 
             **選択肢:**
-            - A (incorrect): SNI があるから TLS encryption 自体が使えなくなるわけではありません.
-            - B (incorrect): SNI は HTTP/1.1 を強制する仕組みではありません. TLS と HTTP version は別に交渉されます.
-            - C (correct): metadata exposure の核心を述べています.
-
-            **関連:** 後年の ECH が注目されるのも, この hostname exposure を減らしたいからです.
+            - A (incorrect): literal IP addressは`HostName`から明示的に除外されています.
+            - B (correct): DNS nameとencodingの両constraintを満たします.
+            - C (incorrect): raw UTF-8でもtrailing dot付きでもありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="backward compatibility, 明示的なnegotiation rule, 追加機能固有のsecurity分析から評価してください.">
         <header><h4>Q4: extension negotiationがうまく設計されているときの性質はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -183,8 +167,6 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **問題を出した背景:** 拡張可能性は便利ですが, 設計が甘いと downgrade や interop failure を生みます. 「拡張できる」だけでなく, 安全に拡張できる条件を見極める問題です.
 
             **用語:** **unknown extension を無視できる** ことは backward compatibility に重要で, **required / optional の明確化** は failure 時の挙動を決め, **security considerations** は attack surface を明文化します.
 
@@ -201,47 +183,41 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
-        <header><h4>Q5: opsがSNIを重要視する実務上の理由として近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="必要なのは要求されたhostを識別するfieldです. protocol選択とresumption stateは別の問いに答えます.">
+        <header><h4>Q5: 1つのIPアドレスで2つのホスト名を提供し, ホスト名ごとに異なる証明書を使うTLSサーバがある. HTTPリクエストを受け取る前に証明書を選ぶため, ClientHelloのどの情報を使えるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. TCPが不要になる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. 1 IPで複数hostnameを扱い, hostnameごとに正しいcertを返しやすい</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. cookieが不要になる</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. ALPNが示すアプリケーションプロトコル</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. SNIのserver_nameが示すホスト名</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. session_ticketが示すセッション再開情報</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** ops が SNI を気にする理由は protocol 好きだからではなく, 1 IP で複数 service を安全に載せたいからです. deployment 観点での価値を言葉にする問題です.
+            **用語:** SNIは, サーバが証明書を送る前に, ClientHelloの **server_name** 拡張でクライアントが要求するDNSホスト名を伝えます.
 
-            **用語:** **virtual hosting** は 1 つの server / IP で複数 hostname を扱う構成です. HTTPS では, どの hostname 向けかを早く知れないと正しい certificate を返しにくくなります.
-
-            **Correct (B):** SNI があると, 1 IP で複数 hostname を扱いながら hostname ごとに適切な certificate を返しやすくなります. これが ops 上の大きな価値です.
+            **Correct (B):** RFC 6066では, サーバがserver_nameの情報を, クライアントへ返す適切な証明書の選択に利用できます.
 
             **選択肢:**
-            - A (incorrect): SNI があっても TCP は必要です. transport を消す話ではありません.
-            - B (correct): multi-tenant TLS 運用の実利を正しく言っています.
-            - C (incorrect): cookie は HTTP state の話であり, SNI の役割とは別です.
+            - A (incorrect): ALPNはHTTP/2などのアプリケーションプロトコルを識別します. 要求されたホスト名を示す情報ではありません.
+            - B (correct): SNIのserver_nameなら, 証明書を選ぶ時点で仮想ホストを区別できます.
+            - C (incorrect): session ticketはセッション再開用の状態を運びます. 新しい仮想ホスト接続でホスト名を選ぶ情報ではありません.
 
-            **関連:** ingress, CDN, load balancer の certificate 配置を考えるとき, SNI は「どの証明書を返すか」を決める前提情報になります.
+            **関連:** この仕組みにより, 1つのIPアドレスからホスト名ごとに異なる証明書を返す, 名前ベースのHTTPS仮想ホスティングが可能になります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^server_name$" data-difficulty="L2">
-        <header><h4>Q6: hostnameを運ぶTLS extension名は何 (underscore込みで1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^max_fragment_length$" data-difficulty="L2" data-hint="TLS plaintext fragmentの上限を小さくnegotiationするextension type名を使ってください.">
+        <header><h4>Q6: TLS plaintext fragmentの最大長を小さくnegotiationするRFC 6066 extensionは何 (token 1つ)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
 
-            **問題を出した背景:** 通称の **SNI** と wire 上の extension 名 **`server_name`** を混同しやすいので, 実装や debug で困らないように名前を対応付ける問題です.
+            **Correct:** **max_fragment_length**.
 
-            **用語:** **`server_name`** は TLS extension 名で, client が接続先 hostname を示すために使います. 文脈によっては, この仕組み全体を **SNI** と呼びます.
-
-            **Correct:** **`server_name`**.
-
-            **Why this matters:** config や packet trace では通称ではなく extension 名が出ることがあります. そのとき `server_name = SNI` と結び付くと読みやすくなります.
+            constrained clientはRFC 6066が定義するsizeの1つをこのextensionでofferできます. serverは同じrequested valueをechoしてacceptし, 異なる値や許可されない値はspecified ruleに従って`illegal_parameter` failureになります.
           </div>
         </div>
       </article>
@@ -255,7 +231,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 6066</strong> to “<em id="footer-goal">TLS extension literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

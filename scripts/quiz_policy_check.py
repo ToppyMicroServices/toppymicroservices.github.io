@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """Quiz authoring policy checker.
 
-This checker supports two modes:
-- authored: checks what is authored in HTML only.
-- enriched: simulates the runtime template enrichment (adds Context/Real-world/Terms/Options/Related when missing).
-
-Note: It still does NOT execute JavaScript; enrichment is a best-effort approximation.
+The checker evaluates the explanation and optional hint authored in each quiz
+HTML file. Runtime-generated text must not be used to make incomplete content
+pass.
 
 Exit code:
   0: no failures
@@ -15,7 +13,6 @@ Examples:
   python3 scripts/quiz_policy_check.py
   python3 scripts/quiz_policy_check.py --format markdown > quiz_policy_report.md
   python3 scripts/quiz_policy_check.py --paths education/quiz_rfc9110_ja.html --strict
-    python3 scripts/quiz_policy_check.py --mode authored
 """
 
 from __future__ import annotations
@@ -24,8 +21,11 @@ import argparse
 import html
 import re
 import sys
+from collections import Counter
 from dataclasses import dataclass
+from difflib import SequenceMatcher
 from pathlib import Path
+from statistics import median
 from typing import Iterable, Sequence
 
 
@@ -42,8 +42,15 @@ CHOICE_RE = re.compile(
 )
 DATA_TYPE_RE = re.compile(r"\bdata-type=\"(?P<t>[^\"]+)\"", re.IGNORECASE)
 DATA_ID_RE = re.compile(r"\bdata-id=\"(?P<id>[^\"]+)\"", re.IGNORECASE)
-DATA_ANSWER_RE = re.compile(r"\bdata-answer=\"(?P<a>[^\"]*)\"", re.IGNORECASE)
-H4_RE = re.compile(r"<h4\b[^>]*>(?P<t>[\s\S]*?)</h4>", re.IGNORECASE)
+DATA_HINT_RE = re.compile(r"\bdata-hint=\"(?P<hint>[^\"]*)\"", re.IGNORECASE)
+DATA_ANSWER_RE = re.compile(r"\bdata-answer=\"(?P<answer>[^\"]*)\"", re.IGNORECASE)
+H4_RE = re.compile(r"<h4\b[^>]*>(?P<text>[\s\S]*?)</h4>", re.IGNORECASE)
+CHOICE_CONTENT_RE = re.compile(
+    r"<label\b[^>]*class=\"[^\"]*\bchoice\b[^\"]*\"[^>]*>\s*"
+    r"<input\b(?=[^>]*\bvalue=\"(?P<value>[a-z])\")[^>]*>\s*"
+    r"(?P<text>[\s\S]*?)</label>",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -118,148 +125,198 @@ def _is_ja_file(path: Path, text: str) -> bool:
     return bool(m and m.group(1).lower().startswith("ja"))
 
 
-def _find_question_articles(text: str) -> list[tuple[str, str, str, str]]:
-    out: list[tuple[str, str, str, str]] = []
+def _find_question_articles(text: str) -> list[tuple[str, str, str, str, str]]:
+    out: list[tuple[str, str, str, str, str]] = []
     for m in ARTICLE_RE.finditer(text):
         attrs = m.group("attrs") or ""
         body = m.group("body") or ""
         qid = DATA_ID_RE.search(attrs)
         qtype = DATA_TYPE_RE.search(attrs)
-        ans = DATA_ANSWER_RE.search(attrs)
+        hint = DATA_HINT_RE.search(attrs)
+        answer = DATA_ANSWER_RE.search(attrs)
         qid_s = qid.group("id") if qid else "?"
         qtype_s = qtype.group("t") if qtype else "?"
-        ans_s = ans.group("a") if ans else ""
+        hint_s = html.unescape(hint.group("hint")).strip() if hint else ""
+        answer_s = html.unescape(answer.group("answer")).strip() if answer else ""
         if 'class="q ' not in attrs and 'class="q' not in attrs:
             continue
-        out.append((qid_s, qtype_s, ans_s, body))
+        out.append((qid_s, qtype_s, hint_s, answer_s, body))
     return out
 
 
-def _infer_terms(blob: str) -> list[str]:
-    b = (blob or "").strip()
-    if not b:
+def _check_hint(hint_text: str) -> list[CheckResult]:
+    if not hint_text:
         return []
-    terms: list[str] = []
 
-    def _add_all(matches: Iterable[str]) -> None:
-        for m in matches:
-            if not m:
-                continue
-            if m not in terms:
-                terms.append(m)
+    answer_leak_patterns = (
+        r"\b(?:correct|incorrect|right answer|wrong answer)\b",
+        r"\b(?:the\s+)?answer\s+(?:is|:)",
+        r"\b(?:option|choice)\s+[A-D]\b",
+        r"(?:正解|不正解|正答|誤答)",
+        r"答え\s*(?:は|:|：)",
+        r"選択肢\s*[A-DＡ-Ｄ]",
+    )
+    if any(re.search(pattern, hint_text, flags=re.IGNORECASE) for pattern in answer_leak_patterns):
+        return [
+            CheckResult(
+                False,
+                "FAIL_HINT_REVEALS_ANSWER",
+                "Hint names correctness, the answer, or an option label",
+            )
+        ]
+    return []
 
-    _add_all(re.findall(r"\bRFC\s*\d{3,5}\b", b, flags=re.IGNORECASE))
-    _add_all(re.findall(r"\b[A-Za-z][A-Za-z0-9]*-[A-Za-z0-9-]+\b", b))
-    _add_all(re.findall(r"\b[A-Z]{2,10}\b", b))
-    _add_all(re.findall(r"\bK\d{1,2}\b", b))
-    return terms[:10]
+
+def _choice_texts(body: str) -> dict[str, str]:
+    choices: dict[str, str] = {}
+    for match in CHOICE_CONTENT_RE.finditer(body):
+        value = match.group("value").lower()
+        text = _strip_tags_preserve_breaks(match.group("text"))
+        text = re.sub(r"^\s*[A-Z]\s*[.．:：]\s*", "", text, flags=re.IGNORECASE)
+        choices[value] = re.sub(r"\s+", " ", text).strip()
+    return choices
 
 
-def _enrich_explain_html(
-    explain_html: str,
+def _compact_comparison_text(text: str) -> str:
+    plain = re.sub(r"^\s*Q\d+\s*:\s*", "", text, flags=re.IGNORECASE)
+    return re.sub(
+        r"[^0-9A-Za-z\u3040-\u30ff\u3400-\u9fff]+",
+        "",
+        plain,
+    ).lower()
+
+
+def _check_question_shape(
     *,
+    body: str,
     is_ja: bool,
     qtype: str,
-    question_title: str,
-    choice_letters: Sequence[str],
-    correct_letters: set[str],
-) -> str:
-    raw = str(explain_html or "").strip()
-    if not raw:
-        return raw
+    answer_text: str,
+    hint_text: str,
+) -> list[CheckResult]:
+    results: list[CheckResult] = []
+    choices = _choice_texts(body)
+    answers = {
+        value.strip().lower()
+        for value in answer_text.split(",")
+        if value.strip()
+    }
 
-    explain_text = _strip_tags_preserve_breaks(raw)
-
-    # Ensure an Explanation/解説 lead (also guarantees <strong> is present).
-    if not re.search(r"\b(Explanation|解説)\b", explain_text, flags=re.IGNORECASE):
-        lead = "<strong>解説:</strong> " if is_ja else "<strong>Explanation:</strong> "
-        raw = lead + raw
-        explain_text = _strip_tags_preserve_breaks(raw)
-
-    # Context / why chosen
-    if not re.search(
-        r"問題を出した背景|Context\s*\(why chosen\)|why\s+this\s+question",
-        explain_text,
-        flags=re.IGNORECASE,
-    ):
-        line = (
-            "<strong>問題を出した背景:</strong> この問題は, 用語/定義を取り違えやすいポイントを確認するために選んでいます."
-            if is_ja
-            else "<strong>Context (why chosen):</strong> This question is chosen because this term/definition is easy to mix up when reading real materials."
-        )
-        raw = line + "<br><br>" + raw
-        explain_text = _strip_tags_preserve_breaks(raw)
-
-    # Real-world usage
-    if is_ja:
-        has_real = re.search(r"(現場|実運用|運用|実務|実際|インシデント|障害|レビュー|設計|デプロイ)", explain_text)
-        heading = "<strong>実務での機会:</strong>"
-        sentence = "設計レビューや資料読解で, この用語を正確に言い換えられると判断ミスを減らせます."
-    else:
-        has_real = re.search(
-            r"(in\s+practice|real-?world|production|deploy|operator|incident|review|design)",
-            explain_text,
-            flags=re.IGNORECASE,
-        )
-        heading = "<strong>Real-world usage:</strong>"
-        sentence = "In practice this shows up in reviews and troubleshooting; being able to restate the definition precisely prevents mistakes."
-
-    if not has_real and not re.search(r"<strong>(?:Real-world usage|実務での機会):</strong>", raw, flags=re.IGNORECASE):
-        raw = heading + " " + sentence + "<br><br>" + raw
-        explain_text = _strip_tags_preserve_breaks(raw)
-
-    # Terms
-    if not re.search(r"\b(用語|Terms)\b", explain_text, flags=re.IGNORECASE):
-        terms = _infer_terms(question_title)
-        if terms:
-            bold_terms = ", ".join(f"<strong>{html.escape(t)}</strong>" for t in terms)
-            line = ("<strong>用語:</strong> " if is_ja else "<strong>Terms:</strong> ") + bold_terms
-        else:
-            line = "<strong>用語:</strong> (問題文のキーワード)" if is_ja else "<strong>Terms:</strong> (keywords from the prompt)"
-        raw = raw + "<br><br>" + line
-        explain_text = _strip_tags_preserve_breaks(raw)
-
-    # Options (MC/MS): ensure every choice letter is covered.
-    if qtype.lower() in {"mc", "ms"} and len(choice_letters) >= 2:
-        has_options_heading = bool(re.search(r"<strong>(?:Options|選択肢):</strong>", raw, flags=re.IGNORECASE))
-
-        explained: set[str] = set()
-        for letter in choice_letters:
-            pat = re.compile(
-                r"(^|\n)\s*(?:[-*]\s*)?(?:Option\s+)?" + re.escape(letter) + r"\b",
-                re.IGNORECASE,
+    question_markup = EXPLAIN_RE.sub("", body)
+    visible_question_text = _strip_tags_preserve_breaks(question_markup) + "\n" + hint_text
+    if is_ja and ("。" in visible_question_text or "、" in visible_question_text):
+        results.append(
+            CheckResult(
+                False,
+                "WARN_JA_PUNCTUATION",
+                "Question or hint uses Japanese punctuation; project quiz copy uses '.' and ','",
             )
-            if pat.search(explain_text):
-                explained.add(letter.upper())
+        )
+    if is_ja and "意味論" in visible_question_text:
+        results.append(
+            CheckResult(
+                False,
+                "WARN_JA_SEMANTICS_WORDING",
+                "Question or hint contains '意味論'; prefer a more specific description of the rule or meaning",
+            )
+        )
 
-        missing = [l.upper() for l in choice_letters if l.upper() not in explained]
-        if missing:
-            def _opt_line(letter: str) -> str:
-                is_correct = letter.upper() in correct_letters
-                status = "correct" if is_correct else "incorrect"
-                if is_ja:
-                    comment = "定義/要件に合致します." if is_correct else "別の概念/条件を指しています."
-                else:
-                    comment = "This matches the definition/requirement." if is_correct else "This describes a different concept/condition."
-                return f"- {letter.upper()} ({status}): {comment}"
+    if qtype.lower() == "ms" and len(choices) >= 2 and answers == set(choices):
+        results.append(
+            CheckResult(
+                False,
+                "FAIL_MULTI_SELECT_ALL_CORRECT",
+                "Every Multi-Select option is correct, so selecting all requires no discrimination",
+            )
+        )
 
-            if not has_options_heading:
-                heading = "<strong>選択肢:</strong>" if is_ja else "<strong>Options:</strong>"
-                raw = raw + "<br><br>" + heading
-            raw = raw + "<br>" + "<br>".join([_opt_line(m) for m in missing])
-            explain_text = _strip_tags_preserve_breaks(raw)
+    compact_hint = _compact_comparison_text(hint_text)
+    leaked_options: list[str] = []
+    for value in sorted(answers):
+        compact_option = _compact_comparison_text(choices.get(value, ""))
+        if 4 <= len(compact_option) <= 40 and compact_option in compact_hint:
+            leaked_options.append(value.upper())
+    if leaked_options:
+        results.append(
+            CheckResult(
+                False,
+                "FAIL_HINT_CONTAINS_CORRECT_OPTION",
+                "Hint contains the full text of correct option(s): "
+                + ", ".join(leaked_options),
+            )
+        )
 
-    # Related
-    if not re.search(r"\b(関連|Related|Topic|Topics)\b", explain_text, flags=re.IGNORECASE):
-        if is_ja:
-            raw = raw + "<br><br><strong>関連:</strong> Scope / チートシートを見直し, 問題文を自分の言葉で言い換えてください."
-        else:
-            raw = raw + "<br><br><strong>Related:</strong> Re-check the scope/cheat sheet and restate the prompt in your own words."
+    if qtype.lower() != "mc" or len(answers) != 1:
+        return results
 
-    if is_ja:
-        raw = raw.replace("、", ",").replace("。", ".")
+    correct_value = next(iter(answers))
+    correct_text = choices.get(correct_value, "")
+    correct_compact = _compact_comparison_text(correct_text)
+    heading = H4_RE.search(body)
+    stem_text = _strip_tags_preserve_breaks(heading.group("text")) if heading else ""
+    stem_compact = _compact_comparison_text(stem_text)
 
-    return raw
+    if len(correct_compact) >= 24 and stem_compact:
+        similarity = SequenceMatcher(None, stem_compact, correct_compact).ratio()
+        if correct_compact in stem_compact or similarity >= 0.56:
+            results.append(
+                CheckResult(
+                    False,
+                    "WARN_CORRECT_OPTION_ECHOES_STEM",
+                    "Correct option substantially restates the question stem",
+                )
+            )
+
+    wrong_lengths = [
+        len(_compact_comparison_text(text))
+        for value, text in choices.items()
+        if value != correct_value
+    ]
+    if wrong_lengths:
+        correct_length = len(correct_compact)
+        typical_wrong_length = median(wrong_lengths)
+        if (
+            correct_length >= typical_wrong_length * 2.1
+            and correct_length - typical_wrong_length >= 20
+        ):
+            results.append(
+                CheckResult(
+                    False,
+                    "WARN_CORRECT_OPTION_LENGTH_CUE",
+                    "Correct option is much longer than the typical distractor",
+                )
+            )
+
+    return results
+
+
+def _option_reason(explain_text: str, letter: str) -> str | None:
+    pattern = re.compile(
+        r"(?im)^\s*(?:[-*]\s*)?(?:Option\s+)?"
+        + re.escape(letter)
+        + r"\s*(?:\([^)\n]+\))?\s*[:：]\s*(?P<reason>[^\n]+)"
+    )
+    match = pattern.search(explain_text)
+    return match.group("reason").strip() if match else None
+
+
+def _is_generic_option_reason(reason: str) -> bool:
+    plain = re.sub(r"[*_`]+", "", reason)
+    plain = re.sub(r"\s+", " ", plain).strip()
+    compact = re.sub(r"[\s.!?。！？、,]+$", "", plain).lower()
+
+    if len(re.sub(r"[^0-9A-Za-z\u3040-\u30ff\u3400-\u9fff]+", "", plain)) < 8:
+        return True
+
+    generic_patterns = (
+        r"(?:this|it)?\s*(?:is\s*)?(?:the\s*)?(?:correct|incorrect|right|wrong)(?:\s+(?:answer|choice|option))?",
+        r"(?:this\s+)?(?:matches|does not match)\s+(?:the\s+)?(?:definition|requirement|specification)(?:\s*/\s*(?:definition|requirement|specification))*",
+        r"(?:this\s+)?(?:describes|refers to)\s+(?:a\s+)?(?:different|another)\s+(?:concept|condition)",
+        r"(?:これ|この選択肢)?(?:が|は)?(?:正解|不正解|正しい|誤り|間違い)(?:です|である)?",
+        r"(?:定義|要件)(?:\s*/\s*(?:定義|要件))?に合致(?:します|する)?",
+        r"別の(?:概念|条件)(?:\s*/\s*(?:概念|条件))?を指して(?:います|いる)?",
+    )
+    return any(re.fullmatch(pattern, compact, flags=re.IGNORECASE) for pattern in generic_patterns)
 
 
 def _check_explain_block(explain_html: str, *, is_ja: bool, qtype: str, choice_letters: Sequence[str]) -> list[CheckResult]:
@@ -281,47 +338,31 @@ def _check_explain_block(explain_html: str, *, is_ja: bool, qtype: str, choice_l
             )
         )
 
-    # Context
-    if not re.search(r"問題を出した背景|Context\s*\(why chosen\)|why\s+this\s+question", explain_text, flags=re.IGNORECASE):
-        results.append(CheckResult(False, "FAIL_NO_CONTEXT", "Missing context / why-chosen section"))
-
-    # Terms / glossary
-    if not re.search(r"\b(用語|Terms)\b", explain_text, flags=re.IGNORECASE):
-        results.append(CheckResult(False, "FAIL_NO_TERMS", "Missing Terms/用語 section"))
-
-    # Related / topics
-    if not re.search(r"\b(関連|Related|Topic|Topics)\b", explain_text, flags=re.IGNORECASE):
-        results.append(CheckResult(False, "FAIL_NO_RELATED", "Missing Related/関連/Topic section"))
-
-    # Bold keywords
-    if "<strong>" not in explain_html and "**" not in explain_html:
-        results.append(CheckResult(False, "FAIL_NO_BOLD", "No emphasized keywords (expected **bold** or <strong>)"))
-
-    # Real-world usage hint
-    if is_ja:
-        if not re.search(r"(現場|実運用|運用|実務|実際|インシデント|障害|レビュー|設計|デプロイ)", explain_text):
-            results.append(CheckResult(False, "FAIL_NO_REAL_WORLD", "Missing real-world usage/scenario hint"))
-    else:
-        if not re.search(r"(in\s+practice|real-?world|production|deploy|operator|incident|review|design)", explain_text, flags=re.IGNORECASE):
-            results.append(CheckResult(False, "FAIL_NO_REAL_WORLD", "Missing real-world usage/scenario hint"))
-
     # Option-by-option
     if qtype.lower() in {"mc", "ms"} and len(choice_letters) >= 2:
         missing: list[str] = []
+        generic: list[str] = []
         for letter in choice_letters:
-            # looks for lines like "- A (incorrect):" or "A (correct):" or "A:".
-            pat = re.compile(
-                r"(^|\n)\s*(?:[-*]\s*)?(?:Option\s+)?" + re.escape(letter) + r"\b",
-                re.IGNORECASE,
-            )
-            if not pat.search(explain_text):
+            reason = _option_reason(explain_text, letter)
+            if reason is None:
                 missing.append(letter)
+            elif _is_generic_option_reason(reason):
+                generic.append(letter)
         if missing:
             results.append(
                 CheckResult(
                     False,
                     "FAIL_NO_OPTION_EXPLAIN",
                     "Missing per-option explanation for: " + ", ".join(missing),
+                )
+            )
+        if generic:
+            results.append(
+                CheckResult(
+                    False,
+                    "FAIL_GENERIC_OPTION_EXPLAIN",
+                    "Per-option explanation is only a generic correctness statement for: "
+                    + ", ".join(generic),
                 )
             )
 
@@ -347,72 +388,63 @@ def _check_explain_block(explain_html: str, *, is_ja: bool, qtype: str, choice_l
     return results
 
 
-def _check_file_level(text: str, *, is_ja: bool, mode: str) -> list[CheckResult]:
-    results: list[CheckResult] = []
-    if mode != "authored":
-        return results
-    if is_ja and ("。" in text or "、" in text):
-        results.append(
-            CheckResult(
-                False,
-                "WARN_JA_PUNCTUATION_FILE",
-                "File contains Japanese punctuation (。/、). Policy prefers '.' and ','.",
-            )
-        )
-    if is_ja and "意味論" in text:
-        results.append(
-            CheckResult(
-                False,
-                "WARN_JA_SEMANTICS_WORDING_FILE",
-                "File contains '意味論'. Consider 'セマンティクス(意味/ルール)' or '意味'.",
-            )
-        )
-    return results
+def _check_file_level(text: str, *, is_ja: bool) -> list[CheckResult]:
+    # File metadata and comments can follow normal Japanese typography. Wording
+    # rules are applied to the authored question, hint, and explanation content.
+    return []
 
 
-def check_file(path: Path, *, mode: str) -> FileReport:
+def check_file(path: Path) -> FileReport:
     text = path.read_text(encoding="utf-8")
     is_quiz = _is_quiz_html(text)
     is_ja = _is_ja_file(path, text)
-    file_results = _check_file_level(text, is_ja=is_ja, mode=mode)
+    file_results = _check_file_level(text, is_ja=is_ja)
     if not is_quiz:
         return FileReport(path=path, is_quiz=False, is_ja=is_ja, questions=tuple(), file_results=tuple(file_results))
 
+    articles = _find_question_articles(text)
+    mc_answers = [
+        answer_text.lower()
+        for _, qtype, _, answer_text, _ in articles
+        if qtype.lower() == "mc" and re.fullmatch(r"[a-z]", answer_text, flags=re.IGNORECASE)
+    ]
+    if len(mc_answers) >= 6:
+        answer_counts = Counter(mc_answers)
+        most_common_count = answer_counts.most_common(1)[0][1]
+        if most_common_count / len(mc_answers) >= 0.70:
+            file_results.append(
+                CheckResult(
+                    False,
+                    "WARN_ANSWER_POSITION_BIAS",
+                    "At least 70% of Multiple Choice answers use the same option position",
+                )
+            )
+
     questions: list[QuestionReport] = []
-    for qid, qtype, ans_s, body in _find_question_articles(text):
+    for qid, qtype, hint_text, answer_text, body in articles:
+        question_results = _check_hint(hint_text)
+        question_results += _check_question_shape(
+            body=body,
+            is_ja=is_ja,
+            qtype=qtype,
+            answer_text=answer_text,
+            hint_text=hint_text,
+        )
         explain_m = EXPLAIN_RE.search(body)
         if not explain_m:
             questions.append(
                 QuestionReport(
                     qid=qid,
                     qtype=qtype,
-                    results=(CheckResult(False, "FAIL_NO_EXPLAIN", "Missing .explain block"),),
+                    results=tuple(question_results)
+                    + (CheckResult(False, "FAIL_NO_EXPLAIN", "Missing .explain block"),),
                 )
             )
             continue
 
         explain_html = explain_m.group("body") or ""
-        h4_m = H4_RE.search(body)
-        question_title = _strip_tags_preserve_breaks(h4_m.group("t")) if h4_m else ""
         choice_letters = [m.group("label").upper() for m in CHOICE_RE.finditer(body)]
-
-        correct_letters: set[str] = set()
-        if ans_s:
-            for v in ans_s.split(','):
-                vv = v.strip().upper()
-                if vv:
-                    correct_letters.add(vv)
-
-        if mode == "enriched":
-            explain_html = _enrich_explain_html(
-                explain_html,
-                is_ja=is_ja,
-                qtype=qtype,
-                question_title=question_title,
-                choice_letters=choice_letters,
-                correct_letters=correct_letters,
-            )
-        results = _check_explain_block(
+        results = question_results + _check_explain_block(
             explain_html,
             is_ja=is_ja,
             qtype=qtype,
@@ -500,8 +532,8 @@ def render_markdown(reports: Sequence[FileReport], *, strict: bool) -> tuple[str
 
     lines.append("# Quiz policy check report")
     lines.append("")
-    lines.append("This is a policy check against quiz explanations.")
-    lines.append("In `--mode enriched`, it simulates the runtime enrichment (best-effort, no JS execution).")
+    lines.append("This checks the explanations and optional hints authored in the quiz HTML files.")
+    lines.append("Runtime-generated text is not considered.")
     lines.append("")
 
     def _summarize(fr: FileReport) -> str:
@@ -550,13 +582,6 @@ def main(argv: Sequence[str]) -> int:
         help="Treat warnings as failures.",
     )
 
-    parser.add_argument(
-        "--mode",
-        choices=["authored", "enriched"],
-        default="enriched",
-        help="Check mode: authored (HTML only) or enriched (simulate runtime enrichment).",
-    )
-
     args = parser.parse_args(argv)
 
     repo_root = Path(__file__).resolve().parents[1]
@@ -574,7 +599,7 @@ def main(argv: Sequence[str]) -> int:
 
     paths = sorted({p for p in paths if p.suffix.lower() == ".html"})
 
-    reports = [check_file(p, mode=args.mode) for p in paths]
+    reports = [check_file(p) for p in paths]
 
     if args.format == "markdown":
         out, code = render_markdown(reports, strict=args.strict)

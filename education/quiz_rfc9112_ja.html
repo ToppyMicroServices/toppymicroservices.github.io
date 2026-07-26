@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 9112（HTTP/1.1）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 9112 ドリル: HTTP/1.1のメッセージ構文、フレーミング、コネクション管理を理解する。" />
+  <meta name="description" content="RFC 9112 ドリル: HTTP/1.1のメッセージ構文, フレーミング, コネクション管理を理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9112_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 9112（HTTP/1.1）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 9112 ドリル: HTTP/1.1のメッセージ構文、フレーミング、コネクション管理を理解する。" />
+  <meta property="og:description" content="RFC 9112 ドリル: HTTP/1.1のメッセージ構文, フレーミング, コネクション管理を理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9112_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 9112（HTTP/1.1）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 9112 ドリル: HTTP/1.1のメッセージ構文、フレーミング、コネクション管理を理解する。" />
+  <meta name="twitter:description" content="RFC 9112 ドリル: HTTP/1.1のメッセージ構文, フレーミング, コネクション管理を理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9112.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9112_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9112.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9112",
       SKILL_SUBTITLE: "HTTP/1.1",
-      GOAL_DESCRIPTION: "HTTP/1.1で正しくメッセージをフレーミングし、コネクションを安全に扱う",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9112" target="_blank" rel="noopener noreferrer">RFC 9112: HTTP/1.1</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: フレーミングやhop-by-hopヘッダー周りの実装バグを避ける。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,16 +89,16 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
-        <header><h4>Q1: HTTP/1.1でheader sectionの終わりを示すのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="1本のfield lineを終える行末と, field lineがもうないことを示すdelimiterを分けてください.">
+        <header><h4>Q1: HTTP/1.1のmessage grammarでheader sectionの終わりを示すのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Content-Length headerの出現</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. LFだけの改行</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CRLFだけの空行</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 最後のnon-empty field lineを終えるCRLF</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 最後のfield lineの後に現れる, CRLFだけの空行</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9112-ja-q1-caption">
-            <figcaption id="rfc9112-ja-q1-caption">RFC 9112 は, HTTP/1.1 message をどう区切るかの文書です. まず start-line, header section, 空行, body の境界を目で追えるようになると, framing の議論がかなり読みやすくなります.</figcaption>
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9112-ja-q1-caption">
+            <figcaption id="rfc9112-ja-q1-caption">HTTP/1.1 messageはstart-line, header section, 空行, optional bodyの順で構成され, 空行がheader sectionとbodyの境界になります.</figcaption>
             <svg viewBox="0 0 760 220" role="img" aria-label="HTTP 1.1 の start line header empty line body の区切り図">
               <rect class="flow-box" x="210" y="18" width="340" height="44" rx="12"></rect>
               <text class="flow-text" x="380" y="45">start-line</text>
@@ -121,7 +119,7 @@
 
             **Terms:** header section, empty line, CRLF. HTTP/1.1では, headerの終端とbodyの開始は空行で区切られる.
 
-            **RFCを読むときの見方:** RFC 9112 では, まず「どこで header section が終わるか」を固定してから, 次に body 長の決め方へ進みます. 境界が曖昧だと, 同じ bytes を見ても proxy と origin で解釈がずれてしまいます.
+            **Framing上の意味:** header sectionの終端が曖昧だと, 同じbyte列をproxyとoriginが異なるmessageとして解釈し, request smugglingにつながり得ます.
 
             **Correct (C):** 最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了します. ここを基準に body の開始位置が決まるので, line ending の扱いは単なる書式ではなく framing そのものです.
 
@@ -129,7 +127,7 @@
 
             - A (incorrect): Content-Lengthはbodyの長さのヒントで, header sectionの終端ではない.
 
-            - B (incorrect): HTTP/1.1はCRLFを行終端として定義している. LF-onlyは互換性や安全性の問題になり得る.
+            - B (incorrect): そのCRLFは1本のfield lineを終えるだけです. sectionの終端には空行を表すもう1つのCRLFが必要です.
 
             - C (correct): 空行が区切りになる.
             **Related:** 終端解釈のズレはrequest smugglingの原因になり得ます. だから RFC 9112 は, 些細に見える改行規則をかなり丁寧に定義しています.
@@ -137,55 +135,55 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q2: HTTP/1.1受信者がmessage body長を決定する方法として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="bodyを持てるresponseにchunked codingも明示的なlengthもない場合を, message body lengthの優先規則へ当てはめてください.">
+        <header><h4>Q2: serverがGETに対してTransfer-EncodingもContent-Lengthもない200 responseを返し, bodyのoctetを送信してからconnectionを閉じた. message body長はどう決まるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Content-Lengthだけで決まる</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. connection closeだけで決まる</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Transfer-Encoding, Content-Length, connection closeを考慮した規則で決まる</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. どちらのframing fieldもないresponseなのでbody長は0になる</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. response body内で最初に現れるCRLFまでのoctet数になる</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. serverがconnectionを閉じる前に受信したoctet数になる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1は複数のframing手段を持ち, headerの組み合わせと優先順位で決まる.
+            **Terms:** close-delimited responseとは, 宣言した長さやchunked terminatorではなく, serverのconnection closeでbody末尾を示すresponseです.
 
-            **Correct (C):** Transfer-Encodingがある場合の扱い, Content-Lengthの妥当性, そして場合によってはconnection closeで区切る, という順序規則がある.
+            **Correct (C):** この200 responseは先行するbody-length規則のどれにも該当しないため, serverがconnectionを閉じる前に受信した全octetがbody長になります.
 
             **Options:**
 
-            - A (incorrect): Transfer-Encodingがframingを支配するケースがある. Content-Length単独依存は危険.
-            - B (incorrect): closeは最後の手段で, persistent connectionを壊す.
-            - C (correct): 規則に従って一意に決める.
-            **Related:** 中間者とendpointで解釈が違うとrequest smugglingが起きる.
+            - A (incorrect): 他のframing規則が該当しないときにbody長0となるのはrequestであり, この200 responseではありません.
+            - B (incorrect): CRLFはbody content中にも現れ得るため, close-delimited responseの区切りにはなりません.
+            - C (correct): connection closeがdelimiterとなるので, それより前のbody octetをすべて数えます.
+            **Related:** close-delimited responseでは正常完了とnetwork interruptionを区別できないため, RFC 9112は可能なら明示的なlengthまたはtransfer codingを使うよう勧めています.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="chunked codingにはin-bandの終端があります. connection closeや別のframing fieldを境界として使わない点に注目してください.">
         <header><h4>Q3: Transfer-Encoding: chunkedのbodyは何で終了する</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. socket readが0を返したとき</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. サイズ0のchunkとそれに続くCRLF</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Content-Length trailerが現れたとき</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 最後のcontent octetを送ったpeerがconnectionを閉じたとき</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. サイズ0のlast chunk, optional trailer section, 最後の空行</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Content-Length trailerが累積body lengthを宣言したとき</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             **Terms:** chunked coding, terminator. chunked transfer codingはchunkの連続でbodyを表現する.
-            **Correct (B):** 終端はサイズ0のchunkで示され, その後に最終CRLFとoptionalなtrailer fieldが続く.
+            **Correct (B):** サイズ0のlast chunkでcontent chunkの終了を示し, optional trailer sectionの後に最後の空行でchunked codingを終えます.
             **Options:**
 
             - A (incorrect): closeはchunkedの通常の終端ではない.
-            - B (correct): 0-size chunkが明示終端.
+            - B (correct): サイズ0のchunkがcontent chunkの終了を示し, trailer fieldと最後の空行がcoding全体を完結させます.
             - C (incorrect): Content-Lengthをtrailerとして使って終端する仕組みではない.
-            **Related:** trailerは終端chunkの後に現れるheader field群.
+            **Related:** trailer fieldはサイズ0のlast chunkの後, 最後の空行の前に現れます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="通常のorigin request, proxy request, CONNECT, server全体へのOPTIONSにtarget formを対応づけてください.">
         <header><h4>Q4: HTTP/1.1のrequest-target formはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -193,6 +191,8 @@
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. absolute-form</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. authority-form</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. asterisk-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="e"> E. host-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="f"> F. scheme-form</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
@@ -205,12 +205,14 @@
             - B (correct): proxy向けに完全URIを書くことがある.
             - C (correct): CONNECTでhost:portを指定.
             - D (correct): OPTIONS * でサーバ全体のoptionsを問う.
+            - E (incorrect): HTTP/1.1にはHost fieldがありますが, host-formというrequest-target formは定義されていません.
+            - F (incorrect): URI schemeはabsolute-form内に現れますが, scheme-formという独立したrequest-target formはありません.
             **Related:** proxyはrequest-targetの取り扱いを誤ると, 意図しない宛先へ転送してしまう.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Connection: closeのsignalがないときにHTTP/1.1が前提とするconnection挙動を思い出してください.">
         <header><h4>Q5: HTTP/1.1のconnection挙動のデフォルトとして正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -233,7 +235,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1" data-hint="start-lineとfield lineを終える2文字のsequenceをHTTP/1.1 grammarで確認してください.">
         <header><h4>Q6: HTTP/1.1のstart-lineとheader fieldはどの行終端を使う</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
@@ -257,7 +259,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9112</strong> to “<em id="footer-goal">Correct HTTP/1.1 framing</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

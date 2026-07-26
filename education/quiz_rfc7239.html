@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7239_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7239.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7239",
       SKILL_SUBTITLE: "Forwarded",
-      GOAL_DESCRIPTION: "Understand standardized proxy forwarding metadata and its risks",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7239" target="_blank" rel="noopener noreferrer">RFC 7239: Forwarded HTTP Extension</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: correctly parse and validate Forwarded values, and avoid trust pitfalls.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Separate forwarding metadata from encryption and from proof that the metadata is truthful.">
         <header><h4>Q1: In one sentence, the Forwarded header is used to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,36 +99,56 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** proxy, intermediary, metadata
-            **Correct (A):** Forwarded carries information like client identity and protocol as observed by proxies
+
+            `Forwarded` records information that may otherwise be changed or lost as an HTTP request passes through proxies. It does not secure the connection or authenticate the recorded values.
+
             **Options:**
-            - A (correct): This is the intended function
-            - B (incorrect): Encryption is not its role
-            - C (incorrect): It is only as trustworthy as your proxy trust boundary
-            **Related:** Always define which proxies are trusted to add or overwrite these headers
+
+            - A: This describes the field's purpose: conveying information about the request and the forwarding proxies.
+
+            - B: TLS provides transport security; `Forwarded` is an HTTP metadata field and does not replace it.
+
+            - C: A sender can supply false field values, so authenticity depends on a defined proxy trust boundary.
+
+            A deployment should define which intermediaries may add or replace this field before using it for security-sensitive decisions.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
-        <header><h4>Q2: Which are common Forwarded parameters (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="Map each registered name to one of four roles: request initiator, receiving proxy, original authority, or incoming scheme.">
+        <header><h4>Q2: Which parameter names are defined by RFC 7239 for a Forwarded element? (Select all that apply.)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. for</label>
             <label class="choice"><input type="checkbox" name="Q2" value="b"> B. by</label>
             <label class="choice"><input type="checkbox" name="Q2" value="c"> C. proto</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. host</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. path</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="f"> F. port</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** parameter, token, quoted string
-            **Correct (A,B,C,D):** These are the commonly used standardized parameters
-            **Related:** Values can be quoted, and may include obfuscated identifiers
+
+            RFC 7239 initially registers four parameters. Extensions can define additional parameters, but `path` and `port` are not among these four.
+
+            **Options:**
+
+            - A: `for` identifies the node that made the request to the proxy.
+
+            - B: `by` identifies the proxy's interface that received the request.
+
+            - C: `proto` records the protocol used for the request received by the proxy.
+
+            - D: `host` records the original Host request-header value received by the proxy.
+
+            - E: `path` is not an RFC 7239 parameter; the request path is outside the initial parameter set.
+
+            - F: `port` is not a separate RFC 7239 parameter; a node identifier can include a port where the syntax permits it.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Treat one proxy's data as one forwarded-element and then apply HTTP list syntax.">
         <header><h4>Q3: How are multiple proxies represented in Forwarded</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -140,18 +158,23 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** list syntax, forwarded element
-            **Correct (B):** Each element corresponds to one proxy hop, and elements are separated by commas
+
+            A forwarded-element contains the information added by one proxy. Multiple elements form an HTTP list in the order in which the field was generated.
+
             **Options:**
-            - A (incorrect): Commas are part of the list syntax
-            - B (correct): Standard HTTP list pattern
-            - C (incorrect): Not the specified format
-            **Related:** Parsing must handle quoting and whitespace
+
+            - A: Separate field lines are allowed to be combined, but commas remain the list delimiter and are not forbidden.
+
+            - B: Commas separate forwarded-elements; semicolons separate parameters within one element.
+
+            - C: RFC 7239 defines HTTP field-value grammar, not a JSON representation.
+
+            A parser also has to handle quoted strings and optional whitespace according to the field grammar.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Ask who can supply the field before the trusted edge sanitizes it.">
         <header><h4>Q4: A key operational risk with Forwarded is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -161,47 +184,58 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** trust boundary, spoofing
-            **Correct (C):** Attackers can add or modify forwarding headers unless you strip and re add them at a trusted edge
+
+            `Forwarded` is not intrinsically trustworthy. A client can send its own field before the request reaches the deployment's first trusted proxy.
+
             **Options:**
-            - A (incorrect): Unrelated
-            - B (incorrect): Unrelated
-            - C (correct): This is the main practical pitfall
-            **Related:** Similar trust concerns exist for X-Forwarded-For
+
+            - A: The field does not negotiate an HTTP version and therefore does not force an HTTP/2 downgrade.
+
+            - B: The field does not alter an HSTS policy or disable HTTPS upgrading.
+
+            - C: Trusting an untrusted sender's value can let that sender spoof client or proxy metadata.
+
+            A common boundary design is to remove untrusted forwarding fields at the edge and generate values from observations made by trusted proxies.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^for$" data-difficulty="L1">
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^for$" data-difficulty="L1" data-hint="Contrast the endpoint that initiated the request with the proxy that received it.">
         <header><h4>Q5: Which parameter name typically identifies the client that initiated the request (one token)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the parameter" />
           <div class="explain">
             **Explanation:**
-            **Terms:** for parameter
-            **Correct:** for
-            **Related:** Values can be IP literals or obfuscated identifiers depending on policy
+
+            The token is **for**. It identifies the node that made the request to the proxy, whereas `by` identifies the proxy interface that received it.
+
+            Its value can be an IP-based node identifier, `unknown` when the preceding node is not known, or an obfuscated identifier when exposing the real identifier is undesirable.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2">
-        <header><h4>Q6: Why might a deployment choose obfuscated values like unknown for the for parameter</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Consider the trade-off between limited hop correlation and disclosing a stable network identifier.">
+        <header><h4>Q6: Why might a deployment use an obfuscated identifier instead of an IP address in the <code>for</code> parameter?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. To reduce user identification and exposure of internal addressing</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. To make compression more efficient</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. To bypass authentication</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Preserve limited correlation while reducing exposure of a client or private address</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Signal that every preceding proxy has been cryptographically authenticated</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Increase compression by replacing an address with a shorter reusable token</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** privacy, data minimization
-            **Correct (A):** The header can leak user identifiers or internal topology, so deployments may intentionally reduce precision
+
+            RFC 7239 permits an obfuscated node identifier when the real identifier should not be disclosed. Such an identifier begins with an underscore and ought to be randomly generated per request unless correlation is intentionally required.
+
             **Options:**
-            - A (correct): Privacy and topology hiding
-            - B (incorrect): Not the reason
-            - C (incorrect): Not a security feature
-            **Related:** Logging and analytics pipelines also need an explicit policy for these values
+
+            - A: Obfuscation can limit disclosure while retaining only the correlation a deployment deliberately needs.
+
+            - B: Obfuscation does not authenticate any proxy or prove the provenance of the field.
+
+            - C: The mechanism is defined for identifier disclosure and correlation policy, not as header compression.
+
+            The literal `unknown` has a different meaning: it is used when the identity of the preceding node is not known.
           </div>
         </div>
       </article>
@@ -215,7 +249,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7239</strong> to “<em id="footer-goal">Forwarded header literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6265_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6265.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 6265",
       SKILL_SUBTITLE: "Cookies",
-      GOAL_DESCRIPTION: "Understand Set-Cookie, Cookie, and the security attributes you must use",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6265" target="_blank" rel="noopener noreferrer">RFC 6265: HTTP State Management Mechanism</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: apply Secure, HttpOnly, SameSite correctly, and avoid common mistakes.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Distinguish the response instruction that creates or updates stored state from the request header that returns it.">
         <header><h4>Q1: Which response header is used to set a cookie in a browser</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,53 +99,64 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Servers send Set-Cookie, clients send Cookie
+
+            `Set-Cookie` is a response header that instructs a user agent to store or update a cookie. `Cookie` travels in the opposite direction: the user agent uses it in a request to return applicable stored cookies.
+
             **Options:**
-            - A (incorrect): Cookie is the request header
-            - B (correct): Set-Cookie creates or updates a cookie
-            - C (incorrect): Not a standard header
+            - A (incorrect): `Cookie` is the request header used to return stored cookies to the server.
+            - B (correct): `Set-Cookie` is the response header defined for creating or updating cookie state.
+            - C (incorrect): `Accept-Cookie` is not a header defined by RFC 6265.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="Check whether each name belongs to Set-Cookie syntax rather than HTTP caching.">
         <header><h4>Q2: Which are common cookie attributes (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Secure</label>
             <label class="choice"><input type="checkbox" name="Q2" value="b"> B. HttpOnly</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. SameSite</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Path</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Max-Age</label>
             <label class="choice"><input type="checkbox" name="Q2" value="e"> E. Cache-Control</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C,D):** These attributes affect transport, script access, cross site behavior, and lifetime
+
+            RFC 6265 defines attributes that control a cookie's transport, API exposure, path scope, and lifetime. HTTP cache directives belong to a different header field and do not become cookie attributes inside `Set-Cookie`.
+
             **Options:**
-            - E (incorrect): Cache-Control is a separate HTTP caching header
+            - A (correct): `Secure` limits transmission to a protocol that the user agent considers secure.
+            - B (correct): `HttpOnly` excludes the cookie from non-HTTP APIs, such as ordinary script access.
+            - C (correct): `Path` limits the request paths for which the cookie is applicable.
+            - D (correct): `Max-Age` sets the cookie's lifetime in seconds and takes precedence over `Expires`.
+            - E (incorrect): `Cache-Control` controls HTTP caching; it is not a `Set-Cookie` attribute.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Focus on which user-agent API is denied access; this attribute does not encrypt the stored value.">
         <header><h4>Q3: What does HttpOnly primarily do</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. Prevent access to the cookie via client side scripts</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Encrypt the cookie value</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Force the cookie to be sent cross site always</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Restrict the cookie to one request path</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** HttpOnly reduces cookie theft via XSS, but does not fix XSS itself
+
+            `HttpOnly` sets the cookie's http-only flag. A conforming user agent excludes such a cookie when a cookie string is generated for a non-HTTP API, reducing ordinary client-side script access without encrypting the value or eliminating script injection.
+
             **Options:**
-            - B (incorrect): Encryption is not implied
-            - C (incorrect): Cross site behavior is controlled by SameSite
+            - A (correct): Blocking exposure through non-HTTP APIs is the purpose of the http-only flag.
+            - B (incorrect): `HttpOnly` does not encrypt the cookie in storage or on the wire.
+            - C (incorrect): Request-path scope is controlled by the `Path` attribute, not `HttpOnly`.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="This attribute constrains when the user agent transmits the cookie; it is not a signature or persistence control.">
         <header><h4>Q4: What does Secure mean for a cookie</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -157,39 +166,50 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** It helps prevent leakage over plaintext HTTP
-            **Related:** For session cookies, also use HttpOnly and an appropriate SameSite policy
+
+            `Secure` sets the secure-only flag. The user agent sends that cookie only when the request URI uses a protocol it considers secure, typically HTTPS. The attribute does not sign the value, make it immutable, or determine its expiry.
+
+            **Options:**
+            - A (incorrect): RFC 6265 does not assign the browser a signing operation for a `Secure` cookie.
+            - B (incorrect): Deletion and expiry are governed by cookie replacement, `Max-Age`, `Expires`, and storage rules.
+            - C (correct): Restricting transmission to a secure protocol is exactly what the secure-only flag controls.
+
+            `Secure` protects confidentiality only in limited ways; RFC 6265 notes that an active network attacker can overwrite a Secure cookie from an insecure channel.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3">
-        <header><h4>Q5: Which SameSite mode is commonly used to reduce CSRF while keeping many normal navigations working</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Compare a cookie with no Domain attribute to one that explicitly names a domain.">
+        <header><h4>Q5: A server sets a cookie without a Domain attribute. What scope does RFC 6265 assign to it?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. None</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Lax</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Unlimited</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. It is sent to every subdomain of the current host</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. It is host-only and returned only to the origin server</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. It is sent to any host that uses the same path</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** CSRF, cross site request
-            **Correct (B):** Lax blocks many cross site subrequests while allowing top level navigation in common cases
+
+            When `Domain` is absent, RFC 6265 sets the host-only flag and uses the canonicalized request host as the cookie's domain. The cookie is returned only when a later request host is identical to that domain.
+
             **Options:**
-            - A (incorrect): None allows cross site sending when used with Secure, which increases CSRF risk
-            - C (incorrect): Not a real mode
+            - A (incorrect): Subdomain matching is associated with a present and valid `Domain` attribute, not an omitted one.
+            - B (correct): Omission creates a host-only cookie tied to the origin server's host.
+            - C (incorrect): `Path` matching is an additional condition and never grants a cookie to unrelated hosts.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^cookie$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^cookie$" data-difficulty="L1" data-hint="Use the request-side header name, not the response-side setter.">
         <header><h4>Q6: What is the request header name that sends cookies back to the server (one word)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** Cookie
-            **Related:** Browsers decide which cookies to include based on domain, path, and attributes
+
+            **Correct:** **Cookie**.
+
+            A user agent builds the `Cookie` request header from stored cookies whose domain, path, secure-only, and http-only conditions match the request context. `Set-Cookie` is the response-side field and therefore is not the requested name.
           </div>
         </div>
       </article>
@@ -203,7 +223,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 6265</strong> to “<em id="footer-goal">cookie security basics</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

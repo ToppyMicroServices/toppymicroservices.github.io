@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9112_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9112.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9112",
       SKILL_SUBTITLE: "HTTP/1.1",
-      GOAL_DESCRIPTION: "Correctly frame messages and manage connections in HTTP/1.1",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9112" target="_blank" rel="noopener noreferrer">RFC 9112: HTTP/1.1</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: avoid parsing and proxy bugs around message framing and hop-by-hop headers.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,13 +89,13 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1">
-        <header><h4>Q1: In HTTP/1.1, how does a recipient detect the end of the header section</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Separate the line ending used within a field line from the delimiter that marks there are no more field lines.">
+        <header><h4>Q1: In the HTTP/1.1 message grammar, what marks the end of the header section</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. The presence of a Content-Length header</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. A single LF line ending</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. An empty line that is a CRLF on its own</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. The CRLF that terminates the last non-empty field line</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. A CRLF-only empty line after the last field line</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
@@ -107,60 +105,60 @@
             **Options:**
 
             - A (incorrect): Content-Length is about body framing. It does not terminate the header section.
-            - B (incorrect): HTTP/1.1 defines CRLF as the line ending. Accepting LF-only can cause interoperability and security problems.
+            - B (incorrect): That CRLF terminates one field line; the grammar requires another CRLF as an empty line to end the section.
             - C (correct): The CRLF empty line is the defined delimiter.
             **Related:** When parsers disagree on where headers end, intermediaries can be vulnerable to request smuggling.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3">
-        <header><h4>Q2: How can an HTTP/1.1 recipient determine message body length</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Apply the message-body-length precedence rules to a response that permits a body but supplies no chunked coding or explicit length.">
+        <header><h4>Q2: A server sends a 200 response to GET with neither Transfer-Encoding nor Content-Length, sends body octets, and then closes the connection. How is the message body length determined</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Only by Content-Length</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Only by closing the connection</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. By rules that consider Transfer-Encoding, Content-Length, and connection close</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. It is zero because a response without either framing field has no body</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. It is the octets before the first CRLF encountered in the response body</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. It is the number of octets received before the server closes the connection</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** message framing, Content-Length, Transfer-Encoding, chunked. HTTP/1.1 has multiple framing mechanisms, and the correct one depends on the presence and ordering of headers.
-            **Correct (C):** Recipients apply a precedence order: Transfer-Encoding (especially chunked) affects framing, Content-Length can be used when valid, and connection close can delimit in some cases.
+            **Terms:** A close-delimited response is a response whose body ends when the server closes the connection instead of at a declared length or chunked terminator.
+            **Correct (C):** Under RFC 9112 Section 6.3, an otherwise body-bearing response without a declared body length contains all octets received before the server closes the connection.
             **Options:**
 
-            - A (incorrect): Transfer-Encoding can override Content-Length for framing. Relying only on Content-Length is unsafe.
-            - B (incorrect): Connection close is a last-resort delimiter and breaks persistent connections.
-            - C (correct): The framing algorithm combines these signals.
-            **Related:** Inconsistent framing interpretation between intermediaries is a common root cause of request smuggling.
+            - A (incorrect): The no-body default applies to a request when no earlier framing rule applies, not to this 200 response.
+            - B (incorrect): CRLF can occur inside body content and is not the delimiter for a close-delimited response.
+            - C (correct): Connection closure supplies the delimiter, so every preceding body octet contributes to the length.
+            **Related:** A close-delimited response cannot distinguish normal completion from a network interruption, so RFC 9112 recommends explicit length or transfer coding when possible.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Chunked coding has its own in-band terminator, so do not use connection closure or another framing field as the boundary.">
         <header><h4>Q3: When Transfer-Encoding: chunked is used, how does the body end</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. When the socket read returns zero bytes</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. With a zero-length chunk followed by CRLF</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. When a Content-Length trailer appears</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. When the peer closes the connection after sending the final content octets</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. With a zero-size last chunk, an optional trailer section, and a final empty line</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. When a Content-Length trailer declares the accumulated body length</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             **Terms:** chunked coding, chunk size, terminator. Chunked transfer coding frames the body as a series of chunks.
-            **Correct (B):** The end of a chunked body is indicated by a chunk with size 0, followed by a final CRLF and optional trailer fields.
+            **Correct (B):** A zero-size last chunk ends the content chunks. An optional trailer section can follow, and a final empty line terminates the chunked coding.
             **Options:**
 
             - A (incorrect): Connection close is not the normal terminator for chunked coding and should not be relied upon.
-            - B (correct): The 0-size chunk is the explicit terminator.
+            - B (correct): The zero-size chunk signals that content chunks are complete; any trailer fields and the final empty line complete the coding.
             - C (incorrect): Content-Length is not used as a trailer to end a chunked body.
-            **Related:** Trailers exist, but they are separate header fields after the terminating chunk.
+            **Related:** Trailer fields come after the zero-size last chunk and before the final empty line.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="Map the target forms to ordinary origin requests, proxy requests, CONNECT, and server-wide OPTIONS.">
         <header><h4>Q4: Which request-target forms exist in HTTP/1.1 (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -168,6 +166,8 @@
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. absolute-form</label>
             <label class="choice"><input type="checkbox" name="Q4" value="c"> C. authority-form</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. asterisk-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="e"> E. host-form</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="f"> F. scheme-form</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
@@ -180,12 +180,14 @@
             - B (correct): Used when making requests to proxies, like http://example.com/path.
             - C (correct): Used with CONNECT to establish a tunnel to host:port.
             - D (correct): Used with OPTIONS * to query server-wide options.
+            - E (incorrect): HTTP/1.1 has a Host field, but it does not define a request-target form named host-form.
+            - F (incorrect): A URI scheme can appear within absolute-form; scheme-form is not a separately defined request-target form.
             **Related:** Proxies must carefully preserve semantics and not accidentally rewrite request-target incorrectly.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Recall which behavior HTTP/1.1 assumes when no Connection: close signal is present.">
         <header><h4>Q5: What is the default connection behavior in HTTP/1.1</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -208,7 +210,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1" data-hint="Consult the HTTP/1.1 grammar for the two-character sequence that terminates start-lines and field lines.">
         <header><h4>Q6: HTTP/1.1 uses which line ending for start-lines and header fields</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
@@ -232,7 +234,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9112</strong> to “<em id="footer-goal">Correct HTTP/1.1 framing</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

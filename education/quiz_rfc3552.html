@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc3552_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc3552.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 3552",
       SKILL_SUBTITLE: "Writing Security Considerations",
-      GOAL_DESCRIPTION: "Be able to produce a useful security considerations section for a protocol or API",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc3552" target="_blank" rel="noopener noreferrer">RFC 3552: Guidelines for Writing RFC Text on Security Considerations</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: write security notes that help implementers and operators avoid real failures.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Start from the reader's threat questions: what can happen, under which assumptions, and what remains after mitigations.">
         <header><h4>Q1: A good Security Considerations section should primarily</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -102,7 +100,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** A Security Considerations section is not a formality added after the protocol is designed. It should let implementers and users understand the relevant threats and the limits of the design.
+            A Security Considerations section is not a formality added after the protocol is designed. It should let implementers and users understand the relevant threats and the limits of the design.
 
             **Terms:** A **Security Considerations section** connects the protocol to its security properties, threats, failure modes, assumptions, and countermeasures.
 
@@ -118,7 +116,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Classify each candidate as threat scope, a protected security property, residual risk, or nontechnical promotion.">
         <header><h4>Q2: Useful items to include are (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -130,7 +128,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** RFC 3552 gives concrete content requirements. This question distinguishes those requirements from useful but generic security advice.
+            RFC 3552 calls for analysis tied to the protocol, including its threat environment, the security properties it provides, and residual risks.
 
             **Terms:** **In scope** identifies attacks the design considers. **Protection properties** say what cryptography or another mechanism actually provides. **Residual risk** is what can still go wrong after mitigation.
 
@@ -147,18 +145,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Even a protocol with limited impact needs the reasoning behind that conclusion to be reviewable.">
         <header><h4>Q3: Your draft says "This protocol has no security considerations". A better approach is to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. Explain why it has minimal impact and explicitly state assumptions and residual risks</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Leave it blank to avoid scrutiny</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Add the word secure many times</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Refer elsewhere without analyzing this protocol's interactions or deployment assumptions</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. List generic security controls without connecting them to the protocol's behavior</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** A small protocol change can still create risk through deployment, composition, or misuse. An unsupported “no considerations” statement hides those assumptions.
+            A small protocol change can still create risk through deployment, composition, or misuse. An unsupported “no considerations” statement hides those assumptions.
 
             **Terms:** An **assumption** is a condition on which the analysis depends. **Residual risk** is exposure that remains after the stated countermeasures.
 
@@ -166,42 +164,40 @@
 
             **Options:**
             - A (correct): It gives readers enough information to test whether the conclusion applies to their deployment.
-            - B (incorrect): Leaving the section blank prevents implementers and users from assessing risk.
-            - C (incorrect): Repeating the word “secure” provides no threat or protection analysis.
+            - B (incorrect): An external reference cannot replace analysis of this protocol's interactions and assumptions.
+            - C (incorrect): Generic controls do not explain which threats arise from this protocol or what remains exposed.
 
             **Related:** RFC 3552 requires due diligence about known or foreseeable threats, even though no protocol must be immune to every attack.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2">
-        <header><h4>Q4: A common failure mode in security text is to</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Replace an adjective such as strong with a reviewable model of assets, attackers, assumptions, controls, and remaining exposure.">
+        <header><h4>Q4: A Security Considerations section says only "Use strong cryptography." Which revision makes the guidance reviewable</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Define terms clearly</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Include concrete examples</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Rely on vague statements like "use strong crypto" without specifying goals or contexts</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Name preferred algorithm families and require current implementations, leaving deployment details to operators</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Define protected assets and properties, attacker capabilities and trust assumptions, key management, and residual risk</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Require transport encryption for every deployment and cite a modern cipher suite as sufficient protection</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** Advice that names a security mechanism without saying what it must accomplish is easy to implement incorrectly.
+            **Terms:** A reviewable security analysis states what is protected and which security properties are required, describes attacker capabilities and trust assumptions, explains key management, and identifies residual risk after mitigation.
 
-            **Terms:** **Security goals** include confidentiality, data integrity, and peer authentication. A lower-layer security mechanism can provide some of these without providing all of them.
-
-            **Correct (C):** “Use strong crypto” does not identify the threat, protected data, required property, or deployment assumptions.
+            **Correct (B):** This revision supplies the claims and boundary conditions a reviewer needs to test. It connects mechanisms to protected assets, threats, operational assumptions, and risks the design does not eliminate.
 
             **Options:**
-            - A (incorrect): Clear definitions reduce ambiguity.
-            - B (incorrect): Concrete examples can make attacks and failure modes easier to understand.
-            - C (correct): Vague mechanism names are not actionable security requirements.
+            - A (incorrect): Algorithm names alone do not establish the required security properties, threat model, key lifecycle, or deployment assumptions.
+            - B (correct): Each listed element makes the protection claim specific enough to assess against the intended deployment.
+            - C (incorrect): A cipher suite does not by itself address authentication, key management, endpoint compromise, availability, or every deployment model.
 
-            **Related:** RFC 3552 says that relying on a lower-layer security protocol is insufficient unless the expected protections and the resulting combined-system properties are specified.
+            **Related:** RFC 3552 requires the services expected from a lower-layer security protocol and the resulting combined-system properties to be specified, and calls for a clear description of residual risk.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="A mitigation is useful only when readers know its target, cost, and limits.">
         <header><h4>Q5: When discussing mitigations, good guidance tends to (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -213,7 +209,7 @@
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** A list of countermeasure names is not enough for an implementer to decide whether a mitigation fits a deployment.
+            A list of countermeasure names is not enough for an implementer to decide whether a mitigation fits a deployment.
 
             **Terms:** A **mitigation** reduces a threat; a **trade-off** is its performance, complexity, or operational cost; **out of scope** identifies what the mitigation is not intended to solve.
 
@@ -230,14 +226,14 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$" data-difficulty="L1" data-hint="Look for the standard two-word name for assumptions about attackers and their capabilities.">
         <header><h4>Q6: Name the concept that describes assumed attackers and capabilities (two words)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
           <div class="explain">
             **Explanation:**
 
-            **Context (why chosen):** The first step in reading security text is to identify who the attacker is assumed to be and what that attacker can do.
+            The first step in reading security text is to identify who the attacker is assumed to be and what that attacker can do.
 
             **Real-world usage:** Protocol reviews and incident analysis use the threat model to decide whether a mitigation covers the attacker and deployment in question.
 
@@ -261,7 +257,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 3552</strong> to “<em id="footer-goal">security writing</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

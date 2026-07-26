@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6797_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6797.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 6797",
       SKILL_SUBTITLE: "HSTS",
-      GOAL_DESCRIPTION: "Understand Strict-Transport-Security and how to deploy it safely",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6797" target="_blank" rel="noopener noreferrer">RFC 6797: HTTP Strict Transport Security</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: know directives, the first visit limitation, and safe rollout strategy.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Find the response field that carries both the lifetime and optional subdomain scope.">
         <header><h4>Q1: Which header enables HSTS policy in browsers</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,13 +99,19 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** The policy is communicated via Strict-Transport-Security over HTTPS
+
+            A conforming user agent processes the `Strict-Transport-Security` response field only when it arrives over secure transport without underlying security errors. The field carries the required `max-age` directive and may carry `includeSubDomains`.
+
+            **Options:**
+            - A (incorrect): `Transport-Security` is not the response-field name defined by RFC 6797.
+            - B (correct): `Strict-Transport-Security` is the field that conveys an HSTS policy.
+            - C (incorrect): `Secure-Only` is not the HSTS response-field name.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2">
-        <header><h4>Q2: Which are common HSTS directives (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b" data-difficulty="L2" data-hint="Distinguish directives defined by RFC 6797 from tokens used by external browser enrollment programs.">
+        <header><h4>Q2: Which directives are defined for Strict-Transport-Security by RFC 6797? (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. max-age</label>
@@ -117,31 +121,42 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A,B,C):** max-age is required, includeSubDomains and preload are commonly used
+
+            RFC 6797 defines one required directive, `max-age`, and one optional directive, `includeSubDomains`. User agents must ignore unrecognized directives while processing an otherwise valid field.
+
             **Options:**
-            - D (incorrect): Not a directive
+            - A (correct): `max-age` gives the policy lifetime in seconds and is required by the field grammar.
+            - B (correct): `includeSubDomains` optionally extends the policy to subdomains.
+            - C (incorrect): `preload` is not a directive defined by RFC 6797; browser preload enrollment is a separate operational mechanism.
+            - D (incorrect): `allowInsecure` is not an RFC 6797 directive and would conflict with the policy's purpose.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Ask what happens before the user agent has learned any policy for the host.">
         <header><h4>Q3: A limitation of HSTS is that it cannot fully protect</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. Requests after the policy is cached</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Requests to subdomains when includeSubDomains is set</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. A subdomain request covered by a learned includeSubDomains policy</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. The very first visit if the browser has no policy yet</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** trust on first use
-            **Correct (C):** If the first request is HTTP, an active attacker can interfere before the policy is learned
-            **Related:** Preload lists help mitigate the first visit problem for eligible domains
+
+            An HSTS policy learned through an HTTP response over secure transport cannot protect an earlier, insecure first contact. An active attacker can interfere before the user agent has recorded the host as a Known HSTS Host.
+
+            **Options:**
+            - A (incorrect): Once an unexpired policy is cached, the user agent rewrites insecure loads and enforces secure transport for that host.
+            - B (incorrect): A learned policy with `includeSubDomains` extends enforcement to matching subdomains.
+            - C (correct): The bootstrap request remains exposed when the user agent has no prior policy.
+
+            A preloaded Known HSTS Host list can mitigate this bootstrap gap, but RFC 6797 does not define a `preload` header directive.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Treat the value as a duration encoded in the unit specified by the header grammar.">
         <header><h4>Q4: What is the unit of max-age in HSTS</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -151,24 +166,32 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** max-age is an integer number of seconds
+
+            The `max-age` value uses the `delta-seconds` grammar: one or more decimal digits representing seconds after receipt of the field. Repeated valid fields refresh the policy's expiry relative to their receipt time.
+
+            **Options:**
+            - A (correct): Seconds are the unit required by the RFC 6797 grammar.
+            - B (incorrect): A value intended as minutes must first be converted to seconds.
+            - C (incorrect): A value intended as days must also be converted to seconds.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^includesubdomains$" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^includesubdomains$" data-difficulty="L2" data-hint="Look for the case-insensitive directive whose name explicitly extends scope below the current host.">
         <header><h4>Q5: What directive applies the policy to all subdomains (one token)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the directive" />
           <div class="explain">
             **Explanation:**
-            **Correct:** includeSubDomains
-            **Related:** Use with care, because it affects the entire subtree
+
+            **Correct:** **includeSubDomains**.
+
+            This optional, valueless directive extends the HSTS policy from the issuing host to its subdomains. Before asserting it, a deployment must account for subdomains that still depend on insecure HTTP services because those services can become unreachable to conforming user agents.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Because user agents remember the policy, start with a change whose failure window is short and observable.">
         <header><h4>Q6: A safe rollout strategy for HSTS often starts with</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -178,12 +201,13 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** lock in risk
-            **Correct (B):** A mistake can lock users out, so staged rollout is safer
+
+            A user agent caches HSTS policy until the `max-age` expiry and refreshes that expiry when it receives a later valid field. Starting with a short lifetime and observing the deployment is therefore a conservative rollout practice, not a normative sequence required by RFC 6797.
+
             **Options:**
-            - A (incorrect): High risk if any subdomain is not ready
-            - B (correct): Start small, then increase
-            - C (incorrect): The header must be delivered over a secure connection to be meaningful
+            - A (incorrect): A long lifetime plus `includeSubDomains` widens both the duration and scope of any configuration error.
+            - B (correct): A short initial lifetime limits persistence while monitoring reveals certificate, redirect, and subdomain problems.
+            - C (incorrect): A conforming user agent ignores an STS field received over insecure transport.
           </div>
         </div>
       </article>
@@ -197,7 +221,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 6797</strong> to “<em id="footer-goal">HSTS deployment literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 9113（HTTP/2）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 9113 ドリル: HTTP/2のストリーム、フレーム、フロー制御、コネクションの振る舞いを理解する。" />
+  <meta name="description" content="RFC 9113 ドリル: HTTP/2のstream, frame, flow control, connectionの振る舞いを理解する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9113_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,30 +13,29 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 9113（HTTP/2）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 9113 ドリル: HTTP/2のストリーム、フレーム、フロー制御、コネクションの振る舞いを理解する。" />
+  <meta property="og:description" content="RFC 9113 ドリル: HTTP/2のstream, frame, flow control, connectionの振る舞いを理解する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9113_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 9113（HTTP/2）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 9113 ドリル: HTTP/2のストリーム、フレーム、フロー制御、コネクションの振る舞いを理解する。" />
+  <meta name="twitter:description" content="RFC 9113 ドリル: HTTP/2のstream, frame, flow control, connectionの振る舞いを理解する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9113.html" />
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9113_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9113.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9113",
       SKILL_SUBTITLE: "HTTP/2",
-      GOAL_DESCRIPTION: "ストリームとフレーム、フロー制御、コネクションの基本を押さえる",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9113" target="_blank" rel="noopener noreferrer">RFC 9113: HTTP/2</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">狙い: ストリームのライフサイクル、フロー制御、シャットダウンを説明できるようにする。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,15 +89,15 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="methodの意味や暗号ではなく, 複数の独立したHTTP exchangeが1本のconnectionをどう共有するかに注目してください.">
         <header><h4>Q1: HTTP/2がHTTP/1.1に対して追加した大きな能力はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. methodの意味を変更する</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. HTTP methodの意味をHTTP/1.1から変更する</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. 1つのconnection上で複数streamを多重化する</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSを置き換える新暗号プロトコルを導入する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSを置き換える新しいcryptographic protocolを導入する</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9113-ja-q1-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9113-ja-q1-caption">
             <figcaption id="rfc9113-ja-q1-caption">HTTP/2 を理解するときは, まず「1 本の connection の中に複数 stream が並んでいる」図を頭に持つと読みやすくなります. RFC 9113 は, その multiplexing を frame と state machine で定義する文書です.</figcaption>
             <svg viewBox="0 0 780 220" role="img" aria-label="1 connection 上で複数 stream が frame を多重化する図">
               <rect class="flow-box" x="20" y="76" width="190" height="70" rx="12"></rect>
@@ -128,7 +126,7 @@
 
             **Terms:** multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.
 
-            **RFCを読むときの見方:** RFC 9113 は, 「複数の request/response を同時に流したい」という要求を, stream, frame, flow control, stream state に分けて定義しています. まず 1 connection の中に stream が何本もあると理解すると, 後続の frame や flow control の話も追いやすくなります.
+            **Protocol structure:** HTTP/2は複数のrequest/responseを1 connection上の独立したstreamへ割り当て, frame, flow control, stream stateでそれぞれを管理します.
 
             **Correct (B):** multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らします. 1 connection しかなくても, stream ごとに独立したやり取りを進められるのが大きな変化です.
 
@@ -144,7 +142,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="HTTP/2がHTTP/1.1のtext形式を置き換えるために使う, type付きbinary framing layerを考えてください.">
         <header><h4>Q2: HTTP/2のwire上の基本単位はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -168,7 +166,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="最下位bitはstreamを開始したendpointを表します. client側とserver側のnamespaceを比べてください.">
         <header><h4>Q3: HTTP/2のstream IDの奇偶ルールとして正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -184,15 +182,15 @@
             **Correct (A):** clientは奇数, serverは偶数を使う.
             **Options:**
 
-            - A (correct): 定義通り.
-            - B (incorrect): 逆.
-            - C (incorrect): 奇偶は意味を持つ.
+            - A (correct): clientが開始するstreamには奇数ID, serverが開始するstreamには偶数IDを割り当てます.
+            - B (incorrect): initiatorと奇偶の対応が逆です. client側のstream ID namespaceは奇数から始まります.
+            - C (incorrect): 最下位bitがinitiatorを表すため, 奇偶を無視するとpeerが開始したstreamを正しく判定できません.
             **Related:** stream IDの単調増加も重要で, 再利用や不正frameを検出する.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="どのframe payloadがflow-control windowを消費するか, windowのscopeはいくつあるか, 何で補充するかを確認してください.">
         <header><h4>Q4: HTTP/2 flow controlについて正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -218,7 +216,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="peerのHTTP/2 trafficの送り方や解釈を変えるparameterを運ぶconnection-level control frameを探してください.">
         <header><h4>Q5: SETTINGS frameの目的はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -233,15 +231,15 @@
             **Correct (B):** SETTINGSはcontrolとしてconnectionを調整する.
             **Options:**
 
-            - A (incorrect): payloadはDATA.
-            - B (correct): 設定通知.
-            - C (incorrect): ackは別の仕組み.
+            - A (incorrect): application payloadはrequestやresponseに属するDATA frameで運び, SETTINGS frameのpayloadにはしません.
+            - B (correct): SETTINGS frameはmaximum frame sizeやconcurrent stream数など, peerの送信挙動に関わるconnection parameterを通知します.
+            - C (incorrect): SETTINGSにはSETTINGS ACKがありますが, 個々のDATA frameの受信確認を行うframeではありません.
             **Related:** SETTINGSの未尊重はprotocol errorになり得る. 受信側はackする必要がある.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^goaway$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^goaway$" data-difficulty="L1" data-hint="senderが処理した可能性のある最後のstreamを示し, 新しいworkを前提にしないよう伝えるconnection-level frame名を答えてください.">
         <header><h4>Q6: HTTP/2 connectionのgraceful shutdownを示すframe名はどれ</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the frame name" />
@@ -265,7 +263,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9113</strong> to “<em id="footer-goal">HTTP/2 transport literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

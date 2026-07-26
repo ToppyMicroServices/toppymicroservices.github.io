@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9000_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9000.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 9000",
       SKILL_SUBTITLE: "QUIC Transport",
-      GOAL_DESCRIPTION: "Understand QUIC streams, connection identity, and flow control at a high level",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -73,7 +72,6 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC: A UDP-Based Multiplexed and Secure Transport</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: understand QUIC building blocks before reading HTTP/3 details.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -92,13 +90,13 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Identify the protocol layer, its packet substrate, and the transport services it provides together.">
         <header><h4>Q1: What is QUIC at a high level</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. A plaintext message format for HTTP/1.1</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. A TCP extension that adds multiple byte streams to one TCP connection</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. A secure, multiplexed transport protocol built on UDP</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. A replacement for DNS name resolution</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. An unreliable UDP application protocol with no connection state</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
@@ -107,15 +105,15 @@
             **Correct (B):** QUIC is a transport protocol that uses UDP as its substrate, supports multiplexed streams, and integrates TLS 1.3 style security.
             **Options:**
 
-            - A (incorrect): HTTP/1.1 is defined separately and does not require QUIC.
+            - A (incorrect): QUIC is a distinct transport over UDP, not an extension negotiated inside TCP.
             - B (correct): This matches the RFC 9000 description.
-            - C (incorrect): DNS is unrelated to QUIC.
+            - C (incorrect): QUIC uses UDP datagrams but adds secure connection state, reliable streams, loss recovery, and congestion control.
             **Related:** HTTP/3 uses QUIC as its transport.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Separate a transport connection identifier from the current IP:port tuple and from application-layer identifiers.">
         <header><h4>Q2: What is a primary purpose of a QUIC connection ID</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -123,7 +121,7 @@
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Replace TLS certificates</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Encode the full URI of the request</label>
           </fieldset>
-          <figure class="flow-diagram" aria-labelledby="rfc9000-q2-caption">
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9000-q2-caption">
             <figcaption id="rfc9000-q2-caption">A QUIC connection ID lets the connection survive path changes because the transport is not identified only by the old IP:port tuple.</figcaption>
             <svg viewBox="0 0 780 190" role="img" aria-label="Old path and new path both map through the same QUIC connection ID to the same live connection">
               <rect class="flow-box" x="20" y="22" width="190" height="60" rx="12"></rect>
@@ -163,30 +161,30 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2">
-        <header><h4>Q3: Which QUIC feature helps prevent one request from blocking another due to transport ordering</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Apply ordered delivery within each stream without inventing an order between different streams.">
+        <header><h4>Q3: A packet carrying bytes for stream 4 is lost. Later packets carrying data for streams 8 and 12 arrive. Which receiver behavior matches QUIC stream ordering</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP status codes</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. DNS caching</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Independent streams multiplexed within one connection</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Hold streams 8 and 12 until the missing bytes on stream 4 arrive, preserving connection-wide order</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Deliver bytes after the gap on stream 4, but hold streams 8 and 12 until stream 4 completes</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Deliver available data on streams 8 and 12 while stream 4 waits for its missing ordered bytes</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** streams, multiplexing. QUIC carries multiple streams that can progress independently.
-            **Correct (C):** Stream multiplexing is a fundamental transport building block for protocols like HTTP/3.
+            **Terms:** RFC 9000 Section 2 defines a QUIC stream as an ordered sequence of bytes, but QUIC does not define an ordering between bytes on different streams.
+            **Correct (C):** Loss on stream 4 prevents delivery past that stream's gap, while independently received data on streams 8 and 12 can still be delivered.
             **Options:**
 
-            - A (incorrect): Status codes are HTTP semantics.
-            - B (incorrect): DNS caching is unrelated.
-            - C (correct): Streams allow independent application flows.
-            **Related:** This is one reason QUIC is attractive for web traffic with many concurrent resources.
+            - A (incorrect): QUIC has no connection-wide byte order that requires streams 8 and 12 to wait for stream 4.
+            - B (incorrect): Bytes within stream 4 remain ordered, so data after its gap cannot be delivered first; other streams need not wait.
+            - C (correct): This preserves ordering within stream 4 without imposing that ordering on streams 8 and 12.
+            **Related:** A byte gap on stream 4 does not impose in-order delivery blocking on streams 8 and 12, although congestion control can still affect the connection as a whole.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Classify each statement as receiver-capacity control, network congestion control, or application security.">
         <header><h4>Q4: Which statements about QUIC flow control are true (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -211,7 +209,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Classify streams by which endpoint may send data on them after creation.">
         <header><h4>Q5: What types of streams does QUIC support</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -234,7 +232,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^udp$" data-difficulty="L1">
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^udp$" data-difficulty="L1" data-hint="Distinguish QUIC's IP transport substrate from the reliability and congestion-control semantics QUIC implements itself.">
         <header><h4>Q6: QUIC is designed to run over which IP transport protocol</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
@@ -258,7 +256,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 9000</strong> to “<em id="footer-goal">QUIC transport literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

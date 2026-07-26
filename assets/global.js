@@ -563,7 +563,7 @@
   }
 
   function removeLegacyQuestionContext(q){
-    q.querySelectorAll('.question-summary, .question-keywords, .question-premise').forEach(node => node.remove());
+    q.querySelectorAll('.question-summary, .question-keywords').forEach(node => node.remove());
   }
 
   function renderQuestionContext(q){
@@ -598,8 +598,7 @@
     }
   }
 
-  function ensureQuestionMarksAndContext(){
-    const locale = (document.documentElement.lang || '').toLowerCase();
+  function ensureQuestionMarks(){
     document.querySelectorAll('#questions .q').forEach(q => {
       if(!(q instanceof HTMLElement)) return;
       const h4 = q.querySelector('h4');
@@ -609,23 +608,6 @@
           h4.appendChild(document.createTextNode('?'));
         }
       }
-
-      renderQuestionContext(q);
-
-      const exp = q.querySelector('.explain');
-      const details = exp ? extractOptionDetails(plainExplainText(exp)) : new Map();
-      q.querySelectorAll('.choices label.choice').forEach(label => {
-        if(!(label instanceof HTMLElement)) return;
-        const input = label.querySelector('input');
-        if(!(input instanceof HTMLInputElement)) return;
-        const { detail } = wrapChoiceContent(label);
-        if(!(detail instanceof HTMLElement)) return;
-        const key = input.value.toUpperCase();
-        const current = (detail.textContent || '').trim();
-        if(current) return;
-        const labelText = label.textContent || '';
-        detail.textContent = details.get(key) || genericChoiceDetail(q, labelText);
-      });
     });
   }
 
@@ -637,7 +619,7 @@
     setupCTAEvents();
     setupDwellTracking();
     if(document.querySelector('#questions .q')){
-      window.addEventListener('load', ensureQuestionMarksAndContext, { once: true });
+      window.addEventListener('load', ensureQuestionMarks, { once: true });
     }
   }
 

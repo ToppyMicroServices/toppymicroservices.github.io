@@ -26,17 +26,16 @@
   <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7617_ja.html" />
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7617.html" />
 
-  <link rel="stylesheet" href="quiz.css" />
-  <link rel="stylesheet" href="quiz_template_skeleton.css" />
-  <script defer src="../assets/global.js"></script>
-  <script defer src="quiz_template_skeleton.js"></script>
+  <link rel="stylesheet" href="quiz.css?v=20260726-2" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
 </head>
 <body data-theme="dark">
   <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "RFC 7617",
       SKILL_SUBTITLE: "HTTP Basic Authentication",
-      GOAL_DESCRIPTION: "Understand Basic auth wire format and why it must be paired with TLS",
       LEARNING_MODE_DEFAULT: true,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
@@ -72,7 +71,6 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7617" target="_blank" rel="noopener noreferrer">RFC 7617: The "Basic" HTTP Authentication Scheme</a></li>
       </ul>
-      <p class="muted" style="margin-top:.6rem">Goal: understand encoding, challenge flow, and security pitfalls.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +89,7 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Separate the server's response challenge from the client's credential-bearing request.">
         <header><h4>Q1: Which request header carries Basic credentials</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -101,33 +99,47 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (A):** The client sends credentials in Authorization using the Basic scheme
+
+            **Terms:** A Basic challenge is carried in `WWW-Authenticate`; the client's credential response uses the `Authorization` request header.
+
+            **Correct (A):** The client sends `Authorization: Basic <token68>`.
+
             **Options:**
-            - A (correct): Authorization is the request header
-            - B (incorrect): Challenges use WWW-Authenticate in responses
-            - C (incorrect): Cookies are a separate mechanism
+            - A (correct): `Authorization` is the HTTP authentication framework's request field for credentials.
+            - B (incorrect): There is no `Authenticate` request field; server challenges use `WWW-Authenticate`.
+            - C (incorrect): `Cookie` is a separate state mechanism and is not the Basic credential field.
+
+            **Related:** Proxy authentication uses `Proxy-Authorization` rather than `Authorization`.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Construct the user-pass sequence first, then distinguish character-to-octet encoding from encryption.">
         <header><h4>Q2: Basic credentials are encoded as</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. Hash of username and password</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Encrypted blob using server public key</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Base64 of username colon password</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Base64 of the encoded user-id, colon, and password sequence</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** Base64, colon separator
-            **Correct (C):** It is an encoding, not encryption, so transport security matters
-            **Related:** Base64 is reversible
+
+            **Terms:** Basic forms `user-pass` by concatenating the user-id, one colon, and the password, converts that character sequence to octets, and Base64-encodes the octets.
+
+            **Correct (C):** Base64 changes the representation but supplies no confidentiality.
+
+            **Options:**
+            - A (incorrect): The transmitted Basic token is not a password hash; the original user-pass octets can be recovered from Base64.
+            - B (incorrect): Basic does not encrypt the credential with the server's public key.
+            - C (correct): This describes the required construction while keeping the character-encoding step distinct.
+
+            **Related:** The default character encoding is not universally fixed; a challenge can advertise `charset="UTF-8"`.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask whether the credential transform is one-way or merely reversible, and what protects the network path.">
         <header><h4>Q3: Why is Basic authentication unsafe without TLS</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -137,16 +149,22 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (B):** Base64 provides no confidentiality
+
+            **Terms:** Base64 is a reversible binary-to-text encoding. It is not encryption and does not require a secret key to decode.
+
+            **Correct (B):** A passive observer can recover the user-id and password from an unprotected Basic credential.
+
             **Options:**
-            - A (incorrect): It works at the HTTP semantics layer
-            - B (correct): TLS is required to protect credentials
-            - C (incorrect): Unrelated
+            - A (incorrect): Basic operates in HTTP's authentication semantics and is not inherently incompatible with HTTP/2.
+            - B (correct): TLS or another external secure channel is needed to protect the credential in transit.
+            - C (incorrect): Basic does not itself force browser cookies to be sent across sites.
+
+            **Related:** Password reuse increases the impact because disclosure can compromise accounts outside the challenged protection space.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Distinguish an origin-server authentication challenge from partial content, redirects, and proxy authentication.">
         <header><h4>Q4: Which status code commonly triggers a Basic auth challenge</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -156,13 +174,22 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** WWW-Authenticate
-            **Correct (A):** The server responds with 401 plus a WWW-Authenticate challenge
+
+            **Terms:** An origin server can challenge with `401 Unauthorized` and a `WWW-Authenticate: Basic realm=...` response field.
+
+            **Correct (A):** 401 is the standard status used for this origin authentication challenge.
+
+            **Options:**
+            - A (correct): It tells the client that credentials are required for the selected protection space.
+            - B (incorrect): 206 reports a partial-content response and does not initiate Basic authentication.
+            - C (incorrect): 302 redirects the request; it is not the authentication challenge status.
+
+            **Related:** A proxy uses 407 and `Proxy-Authenticate`, which is a separate exchange.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Treat the value as a reusable secret and review every forwarding, redirect, and logging boundary it can cross.">
         <header><h4>Q5: A common operational best practice for Basic auth credentials is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -172,19 +199,35 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Correct (C):** Credentials leak easily through logs and redirects
-            **Related:** Treat Authorization as sensitive and strip it at trust boundaries
+
+            **Terms:** A Basic credential is a reusable secret. TLS protects it in transit to the intended peer but does not make later logs or forwarding safe.
+
+            **Correct (C):** Restricting its destination and excluding it from logs reduces accidental disclosure outside the intended protection space.
+
+            **Options:**
+            - A (incorrect): Credentials placed in a URL can spread through histories, access logs, analytics, and other URI-processing systems.
+            - B (incorrect): Logging the decoded user-pass stores the reusable secret in another system and broadens access to it.
+            - C (correct): Trust-boundary filtering and secret-aware logging address two common operational leakage paths.
+
+            **Related:** RFC 7617 defines when credentials may be reused within an authentication scope; it does not make arbitrary cross-origin forwarding safe.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^authorization$" data-difficulty="L1">
-        <header><h4>Q6: Name the request header that sends credentials for Basic auth (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^charset$" data-difficulty="L2" data-hint="Look in the server's Basic challenge for the parameter that advertises how the user-pass characters should become octets.">
+        <header><h4>Q6: Which Basic challenge parameter advertises that the server expects UTF-8 for user-pass (one word)</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
           <div class="explain">
             **Explanation:**
-            **Correct:** Authorization
+
+            **Terms:** The optional **charset** authentication parameter appears in a Basic challenge. Its only defined value in RFC 7617 is `UTF-8`, matched case-insensitively.
+
+            **Correct:** **charset**.
+
+            **Why this matters:** The parameter is advisory and addresses the character-to-octet encoding used before Base64. It is not an encryption setting and does not appear inside the credential token.
+
+            **Related:** Without an agreed character encoding, non-ASCII user-ids and passwords can produce interoperability failures.
           </div>
         </div>
       </article>
@@ -198,7 +241,6 @@
     </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This drill helps elevate <strong id="footer-skill">RFC 7617</strong> to “<em id="footer-goal">Basic auth literacy</em>”.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>
