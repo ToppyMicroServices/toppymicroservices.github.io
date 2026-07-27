@@ -7,7 +7,7 @@
     {
       id: 'core',
       open: true,
-      ja: '1. A2Aの共通語彙・発見・Agent Card',
+      ja: '1. A2Aの基本用語・発見・Agent Card',
       en: '1. A2A vocabulary, discovery, and Agent Cards',
       jaSummary: 'HTTP/JSONの意味、URI、Agent Cardの取得・キャッシュ・署名を読むための土台。',
       enSummary: 'HTTP/JSON, URI, discovery, caching, and signing foundations for Agent Cards.',
@@ -26,7 +26,7 @@
     },
     {
       id: 'auth',
-      ja: '2. 認証・認可・委任・sender constraining',
+      ja: '2. 認証・認可・委任・トークンの使い回し防止',
       en: '2. Authentication, authorization, delegation, and sender constraining',
       jaSummary: '「誰が」「何を」「誰に対して」実行できるかと、tokenを誰が提示できるかを分離する。',
       enSummary: 'Separates who may do what for which resource from who can present a token.',
@@ -47,7 +47,7 @@
     },
     {
       id: 'binding',
-      ja: '3. Channel binding・署名・attestation（draft直接参照）',
+      ja: '3. 接続との結び付け・署名・実行環境の確認（関連仕様案の参照RFC）',
       en: '3. Channel binding, signatures, and attestation (direct draft references)',
       jaSummary: 'draft-okutomi-session-bound-agent-identity-06が直接参照する、受理判定の主要部品。',
       enSummary: 'Main acceptance components directly referenced by draft-okutomi-session-bound-agent-identity-06.',
@@ -74,7 +74,7 @@
     },
     {
       id: 'transport',
-      ja: '4. Transport・streaming・versioning',
+      ja: '4. 通信方式・ストリーミング・バージョン管理',
       en: '4. Transport, streaming, and versioning',
       jaSummary: 'A2A bindingを、stream、connection、再接続、将来versionの違いから検討する。',
       enSummary: 'Evaluates A2A bindings across streams, connections, reconnects, and future versions.',
@@ -113,8 +113,8 @@
     ['意味と表現', 'Semantics', [9110, 8259, 3986]],
     ['発見とAgent Card', 'Discovery', [8615, 9111, 7515, 8785]],
     ['認証・委任', 'Auth and delegation', [6749, 9700, 8693, 9449]],
-    ['channel-bound受理', 'Channel-bound acceptance', [8446, 9266, 9421, 9334]],
-    ['transportと進化', 'Transport and evolution', [9113, 9114, 9000, 8999]],
+    ['接続と証明の結び付け', 'Binding proofs to connections', [8446, 9266, 9421, 9334]],
+    ['通信方式と進化', 'Transport and evolution', [9113, 9114, 9000, 8999]],
     ['設計レビュー', 'Design review', [3552, 3439, 6973]]
   ];
 
@@ -169,10 +169,10 @@
     const side = el('div', 'a2a-rfc-side');
     if (entry.flags.includes('A')) side.appendChild(badge(locale === 'ja' ? 'A2A 1.0で明記' : 'Named by A2A 1.0', 'a2a-direct'));
     if (entry.flags.includes('B')) side.appendChild(badge(locale === 'ja' ? '背景標準' : 'Background', 'background'));
-    if (entry.flags.includes('D')) side.appendChild(badge(locale === 'ja' ? 'draft直接参照' : 'Direct draft reference', 'draft-direct'));
-    if (entry.flags.includes('G')) side.appendChild(badge(locale === 'ja' ? '設計レビュー' : 'Design review', 'design'));
+    if (entry.flags.includes('D')) side.appendChild(badge(locale === 'ja' ? '関連仕様案で参照' : 'Referenced by related draft', 'draft-direct'));
+    if (entry.flags.includes('G')) side.appendChild(badge(locale === 'ja' ? '設計レビュー向け' : 'Review guidance', 'design'));
     if (entry.flags.includes('Q')) {
-      const link = el('a', 'a2a-map-badge quiz-link', locale === 'ja' ? '日本語quiz' : 'English quiz');
+      const link = el('a', 'a2a-map-badge quiz-link', locale === 'ja' ? '日本語クイズ' : 'English quiz');
       link.href = quizHref(entry.n, locale);
       side.appendChild(link);
     }
@@ -217,8 +217,8 @@
       const draftCount = entries.filter((entry) => entry.flags.includes('D')).length;
       const quizCount = entries.filter((entry) => entry.flags.includes('Q')).length;
       stats.textContent = locale === 'ja'
-        ? '全' + entries.length + '本 / draft直接参照' + draftCount + '本 / 既存quiz' + quizCount + '本'
-        : entries.length + ' RFCs / ' + draftCount + ' direct draft references / ' + quizCount + ' existing quizzes';
+        ? '全' + entries.length + '本 / 関連仕様案で参照' + draftCount + '本 / クイズ' + quizCount + '本'
+        : entries.length + ' RFCs / ' + draftCount + ' referenced by the related draft / ' + quizCount + ' quizzes';
     }
   }
 

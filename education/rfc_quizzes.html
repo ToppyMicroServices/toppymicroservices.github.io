@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agent-to-Agent RFC Guide and Quiz Hub | ToppyMicroServices</title>
-  <meta name="description" content="An Agent-to-Agent RFC learning guide and bilingual quiz hub for HTTP, TLS, QUIC, WebSocket, URI, and related protocol fundamentals." />
+  <title>RFC Learning Guide for A2A Design and Quiz Hub | ToppyMicroServices</title>
+  <meta name="description" content="A structured RFC learning path for designing Agent-to-Agent systems, covering HTTP, authorization, peer verification, replay, transport, and privacy." />
   <link rel="canonical" href="https://www.toppymicros.com/education/rfc_quizzes.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -12,22 +12,22 @@
   <meta name="color-scheme" content="dark light" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Agent-to-Agent RFC Guide and Quiz Hub | ToppyMicroServices" />
-  <meta property="og:description" content="An Agent-to-Agent RFC learning guide and bilingual quiz hub for HTTP, TLS, QUIC, WebSocket, URI, and related protocol fundamentals." />
+  <meta property="og:title" content="RFC Learning Guide for A2A Design and Quiz Hub | ToppyMicroServices" />
+  <meta property="og:description" content="A structured RFC learning path for designing Agent-to-Agent systems, covering HTTP, authorization, peer verification, replay, transport, and privacy." />
   <meta property="og:url" content="https://www.toppymicros.com/education/rfc_quizzes.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Agent-to-Agent RFC Guide and Quiz Hub | ToppyMicroServices" />
-  <meta name="twitter:description" content="An Agent-to-Agent RFC learning guide and bilingual quiz hub for HTTP, TLS, QUIC, WebSocket, URI, and related protocol fundamentals." />
+  <meta name="twitter:title" content="RFC Learning Guide for A2A Design and Quiz Hub | ToppyMicroServices" />
+  <meta name="twitter:description" content="A structured RFC learning path for designing Agent-to-Agent systems, covering HTTP, authorization, peer verification, replay, transport, and privacy." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Agent-to-Agent RFC Guide and Quiz Hub",
-    "description": "An Agent-to-Agent RFC learning guide and bilingual quiz hub for HTTP, TLS, QUIC, WebSocket, URI, and related protocol fundamentals.",
+    "name": "RFC Learning Guide for A2A Design and Quiz Hub",
+    "description": "A structured RFC learning path for designing Agent-to-Agent systems, covering HTTP, authorization, peer verification, replay, transport, and privacy.",
     "url": "https://www.toppymicros.com/education/rfc_quizzes.html",
     "inLanguage": "en",
     "isPartOf": {
@@ -61,7 +61,7 @@
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/rfc_quizzes.html" />
 
   <link rel="stylesheet" href="quiz.css?v=20260726-7" />
-  <link rel="stylesheet" href="a2a_rfc_map.css?v=20260727-1" />
+  <link rel="stylesheet" href="a2a_rfc_map.css?v=20260727-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
 
   <style>
@@ -117,33 +117,54 @@
 
     <section class="card panel a2a-guide" aria-labelledby="a2aGuideTitle">
       <div class="a2a-guide-head">
-        <div>
-          <span class="a2a-eyebrow">Agent-to-Agent RFC map</span>
-          <h2 id="a2aGuideTitle">RFCs for reasoning about Agent-to-Agent systems</h2>
-          <p>A reading map for the standards behind HTTP semantics, Agent Cards, authentication, delegation, sender constraining, channel binding, attestation, transports, and protocol review.</p>
-        </div>
-        <div class="a2a-source-links" aria-label="Primary sources">
-          <a href="https://github.com/a2aproject/A2A/blob/main/docs/specification.md" target="_blank" rel="noopener noreferrer">A2A 1.0 specification ↗</a>
-          <a href="../agents-secure-binding.html">Agents Secure Binding</a>
+        <div class="a2a-guide-copy">
+          <span class="a2a-eyebrow">RFC learning map for A2A design</span>
+          <h2 id="a2aGuideTitle">RFCs for designing and reviewing communication between AI agents</h2>
+          <p>A2A (Agent-to-Agent) defines how AI agents exchange requests, progress, and results. An implementation also needs sound decisions about HTTP, authentication and authorization, peer verification, replay, and privacy. This page organizes the supporting RFCs into a six-stage learning path.</p>
+
+          <h3 class="a2a-benefit-title">What you can verify with this guide</h3>
+          <ol class="a2a-guide-benefits">
+            <li>How to retrieve and update an Agent Card, the public description of an agent's endpoint and capabilities</li>
+            <li>How to verify that a request reaches the intended agent and that the agent has authority for the requested operation</li>
+            <li>How to review failures involving replay, connection changes, streaming, logging, and privacy</li>
+          </ol>
+
+          <div class="a2a-guide-actions" aria-label="On-page navigation">
+            <a class="a2a-primary-action" href="#a2aReadingPath">View the six-stage learning path</a>
+            <a href="#quizList">Choose a quiz</a>
+          </div>
+
+          <div class="a2a-source-links" aria-label="Related material">
+            <span class="a2a-source-label">Related material</span>
+            <a href="https://github.com/a2aproject/A2A/blob/main/docs/specification.md" target="_blank" rel="noopener noreferrer">Official A2A 1.0 specification ↗</a>
+            <a href="../agents-secure-binding.html">Related draft: Agents Secure Binding</a>
+          </div>
         </div>
       </div>
 
-      <div class="a2a-scope-note">
-        <strong>Scope:</strong>
-        A2A 1.0 is not an RFC. JSON-RPC 2.0, Server-Sent Events, gRPC, and Protocol Buffers are also outside the RFC series. This list therefore complements rather than replaces the A2A specification. The current A2A 1.0 HTTP error body follows a google.rpc.Status-style model; RFC 9457 appears here as general HTTP API guidance and as a direct Agents Secure Binding draft reference, not as A2A’s normative error format.
-      </div>
+      <details class="a2a-scope-note">
+        <summary>How this guide differs from the official A2A specification</summary>
+        <div class="a2a-scope-body">
+          <p>This page is not a replacement for the A2A specification. It teaches the RFC-based design decisions needed during implementation and review.</p>
+          <ul>
+            <li>A2A 1.0, JSON-RPC 2.0, Server-Sent Events, gRPC, and Protocol Buffers are not RFCs, so read the official A2A specification alongside this guide.</li>
+            <li>RFC 9457 is general HTTP API error guidance; it is not A2A 1.0's normative error-body format.</li>
+            <li>Agents Secure Binding is a related draft, not a normative requirement of A2A 1.0.</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="a2a-route-label">
-        <h3>Recommended reading order</h3>
+      <div class="a2a-route-label" id="a2aReadingPath">
+        <h3>Six-stage learning path</h3>
         <span id="a2aRfcStats" aria-live="polite"></span>
       </div>
       <div class="a2a-route" id="a2aRoute" aria-label="Agent-to-Agent RFC reading path"></div>
 
       <div class="a2a-legend" aria-label="Legend">
         <span class="a2a-map-badge a2a-direct">Named by A2A 1.0</span>
-        <span class="a2a-map-badge draft-direct">Direct draft reference</span>
-        <span class="a2a-map-badge quiz-link">Existing quiz</span>
-        <span class="a2a-map-badge design">Design review</span>
+        <span class="a2a-map-badge draft-direct">Referenced by related draft</span>
+        <span class="a2a-map-badge quiz-link">Quiz available</span>
+        <span class="a2a-map-badge design">Review guidance</span>
       </div>
       <div class="a2a-rfc-groups" id="a2aRfcGroups"></div>
     </section>
@@ -164,7 +185,7 @@
     <section class="grid-hub" id="quizList" aria-label="RFC quiz list"></section>
   </div>
 
-  <script src="a2a_rfc_map.js?v=20260727-1"></script>
+  <script src="a2a_rfc_map.js?v=20260727-2"></script>
   <script>
     (function(){
       const THEME_KEY='quizTheme';
