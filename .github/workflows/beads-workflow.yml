@@ -1,0 +1,32 @@
+name: Beads workflow
+
+on:
+  push:
+    paths:
+      - ".beads-hooks/**"
+      - ".beads/README.md"
+      - ".beads/config.yaml"
+      - "AGENTS.md"
+      - "scripts/export_beads_snapshot.py"
+      - "scripts/test_beads_workflow.py"
+      - ".github/workflows/beads-workflow.yml"
+  pull_request:
+    paths:
+      - ".beads-hooks/**"
+      - ".beads/README.md"
+      - ".beads/config.yaml"
+      - "AGENTS.md"
+      - "scripts/export_beads_snapshot.py"
+      - "scripts/test_beads_workflow.py"
+      - ".github/workflows/beads-workflow.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Beads hooks and lossless snapshot guard
+        run: python3 scripts/test_beads_workflow.py
