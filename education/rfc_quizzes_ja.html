@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RFCクイズ一覧 | ToppyMicroServices</title>
-  <meta name="description" content="RFCクイズのリンク集（HTTP / TLS / QUIC / WebSocket / URI / Cookie）。英語版・日本語版あり。" />
+  <title>Agent-to-Agent RFC学習ガイド・RFCクイズ一覧 | ToppyMicroServices</title>
+  <meta name="description" content="Agent-to-Agentの議論に必要なRFC学習ガイドと、HTTP / TLS / QUIC / WebSocket / URIの解説つきRFCクイズ一覧。" />
   <link rel="canonical" href="https://www.toppymicros.com/education/rfc_quizzes_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -12,22 +12,22 @@
   <meta name="color-scheme" content="dark light" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="RFCクイズ一覧 | ToppyMicroServices" />
-  <meta property="og:description" content="RFCクイズのリンク集（HTTP / TLS / QUIC / WebSocket / URI / Cookie）。英語版・日本語版あり。" />
+  <meta property="og:title" content="Agent-to-Agent RFC学習ガイド・RFCクイズ一覧 | ToppyMicroServices" />
+  <meta property="og:description" content="Agent-to-Agentの議論に必要なRFC学習ガイドと、HTTP / TLS / QUIC / WebSocket / URIの解説つきRFCクイズ一覧。" />
   <meta property="og:url" content="https://www.toppymicros.com/education/rfc_quizzes_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RFCクイズ一覧 | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFCクイズのリンク集（HTTP / TLS / QUIC / WebSocket / URI / Cookie）。英語版・日本語版あり。" />
+  <meta name="twitter:title" content="Agent-to-Agent RFC学習ガイド・RFCクイズ一覧 | ToppyMicroServices" />
+  <meta name="twitter:description" content="Agent-to-Agentの議論に必要なRFC学習ガイドと、HTTP / TLS / QUIC / WebSocket / URIの解説つきRFCクイズ一覧。" />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "RFCクイズ一覧",
-    "description": "RFCクイズのリンク集（HTTP / TLS / QUIC / WebSocket / URI / Cookie）。英語版・日本語版あり。",
+    "name": "Agent-to-Agent RFC学習ガイド・RFCクイズ一覧",
+    "description": "Agent-to-Agentの議論に必要なRFC学習ガイドと、HTTP / TLS / QUIC / WebSocket / URIの解説つきRFCクイズ一覧。",
     "url": "https://www.toppymicros.com/education/rfc_quizzes_ja.html",
     "inLanguage": "ja",
     "isPartOf": {
@@ -47,6 +47,10 @@
       "WebSocket",
       "URI",
       "Cookie",
+      "Agent-to-Agent",
+      "A2A",
+      "OAuth",
+      "Agent Identity",
       "RFC"
     ]
   }
@@ -57,14 +61,17 @@
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/rfc_quizzes.html" />
 
   <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="a2a_rfc_map.css?v=20260727-1" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
 
   <style>
     .hub-top{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
     .hub-top p{margin:0;color:var(--muted)}
-    .search{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search{display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:min(100%,600px)}
     .search input{
-      width:min(520px, 92vw);
+      width:min(520px, 100%);
+      max-width:100%;
+      box-sizing:border-box;
       padding:.55rem .75rem;
       border-radius:12px;
       border:1px solid var(--border);
@@ -95,8 +102,8 @@
             <span class="name">ToppyMicroServices</span>
           </a>
         </div>
-        <h1>RFCクイズ一覧</h1>
-        <h2>HTTP / TLS / QUIC / Web / URI — 解説つきドリル</h2>
+        <h1>RFC学習ガイド・クイズ一覧</h1>
+        <h2>Agent-to-Agent / HTTP / TLS / QUIC / Web / URI</h2>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
@@ -107,6 +114,39 @@
         <a class="badge" href="../index.html">Home</a>
       </div>
     </header>
+
+    <section class="card panel a2a-guide" aria-labelledby="a2aGuideTitle">
+      <div class="a2a-guide-head">
+        <div>
+          <span class="a2a-eyebrow">Agent-to-Agent RFC map</span>
+          <h2 id="a2aGuideTitle">Agent-to-Agentを議論するためのRFC</h2>
+          <p>A2Aの仕様を読むだけでは埋まらない、HTTP semantics、Agent Card、認証・委任、sender constraining、channel binding、attestation、transport、設計レビューのRFCを学習順に整理しました。</p>
+        </div>
+        <div class="a2a-source-links" aria-label="一次資料">
+          <a href="https://github.com/a2aproject/A2A/blob/main/docs/specification.md" target="_blank" rel="noopener noreferrer">A2A 1.0 specification ↗</a>
+          <a href="../agents-secure-binding.html">Agents Secure Binding</a>
+        </div>
+      </div>
+
+      <div class="a2a-scope-note">
+        <strong>範囲:</strong>
+        A2A 1.0自体はRFCではありません。JSON-RPC 2.0、Server-Sent Events、gRPC / Protocol BuffersもRFC外です。この一覧はA2A全体の代替ではなく、各設計判断を検証するための周辺標準です。また、現行A2A 1.0のHTTP error bodyはgoogle.rpc.Status系であり、RFC 9457はA2Aの規範形式としてではなく、一般的なHTTP API設計とAgents Secure Binding draftの直接参照として掲載しています。
+      </div>
+
+      <div class="a2a-route-label">
+        <h3>推奨読書順</h3>
+        <span id="a2aRfcStats" aria-live="polite"></span>
+      </div>
+      <div class="a2a-route" id="a2aRoute" aria-label="Agent-to-Agent RFC reading path"></div>
+
+      <div class="a2a-legend" aria-label="凡例">
+        <span class="a2a-map-badge a2a-direct">A2A 1.0で明記</span>
+        <span class="a2a-map-badge draft-direct">draft直接参照</span>
+        <span class="a2a-map-badge quiz-link">既存quiz</span>
+        <span class="a2a-map-badge design">設計レビュー</span>
+      </div>
+      <div class="a2a-rfc-groups" id="a2aRfcGroups"></div>
+    </section>
 
     <section class="card panel" aria-label="Hub controls">
       <div class="hub-top">
@@ -124,6 +164,7 @@
     <section class="grid-hub" id="quizList" aria-label="RFC quiz list"></section>
   </div>
 
+  <script src="a2a_rfc_map.js?v=20260727-1"></script>
   <script>
     (function(){
       const THEME_KEY='quizTheme';
@@ -264,6 +305,7 @@
       }
 
       applyInitialTheme();
+      window.A2ARfcMap?.render({ locale: 'ja' });
       render('');
     })();
   </script>
