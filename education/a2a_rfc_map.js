@@ -31,7 +31,7 @@
       jaSummary: '「誰が」「何を」「誰に対して」実行できるかと、tokenを誰が提示できるかを分離する。',
       enSummary: 'Separates who may do what for which resource from who can present a token.',
       items: [
-        item(6749, 'The OAuth 2.0 Authorization Framework', 'OAuthのrole、grant、access token、scopeの基礎。draftのOAuth合成の出発点。', 'OAuth roles, grants, access tokens, and scopes; the draft composition baseline.', 'D'),
+        item(6749, 'The OAuth 2.0 Authorization Framework', 'OAuthのrole、grant、access token、scopeの基礎。draftのOAuth合成の出発点。', 'OAuth roles, grants, access tokens, and scopes; the draft composition baseline.', 'DQ'),
         item(7517, 'JSON Web Key (JWK)', 'JWS/JWT/DPoPの公開鍵表現とJWKSによる鍵配布。', 'Public-key representation and JWKS distribution for JWS, JWT, and DPoP.'),
         item(7519, 'JSON Web Token (JWT)', 'issuer、audience、時間、token IDを持つclaim container。署名検証だけで受理を決めない。', 'Claim container for issuer, audience, time, and token IDs; signature validity alone is not acceptance.', 'D'),
         item(7638, 'JSON Web Key (JWK) Thumbprint', 'keyをcanonicalなthumbprintで参照する。DPoPの`jkt`理解に必要。', 'Canonical key thumbprints, including the DPoP `jkt` confirmation method.'),
@@ -81,7 +81,7 @@
       items: [
         item(6455, 'The WebSocket Protocol', '双方向message transportとHTTP Upgrade、origin、masking。', 'Bidirectional messaging, HTTP Upgrade, origins, and masking.', 'Q'),
         item(8441, 'Bootstrapping WebSockets with HTTP/2', 'HTTP/2でWebSocketを確立するextended CONNECT。', 'Extended CONNECT for WebSockets over HTTP/2.', 'Q'),
-        item(8999, 'Version-Independent Properties of QUIC', '将来版でも不変な最小coreを切り出す。A2A binding/profile設計の比較対象。', 'Extracts a minimal invariant core across versions; a model for A2A binding/profile design.', 'G'),
+        item(8999, 'Version-Independent Properties of QUIC', '将来版でも不変な最小coreを切り出す。A2A binding/profile設計の比較対象。', 'Extracts a minimal invariant core across versions; a model for A2A binding/profile design.', 'GQ'),
         item(9000, 'QUIC: A UDP-Based Multiplexed and Secure Transport', 'stream、connection ID、migration、flow control。', 'Streams, connection IDs, migration, and flow control.', 'Q'),
         item(9001, 'Using TLS to Secure QUIC', 'QUICとTLSの責務分担、0-RTT、transport parameter protection。', 'The QUIC/TLS responsibility split, 0-RTT, and transport-parameter protection.', 'Q'),
         item(9112, 'HTTP/1.1', 'message framing、connection management、request smuggling境界。', 'Message framing, connection management, and request-smuggling boundaries.', 'Q'),
@@ -97,10 +97,10 @@
       jaSummary: 'core/profile境界、複雑性、脅威モデル、公開情報とcentralizationをレビューする。',
       enSummary: 'Reviews core/profile boundaries, complexity, threats, exposure, and centralization.',
       items: [
-        item(1958, 'Architectural Principles of the Internet', 'end-to-end、heterogeneity、modularity、running codeを設計判断へ使う。', 'Applies end-to-end, heterogeneity, modularity, and running-code principles.', 'G'),
-        item(3439, 'Some Internet Architectural Guidelines and Philosophy', 'coupling、state、feature interactionが大規模系の複雑性を増幅する過程を読む。', 'Examines how coupling, state, and feature interactions amplify complexity.', 'G'),
+        item(1958, 'Architectural Principles of the Internet', 'end-to-end、heterogeneity、modularity、running codeを設計判断へ使う。', 'Applies end-to-end, heterogeneity, modularity, and running-code principles.', 'GQ'),
+        item(3439, 'Some Internet Architectural Guidelines and Philosophy', 'coupling、state、feature interactionが大規模系の複雑性を増幅する過程を読む。', 'Examines how coupling, state, and feature interactions amplify complexity.', 'GQ'),
         item(3552, 'Guidelines for Writing RFC Text on Security Considerations', '攻撃者能力、守る資産、範囲外、残余リスクを先に固定する。', 'Fixes attacker capabilities, assets, exclusions, and residual risk before mechanisms.', 'GQ'),
-        item(5218, 'What Makes for a Successful Protocol?', '正味価値、段階導入、open specification、拡張性から採用可能性を評価する。', 'Evaluates adoption through net value, incremental deployment, openness, and extensibility.', 'G'),
+        item(5218, 'What Makes for a Successful Protocol?', '正味価値、段階導入、open specification、拡張性から採用可能性を評価する。', 'Evaluates adoption through net value, incremental deployment, openness, and extensibility.', 'GQ'),
         item(6973, 'Privacy Considerations for Internet Protocols', 'identifier、観測可能性、相関、保存、二次利用をprivacy threat modelへ落とす。', 'Maps identifiers, observability, correlation, retention, and secondary use into privacy threats.', 'D'),
         item(7258, 'Pervasive Monitoring Is an Attack', '大規模受動監視をprotocol design上の攻撃として扱う。', 'Treats pervasive passive monitoring as a protocol-design attack.', 'DGQ'),
         item(8890, 'The Internet is for End Users', 'agent、provider、gatewayの都合ではなくend userの利益を設計評価へ入れる。', 'Includes end-user interests when evaluating agents, providers, and gateways.', 'G'),

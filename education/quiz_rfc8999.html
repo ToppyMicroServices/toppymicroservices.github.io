@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 8999 (QUIC Invariants) Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 8999 quiz on QUIC invariants, packet headers, connection IDs, version negotiation, and protocol ossification." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc8999.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 8999 (QUIC Invariants) Quiz | ToppyMicroServices" />
+  <meta property="og:description" content="Reason about the small set of QUIC properties that must survive version changes." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc8999.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 8999 (QUIC Invariants) Quiz | ToppyMicroServices" />
+  <meta name="twitter:description" content="Reason about the small set of QUIC properties that must survive version changes." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc8999.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8999_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8999.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 8999",
+      SKILL_SUBTITLE: "Version-Independent Properties of QUIC",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 8999 Quiz</h1>
+        <h2 id="subtitle">QUIC invariants and version evolution</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc8999.html">🇺🇸</a><a aria-label="日本語" data-lang="ja" href="quiz_rfc8999_ja.html">🇯🇵</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8999" target="_blank" rel="noopener noreferrer">RFC 8999: Version-Independent Properties of QUIC</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9000" target="_blank" rel="noopener noreferrer">RFC 9000: QUIC: A UDP-Based Multiplexed and Secure Transport</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9001" target="_blank" rel="noopener noreferrer">RFC 9001: Using TLS to Secure QUIC</a></li>
+      </ul>
+    </section>
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show explanation immediately</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show all answers</span></label>
+      </div>
+    </section>
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate the invariants needed for version evolution from the complete behavior of any one QUIC version.">
+        <header><h4>Q1: What is RFC 8999 primarily trying to preserve?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. The complete wire image and behavior of QUIC version 1</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. The ability to deploy and negotiate future QUIC versions</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. A single mandatory congestion-control algorithm for every QUIC version</label>
+        </fieldset><div class="explain">**Explanation:**
+
+RFC 8999 fixes only the properties needed to recognize QUIC and negotiate versions.
+A:  copying all of version 1 would prevent meaningful evolution.
+B:  the document protects future deployment by defining what cannot change.
+C:  congestion control is not one of the version-independent properties defined here.</div></div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The document defines a small prohibited set, not an exhaustive list of allowed changes.">
+        <header><h4>Q2: A field behavior is not fixed or prohibited by RFC 8999. What follows?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Every future version must copy the QUIC v1 behavior</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. The behavior is permanently reserved and cannot be implemented</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. A future version may change it, subject to that version's specification</label>
+        </fieldset><div class="explain">**Explanation:**
+
+The default is freedom to evolve.
+A:  observable v1 behavior is not automatically invariant.
+B:  absence from the invariant set is not a reservation.
+C:  unless RFC 8999 specifically prohibits a change, another QUIC version can define different semantics.</div></div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,d" data-difficulty="L2" data-hint="Classify endpoint state, UDP containers, and application semantics separately.">
+        <header><h4>Q3: Which statements belong to RFC 8999's abstract description of QUIC? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q3" value="a"> A. QUIC is connection-oriented between two endpoints</label>
+          <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Endpoints exchange UDP datagrams containing QUIC packets</label>
+          <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Every QUIC connection carries HTTP semantics</label>
+          <label class="choice"><input type="checkbox" name="Q3" value="d"> D. A QUIC connection is shared protocol state between the endpoints</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: Connection-oriented endpoint communication is part of the document's abstract model.
+B: UDP datagrams are the containers exchanged by QUIC endpoints.
+C: HTTP/3 is one application protocol over QUIC; HTTP semantics are not a version-independent property of QUIC itself.
+D: The connection is the shared protocol state established between the two endpoints.</div></div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Use the first bit to select a header family, then ask which fields have invariant positions.">
+        <header><h4>Q4: Which header statements are invariant across QUIC versions? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q4" value="a"> A. A set high bit identifies a long header; a cleared high bit identifies a short header</label>
+          <label class="choice"><input type="checkbox" name="Q4" value="b"> B. A short header encodes its Destination Connection ID length</label>
+          <label class="choice"><input type="checkbox" name="Q4" value="c"> C. A long header carries Version, DCID length and value, then SCID length and value</label>
+          <label class="choice"><input type="checkbox" name="Q4" value="d"> D. A short header omits the Version and Source Connection ID fields</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The first byte's high bit is the invariant discriminator between long and short headers.
+B: A short header has a Destination Connection ID after the first byte, but its length is not encoded in that packet.
+C: The long-header layout exposes Version followed by the length and value of each connection ID.
+D: Version and Source Connection ID are absent from the invariant short-header layout.</div></div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Treat a connection ID as routing and demultiplexing input, not as an application identity.">
+        <header><h4>Q5: Which implementation assumption about a QUIC connection ID is safe?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. It has a stable, globally meaningful structure that intermediaries may decode</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. It is opaque, and packets for one connection may use different values</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. It is an immutable application user identifier for the connection lifetime</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  RFC 8999 defines the field as opaque.
+B:  each endpoint chooses connection IDs by version-specific methods, and one connection can use different values.
+C:  connection IDs identify delivery context, not a user or authorization subject.</div></div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="One reserved value identifies the negotiation packet rather than a usable QUIC version.">
+        <header><h4>Q6: What does Version 0x00000000 identify?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. A Version Negotiation packet</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. QUIC version 1 with encryption disabled</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. A short-header packet with an empty connection ID</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  zero is reserved for Version Negotiation and identifies that long-header packet type.
+B:  it is not an insecure form of QUIC v1.
+C:  short headers do not carry a Version field.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The receiver needs an explicit version field before it can know that a version is unsupported.">
+        <header><h4>Q7: An endpoint receives an unrecognized QUIC packet with a short header. What does RFC 8999 say about version negotiation?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. It must return a Version Negotiation packet listing every registered version</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. It must interpret the Destination Connection ID as a Version field</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. The short-header packet does not trigger version negotiation</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  only an unsupported long-header version might elicit Version Negotiation.
+B:  the fields have different meanings and the short header has no Version field.
+C:  RFC 8999 explicitly excludes short-header packets as triggers.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Distinguish parsing a negotiation packet from trusting a downgrade-relevant claim inside it.">
+        <header><h4>Q8: A client receives a plausible Version Negotiation packet and plans to switch versions. What additional condition matters?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. The packet's long-header form already gives full integrity protection</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. The endpoint must authenticate the negotiation's semantic content</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. The first supported-version value must always be selected</label>
+        </fieldset><div class="explain">**Explanation:**
+
+Version Negotiation packets have neither integrity nor confidentiality protection.
+A:  a recognizable format is not authentication.
+B:  an endpoint changing version as a result must authenticate the semantic content using the chosen version's mechanism.
+C:  RFC 8999 does not define “first value wins.”</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="An observable property of today's version is not automatically a contract for tomorrow's version.">
+        <header><h4>Q9: A middlebox recognizes QUIC by assuming the fixed bit and TLS-visible behavior of QUIC v1. What is the design problem?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. It ossifies changeable v1 traits and can block otherwise valid future versions</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. It fails to require every endpoint to use the same connection ID forever</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. It permits version negotiation to use a long header</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  Appendix A lists visible v1 traits that may be false in another version; enforcing them creates ossification.
+B:  connection IDs may change.
+C:  Version Negotiation is intentionally recognizable as a long-header packet.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Apply the invariant-set idea without pretending that RFC 8999 defines an Agent-to-Agent protocol.">
+        <header><h4>Q10: An Agent-to-Agent protocol expects multiple future profiles. Which design most closely applies RFC 8999's architectural lesson?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">This is an architectural analogy. RFC 8999 does not specify Agent-to-Agent messages.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Declare every field and processing step in profile 1 permanently invariant</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Let gateways infer future profile semantics from whatever profile 1 happens to expose</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Standardize only the recognition and negotiation core that must remain stable, and leave other semantics profile-specific</label>
+          </fieldset><div class="explain">**Explanation:**
+A:  freezing the entire first profile blocks evolution.
+B: Inferred wire-image contracts create ossification.
+C: A small explicit invariant core preserves negotiation and deployment freedom as an architectural analogy. The exact A2A core remains an application-specification decision, not an RFC 8999 requirement.</div>
+        </div>
+      </article>
+    </section>
+    <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 6749 (OAuth 2.0) Quiz | ToppyMicroServices</title>
+  <meta name="description" content="OAuth 2.0 quiz on roles, grants, clients, access and refresh tokens, redirect flows, and current RFC 9700 security guidance." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc6749.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 6749 (OAuth 2.0) Quiz | ToppyMicroServices" />
+  <meta property="og:description" content="Keep OAuth roles, grants, tokens, client capabilities, and modern security guidance distinct." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc6749.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 6749 (OAuth 2.0) Quiz | ToppyMicroServices" />
+  <meta name="twitter:description" content="Keep OAuth roles, grants, tokens, client capabilities, and modern security guidance distinct." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc6749.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc6749_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc6749.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "RFC 6749",
+      SKILL_SUBTITLE: "OAuth 2.0 Authorization Framework",
+      LEARNING_MODE_DEFAULT: true,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 6749 Quiz</h1>
+        <h2 id="subtitle">OAuth roles, grants, and token boundaries</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc6749.html">🇺🇸</a><a aria-label="日本語" data-lang="ja" href="quiz_rfc6749_ja.html">🇯🇵</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References (URLs)</h3>
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6749" target="_blank" rel="noopener noreferrer">RFC 6749: The OAuth 2.0 Authorization Framework</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6750" target="_blank" rel="noopener noreferrer">RFC 6750: OAuth 2.0 Bearer Token Usage</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7636" target="_blank" rel="noopener noreferrer">RFC 7636: Proof Key for Code Exchange by OAuth Public Clients</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9700" target="_blank" rel="noopener noreferrer">RFC 9700: Best Current Practice for OAuth 2.0 Security</a></li>
+      </ul>
+    </section>
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show explanation immediately</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show all answers</span></label>
+      </div>
+    </section>
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="ms" data-answer="a,b,c,d" data-difficulty="L1" data-hint="Separate the party that grants access, the application that requests it, the issuer, and the API that serves the resource.">
+        <header><h4>Q1: Which are the four roles defined by RFC 6749? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q1" value="a"> A. Resource owner</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="b"> B. Client</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="c"> C. Authorization server</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="d"> D. Resource server</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="e"> E. Mandatory network broker</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The resource owner is the entity capable of granting access to a protected resource.
+B: The client requests protected resources on the resource owner's behalf and with its authorization.
+C: The authorization server issues access tokens after obtaining authorization.
+D: The resource server hosts protected resources and accepts valid access tokens.
+E: OAuth does not require a network broker role.</div></div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="A permission to call an API and a statement about who logged in answer different questions.">
+        <header><h4>Q2: A client receives an OAuth access token for a photo API. What can be concluded from RFC 6749 alone?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. The client has obtained a standardized end-user identity assertion for login</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. The client has a credential representing authorization to access protected resources within its granted scope</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Every resource server must interpret the token as the user's password</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  OAuth 2.0 is an authorization framework; an authentication layer such as OpenID Connect adds standardized login identity semantics.
+B:  an access token represents authorization with particular scope and duration.
+C:  the abstraction replaces direct password sharing, and token format may be opaque to the client.</div></div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="One credential is exchanged at the authorization server; the other is presented to the resource server.">
+        <header><h4>Q3: What is the difference between an authorization grant and an access token?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. They are two names for the same credential at every protocol step</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. The access token is used to obtain the grant from the resource server</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. The grant represents authorization used to obtain an access token; the access token is used at protected resources</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  they serve different protocol boundaries.
+B:  the direction is reversed and the resource server does not issue the grant in the abstract flow.
+C:  the client presents a grant to the authorization server, then presents the resulting access token to the resource server.</div></div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Consider which party sees the resource owner's credentials and which party receives a short-lived intermediate value.">
+        <header><h4>Q4: What is a key security property of the authorization code flow?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. The resource owner authenticates to the authorization server, so credentials need not be shared with the client</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. The access token is deliberately placed in the browser redirect before client validation</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. The client may exchange any authorization code regardless of which client and redirect URI it was issued to</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  the authorization server mediates resource-owner authentication and returns a code, keeping the owner's credentials away from the client.
+B:  that describes the exposure risk of the implicit flow, not the code flow.
+C:  codes are bound to the client identifier and redirect URI and are short-lived and single-use.</div></div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Classify the client by whether it can keep its own authentication credentials confidential.">
+        <header><h4>Q5: A JavaScript application runs entirely in a user's browser and contains a fixed client secret in its downloaded code. How should that secret be treated?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. As a confidential-client credential because the source file is minified</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. As extractable; this is a public client and the fixed value cannot securely identify the client</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. As the resource owner's password because both values appear in a user agent</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  obfuscation or minification does not preserve credential confidentiality.
+B:  browser-based and native applications generally cannot keep a shared secret, so the authorization server must not rely on it to identify a public client.
+C:  client credentials and resource-owner credentials are distinct.</div></div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Protect both the destination of the redirect and the binding between the browser transaction and its callback.">
+        <header><h4>Q6: Which controls protect an authorization-code redirect flow? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q6" value="a"> A. Match the redirect URI against a pre-registered URI; current RFC 9700 guidance requires exact string matching except its stated native-app exception</label>
+          <label class="choice"><input type="checkbox" name="Q6" value="b"> B. Accept an arbitrary redirect URI supplied by the browser if it is syntactically valid HTTPS</label>
+          <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Bind the callback to the initiating user-agent transaction using an approved CSRF defense</label>
+          <label class="choice"><input type="checkbox" name="Q6" value="d"> D. Use PKCE as required or recommended by current client-specific guidance</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: Exact matching against registered redirect URIs prevents an attacker from selecting a credential-receiving endpoint.
+B: A syntactically valid attacker URI can still exfiltrate a code.
+C: Binding the callback to the initiating user-agent transaction detects forged or displaced callbacks.
+D: PKCE makes the code redeemable only with the verifier held by the initiating client instance. RFC 6749 describes `state`-based CSRF protection; RFC 9700 also defines when supported PKCE or OpenID Connect `nonce` can provide that protection.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate the abstract token credential from a particular HTTP presentation method.">
+        <header><h4>Q7: Which statement about access tokens is accurate?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. RFC 6749 requires every access token to be a JWT understood by the client</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Every access token is sender-constrained by RFC 6749 itself</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. The token may be opaque or self-contained and represents particular scope and duration; presentation methods are defined separately</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  the token is usually opaque to the client and need not be a JWT.
+B:  RFC 6749 does not automatically bind every token to a sender; bearer use is specified by RFC 6750 and sender constraining needs additional mechanisms.
+C:  RFC 6749 defines the authorization abstraction while companion specifications define use at resource servers.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The long-lived credential returns to the issuer; the resource API receives the shorter-lived credential.">
+        <header><h4>Q8: Where should a refresh token be sent?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. To the authorization server's token endpoint to request a new access token</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. To every resource server on each protected API request</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. In the browser redirect URI so intermediaries can renew access</label>
+        </fieldset><div class="explain">**Explanation:**
+A:  refresh tokens are credentials for obtaining access tokens and are intended only for authorization servers.
+B:  RFC 6749 says they are never sent to resource servers.
+C:  exposing a refresh token in a redirect creates credential leakage; renewal happens at the token endpoint.</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="RFC 6749 records historical grant types; RFC 9700 supplies current deployment security guidance.">
+        <header><h4>Q9: Which statements reflect current OAuth 2.0 security guidance in RFC 9700? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q9" value="a"> A. The resource owner password credentials grant MUST NOT be used</label>
+          <label class="choice"><input type="checkbox" name="Q9" value="b"> B. New clients should prefer the implicit grant because returning a token through the browser removes leakage risk</label>
+          <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Clients SHOULD NOT use the implicit grant unless the stated injection and leakage risks are prevented</label>
+          <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Public clients using the authorization code grant MUST use PKCE; PKCE is also recommended for confidential clients</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The password grant exposes resource-owner credentials to the client and is prohibited by RFC 9700.
+B: Returning an access token in the authorization response introduces leakage and replay risks rather than removing them.
+C: RFC 9700 says clients should not use implicit unless its stated injection and leakage risks are prevented.
+D: PKCE is mandatory for public code-flow clients and recommended for confidential clients. RFC 6749 remains the framework baseline, but its historical grant descriptions are not all current deployment recommendations.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A token can authorize a resource operation without proving every claim about a runtime, delegation chain, or task context.">
+        <header><h4>Q10: Agent B receives an OAuth access token from Agent A and needs to decide whether to execute a high-impact task. What is the sound conclusion?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The token is valid for B's resource API. The design also needs to know which runtime may present it, which task was approved, and whether onward delegation is allowed.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Token validity alone proves every agent identity, runtime property, task parameter, and delegation hop</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Enforce the token's issuer, audience, scope, and lifetime, then use separate profiled claims, sender constraining, and local policy for the additional decisions</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Ignore token scope because TLS has already authorized the task</label>
+          </fieldset><div class="explain">**Explanation:**
+A:  OAuth token validity does not automatically prove task semantics, runtime attestation, or a complete delegation chain.
+B:  OAuth supplies an authorization-token framework; an A2A profile must define the additional claims and acceptance policy, and mechanisms such as mTLS or DPoP can sender-constrain tokens.
+C:  TLS protects a channel but does not replace resource authorization or scope enforcement.</div>
+        </div>
+      </article>
+    </section>
+    <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>
