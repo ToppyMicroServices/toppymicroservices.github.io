@@ -247,6 +247,29 @@
           </div>
         </div>
       </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="loggingが検出するthreatだけでなく, logを読める・改ざんできる・相関できるattackerと, control適用後に残るriskも列挙してください.">
+        <header><h4>Q7: 「securityのため詳細にloggingする」という提案を, どうSecurity Considerationsへ落とすべきか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Agent間の不正利用を調査するため, request, session proof, task contextを完全な形で長期保存する案があります.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. log storeをauthenticationで保護するとだけ書けば, loggingのsecurity analysisとして十分である</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. loggingはattackなので禁止するとだけ書き, incident detectionやauditへの影響はscope外にする</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 検出対象, log自体のassetとattacker, confidentiality・integrity・availability control, 保存範囲, residual riskを明記する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552の中心は, mechanism名ではなくthreat modelと結果のsecurity propertyを説明することです. loggingは攻撃検出を支えるcontrolである一方, 高価値な情報集合, 改ざん対象, resource-exhaustion経路にもなります.
+
+            - A (incorrect): authenticationは「誰がaccessを試みたか」の一部しか扱いません. 過剰権限, credential compromise, data exfiltration, log injection, deletion, storage exhaustion, retention後の残存riskが未分析です.
+            - B (incorrect): RFC 3552はsystemを全attackから免疫にすることを求めず, out-of-scope threatとcountermeasureを説明するよう求めます. 一律禁止ではoperational requirementとのtrade-offを評価できません.
+            - C (correct): 何を検出するためのlogか, 何を守るか, attackerが何をできるか, control後に何が残るかを明示すれば, implementerが必要性とriskをreviewできます.
+
+            この観点では「loggingをattackとみなす」は省略しすぎです. 正確には, **log collectionをattack surfaceおよびprivacy-sensitive assetとしてthreat modelへ含める**ということです. 記録するfield, raw valueを避ける方法, retention, access control, redaction, tamper evidence, failure時の挙動をdeploymentごとに決めます.
+          </div>
+        </div>
+      </article>
     </section>
 
     <div class="card panel" id="bottom-actions">

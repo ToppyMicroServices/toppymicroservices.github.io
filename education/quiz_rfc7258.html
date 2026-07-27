@@ -247,6 +247,29 @@
           </div>
         </div>
       </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Evaluate the legitimate audit purpose separately from identifier linkability, aggregation scope, retention, and possible secondary use.">
+        <header><h4>Q7: Which logging decision best follows the design reasoning of RFC 7258</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An agent platform proposes retaining task IDs, tenant IDs, key fingerprints, and session proofs for 30 days in a centrally searchable log to support incident investigation.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Keep every field that might later be useful because security logging cannot be a privacy attack</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Disable all logging, including records needed for incident investigation, because monitoring is always an attack</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Retain only fields needed for defined investigations and treat correlation as a threat addressed by access, retention, redaction, and separation controls</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 7258 classifies **pervasive monitoring**—indiscriminate, very large-scale collection of protocol artifacts—as an attack. A log with a legitimate operational purpose can still become a data source for correlating actors, tenants, and tasks when identifiers are aggregated and retained.
+
+            - A (incorrect): A security purpose does not remove exposure to compromise, insider misuse, secondary use, or future correlation. “Might be useful later” is not a data-minimization rule.
+            - B (incorrect): RFC 7258 does not prohibit all beneficial monitoring, such as network management or attack detection. Making a system unmanageable is not its intended outcome.
+            - C (correct): Field-level necessity, reduced linkability, bounded access, limited retention, and redaction address both operational value and the risk that monitoring facilities can be abused for PM.
+
+            The draft applies this boundary to full grants, session proofs, key fingerprints, tenant IDs, and task IDs: avoid recording them by default, and apply retention limits, access controls, and redaction when a security audit requires logging. Logging is not automatically the attack; it is an **observation and correlation surface** that belongs in the threat model.
+          </div>
+        </div>
+      </article>
     </section>
 
     <div class="card panel" id="bottom-actions">

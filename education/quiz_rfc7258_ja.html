@@ -251,6 +251,29 @@
           </div>
         </div>
       </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="監査目的の正当性と, 収集する識別子のlinkability・集約範囲・保存期間・二次利用可能性を分けて評価してください.">
+        <header><h4>Q7: security audit用のloggingを設計するとき, RFC 7258の考え方に最も合う判断はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Agent基盤でincident調査を可能にするため, task ID, tenant ID, key fingerprint, session proofを中央の検索可能なlogへ30日間保存する案が出ています.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. security目的のlogはprivacy attackにならないので, 将来必要になり得るfieldをすべて保存する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. monitoringは常にattackなので, incident調査に必要な記録も含めてloggingを全面的に禁止する</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 調査に必要なfieldだけを残し, 相関可能性を脅威として評価して, access・retention・redaction・分離を設計する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 7258がattackとして扱うのは, protocol artifactを無差別かつ非常に大規模に収集する**pervasive monitoring**です. 正当な運用目的があるlogも, 識別子を長期間集約すれば, actor・tenant・taskを横断して相関するdata sourceになり得ます.
+
+            - A (incorrect): 収集者の善意やsecurity目的だけでは, 漏えい・内部不正・目的外利用・将来の相関可能性は消えません. 「いつか使うかもしれない」はdata minimizationの根拠になりません.
+            - B (incorrect): RFC 7258はnetwork managementやattack detectionに役立つmonitoringまで一律に禁止していません. 運用可能性を失わせることも望ましい結論ではありません.
+            - C (correct): 必要性をfield単位で説明し, linkabilityを抑え, access scopeとretentionを限定する設計は, monitoringの便益とPMへの悪用可能性の両方を扱います.
+
+            このdraftとの接点は, full grant, session proof, key fingerprint, tenant ID, task IDなどを原則として記録せず, security auditに必要な場合もretention limit, access control, redactionを要求する点です. logging自体を自動的にattackと断定するのではなく, **集約・相関・二次利用できる観測面**としてthreat modelへ入れます.
+          </div>
+        </div>
+      </article>
     </section>
 
     <div class="card panel" id="bottom-actions">

@@ -301,6 +301,29 @@
           </div>
         </div>
       </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="同じresourceへ到達できる可能性と, authorization上同じidentifierとして扱ってよいことを分けてください. 誰がequivalence ruleを決めるかも確認します.">
+        <header><h4>Q7: URIをsecurity policyの識別子として使う場合, 最も安全なcanonicalization境界はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">署名済みgrantのtarget URIと受信requestのtargetを比較します. schemeやhostの大小文字だけでなく, pathの大小文字や別host名などのaliasも入力され得ます.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. verifierが到達確認を行い, 同じresponseを返したURIはすべて同じpolicy identifierとして受理する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. profileまたはtrusted policy側で許可する正規化とcanonical formを固定し, 発行前にその形へ揃え, verifierは定義外のvariantを拒否する</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. signatureが有効なら, verifierがpathの小文字化, alias hostの解決, display nameとの照合を順に試して受理する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986はURI comparisonに単一の万能規則を置いていません. 比較目的によってtrade-offが異なり, scheme定義やapplication固有の規則が必要になるためです. 特にsecurity decisionでは, 別のidentifierを同一と誤認するfalse positiveを避ける必要があります.
+
+            - A (incorrect): ある時点で同じ表現を返すことは, authorization上のidentity equivalenceを証明しません. redirect, virtual hosting, shared content, 一時的なroutingによって結果が一致することがあります.
+            - B (correct): RFC 3986は不要なaliasを減らすため, URI producerがalready-normalized formを一貫して出す考え方を示します. security profileでは, そのcanonical formと比較規則をtrusted boundaryで固定すると, verifierごとの推測をなくせます.
+            - C (incorrect): schemeとhostのcase normalizationはgeneric ruleですが, pathやその他のcomponentはscheme依存です. alias解決やdisplay-name matchingまで受信側が追加すると, attacker-controlled inputから新しいequivalenceを作ってしまいます.
+
+            このdraftはこの原則をさらに限定し, decision-sensitive valueを発行またはtrusted policy comparisonの前にcanonicalにし, final acceptance pathではpeerのalias, case variant, URI variant, natural-language interpretationを修復しない設計を採ります. 「入力側でcanonicalizationする」とは, **profileが定めた決定的な変換を信頼済み境界で一度だけ行う**ことであり, verifierが都合よく意味を推測することではありません.
+          </div>
+        </div>
+      </article>
     </section>
 
     <div class="card panel" id="bottom-actions">
