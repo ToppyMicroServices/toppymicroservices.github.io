@@ -2,6 +2,14 @@
   'use strict';
 
   const RFC_EDITOR = 'https://www.rfc-editor.org/rfc/rfc';
+  const NORMATIVE_REFERENCES = new Set([
+    2119, 5280, 6234, 7515, 7519, 7800, 8174, 8392, 8446,
+    8725, 8747, 8949, 9052, 9261, 9325, 9334, 9421, 9530
+  ]);
+  const INFORMATIVE_REFERENCES = new Set([
+    5056, 5705, 6749, 6973, 7258, 8693, 8705, 9111, 9266,
+    9449, 9457, 9518, 9651, 9711, 9847
+  ]);
   const item = (n, title, ja, en, flags = '') => ({ n, title, ja, en, flags });
   const groups = [
     {
@@ -169,7 +177,13 @@
     const side = el('div', 'a2a-rfc-side');
     if (entry.flags.includes('A')) side.appendChild(badge(locale === 'ja' ? 'A2A 1.0で明記' : 'Named by A2A 1.0', 'a2a-direct'));
     if (entry.flags.includes('B')) side.appendChild(badge(locale === 'ja' ? '背景標準' : 'Background', 'background'));
-    if (entry.flags.includes('D')) side.appendChild(badge(locale === 'ja' ? '関連仕様案で参照' : 'Referenced by related draft', 'draft-direct'));
+    if (NORMATIVE_REFERENCES.has(entry.n)) {
+      side.appendChild(badge(locale === 'ja' ? '関連仕様案の規範参照' : 'Normative reference in related draft', 'draft-normative'));
+    } else if (INFORMATIVE_REFERENCES.has(entry.n)) {
+      side.appendChild(badge(locale === 'ja' ? '関連仕様案の参考参照' : 'Informative reference in related draft', 'draft-informative'));
+    } else if (entry.flags.includes('D')) {
+      side.appendChild(badge(locale === 'ja' ? '関連仕様案で参照' : 'Referenced by related draft', 'draft-direct'));
+    }
     if (entry.flags.includes('G')) side.appendChild(badge(locale === 'ja' ? '設計レビュー向け' : 'Review guidance', 'design'));
     if (entry.flags.includes('Q')) {
       const link = el('a', 'a2a-map-badge quiz-link', locale === 'ja' ? '日本語クイズ' : 'English quiz');
@@ -214,11 +228,13 @@
     renderGroups(groupTarget, locale);
     if (stats) {
       const entries = groups.flatMap((group) => group.items);
-      const draftCount = entries.filter((entry) => entry.flags.includes('D')).length;
+      const normativeCount = entries.filter((entry) => NORMATIVE_REFERENCES.has(entry.n)).length;
+      const informativeCount = entries.filter((entry) => INFORMATIVE_REFERENCES.has(entry.n)).length;
+      const draftCount = normativeCount + informativeCount;
       const quizCount = entries.filter((entry) => entry.flags.includes('Q')).length;
       stats.textContent = locale === 'ja'
-        ? '全' + entries.length + '本 / 関連仕様案で参照' + draftCount + '本 / クイズ' + quizCount + '本'
-        : entries.length + ' RFCs / ' + draftCount + ' referenced by the related draft / ' + quizCount + ' quizzes';
+        ? '全' + entries.length + '本 / 関連仕様案の参照' + draftCount + '本（規範' + normativeCount + ' / 参考' + informativeCount + '） / クイズ' + quizCount + '本'
+        : entries.length + ' RFCs / ' + draftCount + ' related-draft references (' + normativeCount + ' normative / ' + informativeCount + ' informative) / ' + quizCount + ' quizzes';
     }
   }
 
