@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9421 クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9421クイズ: covered component, signature metadata, content digest, replay, verification policyを確認する." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9421_ja.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 9421 クイズ | ToppyMicroServices" />
+  <meta property="og:description" content="RFC 9421クイズ: covered component, signature metadata, content digest, replay, verification policyを確認する." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9421_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 9421 クイズ | ToppyMicroServices" />
+  <meta name="twitter:description" content="RFC 9421クイズ: covered component, signature metadata, content digest, replay, verification policyを確認する." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9421.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9421_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9421.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9421", "SKILL_SUBTITLE": "HTTP Message Signatures", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 9421 クイズ</h1>
+        <h2 id="subtitle">選択したHTTP componentのintegrityとapplication policy</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a  aria-label="English" data-lang="en" href="quiz_rfc9421.html">🇺🇸</a><a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9421_ja.html">🇯🇵</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">参照仕様</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc9421" target="_blank" rel="noopener noreferrer">RFC 9421: HTTP Message Signatures</a></li></ul>
+    </section>
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">回答時に解説を表示</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">すべての解答を表示</span></label>
+      </div>
+    </section>
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="signature metadataとcryptographic output byteを分ける.">
+        <header><h4>Q1: Signature-Inputは何をdescribeする?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. orderedなcovered componentとsignature parameter</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. binary signature valueだけ</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. HTTP bodyのcomplete copy</label>
+        </fieldset><div class="explain">**解説:**
+
+A: Signature-Inputはsignature base構築に使うcomponent identifierとmetadataを運ぶ.
+B: Signature fieldがcryptographic byte sequenceを運ぶ.
+C: message contentはSignature-Inputへcopyされない.</div></div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="verifierはsignature base再構築にmatching metadataが必要である.">
+        <header><h4>Q2: Signatureにlabel sig1があるがSignature-Inputにsig1がない. messageをどう扱う?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. common headerからcovered componentをguessする</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. unmatched labelをerrorとして扱う</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. body hashだけverifyする</label>
+        </fieldset><div class="explain">**解説:**
+
+A: guessではsignerが定義したsignature baseを安全に再現できない.
+B: 各message signature labelは両fieldに存在する必要がある.
+C: body digestはmissing signature metadataのsubstituteではない.</div></div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="coverageはexplicitでcontentには通常digest componentが必要である.">
+        <header><h4>Q3: HTTP message signatureはrequest bodyを自動的にcoverする?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. はい, RFC 9421では全signatureがheaderとbodyの全byteをimplicitに含む</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. はい, @methodをcovered componentへ含めればbody contentも同時にcoveredになる</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. いいえ, profileがcontent digestまたは別のdefined content componentを含める必要がある</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 9421はraw whole messageではなくselected componentのconstructed baseをsignする.
+B: @methodはmethodだけをcoverしcontentを含まない.
+C: Content-Digestのsigningでdigest fieldをbindしdigest validationでbodyへlinkする.</div></div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="同じcontentでも別operationやdestinationでは意味が異なる.">
+        <header><h4>Q4: request profileが@methodと@target-uriをcoverする理由はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. signatureをintended operationとtargetへbindする</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. intermediaryからURIをencryptする</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. TLS cipher suiteを選ぶ</label>
+        </fieldset><div class="explain">**解説:**
+
+A: これらのderived componentでmethodやdestination変更後のreuseを防ぐ.
+B: signatureはintegrityとauthenticity propertyを提供するがconfidentialityではない.
+C: HTTP covered componentはTLS algorithmをnegotiateしない.</div></div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="freshness policyをsupportするがverifier enforcementが必要である.">
+        <header><h4>Q5: created, expires, nonce signature parameterのroleはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. 全server clockを自動的にsynchronizeする</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. age, expiration, replay checkのためのsigned inputを提供する</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. signerのauthorization scopeをidentifyする</label>
+        </fieldset><div class="explain">**解説:**
+
+A: metadataだけではclock synchronizationを確立できない.
+B: applicationがacceptable windowとnonce uniquenessを定義してenforceする必要がある.
+C: これらのparameterはscope grantではなくsignature timingとuniquenessに関する.</div></div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="application requirementはsignature acceptanceの一部である.">
+        <header><h4>Q6: signatureはcryptographically verifyするがapplicationがcoverageを要求するAuthorizationをomitしている. どうする?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. cryptographic verificationが唯一のrequired stepなのでacceptする</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. 受信後にAuthorizationをSignature-Inputへ追加する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. application-level signature verificationをfailする</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 9421はapplicationが追加coverage requirementをenforceすることを求める.
+B: Signature-Input変更はsignature baseを変えsignatureをinvalidにする.
+C: included componentがverifyしてもrequired componentをomitしたsignatureはprofileを満たさない.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="key identifierはkey resolutionのinputでtrust anchorではない.">
+        <header><h4>Q7: keyidだけで何をestablishする?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. key materialをlocateまたはselectするidentifierだけ</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. key ownerがrequested actionを実行できること</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. named keyがacceptable algorithmを使うこと</label>
+        </fieldset><div class="explain">**解説:**
+
+A: verifierはkeyのtrusted resolutionとauthorization ruleをなお必要とする.
+B: authorizationはkey identificationを超えるapplication policyである.
+C: algorithm acceptabilityは別にresolveしてcheckする必要がある.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="labelがsameまたはdifferent signerのsignatureを分ける.">
+        <header><h4>Q8: 1つのHTTP messageはmultiple signatureを含められる?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. いいえ, later signatureがfirstをoverwriteする</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. はい, 各distinct signatureが両fieldでunique labelを使う</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. はい, ただし全signatureが同じkeyとcomponentを使う</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 9421はmultiple labeled valueを運べるdictionaryを定義する.
+B: matchingするunique labelで各Signature valueをSignature-Inputへassociateする.
+C: multiple signatureはdifferent signer, key, algorithm, coverageを使える.</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="verifierでのreconstructionはreceived component valueを使う.">
+        <header><h4>Q9: intermediaryがtransit中にcovered componentをchangeした. expected resultはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. signatureがnew valueへ自動的にadaptする</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. intermediaryはHTTPをmodifyできるためchangeはignoreされる</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. transformed messageをcoverするvalidなnew signatureがない限りverificationがfailする</label>
+        </fieldset><div class="explain">**解説:**
+
+A: keyを持つsignerだけがaltered baseへsignatureを作れる.
+B: HTTP上permittedなtransformationでもcovered componentが変わればsignatureはbreakする.
+C: covered valueがoriginal signature baseと一致しなくなる.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="base specificationはuse-caseのacceptance choiceを意図的にopenにする.">
+        <header><h4>Q10: A2AのHTTP-signature profileはRFC 9421使用に加えて何をspecifyすべき?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. signature field labelのspellingとsignature valueのdisplay orderだけ</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. required component, key trust, algorithm, freshness, replay, authorization binding</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. 全valid signatureがHTTP exchange全体をcoverするrule</label>
+        </fieldset><div class="explain">**解説:**
+
+A: labelだけではsecurity coverage, trust, replay policyを定義できない.
+B: これらのruleでvalid signatureがA2A requestに対して何を意味するか決まる.
+C: coverageはimplicitなentire exchangeではなくexplicitにselectedされたcomponent setである.</div></div>
+      </article>
+    </section>
+    <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>

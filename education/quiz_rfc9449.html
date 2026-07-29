@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9449 Quiz | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9449 quiz on DPoP proofs, token binding, replay limits, validation, and HTTPS." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9449.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 9449 Quiz | ToppyMicroServices" />
+  <meta property="og:description" content="RFC 9449 quiz on DPoP proofs, token binding, replay limits, validation, and HTTPS." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9449.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 9449 Quiz | ToppyMicroServices" />
+  <meta name="twitter:description" content="RFC 9449 quiz on DPoP proofs, token binding, replay limits, validation, and HTTPS." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9449.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9449_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9449.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9449", "SKILL_SUBTITLE": "OAuth 2.0 Demonstrating Proof of Possession", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 9449 Quiz</h1>
+        <h2 id="subtitle">Sender-constrained tokens and per-request proofs</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a class="active" aria-current="page" aria-label="English" data-lang="en" href="quiz_rfc9449.html">🇺🇸</a><a  aria-label="日本語" data-lang="ja" href="quiz_rfc9449_ja.html">🇯🇵</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">References</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc9449" target="_blank" rel="noopener noreferrer">RFC 9449: OAuth 2.0 Demonstrating Proof of Possession</a></li></ul>
+    </section>
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show explanation immediately</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show all answers</span></label>
+      </div>
+    </section>
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Compare bearer possession with proof of the bound private key.">
+        <header><h4>Q1: What security property does DPoP add to an OAuth access token?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. It hides the token value from the resource server</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. It makes use depend on proving possession of the bound key</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. It grants the client every scope supported by the server</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The resource server still receives the access token.
+B: A copied token alone is insufficient when the presenter lacks the private key.
+C: DPoP constrains presentation and does not expand authorization scope.</div></div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Proof of one key and proof of an OAuth client identity are different statements.">
+        <header><h4>Q2: Is a valid DPoP proof sufficient client authentication?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Yes, because the jwk header is a trusted registry of authenticated OAuth clients</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Yes, because every valid proof also carries an access token identifying the client</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. No, DPoP proves key possession and is not itself client authentication or authorization</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The embedded public key is not automatically bound to a registered client identity.
+B: Token-endpoint DPoP proofs can exist without an access token and proof validity still is not client authentication.
+C: Additional OAuth and application checks establish client identity and permitted action.</div></div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="The proof must demonstrate possession of an asymmetric private key.">
+        <header><h4>Q3: Which JOSE algorithm is acceptable for a DPoP proof?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. A locally accepted registered asymmetric signature algorithm</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. none because HTTPS authenticates the proof</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. A shared-secret MAC whose secret is placed in jwk</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The alg must be asymmetric, supported, registered, and acceptable to policy.
+B: The none algorithm is explicitly disallowed.
+C: DPoP requires asymmetric signatures and the jwk must not include a private key.</div></div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="DPoP intentionally signs a minimal subset rather than normalizing the whole HTTP message.">
+        <header><h4>Q4: Which request data is covered by the base DPoP proof?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. Every header field and the complete request body</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. The HTTP method and target URI, plus defined proof claims</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. Only the access token value</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: Base DPoP does not provide whole-message integrity.
+B: The htm and htu claims bind the proof to method and URI while other claims provide time and uniqueness.
+C: The ath claim binds a token when present but method and URI are also covered.</div></div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="One client key can be associated with more than one token value.">
+        <header><h4>Q5: Why must a protected-resource DPoP proof include ath?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. It encrypts the access token for logging</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. It chooses the resource server&#x27;s TLS certificate</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. It binds this proof to the particular access-token value</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: ath is a hash binding inside the signed proof and is not token encryption.
+B: TLS server identity selection is outside the ath claim.
+C: The token hash prevents substituting another token under a captured proof.</div></div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Validate request binding, freshness, token binding, and key binding.">
+        <header><h4>Q6: What must a resource server compare when validating a DPoP proof?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. htm, htu, proof time, ath, and the token&#x27;s bound public key</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Only jti because it identifies every HTTP request globally</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Only the JWT signature because all claims are advisory</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: These checks bind the signed JWT to the current request and access token.
+B: jti uniqueness alone does not bind method, URI, token, time, or key.
+C: DPoP&#x27;s required claims have mandatory validation semantics.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="The nonce lets the server contribute unpredictable freshness.">
+        <header><h4>Q7: A server sent a DPoP-Nonce value. What must the next applicable proof do?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. Put the value in kid</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Include the matching nonce claim</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. Reuse any earlier proof with the same method</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: kid is a key identifier and not the nonce claim.
+B: When the server provides a nonce, the proof must echo it in the signed payload.
+C: A new server nonce prevents reuse of a proof that lacks the current value.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Sender constraining is defense in depth rather than secure transport.">
+        <header><h4>Q8: Can DPoP replace HTTPS?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. Yes, because the access token is hashed in ath</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. Yes, when the client key is non-extractable</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. No, DPoP must be used with HTTPS</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: The token itself is still transmitted and ath does not provide channel confidentiality.
+B: A non-extractable key does not authenticate the server or encrypt the HTTP exchange.
+C: RFC 9449 explicitly treats DPoP as an additional control and not a transport substitute.</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Otherwise the sender constraint could be downgraded away.">
+        <header><h4>Q9: A DPoP-bound token is sent with the Bearer authentication scheme to a server supporting both schemes. What should happen?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Reject the token as a bearer token</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Accept it if the token has not expired</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Remove the confirmation binding and retry</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: A server supporting DPoP must not bypass the key proof by accepting the bound token as Bearer.
+B: Lifetime validity does not satisfy the token&#x27;s sender constraint.
+C: The resource server cannot rewrite the authorization server&#x27;s token binding.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A script running inside the legitimate application context can use available capabilities.">
+        <header><h4>Q10: What residual risk remains for a browser client after adopting DPoP?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. A stolen token can always be used without the bound key</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. XSS code can invoke the signing key through the compromised client context</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. HTTPS becomes unable to authenticate the resource server</label>
+        </fieldset><div class="explain">**Explanation:**
+
+A: Preventing token-only use is the principal benefit of sender constraining.
+B: A non-extractable key may resist export but not malicious use by code executing in the client.
+C: DPoP does not disable TLS server authentication.</div></div>
+      </article>
+    </section>
+    <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>

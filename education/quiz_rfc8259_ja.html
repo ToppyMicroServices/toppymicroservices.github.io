@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 8259 クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 8259クイズ: JSONのvalue, object, number, string, UTF-8, parser境界を確認する." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc8259_ja.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 8259 クイズ | ToppyMicroServices" />
+  <meta property="og:description" content="RFC 8259クイズ: JSONのvalue, object, number, string, UTF-8, parser境界を確認する." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc8259_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 8259 クイズ | ToppyMicroServices" />
+  <meta name="twitter:description" content="RFC 8259クイズ: JSONのvalue, object, number, string, UTF-8, parser境界を確認する." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc8259.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8259_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8259.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSONデータ交換形式", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 8259 クイズ</h1>
+        <h2 id="subtitle">相互運用できるJSONの解析と生成</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a  aria-label="English" data-lang="en" href="quiz_rfc8259.html">🇺🇸</a><a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc8259_ja.html">🇯🇵</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">参照仕様</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8259" target="_blank" rel="noopener noreferrer">RFC 8259: JSON Data Interchange Format</a></li></ul>
+    </section>
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">回答時に解説を表示</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">すべての解答を表示</span></label>
+      </div>
+    </section>
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="JSON grammarとapplicationのmessage schemaを分けて考える.">
+        <header><h4>Q1: A2A endpointがtop-levelのJSON objectだけを受理する. RFC 8259との関係はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. RFC 8259はJSON textとしてobjectとarrayだけを許す</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. endpointはapplication ruleとしてobject要件を課せる</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. parserはschemaを適用できないためendpointは全scalarも受理しなければならない</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 8259では任意のJSON valueをtop-levelにserializeできる.
+B: applicationは一般的なJSON grammarより受理範囲を狭められる.
+C: RFC 8259はJSON syntaxを定義するがparse後のschema validationを禁止しない.</div></div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="重複したobject nameを各parserがどう扱うかを比べる.">
+        <header><h4>Q2: requestに{&quot;role&quot;:&quot;reader&quot;,&quot;role&quot;:&quot;admin&quot;}が含まれる. 相互運用上もっとも安全な判断はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. authorization logicで使う前にobjectをrejectする</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. RFC 8259がlast-winsを定義するため常に最後のvalueを使う</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. 2つのmemberをsortして最初を使う</label>
+        </fieldset><div class="explain">**解説:**
+
+A: object nameはuniqueであるべきでありduplicateの扱いは実装間で予測できない.
+B: last-winsは一般的な実装例だがRFC 8259の必須動作ではない.
+C: member orderではduplicate-nameの曖昧さを解消できずparserごとにorderの見え方も異なる.</div></div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="object memberとarray elementを区別する.">
+        <header><h4>Q3: A2A実装はJSON objectのmember orderに意味を持たせてよい?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. よい, すべてのparserがsource orderを保持するため</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. よい, senderがBOMなしUTF-8を使う場合</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. いいえ, orderがmessageの意味ならarrayを使う</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 8259はmember orderを呼出側に見せるかがlibraryごとに異なるとする.
+B: encodingの選択でobject-member orderが相互運用可能なcontractになるわけではない.
+C: arrayはelement positionでorderを表すがobject-member orderへの依存は安全でない.</div></div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="array elementが同じJSON typeである必要があるかを確認する.">
+        <header><h4>Q4: RFC 8259でvalidなJSON arrayはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. 全elementが同じtypeのarrayだけ</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. string, number, object, nullを含むarray</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. 少なくとも1つのelementを持つarrayだけ</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 8259はarray elementにsame-type要件を課さないためmixed valueもvalidである.
+B: arrayは異なるJSON value typeを混在でき各elementは通常のvalue grammarに従う.
+C: grammarは1つ以上のelementを持つarrayに加えてempty arrayも許している.</div></div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="programming languageのnumeric typeではなくJSON number grammarを見る.">
+        <header><h4>Q5: senderがNaNをquoteなしのJSON numberとして送った. conforming receiverはどう分類する?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. valid JSONではない</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. receiverがIEEE 754を使うならvalid</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. JSONのnull literalである</label>
+        </fieldset><div class="explain">**解説:**
+
+A: NaNとInfinityはRFC 8259のnumber grammarに含まれない.
+B: IEEE 754実装はNaNを表現できるがJSON syntaxは許さない.
+C: NaNはlowercaseのnull literalでも他のJSON literalでもない.</div></div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="identifierをbinary64でexactに相互運用できるinteger rangeと比べる.">
+        <header><h4>Q6: agent identifierが整数9007199254740993であり一般的runtime間でexactにround-tripする必要がある. よりよい表現はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. exponentを付けたJSON number</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. type commentを後置したJSON number</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. application-levelのidentifier ruleを持つJSON string</label>
+        </fieldset><div class="explain">**解説:**
+
+A: number notationを変えてもbinary64のexact integer range外の値はexactにならない.
+B: JSONにはcomment syntaxがなくnumeric precisionの問題も残る.
+C: stringならnumeric roundingを避けてapplicationがidentifier syntaxを定義できる.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="network interoperability ruleとBOM ruleを分けて確認する.">
+        <header><h4>Q7: 独立したsystem間で交換するJSONに適用されるencoding ruleはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. BOM付きUTF-16がrequired</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. UTF-8を使い先頭BOMを生成しない</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. encodingはobject-member orderで選ぶ</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 8259はclosed ecosystem外で交換するJSONにUTF-8を要求する.
+B: network上のJSONはUTF-8を使いgeneratorはBOMを付けてはならない.
+C: member orderはencoding negotiation signalを持たない.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="sourceのescape表記ではなくdecode後のUnicode code unitを比べる.">
+        <header><h4>Q8: parserがmember name &quot;a\\b&quot;と&quot;a\u005Cb&quot;を受け取った. equalityはどう判断する?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. source byteが異なるため常にdifferent</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. object-member orderも一致する場合だけequal</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. escapeをdecodeして得られたcode unitを比較する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: 異なるescape表記でも同じstring valueをencodeできる.
+B: string equalityはobject内のmember positionに依存しない.
+C: RFC 8259はtextual representationを変換した後のcode-unit比較を示す.</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="ABNFが表現できる範囲とinteroperableなUnicode処理の保証を分ける.">
+        <header><h4>Q9: lone UTF-16 surrogateを含むJSON stringに対して実装は何を想定すべき?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. receiver behaviorは実装間で予測不能になりうる</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. 全receiverがU+FFFDへreplaceしなければならない</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. UTF-8 encode後にvalid Unicode scalar valueになる</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 8259はこのdataでlengthやvalueの不一致やruntime failureまで起こりうるとする.
+B: RFC 8259は共通のreplacement procedureを定義しない.
+C: lone surrogateをencodeしてもUnicode scalar valueにはならない.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC 8259はparser limitを許し安全な値はapplicationが決める.">
+        <header><h4>Q10: A2A serviceはJSON sizeとnesting depthのlimitをどこでenforceすべき?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. authorizationとbusiness処理の完了後</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. 高コストまたはsecurity-sensitiveな処理より前のinput boundary</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. conforming parserはdeep inputをrejectできないためsenderだけ</label>
+        </fieldset><div class="explain">**解説:**
+
+A: checkが遅いとhostile inputが先にparserとapplication resourceを消費する.
+B: RFC 8259はsizeとdepthのlimitを許しearly enforcementでresource useを制限できる.
+C: parserはtext sizeとmaximum nesting depthにlimitを設けられる.</div></div>
+      </article>
+    </section>
+    <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>

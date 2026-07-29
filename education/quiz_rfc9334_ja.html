@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9334 クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9334クイズ: RATSのrole, appraisal policy, topology, trust, freshness, privacyを確認する." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9334_ja.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 9334 クイズ | ToppyMicroServices" />
+  <meta property="og:description" content="RFC 9334クイズ: RATSのrole, appraisal policy, topology, trust, freshness, privacyを確認する." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9334_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 9334 クイズ | ToppyMicroServices" />
+  <meta name="twitter:description" content="RFC 9334クイズ: RATSのrole, appraisal policy, topology, trust, freshness, privacyを確認する." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9334.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9334_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9334.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9334", "SKILL_SUBTITLE": "RATS Architecture", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 9334 クイズ</h1>
+        <h2 id="subtitle">attestationのrole, evidence, result, freshness</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a  aria-label="English" data-lang="en" href="quiz_rfc9334.html">🇺🇸</a><a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9334_ja.html">🇯🇵</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">参照仕様</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc9334" target="_blank" rel="noopener noreferrer">RFC 9334: RATS Architecture</a></li></ul>
+    </section>
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">回答時に解説を表示</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">すべての解答を表示</span></label>
+      </div>
+    </section>
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="conceptual messageをproducerからappraiserへ追う.">
+        <header><h4>Q1: Target EnvironmentについてEvidenceをcreateするroleはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. Attester</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. Verifier</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. Relying Party</label>
+        </fieldset><div class="explain">**解説:**
+
+A: AttesterがTarget Environmentについてのclaimを含むEvidenceをproduceする.
+B: VerifierはEvidenceをconsumeしappraiseする.
+C: Relying PartyはdecisionのためAttestation Resultをconsumeする.</div></div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Verifierはappraised EvidenceをRelying Party向けmessageへtransformする.">
+        <header><h4>Q2: Verifierのmain outputはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. new Target Environment</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. OAuth authorization code</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Attestation Result</label>
+        </fieldset><div class="explain">**解説:**
+
+A: roleはappraise対象environmentをcreateしない.
+B: RATSはOAuth code issuanceをVerifier outputとして定義しない.
+C: VerifierはEvidence appraisal policyを適用しAttestation Resultをproduceする.</div></div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Evidence用policyとVerifier result用policyは別である.">
+        <header><h4>Q3: Appraisal Policy for Attestation Resultsをapplyするのは誰?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Attester</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Relying Party</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. Endorser</label>
+        </fieldset><div class="explain">**解説:**
+
+A: AttesterはEvidenceをcreateするがRelying Partyのacceptance decisionは行わない.
+B: Relying Partyがresult-appraisal policyでAttestation Resultをevaluateする.
+C: EndorserはVerifierが使うEndorsementをsupplyする.</div></div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="attestationはdecisionへ情報を与えるがRelying Party policyをreplaceしない.">
+        <header><h4>Q4: positiveなAttestation Resultは自動的にauthorization grantになる?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. はい, Verifierが全resource accessを決める</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. はい, signed resultは常にadministrator rightをgrantする</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. いいえ, Relying Partyが自身のappraisalとauthorization policyへ組み込む</label>
+        </fieldset><div class="explain">**解説:**
+
+A: VerifierはEvidenceをappraiseしRelying Partyが自身のdecisionを行う.
+B: signature validityはRelying Partyのauthorization policyを定義しない.
+C: Attestation Resultはdecision supportであり特定useではunacceptableになりうる.</div></div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="誰がVerifier resultを最初に受け取り後でpresentするかを見る.">
+        <header><h4>Q5: Passport Modelをdistinguishするものはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. AttesterがAttestation Resultを取得しRelying Partyへpresentする</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. Relying PartyがEvidenceをVerifierへ送りresultをAttesterから隠す</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. flowにVerifierが参加しない</label>
+        </fieldset><div class="explain">**解説:**
+
+A: reusable resultはholderが運ぶpassportに似る.
+B: そのflowはBackground-Check Modelに近い.
+C: 両topological patternともVerifierのEvidence-appraisal roleを持つ.</div></div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Relying PartyがEvidenceをchosen Verifierへforwardする.">
+        <header><h4>Q6: Background-Check Modelをdistinguishするものはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. AttesterがRelying Partyへcontactする前にreusable resultを常にcacheする</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Relying PartyがEvidenceを受けVerifierにappraiseさせる</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Relying PartyがVerifierなしでraw Evidenceをinterpretする</label>
+        </fieldset><div class="explain">**解説:**
+
+A: それはPassport Modelのcharacteristicでこのmodelのrequirementではない.
+B: resultはRelying Partyへ戻り自身のappraisalとdecisionに使われる.
+C: architectureはEvidence appraisalをVerifier roleへassignする.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Verifierはmeasurementまたはclaimをknown acceptable valueと比較する.">
+        <header><h4>Q7: Reference Valueのroleはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. Attesterがgenerateするfresh nonce</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Relying Partyのfinal access decision</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. VerifierがEvidence policy適用時に使うknown value</label>
+        </fieldset><div class="explain">**解説:**
+
+A: nonceはfreshnessをsupportできるがReference Valueではない.
+B: Reference ValueはEvidence appraisalへのinputでfinal decisionではない.
+C: Evidence内claimをassessするcomparison materialを提供する.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="validだがoldなEvidenceはもう存在しないstateをdescribeしうる.">
+        <header><h4>Q8: RATS protocolがfreshnessをprovideすべき理由はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. staleなEvidenceまたはAttestation Resultのreplayをlimitする</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. deviceが永続的にtrustworthyであるとguaranteeする</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. Evidence source authenticationをreplaceする</label>
+        </fieldset><div class="explain">**解説:**
+
+A: timestamp, nonce, epoch identifierでappraisalをrelevant time windowへconnectできる.
+B: freshnessはtimingをdescribeするがfuture stateをguaranteeしない.
+C: freshnessとsource authenticityは別propertyである.</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Evidenceはappraiseするpartyへsensitive informationをdiscloseしうる.">
+        <header><h4>Q9: Evidenceがdetailed device configurationを含む. どのprivacy boundaryが重要?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. 全Relying Partyがindependentにverifyできるよう全Evidenceをpublishする</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. VerifierをauthenticateしEvidence disclosureをauthorized partyへprotectする</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. encryptionを全claimがacceptableなproofとして扱う</label>
+        </fieldset><div class="explain">**解説:**
+
+A: broad disclosureはprivacy riskを増やしsecurity-sensitive stateをexposeしうる.
+B: Attesterはsensitive Evidence送信前にVerifierをassureする必要がある場合がある.
+C: confidential conveyanceはclaim correctnessをappraiseしない.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Evidence appraisal, result appraisal, operation authorizationをexplicitに保つ.">
+        <header><h4>Q10: A2A serviceはacceptance decisionでattestationをどう使うべき?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. VerifierなしでAttester自身にtrustedとdeclareさせる</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. 任意positive resultをunrestricted authorityへmapする</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. freshnessとtrustをvalidateしresultをappraiseしてoperation-specific authorizationを適用する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: self-asserted claimではarchitectureのindependent appraisal stepを行えない.
+B: positive resultはcontextualでoperation scopeを定義しない.
+C: これでRATS role separationを保持しattestationがsilentにuniversal authorizationになるのを防ぐ.</div></div>
+      </article>
+    </section>
+    <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>
