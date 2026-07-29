@@ -125,6 +125,9 @@
     ['通信方式と進化', 'Transport and evolution', [9113, 9114, 9000, 8999]],
     ['設計レビュー', 'Design review', [3552, 3439, 6973]]
   ];
+  const entriesByNumber = new Map(
+    groups.flatMap((group) => group.items).map((entry) => [entry.n, entry])
+  );
 
   function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -149,11 +152,14 @@
       body.appendChild(el('h3', '', stage[locale === 'ja' ? 0 : 1]));
       const links = el('div', 'a2a-route-links');
       stage[2].forEach((rfc) => {
-        const link = el('a', '', 'RFC ' + rfc);
-        link.href = RFC_EDITOR + rfc + '.html';
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        links.appendChild(link);
+        const entry = entriesByNumber.get(rfc);
+        if (entry && entry.flags.includes('Q')) {
+          const link = el('a', '', 'RFC ' + rfc);
+          link.href = quizHref(rfc, locale);
+          links.appendChild(link);
+        } else {
+          links.appendChild(el('span', 'a2a-route-pending', 'RFC ' + rfc));
+        }
       });
       body.appendChild(links);
       article.appendChild(body);
@@ -165,10 +171,9 @@
     const li = el('li', 'a2a-rfc-item');
     const main = el('div', 'a2a-rfc-main');
     const title = el('div', 'a2a-rfc-title');
-    const number = el('a', '', 'RFC ' + entry.n);
-    number.href = RFC_EDITOR + entry.n + '.html';
-    number.target = '_blank';
-    number.rel = 'noopener noreferrer';
+    const hasQuiz = entry.flags.includes('Q');
+    const number = el(hasQuiz ? 'a' : 'span', 'rfc-number', 'RFC ' + entry.n);
+    if (hasQuiz) number.href = quizHref(entry.n, locale);
     title.appendChild(number);
     title.appendChild(el('span', '', entry.title));
     main.appendChild(title);
@@ -185,16 +190,23 @@
       side.appendChild(badge(locale === 'ja' ? '関連仕様案で参照' : 'Referenced by related draft', 'draft-direct'));
     }
     if (entry.flags.includes('G')) side.appendChild(badge(locale === 'ja' ? '設計レビュー向け' : 'Review guidance', 'design'));
-    if (entry.flags.includes('Q')) {
-      const link = el('a', 'a2a-map-badge quiz-link', locale === 'ja' ? '日本語クイズ' : 'English quiz');
+    if (hasQuiz) {
+      const link = el('a', 'a2a-map-badge quiz-link', locale === 'ja' ? '問題を解く' : 'Open quiz');
       link.href = quizHref(entry.n, locale);
       side.appendChild(link);
+    } else {
+      side.appendChild(badge(locale === 'ja' ? '問題未作成' : 'Quiz not yet available', 'quiz-pending'));
     }
     if (entry.flags.includes('R')) {
       const link = el('a', 'a2a-map-badge related-quiz', locale === 'ja' ? '旧版 RFC 7807 quiz' : 'Older RFC 7807 quiz');
       link.href = quizHref(7807, locale);
       side.appendChild(link);
     }
+    const source = el('a', 'a2a-map-badge rfc-source', locale === 'ja' ? 'RFC本文 ↗' : 'RFC text ↗');
+    source.href = RFC_EDITOR + entry.n + '.html';
+    source.target = '_blank';
+    source.rel = 'noopener noreferrer';
+    side.appendChild(source);
     li.appendChild(main);
     li.appendChild(side);
     return li;
