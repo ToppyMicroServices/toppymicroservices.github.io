@@ -32,6 +32,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       skipToQuestions: '設問へスキップ',
       showHint: 'ヒントを見る',
       hideHint: 'ヒントを閉じる',
+      termNotes: '用語メモ',
       checkAnswer: '回答を確定',
       switchToDark: 'ダーク',
       switchToLight: 'ライト',
@@ -54,6 +55,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       skipToQuestions: 'Skip to questions',
       showHint: 'Show hint',
       hideHint: 'Hide hint',
+      termNotes: 'Term notes',
       checkAnswer: 'Check answer',
       switchToDark: 'Dark',
       switchToLight: 'Light',
@@ -1662,6 +1664,62 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     return svg;
   }
 
+  function decodeBasicEntities(text){
+    const box = document.createElement('textarea');
+    box.innerHTML = String(text || '');
+    return box.value;
+  }
+
+  function extractRelatedKeywordNotes(explainHtml){
+    const html = String(explainHtml || '')
+      .replace(/\r\n/g, '\n')
+      .replace(/<br\s*\/?>/gi, '\n');
+    const headingNames = [
+      'Explanation', '解説',
+      'Question intent', '出題意図', '判断のポイント',
+      'Context \\(why chosen\\)', '背景（なぜこの問題）', '問題を出した背景',
+      'Real-world usage', '実務での機会',
+      'Common mistakes', 'よくある誤り',
+      'Terms', '用語',
+      'Options', '選択肢',
+      'Related keywords', '関連キーワード',
+      'Related', '関連',
+      'Correct[^<]*', '正解[^<]*'
+    ].join('|');
+    const match = html.match(new RegExp('<strong>(?:Related keywords|関連キーワード|Related|関連|Terms|用語):<\\/strong>\\s*([\\s\\S]*?)(?=\\n\\s*<strong>(?:' + headingNames + '):<\\/strong>|$)', 'i'));
+    if(!match) return [];
+
+    const lines = match[1].split('\n').map(line => line.trim()).filter(Boolean);
+    const notes = [];
+    const seen = new Set();
+    const pushNote = (rawTerm, rawMeaning) => {
+      const term = decodeBasicEntities(rawTerm).replace(/\s+/g, ' ').trim();
+      const meaning = decodeBasicEntities(String(rawMeaning || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+      if(!term || !meaning) return;
+      const key = term.toLowerCase();
+      if(seen.has(key)) return;
+      seen.add(key);
+      notes.push({ term, meaning: meaning.length > 180 ? meaning.slice(0, 177).trimEnd() + '...' : meaning });
+    };
+
+    for(const line of lines){
+      const item = line.replace(/^\s*[-*]\s*/, '').trim();
+      const parsed = item.match(/^<strong>([^<]+)<\/strong>\s*(?::|：)\s*(.+)$/i);
+      if(parsed) pushNote(parsed[1], parsed[2]);
+      if(notes.length >= 5) break;
+    }
+
+    if(notes.length < 5){
+      const termText = match[1].replace(/\n+/g, ' ');
+      const inline = /<strong>([^<]+)<\/strong>\s*(?::|：|is|means|refers to|とは|は)\s*([\s\S]*?)(?=\s*<strong>[^<]+<\/strong>\s*(?::|：|is|means|refers to|とは|は)|$)/gi;
+      let parsed;
+      while(notes.length < 5 && (parsed = inline.exec(termText))){
+        pushNote(parsed[1], parsed[2]);
+      }
+    }
+    return notes;
+  }
+
   function injectAuthoredHints(){
     $$('#questions .q[data-hint]').forEach((q, index) => {
       if(!(q instanceof HTMLElement) || q.querySelector('.question-hint')) return;
@@ -1695,6 +1753,28 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       const text = document.createElement('p');
       text.textContent = hint;
       inner.appendChild(text);
+
+      const termNotes = extractRelatedKeywordNotes(q.querySelector('.explain')?.innerHTML || '');
+      if(termNotes.length){
+        const terms = document.createElement('div');
+        terms.className = 'hint-terms';
+        const title = document.createElement('strong');
+        title.className = 'hint-terms-title';
+        title.textContent = UI_TEXT.termNotes;
+        terms.appendChild(title);
+
+        const list = document.createElement('ul');
+        termNotes.forEach(note => {
+          const item = document.createElement('li');
+          const term = document.createElement('strong');
+          term.textContent = note.term;
+          item.appendChild(term);
+          item.append(' : ' + note.meaning);
+          list.appendChild(item);
+        });
+        terms.appendChild(list);
+        inner.appendChild(terms);
+      }
       panel.appendChild(inner);
 
       button.addEventListener('click', () => {
