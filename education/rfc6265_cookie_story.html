@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>クッキーのおふだと村の約束 | RFC 6265 紙芝居アニメ</title>
-  <meta name="description" content="RFC 6265 Cookie の基本を、Set-Cookie、Cookie、Domain、Path、Secure、HttpOnly、期限切れに分けて紙芝居風に学ぶ教育用アニメ。" />
+  <title>クッキーのおふだと村の約束 | RFC 6265 漫画アニメ</title>
+  <meta name="description" content="RFC 6265 Cookie の基本を、Set-Cookie、Cookie、Domain、Path、Secure、HttpOnly、期限切れに分けて漫画風に学ぶ教育用アニメ。" />
   <link rel="canonical" href="https://www.toppymicros.com/education/rfc6265_cookie_story.html" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="theme-color" content="#032340" />
   <meta name="color-scheme" content="dark light" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="クッキーのおふだと村の約束 | RFC 6265 紙芝居アニメ" />
-  <meta property="og:description" content="RFC 6265 Cookie の基本を、短い紙芝居アニメで確認する教育ページ。" />
+  <meta property="og:title" content="クッキーのおふだと村の約束 | RFC 6265 漫画アニメ" />
+  <meta property="og:description" content="RFC 6265 Cookie の基本を、短い漫画アニメで確認する教育ページ。" />
   <meta property="og:url" content="https://www.toppymicros.com/education/rfc6265_cookie_story.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="クッキーのおふだと村の約束 | RFC 6265 紙芝居アニメ" />
-  <meta name="twitter:description" content="RFC 6265 Cookie の基本を、短い紙芝居アニメで確認する教育ページ。" />
+  <meta name="twitter:title" content="クッキーのおふだと村の約束 | RFC 6265 漫画アニメ" />
+  <meta name="twitter:description" content="RFC 6265 Cookie の基本を、短い漫画アニメで確認する教育ページ。" />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <script type="application/ld+json">
@@ -26,7 +26,7 @@
     "@context": "https://schema.org",
     "@type": "LearningResource",
     "name": "クッキーのおふだと村の約束",
-    "description": "RFC 6265 Cookie の基本を、紙芝居風の構造図と短い語りで学ぶ教育用ページ。",
+    "description": "RFC 6265 Cookie の基本を、漫画風の構造図と短い語りで学ぶ教育用ページ。",
     "url": "https://www.toppymicros.com/education/rfc6265_cookie_story.html",
     "inLanguage": "ja",
     "learningResourceType": "interactive animation",
@@ -66,6 +66,14 @@
       --shadow-soft: 0 12px 28px rgba(11, 31, 51, 0.12);
       --radius: 16px;
       --radius-sm: 10px;
+      --manga-ink: #07111c;
+      --manga-paper: #fffdf4;
+      --manga-tone: rgba(7, 17, 28, 0.08);
+      --manga-blue: #dff3ff;
+      --manga-green: #e9f9ef;
+      --manga-gold: #fff1bf;
+      --manga-red: #ffe1e1;
+      --panel-shadow: 10px 10px 0 rgba(7, 17, 28, 0.22);
       --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Iowan Old Style", "Palatino Linotype", serif;
       --font-body: "Hiragino Sans", "Yu Gothic", "Avenir Next", "SF Pro Text", system-ui, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -285,18 +293,40 @@
     }
 
     .poster-frame {
+      position: relative;
       width: 100%;
       min-height: 100%;
       padding: 18px;
-      border: 1px solid #d8c595;
-      border-radius: 18px;
+      border: 4px solid var(--manga-ink);
+      border-radius: 6px;
       background:
+        radial-gradient(circle, var(--manga-tone) 1.2px, transparent 1.4px) 0 0 / 12px 12px,
         linear-gradient(180deg, rgba(255, 247, 223, .92), rgba(243, 223, 173, .8)),
         var(--paper);
-      box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.34);
+      box-shadow: var(--panel-shadow), inset 0 0 0 8px rgba(255, 255, 255, 0.34);
+      transform: rotate(-.7deg);
+      overflow: hidden;
+    }
+
+    .poster-frame::before {
+      content: "第1話";
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      padding: 6px 12px;
+      border: 3px solid var(--manga-ink);
+      background: #ffffff;
+      color: var(--manga-ink);
+      font-family: var(--font-display);
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 4px 4px 0 rgba(7, 17, 28, .18);
     }
 
     .poster svg {
+      position: relative;
+      z-index: 1;
       display: block;
       width: 100%;
       height: auto;
@@ -348,6 +378,9 @@
       overflow: hidden;
       padding: 0;
       background: #ffffff;
+      border: 4px solid var(--manga-ink);
+      border-radius: 8px;
+      box-shadow: 14px 14px 0 rgba(1, 12, 28, .28);
     }
 
     .player-head {
@@ -356,8 +389,10 @@
       gap: 14px;
       align-items: center;
       padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(90deg, #f8fbff, #eef6ff);
+      border-bottom: 4px solid var(--manga-ink);
+      background:
+        repeating-linear-gradient(-45deg, rgba(7,17,28,.06), rgba(7,17,28,.06) 2px, transparent 2px, transparent 10px),
+        linear-gradient(90deg, #ffffff, #eef6ff);
     }
 
     .player-title {
@@ -429,7 +464,8 @@
     .progress-shell {
       height: 8px;
       overflow: hidden;
-      background: #e7eef6;
+      background: #ffffff;
+      border-bottom: 4px solid var(--manga-ink);
     }
 
     .progress-bar {
@@ -443,8 +479,8 @@
       position: relative;
       min-height: 650px;
       background:
-        radial-gradient(circle at 18% 16%, rgba(114, 229, 182, 0.15), transparent 18rem),
-        linear-gradient(180deg, #f9fcff, #eef6ff 60%, #e7f0f9);
+        radial-gradient(circle, rgba(255,255,255,.08) 1.2px, transparent 1.6px) 0 0 / 13px 13px,
+        linear-gradient(135deg, #131a24, #07111c 68%, #03070d);
       overflow: hidden;
     }
 
@@ -469,35 +505,270 @@
     }
 
     .visual-panel {
+      position: relative;
       display: grid;
       place-items: center;
       min-height: 470px;
       padding: 18px;
-      border: 1px solid #d9c99d;
-      border-radius: 18px;
+      border: 5px solid var(--manga-ink);
+      border-radius: 3px;
       background:
-        linear-gradient(180deg, rgba(255, 249, 232, 0.95), rgba(249, 232, 183, 0.86)),
-        var(--paper);
-      box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.34);
+        radial-gradient(circle, var(--manga-tone) 1.1px, transparent 1.5px) 0 0 / 11px 11px,
+        linear-gradient(180deg, rgba(255, 253, 244, 0.96), rgba(255, 245, 210, 0.9)),
+        var(--manga-paper);
+      box-shadow: var(--panel-shadow), inset 0 0 0 7px rgba(255, 255, 255, 0.42);
       overflow: hidden;
     }
 
+    .visual-panel::before {
+      content: "";
+      position: absolute;
+      inset: -60px;
+      z-index: 0;
+      background:
+        repeating-conic-gradient(from 18deg at 50% 50%, transparent 0deg 8deg, rgba(7,17,28,.08) 8deg 9deg);
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .panel-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 4;
+      padding: 5px 10px;
+      border: 3px solid var(--manga-ink);
+      border-radius: 2px;
+      background: #ffffff;
+      color: var(--manga-ink);
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 4px 4px 0 rgba(7,17,28,.16);
+    }
+
+    .speed-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        repeating-conic-gradient(from 26deg at var(--focus-x, 52%) var(--focus-y, 48%), transparent 0deg 6deg, rgba(7,17,28,.14) 6deg 6.9deg);
+      opacity: .38;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
     .scene svg {
+      position: relative;
+      z-index: 2;
       width: min(100%, 720px);
       height: auto;
       overflow: visible;
     }
 
+    .speech {
+      position: absolute;
+      left: var(--x, 6%);
+      top: var(--y, 7%);
+      z-index: 5;
+      max-width: min(var(--w, 210px), calc(100% - 24px));
+      padding: 12px 14px;
+      border: 4px solid var(--manga-ink);
+      border-radius: 48% 52% 45% 55% / 55% 46% 54% 45%;
+      background: #ffffff;
+      color: var(--manga-ink);
+      font-size: clamp(14px, 1.8vw, 18px);
+      font-weight: 900;
+      line-height: 1.45;
+      text-align: center;
+      box-shadow: 5px 5px 0 rgba(7,17,28,.18);
+    }
+
+    .speech::after {
+      content: "";
+      position: absolute;
+      bottom: -20px;
+      left: var(--tail-x, 48%);
+      width: 26px;
+      height: 26px;
+      background: #ffffff;
+      border-right: 4px solid var(--manga-ink);
+      border-bottom: 4px solid var(--manga-ink);
+      transform: rotate(42deg);
+    }
+
+    .speech.right::after {
+      left: auto;
+      right: var(--tail-x, 30%);
+      transform: rotate(42deg);
+    }
+
+    .speech.right {
+      left: auto;
+      right: var(--right, 6%);
+    }
+
+    .sfx {
+      position: absolute;
+      left: var(--x, 70%);
+      top: var(--y, 18%);
+      z-index: 6;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: clamp(32px, 6vw, 68px);
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: -.08em;
+      text-shadow:
+        -3px -3px 0 var(--manga-ink),
+        3px -3px 0 var(--manga-ink),
+        -3px 3px 0 var(--manga-ink),
+        3px 3px 0 var(--manga-ink),
+        7px 7px 0 rgba(7,17,28,.25);
+      transform: rotate(var(--rot, -10deg));
+      pointer-events: none;
+    }
+
+    .character {
+      position: absolute;
+      left: var(--x, 12%);
+      top: var(--y, 42%);
+      z-index: 4;
+      width: var(--cw, 82px);
+      height: var(--ch, 126px);
+      filter: drop-shadow(5px 6px 0 rgba(7,17,28,.18));
+      pointer-events: none;
+    }
+
+    .character::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 58%;
+      aspect-ratio: 1;
+      border: 4px solid var(--manga-ink);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 34% 45%, var(--manga-ink) 0 3px, transparent 4px),
+        radial-gradient(circle at 64% 45%, var(--manga-ink) 0 3px, transparent 4px),
+        linear-gradient(#ffe6c7, #ffd7ad);
+      transform: translateX(-50%);
+    }
+
+    .character::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 76%;
+      height: 70%;
+      border: 4px solid var(--manga-ink);
+      border-radius: 45% 45% 12px 12px;
+      background: var(--manga-blue);
+      transform: translateX(-50%);
+    }
+
+    .character i {
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      z-index: 2;
+      width: 24%;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--manga-ink);
+      transform: translateX(-50%);
+    }
+
+    .character.official::after {
+      background: linear-gradient(180deg, #dff3ff, #a8d9f6);
+    }
+
+    .character.official i::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -32px;
+      width: 54px;
+      height: 18px;
+      border: 4px solid var(--manga-ink);
+      border-radius: 8px 8px 2px 2px;
+      background: #215a96;
+      transform: translateX(-50%);
+    }
+
+    .character.traveler::after {
+      background: linear-gradient(180deg, #e9f9ef, #9de7be);
+    }
+
+    .character.traveler i::before {
+      content: "";
+      position: absolute;
+      left: 48px;
+      top: 42px;
+      width: 30px;
+      height: 36px;
+      border: 4px solid var(--manga-ink);
+      border-radius: 12px;
+      background: var(--manga-gold);
+      transform: rotate(10deg);
+    }
+
+    .character.fox::before {
+      border-radius: 46% 46% 52% 52%;
+      background:
+        linear-gradient(45deg, transparent 0 16%, #ffb05c 16% 33%, transparent 33%) -18px -17px / 54px 50px no-repeat,
+        linear-gradient(-45deg, transparent 0 16%, #ffb05c 16% 33%, transparent 33%) 32px -17px / 54px 50px no-repeat,
+        radial-gradient(circle at 34% 45%, var(--manga-ink) 0 3px, transparent 4px),
+        radial-gradient(circle at 64% 45%, var(--manga-ink) 0 3px, transparent 4px),
+        linear-gradient(#ffc27a, #f58b42);
+    }
+
+    .character.fox::after {
+      background: linear-gradient(180deg, #ffb05c, #f58b42);
+    }
+
+    .character.clock::before {
+      background:
+        radial-gradient(circle at 50% 50%, transparent 0 16px, var(--manga-ink) 17px 20px, transparent 21px),
+        linear-gradient(#ffffff, #dff3ff);
+    }
+
+    .character.clock::after {
+      background: linear-gradient(180deg, #fff1bf, #f3cf6c);
+    }
+
     .narration {
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 14px;
       padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: var(--shadow-soft);
+      border: 5px solid var(--manga-ink);
+      border-radius: 3px;
+      background:
+        radial-gradient(circle, rgba(7,17,28,.055) 1px, transparent 1.5px) 0 0 / 10px 10px,
+        rgba(255, 255, 255, 0.96);
+      box-shadow: 8px 8px 0 rgba(7,17,28,.2);
+      transform: rotate(.45deg);
+      overflow: hidden;
+    }
+
+    .narration::before {
+      content: "ナレーション";
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 5px 9px;
+      border: 3px solid var(--manga-ink);
+      background: var(--manga-gold);
+      color: var(--manga-ink);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
     }
 
     .scene-number {
@@ -505,9 +776,10 @@
       width: fit-content;
       align-items: center;
       padding: 5px 10px;
-      border-radius: 999px;
-      background: #e7f7ef;
-      color: #0f766e;
+      border: 3px solid var(--manga-ink);
+      border-radius: 2px;
+      background: #ffffff;
+      color: var(--manga-ink);
       font-size: 12px;
       font-weight: 900;
       letter-spacing: .12em;
@@ -521,6 +793,9 @@
       font-size: clamp(27px, 3.7vw, 42px);
       line-height: 1.15;
       letter-spacing: -.04em;
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 7px;
     }
 
     .narration p {
@@ -532,9 +807,10 @@
     .spec-note {
       margin-top: 4px;
       padding: 13px 14px;
-      border-left: 4px solid var(--primary);
-      border-radius: 12px;
-      background: var(--info);
+      border: 3px solid var(--manga-ink);
+      border-left-width: 8px;
+      border-radius: 3px;
+      background: var(--manga-blue);
       color: #24415f;
       font-size: 15px;
       line-height: 1.65;
@@ -837,6 +1113,25 @@
       .narration {
         padding: 17px;
       }
+
+      .speech {
+        padding: 9px 10px;
+        border-width: 3px;
+        font-size: 13px;
+        max-width: 138px;
+      }
+
+      .speech::after {
+        width: 18px;
+        height: 18px;
+        bottom: -14px;
+        border-right-width: 3px;
+        border-bottom-width: 3px;
+      }
+
+      .sfx {
+        font-size: clamp(28px, 11vw, 46px);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -867,9 +1162,9 @@
 
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
-        <p class="eyebrow">RFC 6265 Paper Story</p>
+        <p class="eyebrow">RFC 6265 Manga Story</p>
         <h1 id="page-title">クッキーのおふだと村の約束</h1>
-        <p class="lead">HTTP Cookie は、サーバがブラウザに状態を預け、次のリクエストで条件に合うものだけを返してもらう仕組みです。このページでは、RFC 6265 の要点を短い紙芝居アニメとして確認します。</p>
+        <p class="lead">HTTP Cookie は、サーバがブラウザに状態を預け、次のリクエストで条件に合うものだけを返してもらう仕組みです。このページでは、RFC 6265 の要点を短い漫画アニメとして確認します。</p>
         <div class="hero-points" aria-label="このアニメで扱う範囲">
           <div class="hero-point">
             <strong>State</strong>
@@ -886,11 +1181,11 @@
         </div>
       </div>
 
-      <aside class="poster card" aria-label="紙芝居ポスター">
+      <aside class="poster card" aria-label="漫画ポスター">
         <div class="poster-frame">
           <svg viewBox="0 0 620 430" role="img" aria-labelledby="poster-title poster-desc">
             <title id="poster-title">クッキーのおふだと村の約束のポスター</title>
-            <desc id="poster-desc">村役場、旅人、cookieのおふだ、境界の門を表す紙芝居風の絵。</desc>
+            <desc id="poster-desc">村役場、旅人、cookieのおふだ、境界の門を表す漫画風の絵。</desc>
             <defs>
               <linearGradient id="posterSky" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0" stop-color="#cfefff" />
@@ -923,7 +1218,7 @@
     <section class="card story-player" aria-labelledby="player-title">
       <div class="player-head">
         <div class="player-title">
-          <strong id="player-title">再生用紙芝居</strong>
+          <strong id="player-title">再生用漫画</strong>
           <span id="sceneStatus" aria-live="polite">1 / 6: 村役場がおふだを渡す</span>
         </div>
         <div class="controls" aria-label="再生コントロール">
@@ -940,6 +1235,13 @@
       <div class="story-stage" id="storyStage">
         <section class="scene is-active" data-title="村役場がおふだを渡す">
           <div class="visual-panel">
+            <span class="panel-label">1コマ目</span>
+            <span class="speed-lines" style="--focus-x: 50%; --focus-y: 40%"></span>
+            <span class="speech" style="--x: 8%; --y: 18%; --w: 176px">このおふだを<br>持っておいで</span>
+            <span class="speech right" style="--x: 67%; --y: 18%; --w: 170px">はい、<br>しまっておきます</span>
+            <span class="sfx" style="--x: 42%; --y: 33%; --rot: -8deg">スッ</span>
+            <span class="character official" style="--x: 14%; --y: 45%" aria-hidden="true"><i></i></span>
+            <span class="character traveler" style="--x: 76%; --y: 45%" aria-hidden="true"><i></i></span>
             <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene1-title scene1-desc">
               <title id="scene1-title">Set-CookieでサーバからブラウザへCookieを渡す場面</title>
               <desc id="scene1-desc">サーバがSet-CookieとしてCookieのおふだをブラウザへ渡す。</desc>
@@ -976,6 +1278,13 @@
 
         <section class="scene" data-title="旅人が同じ村へおふだを返す">
           <div class="visual-panel">
+            <span class="panel-label">2コマ目</span>
+            <span class="speed-lines" style="--focus-x: 52%; --focus-y: 45%"></span>
+            <span class="speech" style="--x: 8%; --y: 15%; --w: 178px">前にもらった<br>おふだです</span>
+            <span class="speech right" style="--x: 67%; --y: 15%; --w: 170px">よし、<br>状態が分かる</span>
+            <span class="sfx" style="--x: 43%; --y: 37%; --rot: 8deg">サッ</span>
+            <span class="character traveler" style="--x: 15%; --y: 47%" aria-hidden="true"><i></i></span>
+            <span class="character official" style="--x: 76%; --y: 47%" aria-hidden="true"><i></i></span>
             <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene2-title scene2-desc">
               <title id="scene2-title">CookieヘッダーでブラウザからサーバへCookieを返す場面</title>
               <desc id="scene2-desc">ブラウザが条件に合うCookieをCookieヘッダーに入れて同じサーバへ返す。</desc>
@@ -1010,6 +1319,13 @@
 
         <section class="scene" data-title="村と道の約束で返す範囲を決める">
           <div class="visual-panel">
+            <span class="panel-label">3コマ目</span>
+            <span class="speed-lines" style="--focus-x: 24%; --focus-y: 54%"></span>
+            <span class="speech" style="--x: 7%; --y: 16%; --w: 178px">この村と<br>この道だけ</span>
+            <span class="speech right" style="--x: 66%; --y: 19%; --w: 174px">隣の村には<br>出せません</span>
+            <span class="sfx" style="--x: 46%; --y: 49%; --rot: -13deg">バツ</span>
+            <span class="character official" style="--x: 18%; --y: 48%" aria-hidden="true"><i></i></span>
+            <span class="character traveler" style="--x: 70%; --y: 50%" aria-hidden="true"><i></i></span>
             <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene3-title scene3-desc">
               <title id="scene3-title">DomainとPathでCookieの送信範囲を決める場面</title>
               <desc id="scene3-desc">Domainは村の境界、Pathは道の入口として表される。</desc>
@@ -1044,6 +1360,13 @@
 
         <section class="scene" data-title="安全な橋だけを通す">
           <div class="visual-panel">
+            <span class="panel-label">4コマ目</span>
+            <span class="speed-lines" style="--focus-x: 53%; --focus-y: 46%"></span>
+            <span class="speech" style="--x: 8%; --y: 15%; --w: 180px">安全な橋なら<br>渡します</span>
+            <span class="speech right" style="--x: 66%; --y: 15%; --w: 182px">暗い道では<br>渡さない</span>
+            <span class="sfx" style="--x: 42%; --y: 43%; --rot: 5deg">キラッ</span>
+            <span class="character traveler" style="--x: 16%; --y: 45%" aria-hidden="true"><i></i></span>
+            <span class="character official" style="--x: 75%; --y: 45%" aria-hidden="true"><i></i></span>
             <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene4-title scene4-desc">
               <title id="scene4-title">Secure属性により安全な通信でだけCookieを送る場面</title>
               <desc id="scene4-desc">Secure属性付きのおふだはHTTPSの橋を渡るときだけ送られる。</desc>
@@ -1078,6 +1401,13 @@
 
         <section class="scene" data-title="いたずら狐から隠す">
           <div class="visual-panel">
+            <span class="panel-label">5コマ目</span>
+            <span class="speed-lines" style="--focus-x: 30%; --focus-y: 45%"></span>
+            <span class="speech" style="--x: 8%; --y: 18%; --w: 176px">これは<br>見せません</span>
+            <span class="speech right" style="--x: 66%; --y: 18%; --w: 178px">こっそり<br>読めないぞ</span>
+            <span class="sfx" style="--x: 45%; --y: 45%; --rot: -9deg">サッ</span>
+            <span class="character traveler" style="--x: 17%; --y: 47%" aria-hidden="true"><i></i></span>
+            <span class="character fox" style="--x: 75%; --y: 47%" aria-hidden="true"><i></i></span>
             <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene5-title scene5-desc">
               <title id="scene5-title">HttpOnlyでスクリプトからCookieを見えにくくする場面</title>
               <desc id="scene5-desc">HttpOnlyのおふだはスクリプトからは隠され、HTTPのやり取りでは使われる。</desc>
@@ -1113,6 +1443,13 @@
 
         <section class="scene" data-title="期限が来たおふだは役目を終える">
           <div class="visual-panel">
+            <span class="panel-label">6コマ目</span>
+            <span class="speed-lines" style="--focus-x: 52%; --focus-y: 35%"></span>
+            <span class="speech" style="--x: 8%; --y: 17%; --w: 180px">期限が来たら<br>しまいです</span>
+            <span class="speech right" style="--x: 66%; --y: 17%; --w: 180px">新しい札に<br>替えます</span>
+            <span class="sfx" style="--x: 43%; --y: 41%; --rot: -12deg">パッ</span>
+            <span class="character clock" style="--x: 18%; --y: 47%" aria-hidden="true"><i></i></span>
+            <span class="character traveler" style="--x: 75%; --y: 47%" aria-hidden="true"><i></i></span>
             <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene6-title scene6-desc">
               <title id="scene6-title">ExpiresとMax-AgeでCookieの寿命を扱う場面</title>
               <desc id="scene6-desc">期限切れや同じ名前のCookieの置換により、古いおふだが役目を終える。</desc>
@@ -1208,7 +1545,7 @@
       <div class="section-head">
         <div>
           <h2 id="next-title">次に確認すること</h2>
-          <p>紙芝居の比喩だけで終わらせず、クイズで実際の判断に戻します。</p>
+          <p>漫画の比喩だけで終わらせず、クイズで実際の判断に戻します。</p>
         </div>
       </div>
 
