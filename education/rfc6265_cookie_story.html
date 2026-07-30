@@ -1,0 +1,1330 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>クッキーのおふだと村の約束 | RFC 6265 紙芝居アニメ</title>
+  <meta name="description" content="RFC 6265 Cookie の基本を、Set-Cookie、Cookie、Domain、Path、Secure、HttpOnly、期限切れに分けて紙芝居風に学ぶ教育用アニメ。" />
+  <link rel="canonical" href="https://www.toppymicros.com/education/rfc6265_cookie_story.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#032340" />
+  <meta name="color-scheme" content="dark light" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="クッキーのおふだと村の約束 | RFC 6265 紙芝居アニメ" />
+  <meta property="og:description" content="RFC 6265 Cookie の基本を、短い紙芝居アニメで確認する教育ページ。" />
+  <meta property="og:url" content="https://www.toppymicros.com/education/rfc6265_cookie_story.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="クッキーのおふだと村の約束 | RFC 6265 紙芝居アニメ" />
+  <meta name="twitter:description" content="RFC 6265 Cookie の基本を、短い紙芝居アニメで確認する教育ページ。" />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "クッキーのおふだと村の約束",
+    "description": "RFC 6265 Cookie の基本を、紙芝居風の構造図と短い語りで学ぶ教育用ページ。",
+    "url": "https://www.toppymicros.com/education/rfc6265_cookie_story.html",
+    "inLanguage": "ja",
+    "learningResourceType": "interactive animation",
+    "about": ["RFC 6265", "HTTP Cookie", "Set-Cookie", "Cookie", "Secure", "HttpOnly"],
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "ToppyMicroServices",
+      "url": "https://www.toppymicros.com/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ToppyMicroServices OÜ",
+      "url": "https://www.toppymicros.com/"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --page-bg: #032340;
+      --page-bg-2: #071626;
+      --surface: #ffffff;
+      --surface-soft: #f6f8fb;
+      --paper: #fff7df;
+      --paper-deep: #f3dfad;
+      --ink: #0b1f33;
+      --muted: #50657a;
+      --border: #d5dde6;
+      --border-strong: #9eb4c9;
+      --primary: #215a96;
+      --accent: #54c7f2;
+      --accent-2: #72e5b6;
+      --warning: #fff9e8;
+      --info: #eef6ff;
+      --danger-soft: #fff1f1;
+      --shadow: 0 22px 60px rgba(1, 12, 28, 0.28);
+      --shadow-soft: 0 12px 28px rgba(11, 31, 51, 0.12);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Iowan Old Style", "Palatino Linotype", serif;
+      --font-body: "Hiragino Sans", "Yu Gothic", "Avenir Next", "SF Pro Text", system-ui, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 12%, rgba(84, 199, 242, 0.22), transparent 26rem),
+        radial-gradient(circle at 86% 8%, rgba(114, 229, 182, 0.17), transparent 30rem),
+        linear-gradient(160deg, var(--page-bg), var(--page-bg-2) 62%, #050b15);
+      font: 16px/1.75 var(--font-body);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid rgba(84, 199, 242, 0.8);
+      outline-offset: 3px;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      color: #d8e8f6;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #eef6ff;
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      color: #eef6ff;
+      background: rgba(255, 255, 255, 0.07);
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .nav-links a:hover {
+      border-color: rgba(84, 199, 242, 0.78);
+      background: rgba(84, 199, 242, 0.12);
+      text-decoration: none;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, .96fr);
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .hero-copy,
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: clamp(24px, 4vw, 42px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-copy::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(33, 90, 150, 0.08), transparent 52%),
+        repeating-linear-gradient(0deg, rgba(3, 35, 64, 0.035), rgba(3, 35, 64, 0.035) 1px, transparent 1px, transparent 18px);
+      pointer-events: none;
+    }
+
+    .hero-copy > * {
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 2px;
+      background: var(--accent-2);
+      border-radius: 999px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: clamp(38px, 7vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -.04em;
+    }
+
+    .lead {
+      max-width: 64ch;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.7vw, 19px);
+    }
+
+    .hero-points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .hero-point {
+      min-height: 92px;
+      padding: 13px 14px;
+      border: 1px solid #cbd8e5;
+      border-radius: 14px;
+      background: #f7fbff;
+    }
+
+    .hero-point strong {
+      display: block;
+      color: var(--primary);
+      font-size: 13px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .hero-point span {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .poster {
+      min-height: 360px;
+      padding: 20px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(238, 246, 255, .94)),
+        var(--surface);
+    }
+
+    .poster-frame {
+      width: 100%;
+      min-height: 100%;
+      padding: 18px;
+      border: 1px solid #d8c595;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 247, 223, .92), rgba(243, 223, 173, .8)),
+        var(--paper);
+      box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.34);
+    }
+
+    .poster svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .section {
+      margin-top: 22px;
+      padding: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(22px, 3vw, 31px);
+      line-height: 1.2;
+      letter-spacing: -.03em;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      padding: 7px 12px;
+      border: 1px solid #b8cce0;
+      border-radius: 999px;
+      background: var(--info);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .story-player {
+      overflow: hidden;
+      padding: 0;
+      background: #ffffff;
+    }
+
+    .player-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, #f8fbff, #eef6ff);
+    }
+
+    .player-title {
+      min-width: 0;
+    }
+
+    .player-title strong {
+      display: block;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .player-title span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--ink);
+      background: #ffffff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn:hover {
+      border-color: #9fc7ef;
+      background: #f1f8ff;
+      box-shadow: 0 8px 18px rgba(33, 90, 150, 0.12);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .btn.primary {
+      border-color: #174979;
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn.primary:hover {
+      border-color: #0d6efd;
+      background: #1b67ad;
+    }
+
+    .btn.small {
+      min-height: 36px;
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .progress-shell {
+      height: 8px;
+      overflow: hidden;
+      background: #e7eef6;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--accent-2));
+      transition: width 120ms linear;
+    }
+
+    .story-stage {
+      position: relative;
+      min-height: 650px;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(114, 229, 182, 0.15), transparent 18rem),
+        linear-gradient(180deg, #f9fcff, #eef6ff 60%, #e7f0f9);
+      overflow: hidden;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 18px;
+      align-items: stretch;
+      padding: clamp(16px, 3vw, 28px);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 320ms ease, transform 320ms ease;
+    }
+
+    .scene.is-active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .visual-panel {
+      display: grid;
+      place-items: center;
+      min-height: 470px;
+      padding: 18px;
+      border: 1px solid #d9c99d;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 249, 232, 0.95), rgba(249, 232, 183, 0.86)),
+        var(--paper);
+      box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.34);
+      overflow: hidden;
+    }
+
+    .scene svg {
+      width: min(100%, 720px);
+      height: auto;
+      overflow: visible;
+    }
+
+    .narration {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .scene-number {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #e7f7ef;
+      color: #0f766e;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .narration h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: clamp(27px, 3.7vw, 42px);
+      line-height: 1.15;
+      letter-spacing: -.04em;
+    }
+
+    .narration p {
+      margin: 0;
+      color: #24384c;
+      font-size: clamp(16px, 1.7vw, 18px);
+    }
+
+    .spec-note {
+      margin-top: 4px;
+      padding: 13px 14px;
+      border-left: 4px solid var(--primary);
+      border-radius: 12px;
+      background: var(--info);
+      color: #24415f;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .code-line {
+      display: block;
+      margin-top: 8px;
+      padding: 9px 10px;
+      border: 1px solid #c6d6e6;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #123452;
+      font: 14px/1.45 var(--font-mono);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .scene-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      padding: 14px 18px 18px;
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border: 1px solid #9eb4c9;
+      border-radius: 999px;
+      background: #e6edf5;
+      cursor: pointer;
+      transition: width 160ms ease, background-color 160ms ease, border-color 160ms ease;
+    }
+
+    .dot.is-active {
+      width: 34px;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #ffffff;
+      transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .mini-card:hover {
+      border-color: #9fc7ef;
+      background: #f5fbff;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .mini-card strong {
+      display: block;
+      color: var(--primary);
+      font-size: 15px;
+    }
+
+    .mini-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .callout {
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 14px;
+      background: var(--info);
+      color: #203a56;
+    }
+
+    .callout.warning {
+      border-left-color: #d08b16;
+      background: var(--warning);
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 15px;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eaf4ff;
+      color: #183a5c;
+      font-weight: 900;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td code {
+      padding: 2px 5px;
+      border-radius: 7px;
+      background: #eef4fb;
+      color: #123452;
+      font-family: var(--font-mono);
+      font-size: .92em;
+    }
+
+    .footer {
+      margin-top: 24px;
+      color: #d8e8f6;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #eef6ff;
+      font-weight: 800;
+    }
+
+    .svg-text {
+      fill: #14314b;
+      font-family: var(--font-body);
+      font-weight: 900;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .svg-text.small {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .svg-text.mono {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .svg-text.light {
+      fill: #ffffff;
+    }
+
+    .box {
+      fill: #ffffff;
+      stroke: #215a96;
+      stroke-width: 2.3;
+      rx: 16;
+    }
+
+    .box.green {
+      fill: #eefaf4;
+      stroke: #0f766e;
+    }
+
+    .box.gold {
+      fill: #fff9e8;
+      stroke: #c47d13;
+    }
+
+    .box.red {
+      fill: #fff1f1;
+      stroke: #b94747;
+    }
+
+    .arrow {
+      fill: none;
+      stroke: #215a96;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .arrow.soft {
+      stroke: #0f766e;
+    }
+
+    .arrow.warn {
+      stroke: #b94747;
+      stroke-dasharray: 8 8;
+    }
+
+    .scene.is-active .float {
+      animation: floatY 4.8s ease-in-out infinite;
+    }
+
+    .scene.is-active .drift {
+      animation: driftX 3.8s ease-in-out infinite;
+    }
+
+    .scene.is-active .pulse {
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+
+    .scene.is-active .draw {
+      stroke-dasharray: 900;
+      stroke-dashoffset: 900;
+      animation: drawLine 1.5s ease-out forwards;
+    }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes driftX {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(12px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .55; }
+    }
+
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @media (max-width: 940px) {
+      .hero,
+      .scene {
+        grid-template-columns: 1fr;
+      }
+
+      .story-stage {
+        min-height: 880px;
+      }
+
+      .visual-panel {
+        min-height: 420px;
+      }
+
+      .hero-points,
+      .map-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 20px, 1180px);
+        padding-top: 16px;
+      }
+
+      .topbar,
+      .section-head,
+      .player-head {
+        display: block;
+      }
+
+      .nav-links,
+      .controls {
+        justify-content: flex-start;
+        margin-top: 12px;
+      }
+
+      .hero-copy,
+      .section {
+        padding: 18px;
+      }
+
+      h1 {
+        max-width: 12ch;
+      }
+
+      .story-stage {
+        min-height: 820px;
+      }
+
+      .scene {
+        padding: 14px;
+      }
+
+      .narration {
+        padding: 17px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="ページナビゲーション">
+      <a class="brand" href="../index.html" aria-label="ToppyMicroServices home">
+        <img src="og-brand-clean.min.png" alt="ToppyMicroServices logo" width="34" height="34" decoding="async" />
+        <span>ToppyMicroServices OÜ</span>
+      </a>
+      <div class="nav-links">
+        <a href="quiz_rfc6265_ja.html">RFC 6265 クイズ</a>
+        <a href="rfc_quizzes_ja.html">RFC 学習ガイド</a>
+        <a href="https://www.rfc-editor.org/rfc/rfc6265.html" target="_blank" rel="noopener noreferrer">RFC 6265 原文</a>
+      </div>
+    </nav>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">RFC 6265 Paper Story</p>
+        <h1 id="page-title">クッキーのおふだと村の約束</h1>
+        <p class="lead">HTTP Cookie は、サーバがブラウザに状態を預け、次のリクエストで条件に合うものだけを返してもらう仕組みです。このページでは、RFC 6265 の要点を短い紙芝居アニメとして確認します。</p>
+        <div class="hero-points" aria-label="このアニメで扱う範囲">
+          <div class="hero-point">
+            <strong>State</strong>
+            <span><code>Set-Cookie</code> と <code>Cookie</code> の向きを区別します。</span>
+          </div>
+          <div class="hero-point">
+            <strong>Scope</strong>
+            <span><code>Domain</code> と <code>Path</code> は、どこへ返すかを絞ります。</span>
+          </div>
+          <div class="hero-point">
+            <strong>Guard</strong>
+            <span><code>Secure</code> と <code>HttpOnly</code> は、送信や露出を制限します。</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="poster card" aria-label="紙芝居ポスター">
+        <div class="poster-frame">
+          <svg viewBox="0 0 620 430" role="img" aria-labelledby="poster-title poster-desc">
+            <title id="poster-title">クッキーのおふだと村の約束のポスター</title>
+            <desc id="poster-desc">村役場、旅人、cookieのおふだ、境界の門を表す紙芝居風の絵。</desc>
+            <defs>
+              <linearGradient id="posterSky" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#cfefff" />
+                <stop offset="1" stop-color="#fff7df" />
+              </linearGradient>
+              <marker id="arrowHead" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+              </marker>
+            </defs>
+            <rect x="18" y="18" width="584" height="394" rx="26" fill="url(#posterSky)" stroke="#d1b778" stroke-width="3" />
+            <path d="M58 324 C150 284 232 304 306 268 C398 222 486 246 568 210 L568 412 L58 412 Z" fill="#dcefb7" opacity=".92" />
+            <path d="M70 166 L154 98 L238 166 Z" fill="#91c6e8" stroke="#215a96" stroke-width="3" />
+            <rect x="92" y="166" width="124" height="92" rx="8" fill="#ffffff" stroke="#215a96" stroke-width="3" />
+            <text x="154" y="193" class="svg-text small">村役場</text>
+            <text x="154" y="219" class="svg-text mono">Server</text>
+            <rect x="374" y="166" width="132" height="92" rx="18" fill="#ffffff" stroke="#0f766e" stroke-width="3" />
+            <text x="440" y="193" class="svg-text small">旅人</text>
+            <text x="440" y="219" class="svg-text mono">Browser</text>
+            <rect x="278" y="132" width="86" height="118" rx="14" fill="#fff9e8" stroke="#c47d13" stroke-width="3" />
+            <text x="321" y="166" class="svg-text small">おふだ</text>
+            <text x="321" y="194" class="svg-text mono">SID=...</text>
+            <path d="M228 205 C248 172 262 158 278 154" class="arrow" marker-end="url(#arrowHead)" />
+            <path d="M364 210 C382 222 394 226 410 222" class="arrow soft" marker-end="url(#arrowHead)" />
+            <text x="311" y="310" class="svg-text" style="font-size:28px">Set-Cookie と Cookie の物語</text>
+          </svg>
+        </div>
+      </aside>
+    </section>
+
+    <section class="card story-player" aria-labelledby="player-title">
+      <div class="player-head">
+        <div class="player-title">
+          <strong id="player-title">再生用紙芝居</strong>
+          <span id="sceneStatus" aria-live="polite">1 / 6: 村役場がおふだを渡す</span>
+        </div>
+        <div class="controls" aria-label="再生コントロール">
+          <button class="btn small" type="button" id="prevScene">前へ</button>
+          <button class="btn primary" type="button" id="playPause" aria-pressed="false">一時停止</button>
+          <button class="btn small" type="button" id="nextScene">次へ</button>
+          <button class="btn small" type="button" id="restartStory">最初から</button>
+        </div>
+      </div>
+      <div class="progress-shell" aria-hidden="true">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="story-stage" id="storyStage">
+        <section class="scene is-active" data-title="村役場がおふだを渡す">
+          <div class="visual-panel">
+            <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene1-title scene1-desc">
+              <title id="scene1-title">Set-CookieでサーバからブラウザへCookieを渡す場面</title>
+              <desc id="scene1-desc">サーバがSet-CookieとしてCookieのおふだをブラウザへ渡す。</desc>
+              <defs>
+                <marker id="arrowHead1" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+                </marker>
+              </defs>
+              <rect x="42" y="48" width="220" height="116" rx="18" class="box" />
+              <text x="152" y="83" class="svg-text">村役場</text>
+              <text x="152" y="114" class="svg-text mono">Origin Server</text>
+              <text x="152" y="141" class="svg-text small">状態を預ける</text>
+              <rect x="468" y="48" width="210" height="116" rx="18" class="box green" />
+              <text x="573" y="83" class="svg-text">旅人</text>
+              <text x="573" y="114" class="svg-text mono">User Agent</text>
+              <text x="573" y="141" class="svg-text small">保存する</text>
+              <path d="M270 106 C330 78 400 78 460 106" fill="none" stroke="#215a96" stroke-width="3.2" stroke-linecap="round" marker-end="url(#arrowHead1)" class="draw" />
+              <rect x="305" y="170" width="126" height="132" rx="18" class="box gold float" />
+              <text x="368" y="205" class="svg-text">おふだ</text>
+              <text x="368" y="235" class="svg-text mono">SID=31d...</text>
+              <text x="368" y="264" class="svg-text small">Path=/</text>
+              <rect x="214" y="330" width="292" height="74" rx="16" fill="#ffffff" stroke="#9eb4c9" stroke-width="2" />
+              <text x="360" y="356" class="svg-text mono">Set-Cookie: SID=31d...;</text>
+              <text x="360" y="383" class="svg-text mono">Path=/; Secure; HttpOnly</text>
+            </svg>
+          </div>
+          <div class="narration">
+            <span class="scene-number">Scene 1</span>
+            <h3>村役場が、おふだを旅人に預ける。</h3>
+            <p>サーバはレスポンスで <code>Set-Cookie</code> を送り、ブラウザに名前と値、それに属性を保存させます。</p>
+            <div class="spec-note">仕様の対応: <code>Set-Cookie</code> はサーバからユーザーエージェントへ向かうレスポンスヘッダーです。</div>
+          </div>
+        </section>
+
+        <section class="scene" data-title="旅人が同じ村へおふだを返す">
+          <div class="visual-panel">
+            <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene2-title scene2-desc">
+              <title id="scene2-title">CookieヘッダーでブラウザからサーバへCookieを返す場面</title>
+              <desc id="scene2-desc">ブラウザが条件に合うCookieをCookieヘッダーに入れて同じサーバへ返す。</desc>
+              <defs>
+                <marker id="arrowHead2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+                </marker>
+              </defs>
+              <rect x="64" y="82" width="210" height="118" rx="18" class="box green" />
+              <text x="169" y="121" class="svg-text">旅人</text>
+              <text x="169" y="152" class="svg-text mono">Browser</text>
+              <text x="169" y="180" class="svg-text small">保存済みを選ぶ</text>
+              <rect x="464" y="82" width="210" height="118" rx="18" class="box" />
+              <text x="569" y="121" class="svg-text">村役場</text>
+              <text x="569" y="152" class="svg-text mono">Server</text>
+              <text x="569" y="180" class="svg-text small">状態を読む</text>
+              <path d="M284 144 C348 172 398 172 454 144" fill="none" stroke="#0f766e" stroke-width="3.2" stroke-linecap="round" marker-end="url(#arrowHead2)" class="draw" />
+              <rect x="306" y="214" width="128" height="88" rx="16" class="box gold drift" />
+              <text x="370" y="247" class="svg-text mono">Cookie:</text>
+              <text x="370" y="274" class="svg-text mono">SID=31d...</text>
+              <rect x="192" y="348" width="336" height="64" rx="16" fill="#ffffff" stroke="#9eb4c9" stroke-width="2" />
+              <text x="360" y="380" class="svg-text mono">Cookie: SID=31d96e407aad42</text>
+            </svg>
+          </div>
+          <div class="narration">
+            <span class="scene-number">Scene 2</span>
+            <h3>次の訪問で、旅人はおふだを見せる。</h3>
+            <p>ブラウザは、リクエスト先に合う保存済み Cookie を選び、<code>Cookie</code> ヘッダーとしてサーバへ返します。</p>
+            <div class="spec-note">仕様の対応: <code>Cookie</code> はユーザーエージェントからサーバへ向かうリクエストヘッダーです。</div>
+          </div>
+        </section>
+
+        <section class="scene" data-title="村と道の約束で返す範囲を決める">
+          <div class="visual-panel">
+            <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene3-title scene3-desc">
+              <title id="scene3-title">DomainとPathでCookieの送信範囲を決める場面</title>
+              <desc id="scene3-desc">Domainは村の境界、Pathは道の入口として表される。</desc>
+              <defs>
+                <marker id="arrowHead3" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+                </marker>
+              </defs>
+              <rect x="70" y="58" width="250" height="298" rx="28" fill="#eefaf4" stroke="#0f766e" stroke-width="3" stroke-dasharray="9 8" />
+              <text x="195" y="94" class="svg-text">example.jp 村</text>
+              <rect x="400" y="58" width="250" height="298" rx="28" fill="#fff1f1" stroke="#b94747" stroke-width="3" stroke-dasharray="9 8" />
+              <text x="525" y="94" class="svg-text">other.jp 村</text>
+              <rect x="112" y="128" width="166" height="72" rx="14" class="box" />
+              <text x="195" y="164" class="svg-text mono">Path=/shop</text>
+              <rect x="112" y="234" width="166" height="72" rx="14" class="box gold" />
+              <text x="195" y="270" class="svg-text mono">Cookie OK</text>
+              <rect x="442" y="180" width="166" height="72" rx="14" class="box red" />
+              <text x="525" y="216" class="svg-text mono">送らない</text>
+              <path d="M194 202 L194 226" fill="none" stroke="#215a96" stroke-width="3.2" stroke-linecap="round" marker-end="url(#arrowHead3)" class="draw" />
+              <path d="M284 270 C346 276 386 252 438 222" class="arrow warn draw" marker-end="url(#arrowHead3)" />
+              <rect x="122" y="382" width="476" height="52" rx="14" fill="#ffffff" stroke="#9eb4c9" stroke-width="2" />
+              <text x="360" y="408" class="svg-text mono">Domain と Path は送信先を絞る条件</text>
+            </svg>
+          </div>
+          <div class="narration">
+            <span class="scene-number">Scene 3</span>
+            <h3>おふだには、使える村と道が書かれている。</h3>
+            <p><code>Domain</code> はどのホストへ返すか、<code>Path</code> はどのパスへ返すかを絞ります。何でも全ての場所へ送る仕組みではありません。</p>
+            <div class="spec-note">仕様の対応: 属性が示すスコープにより、ユーザーエージェントは後続リクエストで返す Cookie を選びます。</div>
+          </div>
+        </section>
+
+        <section class="scene" data-title="安全な橋だけを通す">
+          <div class="visual-panel">
+            <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene4-title scene4-desc">
+              <title id="scene4-title">Secure属性により安全な通信でだけCookieを送る場面</title>
+              <desc id="scene4-desc">Secure属性付きのおふだはHTTPSの橋を渡るときだけ送られる。</desc>
+              <defs>
+                <marker id="arrowHead4" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+                </marker>
+              </defs>
+              <path d="M38 276 C134 232 232 316 330 276 C436 234 542 316 682 260 L682 430 L38 430 Z" fill="#bfe6ff" stroke="#80bfe8" stroke-width="2" />
+              <rect x="150" y="220" width="420" height="54" rx="14" fill="#7a5834" stroke="#4f341d" stroke-width="3" />
+              <text x="360" y="248" class="svg-text light">HTTPS の橋</text>
+              <rect x="66" y="82" width="188" height="94" rx="16" class="box green" />
+              <text x="160" y="118" class="svg-text">旅人</text>
+              <text x="160" y="148" class="svg-text mono">Secure cookie</text>
+              <rect x="466" y="82" width="188" height="94" rx="16" class="box" />
+              <text x="560" y="118" class="svg-text">村役場</text>
+              <text x="560" y="148" class="svg-text mono">https://</text>
+              <path d="M258 132 C336 114 390 114 458 132" fill="none" stroke="#0f766e" stroke-width="3.2" stroke-linecap="round" marker-end="url(#arrowHead4)" class="draw" />
+              <rect x="292" y="154" width="136" height="72" rx="16" class="box gold pulse" />
+              <text x="360" y="190" class="svg-text mono">Secure</text>
+              <rect x="466" y="342" width="188" height="58" rx="16" class="box red" />
+              <text x="560" y="371" class="svg-text mono">http:// には送らない</text>
+            </svg>
+          </div>
+          <div class="narration">
+            <span class="scene-number">Scene 4</span>
+            <h3>大事なおふだは、安全な橋だけを通る。</h3>
+            <p><code>Secure</code> が付いた Cookie は、ユーザーエージェントが安全と判断する通信でだけ送信されます。通常は HTTPS が該当します。</p>
+            <div class="spec-note">注意: <code>Secure</code> は送信条件を制限しますが、Cookie の値を暗号化したり、全ての改ざんを防いだりする印ではありません。</div>
+          </div>
+        </section>
+
+        <section class="scene" data-title="いたずら狐から隠す">
+          <div class="visual-panel">
+            <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene5-title scene5-desc">
+              <title id="scene5-title">HttpOnlyでスクリプトからCookieを見えにくくする場面</title>
+              <desc id="scene5-desc">HttpOnlyのおふだはスクリプトからは隠され、HTTPのやり取りでは使われる。</desc>
+              <defs>
+                <marker id="arrowHead5" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+                </marker>
+              </defs>
+              <rect x="70" y="72" width="224" height="308" rx="24" fill="#eefaf4" stroke="#0f766e" stroke-width="3" />
+              <text x="182" y="108" class="svg-text">旅人の荷物</text>
+              <rect x="120" y="158" width="124" height="126" rx="18" class="box gold pulse" />
+              <text x="182" y="194" class="svg-text mono">HttpOnly</text>
+              <text x="182" y="222" class="svg-text small">封じた</text>
+              <text x="182" y="250" class="svg-text small">おふだ</text>
+              <rect x="414" y="72" width="214" height="96" rx="16" class="box red" />
+              <text x="521" y="108" class="svg-text">いたずら狐</text>
+              <text x="521" y="138" class="svg-text mono">client script</text>
+              <path d="M412 174 C350 210 306 210 248 214" class="arrow warn draw" marker-end="url(#arrowHead5)" />
+              <rect x="422" y="230" width="206" height="84" rx="16" fill="#ffffff" stroke="#b94747" stroke-width="2" />
+              <text x="525" y="260" class="svg-text mono">document.cookie</text>
+              <text x="525" y="288" class="svg-text small">からは出さない</text>
+              <rect x="338" y="350" width="214" height="54" rx="15" class="box" />
+              <text x="445" y="377" class="svg-text mono">HTTP では使える</text>
+            </svg>
+          </div>
+          <div class="narration">
+            <span class="scene-number">Scene 5</span>
+            <h3>いたずら狐には、おふだを見せない。</h3>
+            <p><code>HttpOnly</code> は、通常のクライアント側スクリプトなど、HTTP ではない API から Cookie を見えにくくします。</p>
+            <div class="spec-note">注意: <code>HttpOnly</code> はスクリプト注入そのものを直す仕組みではありません。Cookie への露出を減らすための属性です。</div>
+          </div>
+        </section>
+
+        <section class="scene" data-title="期限が来たおふだは役目を終える">
+          <div class="visual-panel">
+            <svg viewBox="0 0 720 470" role="img" aria-labelledby="scene6-title scene6-desc">
+              <title id="scene6-title">ExpiresとMax-AgeでCookieの寿命を扱う場面</title>
+              <desc id="scene6-desc">期限切れや同じ名前のCookieの置換により、古いおふだが役目を終える。</desc>
+              <defs>
+                <marker id="arrowHead6" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M 0 0 L 9 4.5 L 0 9 z" fill="#215a96"></path>
+                </marker>
+              </defs>
+              <circle cx="156" cy="134" r="66" fill="#ffffff" stroke="#215a96" stroke-width="3" />
+              <path d="M156 134 L156 88 M156 134 L196 154" fill="none" stroke="#215a96" stroke-width="5" stroke-linecap="round" />
+              <text x="156" y="226" class="svg-text mono">Expires</text>
+              <rect x="302" y="80" width="136" height="118" rx="18" class="box gold" />
+              <text x="370" y="120" class="svg-text">古い</text>
+              <text x="370" y="150" class="svg-text">おふだ</text>
+              <path d="M300 234 L440 94" stroke="#b94747" stroke-width="5" stroke-linecap="round" />
+              <path d="M440 234 L300 94" stroke="#b94747" stroke-width="5" stroke-linecap="round" />
+              <path d="M450 142 C506 142 544 142 590 142" fill="none" stroke="#215a96" stroke-width="3.2" stroke-linecap="round" marker-end="url(#arrowHead6)" class="draw" />
+              <rect x="512" y="80" width="136" height="118" rx="18" class="box green pulse" />
+              <text x="580" y="120" class="svg-text">新しい</text>
+              <text x="580" y="150" class="svg-text">おふだ</text>
+              <rect x="130" y="302" width="460" height="76" rx="16" fill="#ffffff" stroke="#9eb4c9" stroke-width="2" />
+              <text x="360" y="328" class="svg-text mono">Max-Age があれば Expires より優先</text>
+              <text x="360" y="356" class="svg-text small">同じ name/domain/path は置き換えられる</text>
+            </svg>
+          </div>
+          <div class="narration">
+            <span class="scene-number">Scene 6</span>
+            <h3>期限が来れば、おふだは役目を終える。</h3>
+            <p><code>Expires</code> と <code>Max-Age</code> は Cookie の寿命に関係します。同じ名前、ドメイン、パスの Cookie が来れば、古いものは置き換えられます。</p>
+            <div class="spec-note">まとめ: Cookie は便利な状態管理ですが、属性の意味と限界を理解して使う必要があります。</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="scene-dots" id="sceneDots" aria-label="場面選択"></div>
+    </section>
+
+    <section class="card section" aria-labelledby="map-title">
+      <div class="section-head">
+        <div>
+          <h2 id="map-title">物語と RFC 6265 の対応</h2>
+          <p>物語上の道具を、実際のHTTP Cookieの概念に戻します。</p>
+        </div>
+        <span class="pill">初心者向け対応表</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>物語の要素</th>
+              <th>RFC 6265 の概念</th>
+              <th>理解すべき点</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>村役場がおふだを渡す</td>
+              <td><code>Set-Cookie</code></td>
+              <td>サーバがレスポンスで、ブラウザに保存してほしい名前と値、属性を渡す。</td>
+            </tr>
+            <tr>
+              <td>旅人がおふだを見せる</td>
+              <td><code>Cookie</code></td>
+              <td>ブラウザが後続リクエストで、条件に合う保存済み Cookie をサーバへ返す。</td>
+            </tr>
+            <tr>
+              <td>村と道の約束</td>
+              <td><code>Domain</code> / <code>Path</code></td>
+              <td>Cookie を返すホストとパスの範囲を絞る。認可そのものではない。</td>
+            </tr>
+            <tr>
+              <td>安全な橋</td>
+              <td><code>Secure</code></td>
+              <td>安全と判断される通信でだけ送る。値の暗号化や完全な改ざん防止ではない。</td>
+            </tr>
+            <tr>
+              <td>いたずら狐から隠す</td>
+              <td><code>HttpOnly</code></td>
+              <td>HTTPではないAPIからの露出を減らす。スクリプト注入自体を防ぐ機能ではない。</td>
+            </tr>
+            <tr>
+              <td>期限が来たおふだ</td>
+              <td><code>Expires</code> / <code>Max-Age</code></td>
+              <td>Cookie の寿命を扱う。<code>Max-Age</code> がある場合は <code>Expires</code> より優先される。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card section" aria-labelledby="next-title">
+      <div class="section-head">
+        <div>
+          <h2 id="next-title">次に確認すること</h2>
+          <p>紙芝居の比喩だけで終わらせず、クイズで実際の判断に戻します。</p>
+        </div>
+      </div>
+
+      <div class="map-grid">
+        <a class="mini-card" href="quiz_rfc6265_ja.html">
+          <strong>RFC 6265 クイズへ進む</strong>
+          <p>Set-Cookie と Cookie の向き、属性の役割、限界を問題で確認します。</p>
+        </a>
+        <a class="mini-card" href="https://www.rfc-editor.org/rfc/rfc6265.html" target="_blank" rel="noopener noreferrer">
+          <strong>RFC 6265 原文を開く</strong>
+          <p>正確な構文、ユーザーエージェント側の処理、Security Considerations を確認します。</p>
+        </a>
+        <div class="mini-card">
+          <strong>次回候補: SameSite</strong>
+          <p>SameSite は現代の Cookie 運用で重要ですが、この第一弾では RFC 6265 の基本属性に絞っています。</p>
+        </div>
+      </div>
+
+      <div class="callout warning" style="margin-top:16px">
+        <p>このページは学習用の比喩です。実装判断では、RFC 6265 原文、現在のブラウザ挙動、アプリケーション側の認証・認可設計を分けて確認してください。</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>© 2026 ToppyMicroServices OÜ. Educational material for protocol review and implementation literacy.</p>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      const scenes = Array.from(document.querySelectorAll('.scene'));
+      const dotsHost = document.getElementById('sceneDots');
+      const status = document.getElementById('sceneStatus');
+      const progressBar = document.getElementById('progressBar');
+      const playPause = document.getElementById('playPause');
+      const prev = document.getElementById('prevScene');
+      const next = document.getElementById('nextScene');
+      const restart = document.getElementById('restartStory');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const sceneDuration = reducedMotion ? 20000 : 11500;
+      let active = 0;
+      let playing = !reducedMotion;
+      let sceneStartedAt = performance.now();
+      let raf = null;
+
+      function renderDots(){
+        dotsHost.innerHTML = '';
+        scenes.forEach((scene, index) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'dot';
+          dot.setAttribute('aria-label', `${index + 1}番目の場面へ移動: ${scene.dataset.title}`);
+          dot.addEventListener('click', () => showScene(index, true));
+          dotsHost.appendChild(dot);
+        });
+      }
+
+      function updatePlayButton(){
+        playPause.textContent = playing ? '一時停止' : '再生';
+        playPause.setAttribute('aria-pressed', playing ? 'false' : 'true');
+      }
+
+      function showScene(index, resetClock){
+        active = (index + scenes.length) % scenes.length;
+        scenes.forEach((scene, sceneIndex) => {
+          scene.classList.toggle('is-active', sceneIndex === active);
+        });
+        Array.from(dotsHost.children).forEach((dot, dotIndex) => {
+          dot.classList.toggle('is-active', dotIndex === active);
+        });
+        status.textContent = `${active + 1} / ${scenes.length}: ${scenes[active].dataset.title}`;
+        if(resetClock){
+          sceneStartedAt = performance.now();
+          progressBar.style.width = '0%';
+        }
+      }
+
+      function tick(now){
+        if(playing){
+          const elapsed = now - sceneStartedAt;
+          const progress = Math.min(100, (elapsed / sceneDuration) * 100);
+          progressBar.style.width = `${progress}%`;
+          if(elapsed >= sceneDuration){
+            showScene(active + 1, true);
+          }
+        }
+        raf = requestAnimationFrame(tick);
+      }
+
+      playPause.addEventListener('click', () => {
+        playing = !playing;
+        sceneStartedAt = performance.now() - (parseFloat(progressBar.style.width || '0') / 100) * sceneDuration;
+        updatePlayButton();
+      });
+
+      prev.addEventListener('click', () => showScene(active - 1, true));
+      next.addEventListener('click', () => showScene(active + 1, true));
+      restart.addEventListener('click', () => {
+        playing = true;
+        updatePlayButton();
+        showScene(0, true);
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if(document.hidden){
+          playing = false;
+          updatePlayButton();
+        }
+      });
+
+      renderDots();
+      showScene(0, true);
+      updatePlayButton();
+      raf = requestAnimationFrame(tick);
+      window.addEventListener('pagehide', () => cancelAnimationFrame(raf));
+    })();
+  </script>
+</body>
+</html>
