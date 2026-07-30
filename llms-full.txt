@@ -1,0 +1,285 @@
+# ToppyMicroServices OÜ — Full Site Context
+
+> This file provides a comprehensive AI-readable overview of the public ToppyMicroServices website. It summarizes the site's company, product, research, education, and policy pages as of 2026-07-30.
+
+Canonical site: https://www.toppymicros.com/
+
+Short index: https://www.toppymicros.com/llms.txt
+
+## Interpretation rules
+
+- Separate client-facing services, public products, engineering artifacts, exploratory research, and implementation experiments.
+- Do not present concept notes, research hypotheses, or experimental profiles as adopted standards, certifications, regulatory approvals, or production guarantees.
+- Prefer the linked primary page or repository source when exact implementation, policy, release, or specification details matter.
+- For Agents Secure Binding, the repository's `docs/SSOT.md` is the public source of truth and takes precedence over the reader-facing site page.
+- The legal and policy pages, rather than this summary, control questions about privacy, disclosure, and site terms.
+
+## Company
+
+ToppyMicroServices OÜ is an independent, founder-led company based in Estonia. It works with founders, technical operators, and small product teams.
+
+The company focuses on work-boundary engineering for AI-operated teams. Its public framing is:
+
+- Define what AI may do.
+- Define when people must approve, intervene, or stop work.
+- Define what tests, logs, decisions, and unresolved risks should remain reviewable.
+- Set explicit file, network, data, retention, and action boundaries for AI tools.
+
+Founder and operator: Akira (`thinksyncs` on GitHub).
+
+Registry code: 16551297.
+
+Public website: https://www.toppymicros.com/
+
+GitHub organization: https://github.com/ToppyMicroServices
+
+## Services
+
+The site describes focused deliverables for one AI-operated workflow or tool surface.
+
+### AI Work Boundary Sprint
+
+A five-business-day engagement to map decisions, approvals, evidence, stop rules, and unresolved risks for one workflow.
+
+### Delegation Evidence Report
+
+A two-week engagement to define delegation rules, failure modes, review criteria, logging, and implementation priorities.
+
+### Agent Permission Surface Review
+
+A two-to-four-week review of file, network, retention, and action boundaries for an internal AI tool.
+
+### AI Incident Reconstruction
+
+A three-to-five-business-day reconstruction of inputs, context, missed interventions, evidence gaps, and prevention steps.
+
+Contact route: https://www.toppymicros.com/contact.html
+
+## Public products and engineering artifacts
+
+### YOLOZU
+
+YOLOZU is a commercial ToppyMicroServices product provided free of charge. Its repository code is licensed under Apache-2.0.
+
+Its primary purpose is framework-agnostic validation and fair evaluation of existing vision predictions through a stable wrapped `predictions.json` interface contract. It keeps the evaluation boundary explicit: export predictions, validate the artifact, run a pinned metric protocol, and compare reports and visual evidence.
+
+Supported evaluation areas listed on the product page include:
+
+- Detection
+- Instance segmentation
+- Keypoints
+- Monocular depth
+- 6DoF pose
+
+The primary use cases are:
+
+- Cross-framework evaluation on the same dataset and metric protocol
+- Prediction-artifact preflight before scoring
+- Repeatable regression evidence for metric, preprocessing, and backend changes
+
+YOLOZU is not presented as a managed training platform, hosted inference service, one-click deployment system, or guaranteed support/SLA offering. Framework-native evaluation may be simpler when no stable cross-stack boundary is needed. Training, benchmark, adapter, and research lanes have separate maturity labels.
+
+Quickstart shown on the product page:
+
+```text
+python3 -m pip install -U yolozu
+yolozu doctor --explain
+yolozu demo instance-seg --run-dir reports/quickstart_instance_seg --progress
+```
+
+Primary links:
+
+- Product page: https://www.toppymicros.com/yolozu/
+- Documentation hub: https://www.toppymicros.com/yolozu/docs/
+- Getting started: https://www.toppymicros.com/yolozu/docs/start.html
+- Commands: https://www.toppymicros.com/yolozu/docs/commands.html
+- Schemas: https://www.toppymicros.com/yolozu/docs/schemas.html
+- Examples: https://www.toppymicros.com/yolozu/docs/examples.html
+- Troubleshooting: https://www.toppymicros.com/yolozu/docs/troubleshooting.html
+- Glossary: https://www.toppymicros.com/yolozu/docs/glossary.html
+- Repository: https://github.com/ToppyMicroServices/YOLOZU
+- PyPI: https://pypi.org/project/yolozu/
+- Software DOI: https://doi.org/10.5281/zenodo.18744756
+- Manual DOI: https://doi.org/10.5281/zenodo.18744926
+- Predictions schema: https://github.com/ToppyMicroServices/YOLOZU/blob/main/docs/predictions_schema.md
+
+### AuditLoop
+
+AuditLoop is a work-boundary evidence layer for AI-operated workflows. It turns AI reliability concerns into operating records such as boundaries, failure notes, escalation rules, evaluation criteria, test cases, unresolved risks, and launch evidence.
+
+It examines task boundaries, refusal behavior, confidence, ambiguous cases, failure severity and recurrence, operational impact, human escalation points, and the evidence needed for review.
+
+The associated paper supplies research background on overconfidence and calibration. The public AuditLoop page presents an operational review workflow; it does not turn the paper into a certification or guarantee.
+
+Primary links:
+
+- Project page: https://www.toppymicros.com/auditloop.html
+- Background preprint: https://arxiv.org/abs/2510.14925
+- Zenodo concept: https://doi.org/10.5281/zenodo.17358362
+
+### VSCode PDF Viewer Secure
+
+VSCode PDF Viewer Secure is a hardened PDF viewer extension for controlled Visual Studio Code business environments. It is designed around conservative defaults, local bundled assets, reduced attack surface, and reviewable feature enablement.
+
+The product page lists:
+
+- Read-only behavior by default
+- Offline-first document handling
+- Bundled viewer and local assets
+- Restrictive webview Content Security Policy
+- PDF scripting disabled
+- External links disabled by default
+- No shell or child-process execution in normal product behavior
+- Printing, download, open-file, forms, and annotation editing disabled by default
+- Feature flags for deliberate enablement of optional behavior
+
+The software is provided as-is. Users are directed to review technical, legal, and security fit before production or business use.
+
+Primary links:
+
+- Product page: https://www.toppymicros.com/products/vscode-pdfviewer-secure/
+- Repository: https://github.com/thinksyncs/vscode-pdfviewer-secure
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=ToppyMicroServices.vscode-pdfviewer-secure
+- Open VSX: https://open-vsx.org/extension/ToppyMicroServices/vscode-pdfviewer-secure
+
+### Agents Secure Binding
+
+Agents Secure Binding is presented as a verifier-side acceptance profile and implementation experiment for binding delegated Agent identity to the live TLS or exported-authenticator session.
+
+The receiver accepts only when the authority grant, holder-of-key proof, accepted session, freshness and replay state, any required attestation result, and local expected policy describe the same intended interaction. Valid-looking credentials alone are not sufficient when the grant, key, session, or policy does not match.
+
+Important boundaries:
+
+- It is a proposal and implementation experiment, not standards-body consensus or A2A core protocol text.
+- It is an acceptance profile, not a full protocol stack, TLS extension, identity provider, registry, gateway, or application protocol.
+- Gateway-routed deployments require separate binding-profile work.
+- The site page is an introduction and link hub. The repository SSOT controls.
+
+Primary links:
+
+- Reader-facing page: https://www.toppymicros.com/agents-secure-binding.html
+- Repository: https://github.com/thinksyncs/agents-secure-binding
+- Source of truth: https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.md
+- Rendered specification: https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.pdf
+- Live red-team report: https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/live-red-team-report.md
+- Security red-team tests: https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/security-red-team-tests.md
+
+### dmarc4all
+
+dmarc4all is a separate public service linked from the company website. Consult the service itself for its current scope and behavior.
+
+Service: https://dmarc4all.toppymicros.com/
+
+## Research
+
+Research is labeled separately from services and products. The public site includes work on uncertainty, overconfidence, control boundaries, credit structure, and reviewable monitoring.
+
+### Thermo-Credit
+
+Thermo-Credit is ongoing independent research that reinterprets the Quantity Theory of Credit through a thermodynamics-inspired analytic bookkeeping correspondence.
+
+The thermodynamics language is an analogy for decision support, not a claim that economies literally obey physical laws. The note makes credit capacity and allocation structure explicit and introduces entropy-like dispersion, credit potential, and free-energy-style measures as candidate indicators.
+
+The proposed value is testability: explicit definitions, state variables, integrability checks, decomposition of policy work and dispersion, and early-warning indicators. Limitations include category dependence, proxy noise, quasi-static assumptions, identification problems, scaling conventions, and the absence of any guarantee that macro-financial data obey physical laws.
+
+This work is informational research, not investment, legal, tax, policy, or regulated financial advice.
+
+Primary links:
+
+- Theory note: https://www.toppymicros.com/theory.html
+- Interactive report: https://www.toppymicros.com/2025_11_Thermo_Credit/report.html
+- Repository: https://github.com/ToppyMicroServices/2025_11_Thermo_Credit
+- Technical note DOI: https://doi.org/10.5281/zenodo.17778342
+
+### mAI Economy — Window Guidance as Code
+
+mAI Economy is a non-operational research concept about making credit guidance explicit, logged, reviewable, and contestable. It describes a control layer that maps policy objectives to measurable targets and allocation guidelines, then monitors outcomes with stability and fairness metrics.
+
+The note is intended for high-accountability institutional settings. It does not claim an operational product, regulatory approval, or a replacement for legal authority, supervisory judgment, or empirical validation.
+
+Primary links:
+
+- English concept note: https://www.toppymicros.com/Economy_AI_ERA.html
+- Japanese concept note: https://www.toppymicros.com/Economy_AI_ERA_ja.html
+- Related background preprint: https://arxiv.org/abs/2510.14925
+
+## RFC education
+
+The site provides English and Japanese RFC learning guides and browser-based quizzes. They are educational utilities, not certifications.
+
+The Agent-to-Agent design map separates:
+
+1. Meaning, representation, discovery, and Agent Cards
+2. Authentication, authorization, delegation, and sender-constrained tokens
+3. Channel binding, signatures, and attestation
+4. Transport, streaming, and versioning
+5. Design review, threat modeling, and privacy
+
+The map distinguishes current A2A references, background standards, references from a related session-bound identity draft, general design guidance, and RFCs for which quizzes are available. Adjacent security work is not presented as A2A core protocol text.
+
+Primary links:
+
+- English guide and quiz hub: https://www.toppymicros.com/education/rfc_quizzes.html
+- Japanese guide and quiz hub: https://www.toppymicros.com/education/rfc_quizzes_ja.html
+
+## News
+
+The News page contains short factual updates.
+
+As of July 2026, it records:
+
+- English and Japanese quizzes for 11 RFCs related to Agent-to-Agent protocol design were added to the RFC quiz collection.
+- A ToppyMicroServices research engineer will participate in the EIML workshop at ICML 2026 in Seoul with a poster.
+
+News page: https://www.toppymicros.com/news.html
+
+## Contact and support
+
+The contact page provides routes for:
+
+- Project inquiries
+- YOLOZU and other product support
+- Security reporting
+
+General contact: info@toppymicros.com
+
+Contact page: https://www.toppymicros.com/contact.html
+
+Security policy: https://www.toppymicros.com/security-policy.html
+
+## Security, privacy, and legal context
+
+### Coordinated vulnerability disclosure
+
+The security policy covers public services under `toppymicros.com` and public repositories under the ToppyMicroServices GitHub organization. It asks reporters to use good-faith, low-impact testing, clear reproduction steps, and explicit scope.
+
+Use the current policy page for reporting routes, scope, timelines, severity handling, and safe-harbor terms:
+
+https://www.toppymicros.com/security-policy.html
+
+### Privacy
+
+The privacy policy describes the controller, processed data, analytics, GDPR legal bases, retention, recipients and transfers, data-subject rights, security, and policy changes.
+
+Current policy:
+
+https://www.toppymicros.com/privacy-policy.html
+
+### Terms and legal notice
+
+The site provides company information, public proof artifacts, educational material, and product pages. Unless a separate written agreement says otherwise, site content is informational and does not create a client relationship.
+
+Current terms:
+
+https://www.toppymicros.com/terms-legal-notice.html
+
+## Source hierarchy
+
+When sources differ, use this order:
+
+1. A page or repository explicitly identified as the source of truth
+2. The current product, policy, or project page
+3. This full-site context summary
+4. The short `llms.txt` navigation file
+
+For release status, implementation details, and exact technical claims, consult the linked repository and its current tagged artifacts. For legal, privacy, and security-reporting questions, consult the current policy pages.
