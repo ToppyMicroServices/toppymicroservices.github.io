@@ -342,6 +342,39 @@
       background: #ffffff;
     }
 
+    .manga-sheet {
+      position: relative;
+      z-index: 1;
+      display: block;
+    }
+
+    .manga-line {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      z-index: 3;
+      width: var(--w);
+      color: var(--manga-ink);
+      font-family: var(--font-display);
+      font-size: clamp(10px, 1.28vw, 18px);
+      font-weight: 900;
+      line-height: 1.33;
+      letter-spacing: -.04em;
+      text-align: center;
+      text-wrap: balance;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .manga-line.small {
+      font-size: clamp(9px, 1.06vw, 15px);
+      line-height: 1.28;
+    }
+
+    .manga-line.wide {
+      font-size: clamp(10px, 1.18vw, 17px);
+    }
+
     .section {
       margin-top: 22px;
       padding: 22px;
@@ -1142,6 +1175,16 @@
       .sfx {
         font-size: clamp(28px, 11vw, 46px);
       }
+
+      .manga-line,
+      .manga-line.wide {
+        font-size: clamp(8px, 2.8vw, 12px);
+        line-height: 1.25;
+      }
+
+      .manga-line.small {
+        font-size: clamp(7px, 2.55vw, 11px);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1193,15 +1236,25 @@
 
       <aside class="poster card" aria-label="漫画ポスター">
         <div class="poster-frame">
-          <img
-            class="manga-sheet-img"
-            src="rfc6265-cookie-manga-panel.png"
-            width="1024"
-            height="1536"
-            alt="RFC 6265 Cookie の流れを、村役場、旅人、おふだ、境界、橋、狐、時計で表した6コマ漫画"
-            decoding="async"
-            fetchpriority="high"
-          />
+          <div class="manga-sheet" aria-label="RFC 6265 Cookie の流れを描いた6コマ漫画">
+            <img
+              class="manga-sheet-img"
+              src="rfc6265-cookie-manga-panel.png"
+              width="1024"
+              height="1536"
+              alt="RFC 6265 Cookie の流れを、村役場、旅人、おふだ、境界、橋、狐、時計で表した6コマ漫画"
+              decoding="async"
+              fetchpriority="high"
+            />
+            <span class="manga-line wide" style="--x: 23%; --y: 7.7%; --w: 22%;">このおふだを<br>持っていきなさい</span>
+            <span class="manga-line small" style="--x: 16%; --y: 30.2%; --w: 19%;">はい、<br>大切にしまいます</span>
+            <span class="manga-line wide" style="--x: 64%; --y: 7.9%; --w: 22%;">前にもらった<br>おふだです</span>
+            <span class="manga-line wide" style="--x: 33%; --y: 39.6%; --w: 25%;">この村と<br>この道だけ</span>
+            <span class="manga-line wide" style="--x: 83%; --y: 39.3%; --w: 24%;">安全な橋なら<br>渡します</span>
+            <span class="manga-line wide" style="--x: 18%; --y: 69.4%; --w: 23%;">こっそり<br>読めないぞ</span>
+            <span class="manga-line wide" style="--x: 62%; --y: 70.3%; --w: 20%;">期限が来たら<br>おしまい</span>
+            <span class="manga-line wide" style="--x: 82%; --y: 70.0%; --w: 18%;">新しいおふだに<br>替えます</span>
+          </div>
         </div>
       </aside>
     </section>
