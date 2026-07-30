@@ -40,17 +40,17 @@
       enSummary: 'Separates who may do what for which resource from who can present a token.',
       items: [
         item(6749, 'The OAuth 2.0 Authorization Framework', 'OAuthのrole、grant、access token、scopeの基礎。draftのOAuth合成の出発点。', 'OAuth roles, grants, access tokens, and scopes; the draft composition baseline.', 'DQ'),
-        item(7517, 'JSON Web Key (JWK)', 'JWS/JWT/DPoPの公開鍵表現とJWKSによる鍵配布。', 'Public-key representation and JWKS distribution for JWS, JWT, and DPoP.'),
+        item(7517, 'JSON Web Key (JWK)', 'JWS/JWT/DPoPの公開鍵表現とJWKSによる鍵配布。', 'Public-key representation and JWKS distribution for JWS, JWT, and DPoP.', 'Q'),
         item(7519, 'JSON Web Token (JWT)', 'issuer、audience、時間、token IDを持つclaim container。署名検証だけで受理を決めない。', 'Claim container for issuer, audience, time, and token IDs; signature validity alone is not acceptance.', 'DQ'),
-        item(7638, 'JSON Web Key (JWK) Thumbprint', 'keyをcanonicalなthumbprintで参照する。DPoPの`jkt`理解に必要。', 'Canonical key thumbprints, including the DPoP `jkt` confirmation method.'),
+        item(7638, 'JSON Web Key (JWK) Thumbprint', 'keyをcanonicalなthumbprintで参照する。DPoPの`jkt`理解に必要。', 'Canonical key thumbprints, including the DPoP `jkt` confirmation method.', 'Q'),
         item(7800, 'Proof-of-Possession Key Semantics for JSON Web Tokens (JWTs)', '`cnf` claimでtokenとholder keyを結び付ける。', 'Binds a token to a holder key through the `cnf` claim.', 'DQ'),
-        item(8414, 'OAuth 2.0 Authorization Server Metadata', 'authorization serverのendpoint、capability、鍵位置を発見する。', 'Discovers authorization-server endpoints, capabilities, and key locations.'),
+        item(8414, 'OAuth 2.0 Authorization Server Metadata', 'authorization serverのendpoint、capability、鍵位置を発見する。', 'Discovers authorization-server endpoints, capabilities, and key locations.', 'Q'),
         item(8693, 'OAuth 2.0 Token Exchange', 'actor、subject、audienceを含む委任・token変換。agent chainでのauthority伝搬を議論する基礎。', 'Delegation and token exchange across actors, subjects, and audiences in agent chains.', 'DQ'),
         item(8705, 'OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens', 'client certificateによる認証とaccess tokenのcertificate binding。', 'Client-certificate authentication and certificate-bound access tokens.', 'DQ'),
         item(8725, 'JSON Web Token Best Current Practices', 'algorithm confusion、cross-JWT confusion、issuer/audience検証を含むJWT受理のBCP。', 'JWT acceptance BCP covering algorithm confusion, token confusion, issuer, and audience.', 'DQ'),
         item(9449, 'OAuth 2.0 Demonstrating Proof of Possession (DPoP)', 'HTTP requestごとのproofでtokenをkey-boundにする。認証・認可そのものとの境界が重要。', 'Binds tokens to a key with per-request proofs; not by itself authentication or authorization.', 'DQ'),
         item(9700, 'Best Current Practice for OAuth 2.0 Security', 'OAuth 2.0を現在の脅威モデルで運用するためのSecurity BCP。', 'The current OAuth 2.0 security BCP and deployment threat model.', 'Q'),
-        item(9728, 'OAuth 2.0 Protected Resource Metadata', 'resource server側のauthorization server、scope、sender-constraining対応を発見する。', 'Discovers a protected resource’s authorization servers, scopes, and sender-constraining support.')
+        item(9728, 'OAuth 2.0 Protected Resource Metadata', 'resource server側のauthorization server、scope、sender-constraining対応を発見する。', 'Discovers a protected resource’s authorization servers, scopes, and sender-constraining support.', 'Q')
       ]
     },
     {
@@ -111,7 +111,7 @@
         item(5218, 'What Makes for a Successful Protocol?', '正味価値、段階導入、open specification、拡張性から採用可能性を評価する。', 'Evaluates adoption through net value, incremental deployment, openness, and extensibility.', 'GQ'),
         item(6973, 'Privacy Considerations for Internet Protocols', 'identifier、観測可能性、相関、保存、二次利用をprivacy threat modelへ落とす。', 'Maps identifiers, observability, correlation, retention, and secondary use into privacy threats.', 'DQ'),
         item(7258, 'Pervasive Monitoring Is an Attack', '大規模受動監視をprotocol design上の攻撃として扱う。', 'Treats pervasive passive monitoring as a protocol-design attack.', 'DGQ'),
-        item(8890, 'The Internet is for End Users', 'agent、provider、gatewayの都合ではなくend userの利益を設計評価へ入れる。', 'Includes end-user interests when evaluating agents, providers, and gateways.', 'G'),
+        item(8890, 'The Internet is for End Users', 'agent、provider、gatewayの都合ではなくend userの利益を設計評価へ入れる。', 'Includes end-user interests when evaluating agents, providers, and gateways.', 'GQ'),
         item(9518, 'Centralization, Decentralization, and Internet Standards', 'registry、broker、identity providerが作るcentralization pressureを分析する。', 'Analyzes centralization pressure from registries, brokers, and identity providers.', 'DGQ')
       ]
     }
@@ -120,7 +120,9 @@
   const route = [
     ['意味と表現', 'Semantics', [9110, 8259, 3986]],
     ['発見とAgent Card', 'Discovery', [8615, 9111, 7515, 8785]],
-    ['認証・委任', 'Auth and delegation', [6749, 9700, 8693, 9449]],
+    ['OAuthの土台', 'OAuth foundations', [6749, 8414, 9728]],
+    ['鍵とtoken形式', 'Keys and token formats', [7517, 7638, 7519, 8725]],
+    ['sender constrainingと委任', 'Sender constraining and delegation', [7800, 8705, 9449, 8693]],
     ['接続と証明の結び付け', 'Binding proofs to connections', [8446, 9266, 9421, 9334]],
     ['通信方式と進化', 'Transport and evolution', [9113, 9114, 9000, 8999]],
     ['設計レビュー', 'Design review', [3552, 3439, 6973]]
@@ -183,11 +185,11 @@
     if (entry.flags.includes('A')) side.appendChild(badge(locale === 'ja' ? 'A2A 1.0で明記' : 'Named by A2A 1.0', 'a2a-direct'));
     if (entry.flags.includes('B')) side.appendChild(badge(locale === 'ja' ? '背景標準' : 'Background', 'background'));
     if (NORMATIVE_REFERENCES.has(entry.n)) {
-      side.appendChild(badge(locale === 'ja' ? '関連仕様案の規範参照' : 'Normative reference in related draft', 'draft-normative'));
+      side.appendChild(badge(locale === 'ja' ? '規範参照' : 'Normative ref', 'draft-normative'));
     } else if (INFORMATIVE_REFERENCES.has(entry.n)) {
-      side.appendChild(badge(locale === 'ja' ? '関連仕様案の参考参照' : 'Informative reference in related draft', 'draft-informative'));
+      side.appendChild(badge(locale === 'ja' ? '参考参照' : 'Informative ref', 'draft-informative'));
     } else if (entry.flags.includes('D')) {
-      side.appendChild(badge(locale === 'ja' ? '関連仕様案で参照' : 'Referenced by related draft', 'draft-direct'));
+      side.appendChild(badge(locale === 'ja' ? 'draft参照' : 'Draft ref', 'draft-direct'));
     }
     if (entry.flags.includes('G')) side.appendChild(badge(locale === 'ja' ? '設計レビュー向け' : 'Review guidance', 'design'));
     if (hasQuiz) {

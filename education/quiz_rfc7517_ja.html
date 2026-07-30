@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 7517 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 7517 quiz: JWKとJWKSをkey表現として使い, key selection, trust, private material, authorization policyを混同しない" />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc7517_ja.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#215a96" />
+  <meta name="color-scheme" content="light dark" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 7517 Quiz (JA) | ToppyMicroServices" />
+  <meta property="og:description" content="RFC 7517 quiz: JWKとJWKSをkey表現として使い, key selection, trust, private material, authorization policyを混同しない" />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc7517_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 7517 Quiz (JA) | ToppyMicroServices" />
+  <meta name="twitter:description" content="RFC 7517 quiz: JWKとJWKSをkey表現として使い, key selection, trust, private material, authorization policyを混同しない" />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc7517.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc7517_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc7517.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="light">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7517","SKILL_SUBTITLE":"JSON Web Key (JWK)","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 7517 Quiz (JA)</h1>
+        <h2 id="subtitle">JSON Web Key (JWK)</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a aria-label="English" data-lang="en" href="quiz_rfc7517.html">EN</a><a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc7517_ja.html">JA</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">学習モード</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">参考URL</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7517" target="_blank" rel="noopener noreferrer">RFC 7517: JSON Web Key (JWK)</a></li></ul>
+    </section>
+
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">回答後すぐに解説を表示</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">全ての答えを表示</span></label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="keyの表現とtrustやauthorizationを分けてください.">
+        <header><h4>Q1: RFC 7517の中心的な役割として最も適切なのはどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. JWTを含むrequestすべてのauthorization policyを決める</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. JOSE系protocolで使う暗号鍵をJSON objectとして表す</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. kid値だけでkeyが信頼済みだと証明する</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** JWKはkey materialとkey metadataを運びます. ただし, そのkeyを信頼するかは取得元とpolicyで別に決まります.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: authorization policyはOAuthやapplication ruleやlocal trust policyの仕事であり, JWK formatだけでは決まりません.
+- B: JWKはJOSE系protocolで使うkeyのJSON表現です. このRFCの中心として適切です.
+- C: kidはcandidate keyを探すhintです. trust decisionでもglobal uniqueな証明でもありません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="JSON key containerの外側に残るcheckを探してください.">
+        <header><h4>Q2: serviceがJWKSを読むとき明示しておくべきreview項目はどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. JWKSの取得元, issuerとの関係, local trust policyを検証する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. downloadしたJWKS内の全keyを全tokenで信頼する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. private key memberやsymmetric key memberをpublic JWKSに出さない</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. JWKにalg memberがあるだけでalgorithmを受け入れる</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** JWKSは便利ですが, どこから来たか, 誰が管理しているか, どの用途で許すかをdeploymentが決める必要があります.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: JSON key setだけでは誰がsignしてよいかを証明しないため, sourceとissuerのcheckが必要です.
+- B: 全keyをblind trustすると, wrong issuerやwrong use caseを通してしまう可能性があります.
+- C: public JWKSにsecret materialを置くと, verifier aidではなくsecret leakになります.
+- D: alg memberはconstraintやhintになり得ますが, verifier側のallow-listとprofile ruleが必要です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="必要なkey parameterを決める値に注目してください.">
+        <header><h4>Q3: JWKのktyがRSAやECのとき, 主に何を決めますか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. そのkeyに結び付くuser identity</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. presenterに与えられるOAuth scope</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. key familyとそのfamilyで必要になるmember</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** ktyはkey typeを選びます. 実装はその値を見て, 暗号処理前に読むべきkey-specific memberを決めます.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: user identityはcertificate, claim, deployment policyなどで扱うことが多く, ktyでは決まりません.
+- B: OAuth scopeはtoken policyであり, key type fieldの役割ではありません.
+- C: ktyはkey familyを選ぶため, RSA modulus/exponentやEC curve coordinateなどの必要memberを決めます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="selectorは便利ですがauthoritativeではありません.">
+        <header><h4>Q4: JWT headerのkidと一致するkeyが見つかったとき, 最も安全な解釈はどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. kidはcandidate keyを選んだだけで, issuer, algorithm, policyはまだ検証する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. kidがsignerを証明するためissuer validationを上書きできる</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. kidはすべてのissuerとkey setをまたいでglobal uniqueである</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** key selectionとkey trustは別のstepです. key identifierでcandidateを絞ったあと, policyとcryptographic checkでacceptanceを決めます.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: kidをlookup hintに留め, その後のvalidation stepを残しているため安全です.
+- B: issuer validationを上書きすると, convenience identifierをauthorization mechanismにしてしまいます.
+- C: RFCはkidをglobal uniqueにしていないため, issuerをまたぐcollisionやreuseを考える必要があります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="selection, cryptographic verification, policyを別stepとして追ってください.">
+        <header><h4>Q5: signed tokenをJWKSで検証する流れとして最も適切なのはどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. set内の最初のkeyを選び, 対応する全algorithmを試す</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 設定済みJWKSを取得し, acceptableなcandidate keyを選び, signatureとclaim policyを検証する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. key materialがwell formedならissuer checkを省略する</label>
+          </fieldset>
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc7517-ja-q5-caption">
+            <figcaption id="rfc7517-ja-q5-caption">JWKSによるtoken検証の流れ.</figcaption>
+            <svg viewBox="0 0 772 158" role="img" aria-label="JWKSによるtoken検証の流れ.">
+              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="95" y="69">設定済み</text>
+              <text class="flow-label" x="95" y="90">JWKS source</text>
+              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
+              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
+              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="289" y="69">candidate</text>
+              <text class="flow-label" x="289" y="90">key selection</text>
+              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
+              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
+              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="483" y="69">signature</text>
+              <text class="flow-label" x="483" y="90">verification</text>
+              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
+              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
+              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="677" y="69">claim/policy</text>
+              <text class="flow-label" x="677" y="90">decision</text>
+            </svg>
+          </figure>
+          <div class="explain">
+**Judgment point:** 安全なverifierはkey setだけでacceptanceを決めません. trusted discovery, candidate selection, cryptographic validation, application policyを組み合わせます.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: 最初のkeyは任意であり, algorithmを広く試すとalgorithm confusionのriskが出ます.
+- B: discovery, selection, signature verification, policy checkを分けており, JWKSの安全な使い方です.
+- C: well formedなkey materialは, right issuerやkey ownerを証明しません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="key metadataとlocal acceptance policyを分けて分類してください.">
+        <header><h4>Q6: use, key_ops, algについて慎重な説明はどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. これらのmemberはkeyを名指した全operationを自動でauthorizeする</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. profileはこれらのmemberがkey operationをどう制限するか定義するべきである</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. local policyが禁じるalgorithmでもtoken header側を優先するべきである</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. 矛盾するkey metadataはrejectするか, profileで明確な処理ruleを決める</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** key metadataはmisuseを減らします. ただし各memberをどの強さで扱うかはprofileやverifier policyが定義します.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: key metadataはresource authorization grantではなく, policyを置き換えません.
+- B: profileはuse, key_ops, algをmandatory constraintにするかadvisory fieldにするかを明確にするべきです.
+- C: local algorithm policyは, attacker-controlledまたはissuer-provided headerでbypassしてはいけません.
+- D: 矛盾した値にはdeterministicなhandling ruleが必要です. そうしないと実装ごとにacceptanceが分かれます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="keyを公開することとsecretを公開することは違います.">
+        <header><h4>Q7: JWK形式のprivate key materialやsymmetric key materialについて最も安全な扱いはどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. 利便性のためpublic verification keyと同じJWKSに公開する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. JSONで表されているためharmlessとして扱う</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. public key setに出さず, 保存や転送のたびにsecret materialとして保護する</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** JWKはpublic, private, symmetric materialを表せます. JSON formatであることは中身のsensitivityを下げません.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: secret key memberをpublic JWKSに置くと, impersonationやdecryptionに必要なmaterialが漏れます.
+- B: JSONはencodingにすぎず, secret materialを安全にはしません.
+- C: secret materialはJWK encodingでもsecretです. 適切に保護する必要があります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="certificate materialでcertificate validationを省略しないでください.">
+        <header><h4>Q8: JWKにx5c certificate dataが含まれる場合, verifierが避けるべきでない慎重な扱いはどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. certificate chainをhintとして使い, chain validationとkey matchingを続ける</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. x5cだけでkeyがこのtokenに信頼済みだと扱う</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. certificate内のpublic keyがJWK keyと対応するか確認する</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** certificate関連memberはkeyとcertificate materialを結び付けます. ただしcertificate pathとintended useは別に検証します.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: x5cをshortcutではなくvalidation inputとして扱っており, 慎重なpathです.
+- B: automatic trustにするとpath validation, name constraint, usage policyを省略してしまいます.
+- C: certificateのpublic keyとJWKの対応確認は必要なconsistency checkです. 避けるべきものではありません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="rotationでfail openを作らないでください.">
+        <header><h4>Q9: JWKSのkey rotationとして安全なpracticeはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. controlled overlap windowの間, old keyとnew verification keyを両方serveする</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. clientを単純にするためunrelated keyで同じkidを再利用する</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. acceptable keyがなくてもbackup algorithmを試してtokenを受け入れる</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. JWKSをcache/revalidateし, acceptable keyがなければfail closedする</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** key rotationは通常運用です. ただしunknown keyやambiguous identifierをacceptする動作にしてはいけません.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: overlap windowがあると, 既存tokenを検証しながら新しいkeyへ移行できます.
+- B: unrelated keyでkidを再利用するとselectionが曖昧になり, wrong materialを選ぶ原因になります.
+- C: backup algorithm fallbackはrotationをalgorithm confusionやkey confusion bugに変えます.
+- D: trustworthy candidate keyがないときfail closedすることでsecurityを保ちます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="acceptable keyがなければverification successではありません.">
+        <header><h4>Q10: verifierがtoken用のacceptable JWKを見つけられない場合, どう扱うべきですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. JWKS endpointに到達できたのでtokenを受け入れる</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. 別のtrusted validation pathが明示されていない限り, この判断ではtokenをrejectする</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. key mismatchを無視し, token payload claimだけに頼る</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** acceptable keyがないことは現在のvalidation pathではfailureです. protectionを検証するまでclaimは信頼できません.
+
+**Related keywords:**
+- **JWK** : 暗号鍵をJSON objectで表す形式
+- **JWKS** : 複数のkeyを公開するJSON set
+- **kid** : keyを探すためのhintでありtrustそのものではない
+
+**Options:**
+- A: JWKS endpointのreachabilityはvalid signatureやtrusted issuerと同じではありません.
+- B: rejectすればfail-closed behaviorを保てます. alternate pathは明示的に定義された場合だけ使えます.
+- C: signatureとpolicy checkが通るまでpayload claimはattacker-controlledとして扱います.
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

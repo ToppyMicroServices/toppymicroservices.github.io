@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 8414 Quiz (JA) | ToppyMicroServices</title>
+  <meta name="description" content="RFC 8414 quiz: authorization serverのendpointとcapabilityを発見し, issuer identityとauthorization policyを分けて検証する" />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc8414_ja.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#215a96" />
+  <meta name="color-scheme" content="light dark" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 8414 Quiz (JA) | ToppyMicroServices" />
+  <meta property="og:description" content="RFC 8414 quiz: authorization serverのendpointとcapabilityを発見し, issuer identityとauthorization policyを分けて検証する" />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc8414_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 8414 Quiz (JA) | ToppyMicroServices" />
+  <meta name="twitter:description" content="RFC 8414 quiz: authorization serverのendpointとcapabilityを発見し, issuer identityとauthorization policyを分けて検証する" />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc8414.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc8414_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc8414.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="light">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 8414 Quiz (JA)</h1>
+        <h2 id="subtitle">OAuth 2.0 Authorization Server Metadata</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Light</button>
+        <div class="lang-toggle" aria-label="Language switcher"><a aria-label="English" data-lang="en" href="quiz_rfc8414.html">EN</a><a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc8414_ja.html">JA</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">学習モード</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">参考URL</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8414" target="_blank" rel="noopener noreferrer">RFC 8414: OAuth 2.0 Authorization Server Metadata</a></li></ul>
+    </section>
+
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">回答後すぐに解説を表示</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">全ての答えを表示</span></label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="discoveryはauthorizationそのものではありません.">
+        <header><h4>Q1: OAuth deploymentでRFC 8414を主に何に使いますか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. userにprotected resourceへのaccessをgrantする</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. authorization serverのendpointとcapabilityをmetadataとして公開する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. client registrationとlocal security policyを置き換える</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** authorization server metadataはclientにendpointとcapabilityの場所を伝えます. requestを許可するかは決めません.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: access decisionはauthorization flow, token, resource server, policyで決まります.
+- B: endpointとcapabilityの公開がmetadata documentの中心的機能です.
+- C: discoveryはclientを助けますが, registrationとlocal policyは別controlとして残ります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="clientは使いたいissuerを先に知っている必要があります.">
+        <header><h4>Q2: metadata confusionを防ぐcheckはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. 返されたissuerがclientのexpected authorization serverと一致するか検証する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. token_endpointが含まれていれば到達可能なmetadata documentを何でも使う</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. intended issuerに対するtrustworthy HTTPS pathでmetadataを取得する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. jwks_uriがあればendpoint validationを省略する</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** metadata discoveryは, clientがintended issuerとtransport trustに結び付けたときだけ有効です.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: issuer valueにより, あるauthorization serverのmetadataを別contextに混ぜる事故を防げます.
+- B: reachable documentはattacker-controlledかもしれず, 単に別issuer用かもしれません.
+- C: HTTPSとintended issuer pathが, 後続のendpoint利用前にmetadata retrievalを守ります.
+- D: jwks_uriはdocument内の1 fieldであり, endpointやissuer relationship全体を検証しません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="issuer identifierがmetadataのanchorです.">
+        <header><h4>Q3: RFC 8414でissuer valueがsecurity-relevantな理由はどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. login pageに出すuser向けdisplay nameになる</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. どのprotected resourceがtokenを受け入れるか決める</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. metadata documentをclientが期待するauthorization server identityへbindする</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** issuer valueはclientがwrong authorization serverのendpoint, key, capabilityを使うことを防ぎます.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: display nameはUI concernであり, ここでの主要なsecurity roleではありません.
+- B: resource-server acceptanceはaudience, token, policyに基づく別decisionです.
+- C: issuer bindingはcross-issuer metadata confusionを防ぐkey checkです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="signed objectにもtrust decisionが必要です.">
+        <header><h4>Q4: signed authorization server metadataをclientはどう扱うべきですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. integrityを補うmetadataとして使い, signature trustとissuer expectationは検証し続ける</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. document内の全endpointが自動でacceptableだという証明として扱う</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. TLSとissuer comparisonの置き換えとして扱う</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** signed metadataはcontent integrityを守れますが, expected issuerとtrusted signing keyに結び付ける必要があります.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: signatureをvalidation inputとして使いながら, issuerとtrust checkを省略していません.
+- B: signatureはtrusted keyがsignした内容を示すだけで, 全endpointのpolicy approvalではありません.
+- C: TLSとissuer comparisonはretrievalとbindingの境界を守ります. signatureだけでは消えません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="issuer, metadata, endpoint, keyを別stepとして追ってください.">
+        <header><h4>Q5: RFC 8414の使い方として最も適切なclient flowはどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. search resultからendpointを選び, responseからissuerを推測する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. expected issuerから始め, metadataを取得し, issuer consistencyを検証してからdeclared endpointをpolicy下で使う</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 先にjwks_uriをdownloadし, key setにauthorization serverを選ばせる</label>
+          </fieldset>
+          <figure class="flow-diagram answer-figure" aria-labelledby="rfc8414-ja-q5-caption">
+            <figcaption id="rfc8414-ja-q5-caption">authorization server metadata validation flow.</figcaption>
+            <svg viewBox="0 0 772 158" role="img" aria-label="authorization server metadata validation flow.">
+              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="95" y="69">expected</text>
+              <text class="flow-label" x="95" y="90">issuer</text>
+              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
+              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
+              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="289" y="69">metadata</text>
+              <text class="flow-label" x="289" y="90">取得</text>
+              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
+              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
+              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="483" y="69">issuer</text>
+              <text class="flow-label" x="483" y="90">検証</text>
+              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
+              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
+              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
+              <text class="flow-text" x="677" y="69">endpointを</text>
+              <text class="flow-label" x="677" y="90">policy下で使用</text>
+            </svg>
+          </figure>
+          <div class="explain">
+**Judgment point:** clientはkeyやendpointにauthorization serverを選ばせるべきではありません. expected issuer identityが先です.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: search resultはtrusted issuer anchorではなく, mix-upにつながります.
+- B: issuer identity, metadata retrieval, endpoint useを意図した順序で保っています.
+- C: keyはverifier inputであり, clientがどのserverを使うつもりだったかを選ぶauthorityではありません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="capability declarationはpermission grantではありません.">
+        <header><h4>Q6: RFC 8414 metadataの外側に残る境界はどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. authorization server capabilityを表すJSON name</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. userやclientが特定resourceへaccessしてよいか</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. authorization_endpointやtoken_endpointのlocation</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. deploymentがauthorization serverを受け入れる前に必須とするmetadata field</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** metadata formatはserverを説明します. 何をtrustし, 何をpolicy上必須にするかはdeploymentが選びます.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: field nameはmetadata formatの一部であり, RFCの範囲内です.
+- B: resource accessはdiscovery document外のauthorization decisionです.
+- C: endpoint locationはmetadataが公開する代表的な情報です.
+- D: deployment profileはfieldを必須にし, threat modelに不足するmetadataをrejectできます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="mix-upはあるissuer contextを別serverに使うと始まります.">
+        <header><h4>Q7: cross-issuer metadata riskに当たるfailureはどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. clientがexpected issuer用metadataをcacheし, expiryを尊重する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. clientがconfigurationと異なるissuerのmetadataをrejectする</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. issuer Aのendpointをissuer B向けtokenやkey expectationと組み合わせる</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** OAuth deploymentではauthorization serverの混同を避ける必要があります. metadata validationはその境界を強制する場所です.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: expected issuer向けの正しいcacheは安定運用を助けます.
+- B: mismatched issuer valueのrejectは意図されたprotectionです.
+- C: 異なるissuerのfieldを混ぜることが, issuer checkで防ぐべきconfusionです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="jwks_uriはkeyの場所を示しますがtrustを単独で選びません.">
+        <header><h4>Q8: authorization server metadataのjwks_uriについて慎重な解釈はどれですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. そのauthorization serverからのobjectをpolicy下で検証するためのkey取得場所である</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. そのURL上の全keyを全issuerで信頼してよい</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. issuer, audience, algorithm validationを置き換える</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** key set locationはauthorization server objectのvalidationを助けます. verifierはissuerとalgorithm policyを引き続き適用します.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: jwks_uriをexpected authorization serverにscopedなkey sourceとして扱っています.
+- B: trustはscopedです. URLに到達できるだけで全issuerへ拡張できません.
+- C: issuer, audience, algorithm validationはkey retrievalを超える境界を守ります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="metadataは変わりますが, checkを黙って弱めてはいけません.">
+        <header><h4>Q9: authorization server metadataの運用として安全なpracticeはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. 定義済みrefresh strategyでmetadataをcacheする</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. authorization serverのendpointやkeyはrotateしないため永久cacheする</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. 一時障害中はissuer mismatchを無視する</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. required metadataがmissingまたはinconsistentならfail closedする</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** metadataはautomationを支えます. ただしautomationでstaleまたはinconsistentなsecurity stateをacceptしてはいけません.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: 定義済みrefresh behaviorにより, clientはendpointやkey更新にad hocで対応しなくて済みます.
+- B: authorization serverはkeyやendpointをrotateし得るため, forever cacheは危険です.
+- C: outage中にissuer mismatchを無視するのはfail-open behaviorです.
+- D: fail closedにするとdeployment profileを満たさないmetadataを使わずに済みます.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="metadataがないことをsupportの推測に使わないでください.">
+        <header><h4>Q10: required capabilityがmetadataにない場合, strict clientはどうするべきですか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. endpointが存在するためfeatureはsupportされると仮定する</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. 別のtrusted ruleがない限り, そのfeatureではauthorization serverを使えないと扱う</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. featureを使い, resource serverがrejectするのを待つ</label>
+          </fieldset>
+          <div class="explain">
+**Judgment point:** metadataによりclientはcapabilityについてguessせずに済みます. strict profileではmissing dataをsupport扱いにしません.
+
+**Related keywords:**
+- **issuer** : authorization serverを識別する値
+- **metadata** : endpointやcapabilityを示すJSON document
+- **jwks_uri** : authorization serverのkeyを取得する場所
+
+**Options:**
+- A: endpoint existenceは全capabilityのsupportを意味しません.
+- B: deterministic client behaviorを保ち, unsupportedまたはunsafeなflowを避けられます.
+- C: unsupported behaviorを試すとdata leakや分かりにくいfailure pathを作ります.
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>
