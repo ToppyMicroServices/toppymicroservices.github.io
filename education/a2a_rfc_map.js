@@ -29,7 +29,7 @@
         item(9111, 'HTTP Caching', 'Agent Cardのfreshness、validator、再検証と、identity依存応答の保存可否。', 'Agent Card freshness and revalidation, plus policy for identity-dependent responses.', 'ADQ'),
         item(7515, 'JSON Web Signature (JWS)', 'Agent Card署名とdraftのauthority grant / session proofで使う署名コンテナ。', 'The signature container used for Agent Cards and the draft grant/proof profiles.', 'ADQ'),
         item(8785, 'JSON Canonicalization Scheme (JCS)', 'Agent Card署名対象を実装間で同じbyte列にする。A2Aのfield presence規則も併読する。', 'Produces stable Agent Card signature bytes; read with A2A field-presence rules.', 'AQ'),
-        item(9457, 'Problem Details for HTTP APIs', '一般的なHTTP APIエラー表現。draftの直接参照だが、現行A2A 1.0のHTTP error bodyはgoogle.rpc.Status系。', 'General HTTP API errors and a direct draft reference; current A2A 1.0 uses a google.rpc.Status-style body.', 'DR')
+        item(9457, 'Problem Details for HTTP APIs', '一般的なHTTP APIエラー表現。draftの直接参照だが、現行A2A 1.0のHTTP error bodyはgoogle.rpc.Status系。', 'General HTTP API errors and a direct draft reference; current A2A 1.0 uses a google.rpc.Status-style body.', 'DRQ')
       ]
     },
     {
@@ -41,13 +41,13 @@
       items: [
         item(6749, 'The OAuth 2.0 Authorization Framework', 'OAuthのrole、grant、access token、scopeの基礎。draftのOAuth合成の出発点。', 'OAuth roles, grants, access tokens, and scopes; the draft composition baseline.', 'DQ'),
         item(7517, 'JSON Web Key (JWK)', 'JWS/JWT/DPoPの公開鍵表現とJWKSによる鍵配布。', 'Public-key representation and JWKS distribution for JWS, JWT, and DPoP.'),
-        item(7519, 'JSON Web Token (JWT)', 'issuer、audience、時間、token IDを持つclaim container。署名検証だけで受理を決めない。', 'Claim container for issuer, audience, time, and token IDs; signature validity alone is not acceptance.', 'D'),
+        item(7519, 'JSON Web Token (JWT)', 'issuer、audience、時間、token IDを持つclaim container。署名検証だけで受理を決めない。', 'Claim container for issuer, audience, time, and token IDs; signature validity alone is not acceptance.', 'DQ'),
         item(7638, 'JSON Web Key (JWK) Thumbprint', 'keyをcanonicalなthumbprintで参照する。DPoPの`jkt`理解に必要。', 'Canonical key thumbprints, including the DPoP `jkt` confirmation method.'),
-        item(7800, 'Proof-of-Possession Key Semantics for JSON Web Tokens (JWTs)', '`cnf` claimでtokenとholder keyを結び付ける。', 'Binds a token to a holder key through the `cnf` claim.', 'D'),
+        item(7800, 'Proof-of-Possession Key Semantics for JSON Web Tokens (JWTs)', '`cnf` claimでtokenとholder keyを結び付ける。', 'Binds a token to a holder key through the `cnf` claim.', 'DQ'),
         item(8414, 'OAuth 2.0 Authorization Server Metadata', 'authorization serverのendpoint、capability、鍵位置を発見する。', 'Discovers authorization-server endpoints, capabilities, and key locations.'),
         item(8693, 'OAuth 2.0 Token Exchange', 'actor、subject、audienceを含む委任・token変換。agent chainでのauthority伝搬を議論する基礎。', 'Delegation and token exchange across actors, subjects, and audiences in agent chains.', 'DQ'),
-        item(8705, 'OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens', 'client certificateによる認証とaccess tokenのcertificate binding。', 'Client-certificate authentication and certificate-bound access tokens.', 'D'),
-        item(8725, 'JSON Web Token Best Current Practices', 'algorithm confusion、cross-JWT confusion、issuer/audience検証を含むJWT受理のBCP。', 'JWT acceptance BCP covering algorithm confusion, token confusion, issuer, and audience.', 'D'),
+        item(8705, 'OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens', 'client certificateによる認証とaccess tokenのcertificate binding。', 'Client-certificate authentication and certificate-bound access tokens.', 'DQ'),
+        item(8725, 'JSON Web Token Best Current Practices', 'algorithm confusion、cross-JWT confusion、issuer/audience検証を含むJWT受理のBCP。', 'JWT acceptance BCP covering algorithm confusion, token confusion, issuer, and audience.', 'DQ'),
         item(9449, 'OAuth 2.0 Demonstrating Proof of Possession (DPoP)', 'HTTP requestごとのproofでtokenをkey-boundにする。認証・認可そのものとの境界が重要。', 'Binds tokens to a key with per-request proofs; not by itself authentication or authorization.', 'DQ'),
         item(9700, 'Best Current Practice for OAuth 2.0 Security', 'OAuth 2.0を現在の脅威モデルで運用するためのSecurity BCP。', 'The current OAuth 2.0 security BCP and deployment threat model.', 'Q'),
         item(9728, 'OAuth 2.0 Protected Resource Metadata', 'resource server側のauthorization server、scope、sender-constraining対応を発見する。', 'Discovers a protected resource’s authorization servers, scopes, and sender-constraining support.')
@@ -60,24 +60,24 @@
       jaSummary: 'draft-okutomi-session-bound-agent-identity-06が直接参照する、受理判定の主要部品。',
       enSummary: 'Main acceptance components directly referenced by draft-okutomi-session-bound-agent-identity-06.',
       items: [
-        item(5056, 'On the Use of Channel Bindings to Secure Channels', '上位認証を下位のsecure channelへ結び付ける一般モデル。', 'General model for binding upper-layer authentication to a secure channel.', 'D'),
-        item(5280, 'Internet X.509 Public Key Infrastructure Certificate and CRL Profile', 'endpoint certificate、SubjectPublicKeyInfo、path validation、revocationの基準。', 'Endpoint certificates, SubjectPublicKeyInfo, path validation, and revocation.', 'D'),
-        item(5705, 'Keying Material Exporters for Transport Layer Security (TLS)', 'TLSからapplication固有のkeying materialを導出するexporterの基礎。', 'Exporter foundation for deriving application-specific keying material from TLS.', 'D'),
-        item(6234, 'US Secure Hash Algorithms', 'draftが使用するSHA-256/SHA-512の参照。主に実装・test vector向け。', 'Hash-function reference used by the draft; mainly for implementation and test vectors.', 'D'),
-        item(8392, 'CBOR Web Token (CWT)', 'CBORベースのtoken claim表現。', 'The CBOR-based token claims format.', 'D'),
+        item(5056, 'On the Use of Channel Bindings to Secure Channels', '上位認証を下位のsecure channelへ結び付ける一般モデル。', 'General model for binding upper-layer authentication to a secure channel.', 'DQ'),
+        item(5280, 'Internet X.509 Public Key Infrastructure Certificate and CRL Profile', 'endpoint certificate、SubjectPublicKeyInfo、path validation、revocationの基準。', 'Endpoint certificates, SubjectPublicKeyInfo, path validation, and revocation.', 'DQ'),
+        item(5705, 'Keying Material Exporters for Transport Layer Security (TLS)', 'TLSからapplication固有のkeying materialを導出するexporterの基礎。', 'Exporter foundation for deriving application-specific keying material from TLS.', 'DQ'),
+        item(6234, 'US Secure Hash Algorithms', 'draftが使用するSHA-256/SHA-512の参照。主に実装・test vector向け。', 'Hash-function reference used by the draft; mainly for implementation and test vectors.', 'DQ'),
+        item(8392, 'CBOR Web Token (CWT)', 'CBORベースのtoken claim表現。', 'The CBOR-based token claims format.', 'DQ'),
         item(8446, 'The Transport Layer Security (TLS) Protocol Version 1.3', 'handshake、exporter、resumption、0-RTTとchannel instanceの境界。', 'Handshake, exporters, resumption, 0-RTT, and channel-instance boundaries.', 'DQ'),
-        item(8747, 'Proof-of-Possession Key Semantics for CBOR Web Tokens (CWTs)', 'CWTのconfirmation key semantics。', 'Confirmation-key semantics for CWT.', 'D'),
-        item(8949, 'Concise Binary Object Representation (CBOR)', 'CWT/COSEのdata modelとdeterministic encoding判断の基礎。', 'The CWT/COSE data model and deterministic-encoding foundation.', 'D'),
-        item(9052, 'CBOR Object Signing and Encryption (COSE): Structures and Process', 'CWTを署名・MAC・暗号化するCOSE構造。', 'COSE structures for signing, MACing, and encrypting CWT data.', 'D'),
+        item(8747, 'Proof-of-Possession Key Semantics for CBOR Web Tokens (CWTs)', 'CWTのconfirmation key semantics。', 'Confirmation-key semantics for CWT.', 'DQ'),
+        item(8949, 'Concise Binary Object Representation (CBOR)', 'CWT/COSEのdata modelとdeterministic encoding判断の基礎。', 'The CWT/COSE data model and deterministic-encoding foundation.', 'DQ'),
+        item(9052, 'CBOR Object Signing and Encryption (COSE): Structures and Process', 'CWTを署名・MAC・暗号化するCOSE構造。', 'COSE structures for signing, MACing, and encrypting CWT data.', 'DQ'),
         item(9261, 'Exported Authenticators in TLS', 'TLS handshake後に追加のcertificate-based identity proofを交換する。', 'Exchanges additional certificate-based identity proofs after the TLS handshake.', 'DQ'),
         item(9266, 'Channel Bindings for TLS 1.3', '`tls-exporter` channel binding typeの性質と利用制約。', 'Properties and use constraints of the `tls-exporter` channel-binding type.', 'DQ'),
-        item(9325, 'Recommendations for Secure Use of TLS and DTLS', 'TLSを安全に配備するBCP。A2Aの「TLSを使う」を運用要件へ落とす。', 'TLS deployment BCP that turns “use TLS” into operational requirements.', 'D'),
+        item(9325, 'Recommendations for Secure Use of TLS and DTLS', 'TLSを安全に配備するBCP。A2Aの「TLSを使う」を運用要件へ落とす。', 'TLS deployment BCP that turns “use TLS” into operational requirements.', 'DQ'),
         item(9334, 'Remote ATtestation procedureS (RATS) Architecture', 'Attester、Verifier、Relying Party、Evidence、Attestation Resultの責務分離。', 'Separates Attester, Verifier, Relying Party, Evidence, and Attestation Result roles.', 'DQ'),
         item(9421, 'HTTP Message Signatures', 'HTTP componentを選んでend-to-endに署名する。cover対象はapplication profileの責務。', 'Signs selected HTTP components end to end; the application profile chooses coverage.', 'DQ'),
-        item(9530, 'Digest Fields', 'HTTP content digestを署名対象へ安全に組み込む。', 'Carries HTTP content digests for inclusion in message signatures.', 'D'),
-        item(9651, 'Structured Field Values for HTTP', 'HTTP field valueを一貫してparse/serializeする構造化形式。', 'A consistent structured parsing and serialization model for HTTP field values.', 'D'),
-        item(9711, 'The Entity Attestation Token (EAT)', 'attestation claimsをtokenとして表現する。RATS roleとの対応を崩さない。', 'Represents attestation claims as tokens while preserving RATS role separation.', 'D'),
-        item(9847, 'Updates to the TLS and DTLS Exporter Label Registries', 'application exporter labelの登録・衝突回避を判断する。', 'Guides exporter-label registration and collision avoidance.', 'D')
+        item(9530, 'Digest Fields', 'HTTP content digestを署名対象へ安全に組み込む。', 'Carries HTTP content digests for inclusion in message signatures.', 'DQ'),
+        item(9651, 'Structured Field Values for HTTP', 'HTTP field valueを一貫してparse/serializeする構造化形式。', 'A consistent structured parsing and serialization model for HTTP field values.', 'DQ'),
+        item(9711, 'The Entity Attestation Token (EAT)', 'attestation claimsをtokenとして表現する。RATS roleとの対応を崩さない。', 'Represents attestation claims as tokens while preserving RATS role separation.', 'DQ'),
+        item(9847, 'IANA Registry Updates for TLS and DTLS', 'TLS/DTLS registryのRecommended列, discouraged marking, Comment列, 登録手順を読む。', 'Reads TLS/DTLS registry Recommended states, discouraged markings, Comment columns, and registration procedures.', 'DQ')
       ]
     },
     {
@@ -112,7 +112,7 @@
         item(6973, 'Privacy Considerations for Internet Protocols', 'identifier、観測可能性、相関、保存、二次利用をprivacy threat modelへ落とす。', 'Maps identifiers, observability, correlation, retention, and secondary use into privacy threats.', 'DQ'),
         item(7258, 'Pervasive Monitoring Is an Attack', '大規模受動監視をprotocol design上の攻撃として扱う。', 'Treats pervasive passive monitoring as a protocol-design attack.', 'DGQ'),
         item(8890, 'The Internet is for End Users', 'agent、provider、gatewayの都合ではなくend userの利益を設計評価へ入れる。', 'Includes end-user interests when evaluating agents, providers, and gateways.', 'G'),
-        item(9518, 'Centralization, Decentralization, and Internet Standards', 'registry、broker、identity providerが作るcentralization pressureを分析する。', 'Analyzes centralization pressure from registries, brokers, and identity providers.', 'DG')
+        item(9518, 'Centralization, Decentralization, and Internet Standards', 'registry、broker、identity providerが作るcentralization pressureを分析する。', 'Analyzes centralization pressure from registries, brokers, and identity providers.', 'DGQ')
       ]
     }
   ];

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC 9457 クイズ | ToppyMicroServices</title>
+  <meta name="description" content="RFC 9457クイズ: stableなproblem type, safeなextension, HTTP statusとの整合からmachine-readableなAPI errorを設計する." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc9457_ja.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RFC 9457 クイズ | ToppyMicroServices" />
+  <meta property="og:description" content="HTTP APIのProblem Detailsを設計判断として学ぶクイズ." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc9457_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RFC 9457 クイズ | ToppyMicroServices" />
+  <meta name="twitter:description" content="HTTP APIのProblem Detailsを設計判断として学ぶクイズ." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc9457.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_rfc9457_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_rfc9457.html" />
+  <link rel="stylesheet" href="quiz.css?v=20260726-7" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260726-2"></script>
+</head>
+<body data-theme="dark">
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9457", "SKILL_SUBTITLE": "Problem Details for HTTP APIs", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand"><a id="brand-link" href="../index.html" aria-label="Home"><img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block"><span id="brand-name" class="name">ToppyMicroServices</span></a></div>
+        <h1 id="title">RFC 9457 クイズ</h1>
+        <h2 id="subtitle">HTTP APIのProblem Details</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">ライト</button>
+        <div class="lang-toggle" aria-label="言語切替"><a aria-label="English" data-lang="en" href="quiz_rfc9457.html">EN</a><a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="quiz_rfc9457_ja.html">JA</a></div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="学習/テスト切替">学習モード</button>
+        <span id="score-badge" aria-live="polite" title="現在のスコア">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="refs-h">
+      <h3 id="refs-h">参照仕様</h3>
+      <ul><li><a href="https://www.rfc-editor.org/rfc/rfc9457" target="_blank" rel="noopener noreferrer">RFC 9457: Problem Details for HTTP APIs</a></li></ul>
+    </section>
+
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="解答表示の設定">
+        <label class="switch" for="toggleExplainOnAnswer"><input type="checkbox" id="toggleExplainOnAnswer" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">回答直後に解説を表示</span></label>
+        <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">すべての解答を表示</span></label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Problem Detailsの改訂と, application固有のerror envelopeを区別する.">
+        <header><h4>Q1: RFC 9457はRFC 7807とどのような関係にある?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. 新しいHTTP status codeを追加し, RFC 7807はそのまま残す</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. RFC 7807を旧仕様とし, Problem Detailsのguidanceを改訂する</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. 全Agent-to-Agent protocolへ共通のerror envelopeを強制する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 9457は新しいHTTP status code群を定義していない. またRFC 7807を現行仕様として残す文書でもない.
+B: RFC 9457はRFC 7807をobsoletesし, 基本data modelを継承しながらregistryや複数problemの扱いなどを明確化した.
+C: Problem Detailsは一般的なHTTP API形式である. 個別protocolが別のerror representationを規定している場合, 自動的には置き換えない.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="JSON形式のdata modelを明示するregistered media typeを探す.">
+        <header><h4>Q2: Problem Details objectのJSON形式を運ぶresponse media typeはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. errorCode memberを必須にしたapplication/json</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. canonical JSON encodingとしてのapplication/problem+xml</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. JSON serializationとしてのapplication/problem+json</label>
+        </fieldset><div class="explain">**解説:**
+
+A: genericなapplication/jsonだけではProblem Detailsの処理規則を示さない. errorCodeもRFC 9457のstandard memberではない.
+B: application/problem+xmlはappendixで示されるXML形式であり, JSON encodingではない.
+C: application/problem+jsonがcanonical data modelのJSON serializationを示すregistered media typeである.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="1つのmemberが不正でも, 他の利用可能なmemberまで失わせる必要があるかを考える.">
+        <header><h4>Q3: standard memberの値が規定と異なるJSON typeだった. conforming consumerはそのmemberをどう扱う?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. そのmemberを無視し, objectの処理を続ける</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. HTTP response全体をinvalid JSONとして拒否する</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. 利用前に期待するtypeへ自動変換する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: RFC 9457はwrong JSON typeのstandard memberを無視するよう要求する. 他のvalidな情報は引き続き処理できる.
+B: JSON syntax自体はvalidでもmember typeだけが誤っている場合がある. response全体の拒否は要求されていない.
+C: 自動変換は実装ごとに異なる解釈を生む. 不正memberを無視することがinteroperableな処理である.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="stableな識別と, 通常処理中のdocumentation取得を分けて考える.">
+        <header><h4>Q4: type memberの設計としてRFC 9457に最も合うものはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. occurrenceごとに異なるrelative URIを使い, failureごとに取得する</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. stableなabsolute URIを使い, runtimeのdereferenceを必須にしない</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. typeを省略し, detail textをmachine identifierとして解釈する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: relative type URIはbaseが変わると解釈を混乱させる. 通常consumerがtype URIをfailureごとに自動取得することも想定されていない.
+B: typeはproblem categoryのprimary identifierでabsolute URIが推奨される. locator URIは人向け文書を示せるがruntime取得は必須でない.
+C: typeを省略するとabout:blankとみなされる. occurrence固有のhuman-readableなdetailはstableなmachine identifierではない.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="protocol framingにある値と, representation内で重複するadvisoryな値を分ける.">
+        <header><h4>Q5: gatewayがoriginのHTTP 404をHTTP 502へ変更したが, bodyのstatus: 404は残った. generic clientはどちらを使う?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. origin由来なので常にbody memberを使う</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. 2つを結合して新しいapplication statusを作る</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. 実際のHTTP response statusを使い, body memberはadvisoryと扱う</label>
+        </fieldset><div class="explain">**解説:**
+
+A: status memberはadvisoryであり, intermediaryによる変更後は不一致になりうる. 2つ目のauthoritative status channelではない.
+B: RFC 9457は2つの数値から新しいstatusを作る規則を定義していない. 独自結合はinteroperabilityを損なう.
+C: generic HTTP softwareは実際のHTTP statusを使う. generatorはbody memberをresponseと一致させる必要があるが, transit後のrecipientは不一致を観測しうる.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="再利用されるcategory説明と, 今回のfailureだけに関する説明を区別する.">
+        <header><h4>Q6: 同じproblem typeの複数occurrenceで, titleとdetailをどう使い分ける?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. titleはlocalization以外で安定させ, detailへoccurrence固有の説明を書く</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. titleへ毎回異なるmachine codeを書き, detailは全occurrenceで固定する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. clientがどちらのproseもparseして自動回復actionを選ぶ</label>
+        </fieldset><div class="explain">**解説:**
+
+A: titleはproblem typeのshort summaryでありlocalization以外では変えない. detailはspecific occurrenceを説明しclientの修正を助けられる.
+B: titleを毎回変えるとtypeのstable summaryではなくなる. detailを固定するとoccurrence固有の状況を説明できない.
+C: どちらもhuman-readable fieldである. machine判断にはtypeとdocumented extension memberを使い, proseをparseしない.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="machine-readableな回復情報には, stableな処理規則を持つfieldが必要になる.">
+        <header><h4>Q7: quota problemでlimitとreset timeをclientへ伝えたい. 最も適切な表現はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. 両方をdetailだけへ埋め込み, clientに文章をparseさせる</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. documented extension memberを定義し, detailは人が読める説明にする</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. statusをquota limitへ, titleをreset timestampへ再定義する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: human-readable proseのparseはwordingやlocalizationの変更で壊れる. detailはmachine-readable extension channelではない.
+B: problem typeはstructured data用のextension memberを定義できる. unknown extensionをconsumerが無視する規則によりcompatibleに進化できる.
+C: standard memberの再定義は規定された役割を壊す. statusはHTTP status codeであり, titleはproblem typeのsummaryである.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="複数failureが同じcategoryのoccurrenceか, 異なるcategoryかを先に判断する.">
+        <header><h4>Q8: 1つのoperationで複数failureを検出した. RFC 9457のguidanceに合うresponse方針はどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. 異なるproblem typeを常にgeneric batch problemへまとめる</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. 各failureへ別statusを与えるため複数HTTP status lineを返す</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. 同じtypeの反復はextensionで表し, typeが異なるなら最もrelevantなものを選ぶ</label>
+        </fieldset><div class="explain">**解説:**
+
+A: unrelated problemをgeneric containerへ入れるとHTTP statusとの対応が悪く, client behaviorも曖昧になる. universalな推奨ではない.
+B: 1つのHTTP responseが持つstatus lineは1つである. Problem Detailsは内部に複数の独立HTTP responseを作らない.
+C: 同じtypeの複数occurrenceはtype固有extensionで表現できる. typeが異なる場合は最もrelevantまたはurgentなproblemを返すことが推奨される.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="problem type definitionはpublicなinteroperability contractであり, internal diagnosticの置き場ではない.">
+        <header><h4>Q9: well-definedなProblem Details typeに必要な実務はどれ? 該当するものをすべて選ぶ.</h4><span class="type">複数選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q9" value="a"> A. type URI, title, 想定するHTTP statusを文書化する</label>
+          <label class="choice"><input type="checkbox" name="Q9" value="b"> B. ordinaryな404 responseごとにnew typeを定義する</label>
+          <label class="choice"><input type="checkbox" name="Q9" value="c"> C. semanticsが合うregistered problem typeを再利用する</label>
+          <label class="choice"><input type="checkbox" name="Q9" value="d"> D. debuggingのためtype URIからstack traceを公開する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: new problem type definitionはtype URI, short title, 利用するHTTP status codeを文書化する必要がある.
+B: generic failureにはplainなHTTP statusだけで足りる場合が多い. clientがproblem固有の処理を必要とするときにnew typeが有効になる.
+C: RFC 9457はHTTP Problem Types registryを設けた. semanticsが一致する登録済みtypeの再利用は不要なvocabulary分裂を避ける.
+D: type URIはcategoryを識別しdocumentationを提供できるが, implementation detailやoccurrence固有secretを公開する場所ではない.</div></div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="一般HTTP APIのreview guidanceと, 個別application protocolが選んだwire formatを区別する.">
+        <header><h4>Q10: A2A bindingがgoogle.rpc.Status系のHTTP error bodyを規定済みである. RFC 9457はdesign reviewへ何を加える?</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. bindingのerror bodyを暗黙にproblem+jsonへ置き換える</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. bindingのwire contractを変えずに一般的なreview modelを提供する</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. instanceがあればlogged stack traceを安全に公開できると保証する</label>
+        </fieldset><div class="explain">**解説:**
+
+A: 一般HTTP RFCはapplication固有のwire representationを暗黙には変更しない. migrationには明示的なprotocol判断が必要である.
+B: stableなerror identifier, status整合, extensibility, disclosure制限は, 別のerror envelopeを使うbindingでも有効なreview criteriaになる.
+C: instanceはoccurrence identifierであり他memberをsanitizeしない. stack trace, token, internal path, log dataはsensitive informationを漏らしうる.</div></div>
+      </article>
+    </section>
+
+    <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>
+  </div>
+</body>
+</html>
