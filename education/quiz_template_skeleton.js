@@ -13,7 +13,8 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
   const escapeHtml=str=>(str??'').replace(/[&<>"']/g,ch=>ESCAPE_MAP[ch]||ch);
   const locale=(document.documentElement.lang||'').toLowerCase();
 	  const PREF_KEYS = {
-	    explainOnAnswer: 'quizExplainOnAnswer'
+	    explainOnAnswer: 'quizExplainOnAnswer',
+	    progressStorage: 'quizProgressStorageEnabled'
 	  };
 	  const UI_TEXT = locale.startsWith('ja') ? {
 	    learningMode: '学習モード',
@@ -29,6 +30,14 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       progressAnswered: '回答済み',
       progressCorrect: '正解',
       progressRemaining: '残り',
+      storageTitle: '回答と成績の保存',
+      storagePurpose: 'この端末で回答と成績を復元する目的に限り, 設問ID, 回答, 確定状態をCookieへ最大1年間保存します. 広告, アクセス解析, トラッキングには使用しません.',
+      storageToggle: 'この端末に成績を保存',
+      storageReady: '回答すると, このクイズのCookieへ自動保存されます.',
+      storageRestored: '保存済みの回答と成績を復元しました.',
+      storageEnabled: '成績の保存を有効にしました.',
+      storageDisabled: '保存を停止し, このクイズのCookieを削除しました.',
+      storageUnavailable: 'この環境ではCookieへ保存できません.',
       skipToQuestions: '設問へスキップ',
       showHint: 'ヒントを見る',
       hideHint: 'ヒントを閉じる',
@@ -52,6 +61,14 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       progressAnswered: 'Answered',
       progressCorrect: 'Correct',
       progressRemaining: 'Remaining',
+      storageTitle: 'Save answers and scores',
+      storagePurpose: 'Solely to restore answers and scores on this device, a cookie stores question IDs, responses, and submission state for up to one year. It is not used for advertising, analytics, or tracking.',
+      storageToggle: 'Save scores on this device',
+      storageReady: 'Your answers will be saved automatically in this quiz\'s cookie.',
+      storageRestored: 'Saved answers and scores have been restored.',
+      storageEnabled: 'Score saving is enabled.',
+      storageDisabled: 'Saving is off and this quiz\'s cookie has been deleted.',
+      storageUnavailable: 'Cookies are unavailable in this environment.',
       skipToQuestions: 'Skip to questions',
       showHint: 'Show hint',
       hideHint: 'Hide hint',
@@ -66,6 +83,9 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
 	    { detailHeading:'Detailed Breakdown', detailDescription:'Responses, correct answers, scores, and explanations for every question.', columns:{question:'Question',response:'Your Answer',correct:'Correct Answer',score:'Result',explanation:'Explanation'}, status:{correct:'Correct',incorrect:'Incorrect',unanswered:'Unanswered'}, noAnswer:'Not answered', notAvailable:'N/A', none:'None' };
 	  const THEME_KEY='quizTheme'; const prefersDark=window.matchMedia('(prefers-color-scheme: dark)');
+  const PROGRESS_COOKIE_VERSION = 1;
+  const PROGRESS_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+  let progressStorageReady = false;
 
   function readBoolPref(key, defaultValue=false){
     try {
@@ -80,6 +100,216 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     try {
       localStorage.setItem(key, value ? '1' : '0');
     } catch (_e) {}
+  }
+
+  function getQuizProgressScope(){
+    const pathname = window.location.pathname || '';
+    const slash = pathname.lastIndexOf('/');
+    const filename = pathname.slice(slash + 1);
+    const match = filename.match(/^(quiz_[A-Za-z0-9_-]+?)(?:_(?:ja|en))?\.html$/i);
+    if(!match) return null;
+
+    const slug = match[1].toLowerCase();
+    return {
+      name: ('tms_' + slug).replace(/[^A-Za-z0-9_]/g, '_'),
+      path: pathname
+    };
+  }
+
+  function progressCookieAttributes(scope, maxAge){
+    let attributes = '; Path=' + scope.path + '; Max-Age=' + maxAge + '; SameSite=Strict';
+    if(window.location.protocol === 'https:') attributes += '; Secure';
+    return attributes;
+  }
+
+  function readQuizProgressCookie(){
+    const scope = getQuizProgressScope();
+    if(!scope) return null;
+    const prefix = scope.name + '=';
+    const row = document.cookie
+      .split(';')
+      .map(value => value.trim())
+      .find(value => value.startsWith(prefix));
+    if(!row) return null;
+
+    try {
+      const parsed = JSON.parse(decodeURIComponent(row.slice(prefix.length)));
+      return parsed && parsed.v === PROGRESS_COOKIE_VERSION && parsed.answers && typeof parsed.answers === 'object'
+        ? parsed
+        : null;
+    } catch (_e) {
+      return null;
+    }
+  }
+
+  function writeQuizProgressCookie(payload){
+    const scope = getQuizProgressScope();
+    if(!scope) return false;
+    try {
+      const value = encodeURIComponent(JSON.stringify(payload));
+      if(value.length > 3500) return false;
+      document.cookie = scope.name + '=' + value + progressCookieAttributes(scope, PROGRESS_COOKIE_MAX_AGE);
+      return document.cookie.split(';').some(row => row.trim().startsWith(scope.name + '='));
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function deleteQuizProgressCookie(){
+    const scope = getQuizProgressScope();
+    if(!scope) return;
+    document.cookie = scope.name + '=' + progressCookieAttributes(scope, 0);
+  }
+
+  function isProgressStorageEnabled(){
+    const scope = getQuizProgressScope();
+    const key = scope ? PREF_KEYS.progressStorage + ':' + scope.path : PREF_KEYS.progressStorage;
+    return readBoolPref(key, true);
+  }
+
+  function setProgressStorageStatus(message){
+    const status = document.getElementById('quizStorageStatus');
+    if(status) status.textContent = message;
+  }
+
+  function collectQuizProgress(){
+    const answers = {};
+    $$('#questions .q').forEach(q => {
+      if(!(q instanceof HTMLElement)) return;
+      const id = String(q.dataset.id || '').trim();
+      const type = String(q.dataset.type || '').toLowerCase();
+      if(!id || !['mc', 'ms', 'text'].includes(type)) return;
+
+      if(type === 'mc'){
+        const input = q.querySelector('input[type="radio"]:checked');
+        if(input instanceof HTMLInputElement) answers[id] = { type, value: input.value };
+        return;
+      }
+
+      if(type === 'ms'){
+        const values = $$('input[type="checkbox"]:checked', q)
+          .filter(input => input instanceof HTMLInputElement)
+          .map(input => input.value)
+          .sort();
+        if(values.length) answers[id] = { type, value: values, submitted: q.dataset.submitted === 'true' };
+        return;
+      }
+
+      const input = q.querySelector('input[type="text"]');
+      const value = input instanceof HTMLInputElement ? input.value.slice(0, 160) : '';
+      if(value.trim()) answers[id] = { type, value, submitted: q.dataset.submitted === 'true' };
+    });
+
+    return Object.keys(answers).length
+      ? { v: PROGRESS_COOKIE_VERSION, answers }
+      : null;
+  }
+
+  function saveQuizProgress(){
+    if(!progressStorageReady || !isProgressStorageEnabled()) return true;
+    const payload = collectQuizProgress();
+    if(!payload){
+      deleteQuizProgressCookie();
+      return true;
+    }
+    const saved = writeQuizProgressCookie(payload);
+    if(!saved) setProgressStorageStatus(UI_TEXT.storageUnavailable);
+    return saved;
+  }
+
+  function restoreQuizProgress(){
+    if(!isProgressStorageEnabled()) return 0;
+    const payload = readQuizProgressCookie();
+    if(!payload) return 0;
+    let restored = 0;
+
+    Object.entries(payload.answers).forEach(([id, record]) => {
+      if(!record || typeof record !== 'object') return;
+      const q = document.querySelector('#questions .q[data-id="' + CSS.escape(id) + '"]');
+      if(!(q instanceof HTMLElement)) return;
+      const type = String(q.dataset.type || '').toLowerCase();
+      if(record.type !== type) return;
+
+      if(type === 'mc' && typeof record.value === 'string'){
+        const input = q.querySelector('input[type="radio"][value="' + CSS.escape(record.value) + '"]');
+        if(input instanceof HTMLInputElement){
+          input.checked = true;
+          restored++;
+        }
+        return;
+      }
+
+      if(type === 'ms' && Array.isArray(record.value)){
+        let selected = 0;
+        record.value.forEach(value => {
+          if(typeof value !== 'string') return;
+          const input = q.querySelector('input[type="checkbox"][value="' + CSS.escape(value) + '"]');
+          if(input instanceof HTMLInputElement){
+            input.checked = true;
+            selected++;
+          }
+        });
+        if(selected){
+          q.dataset.submitted = record.submitted === true ? 'true' : 'false';
+          updateQuestionSubmitButton(q);
+          restored++;
+        }
+        return;
+      }
+
+      if(type === 'text' && typeof record.value === 'string'){
+        const input = q.querySelector('input[type="text"]');
+        if(input instanceof HTMLInputElement && record.value.trim()){
+          input.value = record.value.slice(0, 160);
+          q.dataset.submitted = record.submitted === true ? 'true' : 'false';
+          updateQuestionSubmitButton(q);
+          restored++;
+        }
+      }
+    });
+
+    return restored;
+  }
+
+  function injectProgressStorageControls(){
+    if(document.getElementById('quizStorage')) return;
+    const panel = document.querySelector('section.panel');
+    if(!(panel instanceof HTMLElement)) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.id = 'quizStorage';
+    wrapper.className = 'quiz-storage';
+    wrapper.setAttribute('aria-labelledby', 'quizStorageTitle');
+    wrapper.innerHTML =
+      '<div class="quiz-storage-copy">' +
+        '<strong id="quizStorageTitle">' + escapeHtml(UI_TEXT.storageTitle) + '</strong>' +
+        '<p>' + escapeHtml(UI_TEXT.storagePurpose) + '</p>' +
+      '</div>' +
+      '<label class="switch" for="toggleProgressStorage">' +
+        '<input type="checkbox" id="toggleProgressStorage" />' +
+        '<span class="ui-toggle" aria-hidden="true"></span>' +
+        '<span class="switch-label">' + escapeHtml(UI_TEXT.storageToggle) + '</span>' +
+      '</label>' +
+      '<p id="quizStorageStatus" class="quiz-storage-status" role="status" aria-live="polite"></p>';
+    panel.appendChild(wrapper);
+
+    const toggle = document.getElementById('toggleProgressStorage');
+    if(!(toggle instanceof HTMLInputElement)) return;
+    toggle.checked = isProgressStorageEnabled();
+    if(!toggle.checked) deleteQuizProgressCookie();
+    setProgressStorageStatus(toggle.checked ? UI_TEXT.storageReady : UI_TEXT.storageDisabled);
+    toggle.addEventListener('change', () => {
+      const scope = getQuizProgressScope();
+      const key = scope ? PREF_KEYS.progressStorage + ':' + scope.path : PREF_KEYS.progressStorage;
+      writeBoolPref(key, toggle.checked);
+      if(toggle.checked){
+        setProgressStorageStatus(UI_TEXT.storageEnabled);
+        saveQuizProgress();
+      } else {
+        deleteQuizProgressCookie();
+        setProgressStorageStatus(UI_TEXT.storageDisabled);
+      }
+    });
   }
 
   function getRevealControls(){
@@ -2056,6 +2286,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     }
     updateQuestionStates();
     updateProgressCard(s);
+    saveQuizProgress();
   }
 
   function resolveResultsBox(targetId){ if(targetId){ const el=document.getElementById(targetId); if(el) return el; } return document.getElementById('results-bottom') || document.querySelector('.results'); }
@@ -2230,6 +2461,7 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  applySettings();
 	  injectSkipLink();
 	  localizeStaticUiText();
+	  injectProgressStorageControls();
 		  injectRfcHubLink();
 		  normalizeAllExplanations();
 		  injectAuthoredHints();
@@ -2237,6 +2469,8 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 		  ensureProgressCard();
 	  injectDifficultyBadges();
 	  initRevealControls();
+	  const restoredProgressCount = restoreQuizProgress();
+	  progressStorageReady = true;
 	  bindAnswerChangeEvents();
 	  if(!$('#learningMode')){ const lm=document.createElement('input'); lm.type='checkbox'; lm.id='learningMode'; lm.checked=true; lm.style.display='none'; document.body.appendChild(lm);} 
 	  const mb=$('#mode-badge');
@@ -2247,5 +2481,6 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	  }
 	  updateLiveScore();
 	  applyRevealState();
+	  if(restoredProgressCount > 0) setProgressStorageStatus(UI_TEXT.storageRestored);
 	  const y=new Date().getFullYear(); const b=window.DRILL_SETTINGS?.BRAND_NAME||'ToppyMicroServices'; const c=$('#copyright'); if(c){ c.textContent='© '+y+' '+b+'. All rights reserved.'; }
 	})();
