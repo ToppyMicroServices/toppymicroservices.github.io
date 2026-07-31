@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="dark">
   <script>
@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 1958",
       SKILL_SUBTITLE: "Internet Architectureの原則",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -66,16 +67,21 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="文書のstatusと,technical changeが継続するという注意を確認してください.">
-        <header><h4>Q1: RFC 1958のprincipleはどう使うべきか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. 後続設計が変更できないinvariant formal modelとして使う</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. protocol conformanceを主張するためのnormative wire requirementとして使う</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. engineering evidenceと環境変化を踏まえて適用する,設計指針のsnapshotとして使う</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  文書自身がformalでinvariantなreference modelではないと述べています.
-B:  RFC 1958はInformationalであり,wire formatを定めません.
-C:  過去に有用だったguidelineを記録しつつ,constant changeと実装からのfeedbackを重視します.</div></div>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="backendが必要とするend-to-endの保証と,gatewayからbackendへの保護された主張が保証する範囲を分けてください.RFC 1958の文書statusにも注意してください.">
+        <header><h4>Q1: このgateway設計をRFC 1958 Section 2.3でreviewするとき,最も適切な結論はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A2Aのedge gatewayがgrantとsession-bound proofを検証し,保護されたidentity assertionだけをbackendへ転送します.resourceを所有するbackendは,元のgrantやproofを検証せず,そのassertionから最終authorizationを判断します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. resourceを所有するbackendは常に元のgrantとproofを直接検証しなければならず,gatewayをsecurity endpointとして扱う構成はRFC 1958違反である</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. gateway-backend間でassertionの送信元と完全性を保護すれば,元のclient sessionに対するすべての保証も同じend-to-end channelとしてbackendへ移転する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. gatewayを明示的に信頼するsecurity endpointとする構成かを確認する.backendが元のclient sessionの保証を必要とするなら,転送されたassertionを新たなtrustとbindingの境界として正当化する.RFC 1958だけでは適合・不適合を断定しない</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. gatewayが転送前にgrantとproofを検証した時点でsecurity判断は完了し,session bindingの検証場所はauthorizationのtrust modelに影響しない</label>
+          </fieldset><div class="explain">**Explanation:**
+A: RFC 1958 Section 2.3は,network側の不完全な機能も補助として有用になり得ると説明しており,gatewayでの処理を一律に禁止していません.またRFC 1958はInformationalです.
+B: gateway-backend hopの保護は,採用するmechanismに応じてそのhopでの送信元と完全性を保証できますが,元のclient TLS sessionとのbindingを自動的には継承しません.
+C: Section 2.3のend-to-end argumentは,完全な機能の実現にapplication endpointの知識が必要かを問うreview lensです.gatewayをsecurity endpointとして信頼するなら,backendが受け取るassertionの意味,真正性,失効,再利用防止をそのtrust modelで定義します.元のsessionまでbackendが検証すべきなら,検証可能な証拠または別のbinding設計が必要です.
+D: grantの有効性はauthorizationの一条件であり,requestが意図したsecure channel instanceに結び付くかとは別の保証です.</div>
+        </div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="goal,共通tool,application intelligenceを置く場所を対応させてください.">
         <header><h4>Q2: RFC 1958が示すInternet architectureの高levelな見方はどれか</h4><span class="type">Multiple Choice</span></header>

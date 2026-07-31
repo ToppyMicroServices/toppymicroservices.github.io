@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="dark">
   <script>
@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 1958",
       SKILL_SUBTITLE: "Architectural Principles of the Internet",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -66,16 +67,21 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Read the document's status and its warning about continuous technical change.">
-        <header><h4>Q1: How should the principles in RFC 1958 be used?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. As an invariant formal model that no later design may revise</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. As normative wire requirements for claiming protocol conformance</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. As a snapshot of useful guidance to apply with engineering evidence and changing conditions</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  the document says it is not a formal or invariant reference model.
-B:  RFC 1958 is Informational and does not define a protocol wire format.
-C:  it records guidelines, while treating constant change and feedback from real implementations as fundamental.</div></div>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate the end-to-end assurance the backend needs from what a protected gateway-to-backend assertion establishes. Also consider the status of RFC 1958.">
+        <header><h4>Q1: Which conclusion most accurately uses RFC 1958 Section 2.3 to review this gateway design?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A edge gateway validates a grant and session-bound proof, then forwards only a protected identity assertion to the backend. The resource-owning backend makes the final authorization decision from that assertion without verifying the original grant or proof.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. A resource-owning backend must always verify the original grant and proof itself; treating the gateway as a security endpoint violates RFC 1958</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Once the assertion's source and integrity are protected between gateway and backend, every assurance about the original client session transfers as the same end-to-end channel</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Determine whether the gateway is an explicitly trusted security endpoint. If the backend needs assurance about the original client session, justify the assertion as a new trust and binding boundary. RFC 1958 alone does not yield a conformance verdict</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Because the gateway checked the grant and proof before forwarding, the security decision is complete and the verification location cannot affect the authorization trust model</label>
+          </fieldset><div class="explain">**Explanation:**
+A: RFC 1958 Section 2.3 allows an incomplete network function to remain useful as an enhancement; it does not categorically prohibit gateway processing. RFC 1958 is also Informational.
+B: Depending on the mechanism, protection on the gateway-to-backend hop can authenticate the assertion's source and integrity on that hop, but it does not automatically preserve binding to the original client TLS session.
+C: The Section 2.3 end-to-end argument is a review lens for asking whether complete implementation of a function requires application-endpoint knowledge. If the gateway is a trusted security endpoint, the trust model must define the assertion's meaning, authenticity, revocation, and replay handling. If the backend must verify the original session, it needs verifiable evidence or a separate binding design.
+D: Grant validity is one authorization condition; whether this request is bound to the intended secure-channel instance is a separate assurance.</div>
+        </div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Identify the goal, the common tool, and where application intelligence normally resides.">
         <header><h4>Q2: Which summary matches RFC 1958's high-level view of Internet architecture?</h4><span class="type">Multiple Choice</span></header>

@@ -83,7 +83,10 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
 	    { detailHeading:'詳細リスト', detailDescription:'各設問の回答・正解・スコア・解説をまとめています。', columns:{question:'設問',response:'回答',correct:'正解',score:'スコア',explanation:'解説'}, status:{correct:'正解',incorrect:'不正解',unanswered:'未回答'}, noAnswer:'未回答', notAvailable:'N/A', none:'なし' }:
 	    { detailHeading:'Detailed Breakdown', detailDescription:'Responses, correct answers, scores, and explanations for every question.', columns:{question:'Question',response:'Your Answer',correct:'Correct Answer',score:'Result',explanation:'Explanation'}, status:{correct:'Correct',incorrect:'Incorrect',unanswered:'Unanswered'}, noAnswer:'Not answered', notAvailable:'N/A', none:'None' };
 	  const THEME_KEY='quizTheme'; const prefersDark=window.matchMedia('(prefers-color-scheme: dark)');
-  const PROGRESS_COOKIE_VERSION = 1;
+  const configuredProgressVersion = Number(window.DRILL_SETTINGS.PROGRESS_VERSION);
+  const PROGRESS_COOKIE_VERSION = Number.isSafeInteger(configuredProgressVersion) && configuredProgressVersion > 0
+    ? configuredProgressVersion
+    : 1;
   const PROGRESS_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
   let progressStorageReady = false;
 
