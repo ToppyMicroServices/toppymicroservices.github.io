@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 1958",
       SKILL_SUBTITLE: "Internet Architectureの原則",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -83,112 +83,154 @@ C: Section 2.3のend-to-end argumentは,完全な機能の実現にapplication e
 D: grantの有効性はauthorizationの一条件であり,requestが意図したsecure channel instanceに結び付くかとは別の保証です.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="goal,共通tool,application intelligenceを置く場所を対応させてください.">
-        <header><h4>Q2: RFC 1958が示すInternet architectureの高levelな見方はどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. goalはconnectivity,toolはIP,intelligenceは主にend-to-endに置く</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. goalは単一application,toolはproprietary gateway,intelligenceはtransit nodeへ隠す</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. goalはcentralized control,toolはmanual configuration,endpointはpassiveに保つ</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  global connectivityをgoalとし,IPとend-to-end intelligenceを手段とします.
-B:  connectivityは個別applicationより価値があり,proprietary semantic gatewayは分断を招きます.
-C:  単一ownerなしで進化し,manual stateは最小化する考え方です.</div></div>
-      </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="application-level resultが本当に正しいかを判断する十分な情報を持つcomponentを考えてください.">
-        <header><h4>Q3: network linkはerror detectionを行うが,applicationはobject全体が正しく届いたか確認したい.最終integrity checkを置く場所はどこか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. endpoint checkは重複なので,最初のtransit routerだけ</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. endpointで確認しつつ,lower-layer checkをperformance enhancementとして併用できる</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. 全applicationの全packetを観測するglobal registry</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  一つのlink以外でもfailureは起こり,routerはapplication全体の正しさを判断できません.
-B:  end-to-end functionを完全に検証できるのはendpointであり,lower layerの不完全なcheckも補助として役立ちます.
-C:  central observationはapplication correctnessの必要条件でも十分条件でもありません.</div></div>
-      </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="stateの回復方法,量,失われたときの影響をそれぞれ評価してください.">
-        <header><h4>Q4: RFC 1958に従うnetwork-maintained stateの性質はどれか.複数選択</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="checkbox" name="Q4" value="a"> A. topologyやactivityの変化に応じ,adaptive procedureが導出・修復する</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="b"> B. 全end-to-end session recordをpermanent storageへ手動設定する</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="c"> C. state量とmanual configuration部分を最小化する</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="d"> D. connectivityがあるなら,state lossの影響をtemporary denial of service以下に抑える</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: adaptive procedureがあれば,topologyやactivityの変化後にstateを再構成できます.
-B: 永続的なper-session設定はguidelineに反し,endpoint communication stateをnetworkが脆弱に所有することになります.
-C: state量とmanual configurationを減らすと,operationとrecoveryのdependencyも減ります.
-D: 回復可能なstateなら,connectivityが残る場合のlossをtemporary disruptionへ限定できます.</div></div>
-      </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="architecture上の議論は,相互運用するimplementationで検証する必要があります.">
-        <header><h4>Q5: 二つのprotocol proposalに説得力あるarchitecture文書はあるが,interoperating implementationはない.まだ不足しているものはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. 競合designを停止できる単一organizationのauthority</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. 実装前に手動選択するoptionをさらに増やすこと</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. 複数のrunning codeから得るengineering feedback</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  Internetには単一ownerがおらず,cooperationで進化します.
-B:  optionはambiguityと実装負担を増やします.
-C:  RFC 1958はrough consensusとrunning codeを重視し,real implementationからのfeedbackはarchitecture principleだけより重要だとします.</div></div>
-      </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="hardware,capacity,application behaviorの違いを前提に設計してください.">
-        <header><h4>Q6: 新protocolが,peerのCPU,memory,bandwidth,application timingがほぼ同じ場合にしか動かない.RFC 1958の最も直接的な懸念はどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. heterogeneityは不可避であり,設計で支えなければならない</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. 全hardware mediumが同じnative address formatを公開しなければならない</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. 一つのapplication typeがInternet-layer behaviorを決めるべきである</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  Internet protocolはhost,link,applicationの大きな差を扱う必要があります.
-B:  Internet layerはhardware mediumとhardware addressingから独立させます.
-C:  共通layerを一つのapplicationへ最適化せず,多様なapplication protocolを支えます.</div></div>
-      </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="同等mechanismを二つ維持するcostと,本物のtechnical improvementを比べてください.">
-        <header><h4>Q7: 配備済みmechanismと同じ問題を解く非互換mechanismを,technical advantageの証拠なしに追加しようとしている.望ましいreview outcomeはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. 両方を標準化し,全実装に永久的なdual behaviorを要求する</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. good technical reasonがない限り,成功している既存solutionを再利用する</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. parameter数が多いという理由だけで新mechanismを選ぶ</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  機能重複はinteroperabilityとmaintenanceのcostになります.
-B:  technical improvementが変更を正当化しない限り,成功した既存解を選びます.
-C:  parameter数は価値ではなく,不要なoptionは避けるべきです.</div></div>
-      </article>
-      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,b,d" data-difficulty="L2" data-hint="scopeを閉じ,coordinationを減らし,完全を待たず価値を出せるdecisionを選んでください.">
-        <header><h4>Q8: RFC 1958のgeneral design guidanceに合うdecisionはどれか.複数選択</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="checkbox" name="Q8" value="a"> A. 分離できるfunctionはmodularに保つ</label>
-          <label class="choice"><input type="checkbox" name="Q8" value="b"> B. perfect solutionを無期限に待つより,現在使えるsimpleでalmost completeなsolutionを選ぶ</label>
-          <label class="choice"><input type="checkbox" name="Q8" value="c"> C. 想定できる全deployment差にmanual configuration optionを追加する</label>
-          <label class="choice"><input type="checkbox" name="Q8" value="d"> D. functionalityとともにscale,performance,costを評価する</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: 分離できるresponsibilityをmodularに保つと,変更の影響範囲を閉じられます.
-B: 現在使えるsimpleなsolutionは,無期限に待つperfect designでは得られないimplementation feedbackを生みます.
-C: optionとparameterは可能な限り避け,必要ならmanual configurationよりdynamic negotiationを使います.
-D: 機能してもscaleしない,またはcostが高すぎるdesignはInternet designとして不十分です.</div></div>
-      </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="service Aがservice Bを必要とし,Bの利用開始にもAが必要になっていないか確認してください.">
-        <header><h4>Q9: routingの起動にDNS lookupが必要だが,DNS serverへ到達するにはroutingが必要である.RFC 1958はこの設計をどう分類するか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. 両serviceが一緒にfailureするため望ましいfate sharing</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. DNS nameは読みやすいので問題のないoptimization</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. 解消すべきcircular dependency</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  fate sharingはcommunication stateをendpointと共に置く考えで,startup deadlockの正当化ではありません.
-B:  可読性はbootstrap failureを解決しません.
-C:  routingがDNSに依存する例は,RFC 1958が明示するcircular dependencyです.</div></div>
-      </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="保護されたtransit segmentとend-to-end proofでは,coverするfailure・attacker境界が異なります.">
-        <header><h4>Q10: Agent-to-Agent serviceがprivate carrier linkを信頼し,endpointでintegrityもpeer authenticationも確認しない.RFC 1958に基づくreview conclusionはどれか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="IP reachabilityとapplication-level interoperabilityを分け,gatewayが新しいendpointなのか透明なintermediaryなのかを確認してください.">
+        <header><h4>Q2: RFC 1958 Sections 2.1-2.3を使ったreviewとして,最も適切な指摘はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">carrierはそのsegmentを保護できますが,applicationはpath全体とpeer agentについてのassuranceを必要としています.</p>
+          <p class="question-premise">二つのA2A実装はIPでは到達できますが,特定事業者のgatewayがtask stateとauthorizationの意味を相互変換しない限り通信できません.endpointはgatewayなしでは同じ意味を復元できません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. carrier protectionはdefense in depthになり得るが,endpointはthreat modelに必要なend-to-end checkを行う</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. private segmentがapplication-level agentとそのauthorityを自動的に認証する</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. applicationのidentity stateをすべてtransit routerへ移す</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. application intelligenceは物理hostだけに置く必要があるため,gatewayが意味を変換する設計は常にRFC 1958違反である</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. IP packetが届くならconnectivityは達成済みなので,gateway依存によるsemantic failureはarchitecture reviewの対象外である</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. gateway依存がglobal interoperabilityとend-to-endの意味を分断しないかを調べる.gatewayを明示的なapplication endpointとする構成もあり得るため,failure modelとtrust boundaryを示して判断する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. gateway事業者を一社に統一すればsemantic translationがnetwork内部へ隠れるため,end-to-end architectureが自動的に成立する</label>
           </fieldset><div class="explain">**Explanation:**
-A:  RFC 1958はconfidentialityとauthenticationの責任をend user側に置き,carrierのconfidentialityやintegrityへ依存しないよう求めます.
-B:  linkやcarrierのtrustはapplication identityやauthorizationを確立しません.
-C:  endpoint identity stateをnetworkへ移すとcouplingが増え,fate sharingを弱めます.</div>
+A: Sections 2.1-2.3はend-to-end intelligenceを重視しますが,特定の物理配置をnormativeに禁止する規定ではありません.
+B: IP reachabilityだけでは,A2A messageの意味と相互運用性がendpoint間で保たれるとは限りません.
+C: reviewすべき点は,不可欠なapplication semanticsを誰が所有し,gateway failureや事業者変更の後もendpointが相互運用できるかです.gatewayをendpointとするなら,その責務とtrustを明示します.
+D: vendor統一はdependencyを消さず,global connectivityやfailure isolationの保証にもなりません.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="各hopが確認できる単位と,受信applicationが最終的に保証したいobjectを区別してください.">
+        <header><h4>Q3: RFC 1958 Section 2.3に沿ったintegrity設計はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">agentが承認済みの2 GB artifactを送ります.gatewayはchunkへ分割し,object storeで再構成します.各hopはTLSとchunk checksumを使いますが,backendは承認されたartifact全体と同一であることを判断する必要があります.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 全hopでTLSとchecksumが成功すれば,再構成後のartifactについてbackendが行うend-to-end検証は重複になる</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. backendは承認対象と同じcanonical artifactを覆うdigestまたはsignatureを検証し,hop-level checkは早期検出と再送のために併用する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. gatewayが各chunkの到着順をlogへ記録すれば,artifact内容のend-to-end integrityも同じlogから証明できる</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. object storeが再構成を完了した事実だけを信頼し,承認時と受信時のrepresentation差はapplication外で扱う</label>
+          </fieldset><div class="explain">**Explanation:**
+A: hop-level protectionが覆うのは各区間またはchunkであり,分割,保存,再構成を通じたobject全体の同一性までは保証しません.
+B: applicationが必要とする完全な機能は,承認時と受信時で同じcanonicalization boundaryを使うend-to-end proofで確認します.lower-layer checkはperformanceとrecoveryの補助として残せます.
+C: 到着順のlogはcontent integrityを証明せず,log自体の真正性や欠落も別問題です.
+D: storeの完了通知は処理状態であり,承認されたbytesまたは意味との一致を示しません.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="authoritative task stateとrelayが再生成できるstateを分け,relay crash後に何が失われるかを追ってください.">
+        <header><h4>Q4: RFC 1958 Section 2.3のfate-sharingとself-healing stateを反映する改善はどれか.複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">stateful relayがtaskとstream subscriberの対応をmemoryだけに保持します.relayが再起動すると,agentとtask storeは正常でもtaskの再開先を復元できず,taskが永久に孤立します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. authoritativeなtask/resume stateをtask ownerと同じfailure boundaryへ置き,relayのtransient mappingはそこから再生成できるようにする</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. 同じvolatile mappingをrelay台数分だけ複製し,再生成手順やowner側のstateを定義せずfate-sharingを満たしたと扱う</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. relay stateの導出と修復手順を定義し,connectivityが残る場合のlossを一時的なservice interruptionへ限定する</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. relayが保持するper-session state量と,task stateとのcouplingを測定して必要最小限へ減らす</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="e"> E. recoveryを不要にするため,全packetと全中間stateをすべてのrelayへ無期限に保存する</label>
+          </fieldset><div class="explain">**Explanation:**
+
+A: endpointまたはlogical task ownerとstateの寿命を揃えれば,relayだけのfailureでauthoritative stateが失われません.
+B: replicationはavailabilityを改善し得ますが,同じfailure modeと再生成不能なstateを残したままではfate-sharingの代わりになりません.
+C: RFC 1958はnetwork-maintained stateをadaptive procedureで修復し,connectivityがある場合のlossをtemporary denial of service以下に抑える考えを示します.
+D: state量とcross-component dependencyを減らすことは,復旧範囲とfailure amplificationを小さくします.
+E: 無期限の全量保存はcostとcouplingを増やし,state最小化に反します.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="observed interoperabilityが裏付けるclaimと,まだ試験していないsecurityやscaleのclaimを分けてください.">
+        <header><h4>Q5: RFC 1958 Sections 2.4 and 3.14に照らし,proposal Xの結果から言えることはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profile Xは二つの独立実装がloss,並べ替え,version mismatchを含む試験で相互運用しました.profile Yは詳細なformal modelを持ちますが,実装は一つだけです.どちらも大規模運用と攻撃耐性は未評価です.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 二つの実装が動いたXはsecurityとInternet scaleも実証済みなので,追加reviewなしでstandardizeできる</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. formal modelを持つYはrunning codeが一つでも常に優先され,Xのinteroperability resultはarchitecture evidenceにならない</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Xはtested conditionsでのinteroperabilityについて強いengineering evidenceを持つが,securityやscaleまでは確立しない.specification reviewと未試験条件の検証を続ける</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. implementation数だけが判断基準なので,試験条件,独立性,観測したfailureは比較から除外する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: running codeは重要ですが,観測していないsecurity,scale,operationの性質まで証明しません.
+B: formal reasoningと実装feedbackは補完関係であり,一方が常に他方を無効にするわけではありません.
+C: Sections 2.4 and 3.14はreal implementationからのfeedbackを重視します.結論は実際に試した条件へ限定し,残るclaimには別のevidenceを要求します.
+D: 独立実装であることと試験条件は,相互運用性の証拠を評価する中心情報です.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="一つのlabでの成功を,host能力,network条件,node数,control traffic costへ分解してください.">
+        <header><h4>Q6: RFC 1958 Sections 3.1,3.3,3.4に基づく次のreview actionはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">新しいA2A streaming profileは固定200 ms deadline,最低8 MB buffer,高頻度heartbeatを必須にします.datacenter試験は成功しましたが,mobile agentではtimeoutし,100万のidle agentではcontrol trafficが支配的になります.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. datacenterで成功した値をInternet全体の定数とし,満たせないendpointはprotocol非対応として除外する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 必要なsemanticsとdeployment defaultを分離し,異なる能力とnetwork条件で測定し,node数に対するtraffic,latency,memory,costを定量化する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. すべてをoptional parameterに変え,組合せの意味やnegotiation failureを定義せず各operatorへ判断を移す</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. mobile failureはhardware更新で解消できる可能性があるため,scaleとoperation costの評価は標準化後まで延期する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: 一つの均質な環境を前提にすると,heterogeneityとdeployment可能性を設計から排除します.
+B: RFC 1958はheterogeneity,大規模scale,performance,costをfunctionalityと同時に評価するよう求めます.固定値がprotocol semanticsか調整可能なpolicyかも分けます.
+C: option化だけではcomplexityを解決せず,未定義の組合せとinteroperability failureを増やします.
+D: 将来のhardwareを仮定して現在のscale failureを無視することは,engineering evidenceになりません.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="新しさや見た目ではなく,既存方式で解けないtechnical gapと移行中の相互運用costを比較してください.">
+        <header><h4>Q7: RFC 1958 Section 3.2を設計判断へ適用した結論はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">配備済みのAgent Card discoveryは必要なmetadata,caching,authenticationを扱えます.新proposalは同じ情報を別の非互換registryで表し,全実装に無期限のdual lookupを要求しますが,既存方式で解けないfailureは示していません.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. 選択肢が多いほど柔軟なので,technical differenceがなくても両方式を永久に必須としてstandardizeする</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. 一度配備された方式は改善不能とみなし,新proposalが将来示すtechnical advantageもreviewしない</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 新方式が埋める具体的なtechnical gapと,interoperability,実装,移行costを示させる.十分な理由がなければ既存方式を再利用するが,実証された改善は排除しない</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. registry schemaの見た目が単純なら,network全体で二方式を維持するcostを測らず新方式へ置き換える</label>
+          </fieldset><div class="explain">**Explanation:**
+A: 重複機能は実装分岐と相互運用matrixを増やすため,option数自体は利点ではありません.
+B: Section 3.2は成功した解の再利用を勧めますが,good technical reasonがある改善を拒否する根拠にはしないと明記します.
+C: 既存解をdefaultとしつつ,新方式の測定可能なbenefitとmigration costを比較するのが原則を設計判断へ使う方法です.
+D: localなschemaの単純さだけでは,ecosystem全体のdual behaviorと移行failureを正当化できません.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="各flagが独立した必要性を持つか,責務を分離できるか,peer間で合意が必要かを順に確認してください.">
+        <header><h4>Q8: RFC 1958 Sections 3.5-3.8を反映するprofile改訂はどれか.複数選択</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profileにretry,compression,signing,streamingを制御する14個のmanual flagがあり,一部の組合せは結果が未定義です.operatorごとに設定が異なり,接続時に互いの選択を確認しません.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q8" value="a"> A. distinct requirementを持たない重複behaviorを一つへ統合し,未定義のflag combinationを削除する</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="b"> B. flexibilityを最大化するため,全flagを各gatewayで個別設定し,組合せの検証はoperator間の手作業へ委ねる</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="c"> C. 分離可能なauthorization,transport,observabilityの責務を明示的なinterfaceでmodularにする</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="d"> D. peer間の一致が本当に必要なcapabilityだけをdynamic negotiationし,unsupported時の安全なfallbackを定義する</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="e"> E. すべてのoptional interactionが完全になるまで,相互運用可能なsubsetの配備とfeedbackを禁止する</label>
+          </fieldset><div class="explain">**Explanation:**
+
+A: Sections 3.5 and 3.8はsimpleな解を選び,不要なoptionとparameterを避ける方向を示します.
+B: manual choiceを増やすとconfiguration driftと未検証の組合せが増え,interoperabilityを弱めます.
+C: Section 3.6のmodularityは,分離できる責務の変更とfailureの影響範囲を閉じるために使えます.
+D: 必要なvariationはdynamic negotiationできますが,negotiation結果とfailure behaviorを仕様化する必要があります.
+E: Section 3.7はperfect solutionを無期限に待つことを避け,almost completeな解からfeedbackを得る余地を認めます.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="clientが最初のrequestを作るために必要な情報と,その情報を取得するための前提を矢印で追ってください.">
+        <header><h4>Q9: RFC 1958 Section 3.11に基づくbootstrap reviewとして適切なのはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Agent Cardの取得にはOAuth access tokenが必要です.clientがauthorization serverと利用可能な認証方式を知る唯一の方法は,そのAgent Cardを読むことです.clientには事前設定されたbootstrap情報がありません.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Agent Cardとtokenが同時に必要なので,両方のlifetimeを揃えれば望ましいfate-sharingとして成立する</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. token取得とAgent Card取得が互いを前提にするcircular dependencyである.bootstrap情報を独立に取得可能にし,そのauthenticityを別途確立する</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. clientが同じrequestを十分な回数retryすれば,どちらかのserviceが先に応答してdependencyを自動解消する</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. access tokenのentropyを増やせば,authorization serverを発見できない問題もsecurity propertyとして解決する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: fate-sharingは必要なstateのfailure boundaryを揃える考えで,相互に開始不能なdependencyを正当化しません.
+B: clientはtokenなしにCardを読めず,Cardなしにtoken取得先を知れません.publicでauthenticityを検証できるmetadata,独立したdiscovery,またはpreconfigurationなどでcycleを切ります.
+C: 情報が欠けたrequestのretryはbootstrap情報を生成せず,loadとdelayを増やすだけです.
+D: token強度はcredential guessingへ影響しますが,issuer discoveryの欠落とは独立です.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="algorithm agility,識別子を保護する範囲,共通suite,local acceptance policyを別々に評価してください.">
+        <header><h4>Q10: RFC 1958 Sections 6.3-6.5を現在のA2A署名profileへ適用したreview conclusionはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">profile v1はAlgorithm Aだけを固定し,署名対象にalgorithm identifierを含めません.Algorithm Bへの移行案は,integrity保護されないheaderでAまたはBを指定します.異なる実装間のsecure interoperabilityも必要です.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. downgradeを避けるにはAを永久に固定し,labelも省略するべきであり,Aが弱くなった場合のreplacement pathは不要である</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. headerへalgorithm名を置けば明示的にlabelされるため,そのheaderが書換え可能でもreceiverはadvertised algorithmを受理してよい</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. 各実装が重ならないalgorithm setを自由に選び,mandatory common suiteを設けない方がalgorithm agilityとsecure interoperabilityを両立できる</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. algorithmをintegrity-protected data内で明示し,代替と移行規則,downgrade対策,少なくとも一つの共通suiteを定義する.実際に受理するalgorithmはcurrent security evidenceとlocal policyで制限する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: permanent pinningはalgorithm replacementを困難にし,Section 6.3が求めるalternativeへの設計余地を失います.
+B: labelが攻撃者に書き換えられると,弱いalgorithmへのdowngradeやverification confusionを防げません.識別子をproofの保護範囲へ結び付けます.
+C: Section 6.5はsecure contextを相互運用できるよう,少なくとも一つの共通algorithmまたはsuiteを求めます.
+D: Sections 6.3-6.5のagility,labeling,strength,common suiteを満たしつつ,negotiation integrityとdowngradeを明示的に扱います.RFC 1958は特定algorithmの現在の安全性までは証明しないため,acceptanceは最新のevidenceとpolicyで決めます.</div>
         </div>
       </article>
     </section>

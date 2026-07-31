@@ -25,10 +25,10 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9325","SKILL_SUBTITLE":"TLS/DTLSを安全に使うための推奨事項","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9325","SKILL_SUBTITLE":"TLS/DTLSを安全に使うための推奨事項","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,269 +57,100 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="目的, 境界, policy decisionを分けて考えてください.">
-        <header><h4>Q1: RFC 9325をdesign reviewで参照する主な目的はどれですか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="TLS deployment BCPが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
+        <header><h4>Q1: RFC 9325のTLS deployment BCPだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileがRFC 9325を参照し,TLS deployment BCPを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 新しいTLS wire protocol versionを定義すること</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS channel確立後のapplication authorizationを証明すること</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** TLS deployment BCPの役割を, 近いが別のsecurity機能やpolicy判断から切り分けます.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: 新しいTLS wire protocol versionを定義することはRFC 9325の中心目的ではありません. 近い設計では関係しても, このRFCが直接解く判断ではありません.
-- B: deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすることがこのRFCを読む主な理由です. 実装やreviewではここから入力, 検証, 境界を確認します.
-- C: TLS channel確立後のapplication authorizationを証明することは範囲外です. RFC 9325だけで上位policyや別protocolの責務までは決まりません.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること.ただし期待するauthenticated identityとauthorizationへのmappingはprofileまたはdeploymentが明示的に決める</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9325を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 3-5はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
+B: Sections 3-5がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
+C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
+D: RFC 9325はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="RFCが与える処理と, applicationが決める受理条件を分けます.">
-        <header><h4>Q2: RFC 9325を使うときに明示すべき境界はどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
+        <header><h4>Q2: 二つのimplementationがTLS deployment BCPについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">profileはRFC 9325を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. 期待するauthenticated identityとauthorizationへのmapping</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. TLS deployment BCPがあればlocal acceptance policyを省略できる</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. RFC 9325を参照すればdeploymentは自動的に安全になる</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** TLS deployment BCPは部品です. 受理条件, authorization, deployment例外は明示する必要があります.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: 期待するauthenticated identityとauthorizationへのmappingはRFC本文だけでは決まりません. relying applicationが何を成功とするかを指定します.
-- B: local acceptance policyを省略すると, validな形式を誤ったcontextで受理できます. これはRFCの境界を越えています.
-- C: supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制するは実装reviewで残すべき境界です. 入力元とscopeを確認しないと誤受理につながります.
-- D: RFC参照は安全性の必要条件になり得ますが, deployment設定, 鍵, trust, failure handlingまで自動では保証しません.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 期待するauthenticated identityとauthorizationへのmappingだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+          </fieldset><div class="explain">**解説:**
+A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
+B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
+C: Sections 3-4に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
+D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="profileが比較, encode, reject条件を曖昧にしないことが重要です.">
-        <header><h4>Q3: TLS deployment BCPを使うprofileを作るとき, 最初に仕様へ書くべきことはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
+        <header><h4>Q3: このTLS deployment BCPのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">productionで観測した動作: use TLSだけを書き, version, algorithm, validation, downgrade behaviorを書かないこと.その結果がA2Aのsecurity decisionを左右します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. input byte, context value, encoding, comparison behaviorを各実装者へ任せる</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. human-readable descriptionをvalidation sourceにし, deploymentがproseをparseする</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** profileはTLS deployment BCPの使い方を実装間で同じにするためのcontractです.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: 入力byteやcontextを自由にすると, 実装ごとに別の値を検証してしまいます.
-- B: human-readable textは説明には使えますが, validationのstable inputにするとlocaleや文言変更で壊れます.
-- C: ここでは, obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出すことが必要です. producer側の規則が明確なら, verifierは同じ条件で検証できます.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,operational exceptionをどう承認, monitor, retireするかだけを残る問題として文書化する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9325対応をadvertiseしたため,検証せずprocessingを続ける</label>
+          </fieldset><div class="explain">**解説:**
+A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
+B: Section 7に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
+C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
+D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="同じ入力を全実装が同じ意味で扱えるかを見ます.">
-        <header><h4>Q4: もっとも相互運用性を壊しやすい実装はどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
+        <header><h4>Q4: TLS deployment BCPを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A design reviewはRFC 9325を適用し,結果を特定operationで受理するか判断します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. use TLSだけを書き, version, algorithm, validation, downgrade behaviorを書かないこと</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. BCP 14 keywordsを本当のrequirementsへ限定し, 例外条件も文書化する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. unsupported extensionをignoreまたはrejectする条件をprofileへ明記する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 相互運用性の問題は, 同じwire dataを違う意味で処理したときに表面化します.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: use TLSだけを書き, version, algorithm, validation, downgrade behaviorを書かないことは検証対象やmeaningをずらします. その結果, 実装間で成功条件が合わなくなります.
-- B: BCP 14を要件へ限定することは, 仕様の曖昧さを減らす側の行動です.
-- C: unsupported extensionの扱いを文書化することは, 実装差を減らすために有効です.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 期待するauthenticated identityとauthorizationへのmapping</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. operational exceptionをどう承認, monitor, retireするか</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 3-5は,このrelying-party policyを全deployment向けに選びません.
+B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
+C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
+D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="transportで受け取った事実と, objectのvalidationを別々に確認します.">
-        <header><h4>Q5: verifierがTLS deployment BCPに関係する入力を受け取ったとき, 重要なvalidation stepはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
+        <header><h4>Q5: A2A trust boundaryでTLS deployment BCPを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">想定する利用場面: public service, API, internal control planeがminimum TLS security requirementを文書化する場面.観測した欠陥: TLSを使うと言いながらobsolete version, weak algorithm, broken certificate validationを有効に残すこと.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. HTTPSで届いたことを理由に, RFC-specific object checkを省略してtrustする</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. filename, endpoint path, routing metadataだけをidentityとproofとして使う</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9325-ja-q5-caption">
-            <figcaption id="rfc9325-ja-q5-caption">検証対象をpolicy decisionへ渡す前に入力と境界を確認する流れ.</figcaption>
-            <svg viewBox="0 0 780 150" role="img" aria-label="検証対象をpolicy decisionへ渡す前に入力と境界を確認する流れ.">
-              <rect class="flow-box" x="24" y="42" width="130" height="64" rx="10"></rect>
-              <text class="flow-text" x="89" y="79">生成側</text>
-              <line class="flow-arrow" x1="154" y1="74" x2="206" y2="74"></line>
-              <polygon class="flow-arrow-head" points="206,74 194,68 194,80"></polygon>
-              <rect class="flow-box" x="206" y="34" width="250" height="80" rx="10"></rect>
-              <text class="flow-text" x="331" y="69">TLS deployment BCP</text>
-              <text class="flow-label" x="331" y="91">evidence / data</text>
-              <line class="flow-arrow" x1="456" y1="74" x2="510" y2="74"></line>
-              <polygon class="flow-arrow-head" points="510,74 498,68 498,80"></polygon>
-              <rect class="flow-box" x="510" y="42" width="116" height="64" rx="10"></rect>
-              <text class="flow-text" x="568" y="79">検証側</text>
-              <line class="flow-arrow" x1="626" y1="74" x2="654" y2="74"></line>
-              <polygon class="flow-arrow-head" points="654,74 642,68 642,80"></polygon>
-              <rect class="flow-box" x="654" y="42" width="102" height="64" rx="10"></rect>
-              <text class="flow-text" x="705" y="79">受理判断</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**判断のポイント:** TLS deployment BCPは受信経路だけでなく, 定義されたinputとscopeで検証される必要があります.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: HTTPSはtransport保護には有効ですが, TLS deployment BCPの個別validationを置き換えません.
-- B: supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制するが中心です. これによりwell-formedな入力と受理可能な入力を分けられます.
-- C: filenameやpathはrouting hintにはなりますが, identityやsecurity proofとしては不足します.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること）に合うため,観測した欠陥を解消せず受理する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す）だけを適用し,local processingのsuccessを十分条件にする</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+          </fieldset><div class="explain">**解説:**
+A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
+B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
+C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
+D: Section 7に沿って欠陥を解消してからresultを使います.profile rule: obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す.check: supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する.local policy: 期待するauthenticated identityとauthorizationへのmapping.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="RFC定義のsyntax/algorithmと, deploymentが選ぶpolicyを分類します.">
-        <header><h4>Q6: RFC 9325だけでは保証されず, applicationまたはdeployment policyで決めるものはどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
+        <header><h4>Q6: TLS deployment BCPとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileはTLS deployment BCPを別protocol layerと組み合わせます.design noteには「RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す」とあります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. protocol version, cipher suite, certificate validation, session resumption, compression, implementation guidance</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. 期待するauthenticated identityとauthorizationへのmapping</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. well-formed syntaxまたはalgorithm処理そのもの</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. operational exceptionをどう承認, monitor, retireするか</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 仕様が処理規則を定義しても, どの結果を受理するかは別のpolicy判断です.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: protocol version, cipher suite, certificate validation, session resumption, compression, implementation guidanceはRFC 9325が直接扱う中核です. policyではなくmechanism側の内容です.
-- B: 期待するauthenticated identityとauthorizationへのmappingはapplicationまたはdeploymentが決める受理条件です.
-- C: well-formed syntaxやalgorithm処理はRFCが定義する側です. ただし成功結果の意味は別途決めます.
-- D: operational exceptionをどう承認, monitor, retireするかはlocal policyです. 運用とthreat modelに合わせて明文化します.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="攻撃者がどの仮定の隙を使えるかに注目します.">
-        <header><h4>Q7: security reviewで中心に置くべき失敗モードはどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. processing costを主なriskと見なし, validationの代わりにcacheへ依存する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. libraryが新しければlocal inputとpolicyのreviewを不要にする</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. TLSを使うと言いながらobsolete version, weak algorithm, broken certificate validationを有効に残すこと</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** security reviewでは, mechanismを入れた事実よりも, 誤った条件で受理する経路を見ます.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: performanceは重要な場合がありますが, cacheでsecurity propertyを代替する判断は危険です.
-- B: 新しいlibraryは有利ですが, local policy, input, threat modelのreviewは残ります.
-- C: TLSを使うと言いながらobsolete version, weak algorithm, broken certificate validationを有効に残すことが中心的な失敗モードです. 攻撃者はここを使ってcontextやtrustをずらします.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="近いRFCとの責務分担を見ます.">
-        <header><h4>Q8: 近い仕様との関係としてもっとも正確なのはどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 9325がtermsの近さだけを理由に近いmechanismをすべてobsoleteすると考える</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. TLS deployment BCPはprotocol compositionとは無関係なのでboundary analysisは不要である</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 隣接仕様は置き換え関係ではなく, layerや責務の違いとして読むのが安全です.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示すという読み方が責務分担を壊しません.
-- B: obsolete関係はRFC本文で明示されるものです. 近いconceptだから置き換えとは限りません.
-- C: TLS deployment BCPはprotocol compositionのreviewで意味を持ちます. 無関係として扱うと境界を見落とします.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="成功条件を先に固定し, RFC番号だけに意味を背負わせないでください.">
-        <header><h4>Q9: TLS deployment BCPへ依存する前に確認すべきreview questionはどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. exact input, context, validation rule, and rejection behaviorは明記されているか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. missing semanticsはRFC番号だけからrecipientが推測できるか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. unsupported extensionやunknown valueをsuccessとして扱えるか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. public service, API, internal control planeがminimum TLS security requirementを文書化する場面</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** review questionは, 実装者が同じ成功/失敗境界を再現できるかを確認するために使います.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: input, context, validation rule, rejection behaviorの明記は, 実装差を減らす直接的なcheckです.
-- B: RFC番号だけではlocal semanticsは決まりません. profileやpolicyで補う必要があります.
-- C: unknown valueをsuccessにすると, extensionや攻撃入力を誤って受理できます.
-- D: public service, API, internal control planeがminimum TLS security requirementを文書化する場面は現実のreview対象です. ここで成功条件を固定すると誤用を減らせます.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="fail openではなく, その判断に使えない結果として扱います.">
-        <header><h4>Q10: validationが失敗したとき, もっとも安全な解釈はどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. warningに下げて通常どおり受理する</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. そのsecurityまたはpolicy decisionには使えない結果として扱う</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. 後続authorizationが必ず修復すると仮定する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** validation失敗は, その入力を根拠にした判断を止める信号です.
-
-**関連キーワード:**
-- **BCP**: Best Current Practice
-- **cipher suite**: 鍵交換と暗号の組み合わせ
-- **certificate validation**: identity検証
-
-**選択肢:**
-- A: warningへ下げて受理するとfail openになります. 攻撃入力でも成功経路へ入れます.
-- B: そのsecurityまたはpolicy decisionには使えないと扱うのが安全です. 必要なら明示的なfallback policyを別に定義します.
-- C: authorizationは重要ですが, 壊れたvalidation inputを自動修復するものではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,期待するauthenticated identityとauthorizationへのmappingは不要であり,RFCのresultをどう使うかも記載しない</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する）を省略し,他layerがresultを推測してよい</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（期待するauthenticated identityとauthorizationへのmapping）を定義し,必要なcheck（supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する）を行い,そのresultをoperationがどう使うか記載する</label>
+          </fieldset><div class="explain">**解説:**
+A: layeringはrelying-party policyを消しません.
+B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
+C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
+D: Sections 3-5とSection 7がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
         </div>
       </article>
     </section>

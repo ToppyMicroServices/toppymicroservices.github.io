@@ -25,10 +25,10 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9052","SKILL_SUBTITLE":"COSE Structures and Process","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9052","SKILL_SUBTITLE":"COSE Structures and Process","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,269 +57,100 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="目的, 境界, policy decisionを分けて考えてください.">
-        <header><h4>Q1: RFC 9052をdesign reviewで参照する主な目的はどれですか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="COSE security structureが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
+        <header><h4>Q1: RFC 9052のCOSE security structureだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileがRFC 9052を参照し,COSE security structureを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. signerやencrypted contentがbusiness actionに対してtrustedか決めること</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. unprotected header parameterを慣習だけでintegrity protectedにすること</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** COSE security structureの役割を, 近いが別のsecurity機能やpolicy判断から切り分けます.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: signerやencrypted contentがbusiness actionに対してtrustedか決めることはRFC 9052の中心目的ではありません. 近い設計では関係しても, このRFCが直接解く判断ではありません.
-- B: CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護することがこのRFCを読む主な理由です. 実装やreviewではここから入力, 検証, 境界を確認します.
-- C: unprotected header parameterを慣習だけでintegrity protectedにすることは範囲外です. RFC 9052だけで上位policyや別protocolの責務までは決まりません.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること.ただし受理するkey, algorithm, recipient, countersignature, payload meaningはprofileまたはdeploymentが明示的に決める</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9052を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 2-10はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
+B: Sections 2-10がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
+C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
+D: RFC 9052はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="RFCが与える処理と, applicationが決める受理条件を分けます.">
-        <header><h4>Q2: RFC 9052を使うときに明示すべき境界はどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
+        <header><h4>Q2: 二つのimplementationがCOSE security structureについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">profileはRFC 9052を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. 受理するkey, algorithm, recipient, countersignature, payload meaning</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. COSE security structureがあればlocal acceptance policyを省略できる</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. RFC 9052を参照すればdeploymentは自動的に安全になる</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** COSE security structureは部品です. 受理条件, authorization, deployment例外は明示する必要があります.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: 受理するkey, algorithm, recipient, countersignature, payload meaningはRFC本文だけでは決まりません. relying applicationが何を成功とするかを指定します.
-- B: local acceptance policyを省略すると, validな形式を誤ったcontextで受理できます. これはRFCの境界を越えています.
-- C: content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認するは実装reviewで残すべき境界です. 入力元とscopeを確認しないと誤受理につながります.
-- D: RFC参照は安全性の必要条件になり得ますが, deployment設定, 鍵, trust, failure handlingまで自動では保証しません.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 受理するkey, algorithm, recipient, countersignature, payload meaningだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+          </fieldset><div class="explain">**解説:**
+A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
+B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
+C: Sections 3-4 and 10に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
+D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="profileが比較, encode, reject条件を曖昧にしないことが重要です.">
-        <header><h4>Q3: COSE security structureを使うprofileを作るとき, 最初に仕様へ書くべきことはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
+        <header><h4>Q3: このCOSE security structureのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">productionで観測した動作: attackerがparameterをprotected headerからunprotected headerへ移しても受理してしまうこと.その結果がA2Aのsecurity decisionを左右します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. input byte, context value, encoding, comparison behaviorを各実装者へ任せる</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. human-readable descriptionをvalidation sourceにし, deploymentがproseをparseする</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** profileはCOSE security structureの使い方を実装間で同じにするためのcontractです.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: 入力byteやcontextを自由にすると, 実装ごとに別の値を検証してしまいます.
-- B: human-readable textは説明には使えますが, validationのstable inputにするとlocaleや文言変更で壊れます.
-- C: ここでは, security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義することが必要です. producer側の規則が明確なら, verifierは同じ条件で検証できます.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,payloadがdetached, countersigned, encrypted, nestedのどれかだけを残る問題として文書化する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9052対応をadvertiseしたため,検証せずprocessingを続ける</label>
+          </fieldset><div class="explain">**解説:**
+A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
+B: Section 12に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
+C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
+D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="同じ入力を全実装が同じ意味で扱えるかを見ます.">
-        <header><h4>Q4: もっとも相互運用性を壊しやすい実装はどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
+        <header><h4>Q4: COSE security structureを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A design reviewはRFC 9052を適用し,結果を特定operationで受理するか判断します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. attackerがparameterをprotected headerからunprotected headerへ移しても受理してしまうこと</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. BCP 14 keywordsを本当のrequirementsへ限定し, 例外条件も文書化する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. unsupported extensionをignoreまたはrejectする条件をprofileへ明記する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 相互運用性の問題は, 同じwire dataを違う意味で処理したときに表面化します.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: attackerがparameterをprotected headerからunprotected headerへ移しても受理してしまうことは検証対象やmeaningをずらします. その結果, 実装間で成功条件が合わなくなります.
-- B: BCP 14を要件へ限定することは, 仕様の曖昧さを減らす側の行動です.
-- C: unsupported extensionの扱いを文書化することは, 実装差を減らすために有効です.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するkey, algorithm, recipient, countersignature, payload meaning</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. payloadがdetached, countersigned, encrypted, nestedのどれか</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 2-10は,このrelying-party policyを全deployment向けに選びません.
+B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
+C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
+D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="transportで受け取った事実と, objectのvalidationを別々に確認します.">
-        <header><h4>Q5: verifierがCOSE security structureに関係する入力を受け取ったとき, 重要なvalidation stepはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
+        <header><h4>Q5: A2A trust boundaryでCOSE security structureを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">想定する利用場面: CBOR token, attestation evidence, compact messageがsignature, MAC, encryptionを必要とする場面.観測した欠陥: local key/algorithm policy適用前にunprotected headerやalgorithm hintをtrustすること.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. HTTPSで届いたことを理由に, RFC-specific object checkを省略してtrustする</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. filename, endpoint path, routing metadataだけをidentityとproofとして使う</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9052-ja-q5-caption">
-            <figcaption id="rfc9052-ja-q5-caption">検証対象をpolicy decisionへ渡す前に入力と境界を確認する流れ.</figcaption>
-            <svg viewBox="0 0 780 150" role="img" aria-label="検証対象をpolicy decisionへ渡す前に入力と境界を確認する流れ.">
-              <rect class="flow-box" x="24" y="42" width="130" height="64" rx="10"></rect>
-              <text class="flow-text" x="89" y="79">生成側</text>
-              <line class="flow-arrow" x1="154" y1="74" x2="206" y2="74"></line>
-              <polygon class="flow-arrow-head" points="206,74 194,68 194,80"></polygon>
-              <rect class="flow-box" x="206" y="34" width="250" height="80" rx="10"></rect>
-              <text class="flow-text" x="331" y="69">COSE security structure</text>
-              <text class="flow-label" x="331" y="91">evidence / data</text>
-              <line class="flow-arrow" x1="456" y1="74" x2="510" y2="74"></line>
-              <polygon class="flow-arrow-head" points="510,74 498,68 498,80"></polygon>
-              <rect class="flow-box" x="510" y="42" width="116" height="64" rx="10"></rect>
-              <text class="flow-text" x="568" y="79">検証側</text>
-              <line class="flow-arrow" x1="626" y1="74" x2="654" y2="74"></line>
-              <polygon class="flow-arrow-head" points="654,74 642,68 642,80"></polygon>
-              <rect class="flow-box" x="654" y="42" width="102" height="64" rx="10"></rect>
-              <text class="flow-text" x="705" y="79">受理判断</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**判断のポイント:** COSE security structureは受信経路だけでなく, 定義されたinputとscopeで検証される必要があります.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: HTTPSはtransport保護には有効ですが, COSE security structureの個別validationを置き換えません.
-- B: content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認するが中心です. これによりwell-formedな入力と受理可能な入力を分けられます.
-- C: filenameやpathはrouting hintにはなりますが, identityやsecurity proofとしては不足します.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること）に合うため,観測した欠陥を解消せず受理する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する）だけを適用し,local processingのsuccessを十分条件にする</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+          </fieldset><div class="explain">**解説:**
+A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
+B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
+C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
+D: Section 12に沿って欠陥を解消してからresultを使います.profile rule: security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する.check: content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する.local policy: 受理するkey, algorithm, recipient, countersignature, payload meaning.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="RFC定義のsyntax/algorithmと, deploymentが選ぶpolicyを分類します.">
-        <header><h4>Q6: RFC 9052だけでは保証されず, applicationまたはdeployment policyで決めるものはどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
+        <header><h4>Q6: COSE security structureとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileはCOSE security structureを別protocol layerと組み合わせます.design noteには「CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである」とあります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. COSE_Sign, COSE_Mac, COSE_Encrypt structure, protected header, payload, algorithm parameter</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. 受理するkey, algorithm, recipient, countersignature, payload meaning</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. well-formed syntaxまたはalgorithm処理そのもの</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. payloadがdetached, countersigned, encrypted, nestedのどれか</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 仕様が処理規則を定義しても, どの結果を受理するかは別のpolicy判断です.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: COSE_Sign, COSE_Mac, COSE_Encrypt structure, protected header, payload, algorithm parameterはRFC 9052が直接扱う中核です. policyではなくmechanism側の内容です.
-- B: 受理するkey, algorithm, recipient, countersignature, payload meaningはapplicationまたはdeploymentが決める受理条件です.
-- C: well-formed syntaxやalgorithm処理はRFCが定義する側です. ただし成功結果の意味は別途決めます.
-- D: payloadがdetached, countersigned, encrypted, nestedのどれかはlocal policyです. 運用とthreat modelに合わせて明文化します.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="攻撃者がどの仮定の隙を使えるかに注目します.">
-        <header><h4>Q7: security reviewで中心に置くべき失敗モードはどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. processing costを主なriskと見なし, validationの代わりにcacheへ依存する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. libraryが新しければlocal inputとpolicyのreviewを不要にする</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. local key/algorithm policy適用前にunprotected headerやalgorithm hintをtrustすること</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** security reviewでは, mechanismを入れた事実よりも, 誤った条件で受理する経路を見ます.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: performanceは重要な場合がありますが, cacheでsecurity propertyを代替する判断は危険です.
-- B: 新しいlibraryは有利ですが, local policy, input, threat modelのreviewは残ります.
-- C: local key/algorithm policy適用前にunprotected headerやalgorithm hintをtrustすることが中心的な失敗モードです. 攻撃者はここを使ってcontextやtrustをずらします.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="近いRFCとの責務分担を見ます.">
-        <header><h4>Q8: 近い仕様との関係としてもっとも正確なのはどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 9052がtermsの近さだけを理由に近いmechanismをすべてobsoleteすると考える</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. COSE security structureはprotocol compositionとは無関係なのでboundary analysisは不要である</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 隣接仕様は置き換え関係ではなく, layerや責務の違いとして読むのが安全です.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerであるという読み方が責務分担を壊しません.
-- B: obsolete関係はRFC本文で明示されるものです. 近いconceptだから置き換えとは限りません.
-- C: COSE security structureはprotocol compositionのreviewで意味を持ちます. 無関係として扱うと境界を見落とします.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="成功条件を先に固定し, RFC番号だけに意味を背負わせないでください.">
-        <header><h4>Q9: COSE security structureへ依存する前に確認すべきreview questionはどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. exact input, context, validation rule, and rejection behaviorは明記されているか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. missing semanticsはRFC番号だけからrecipientが推測できるか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. unsupported extensionやunknown valueをsuccessとして扱えるか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. CBOR token, attestation evidence, compact messageがsignature, MAC, encryptionを必要とする場面</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** review questionは, 実装者が同じ成功/失敗境界を再現できるかを確認するために使います.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: input, context, validation rule, rejection behaviorの明記は, 実装差を減らす直接的なcheckです.
-- B: RFC番号だけではlocal semanticsは決まりません. profileやpolicyで補う必要があります.
-- C: unknown valueをsuccessにすると, extensionや攻撃入力を誤って受理できます.
-- D: CBOR token, attestation evidence, compact messageがsignature, MAC, encryptionを必要とする場面は現実のreview対象です. ここで成功条件を固定すると誤用を減らせます.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="fail openではなく, その判断に使えない結果として扱います.">
-        <header><h4>Q10: validationが失敗したとき, もっとも安全な解釈はどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. warningに下げて通常どおり受理する</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. そのsecurityまたはpolicy decisionには使えない結果として扱う</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. 後続authorizationが必ず修復すると仮定する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** validation失敗は, その入力を根拠にした判断を止める信号です.
-
-**関連キーワード:**
-- **protected header**: integrity保護されるparameter
-- **COSE_Sign**: 署名構造
-- **algorithm policy**: 受理するalgorithm条件
-
-**選択肢:**
-- A: warningへ下げて受理するとfail openになります. 攻撃入力でも成功経路へ入れます.
-- B: そのsecurityまたはpolicy decisionには使えないと扱うのが安全です. 必要なら明示的なfallback policyを別に定義します.
-- C: authorizationは重要ですが, 壊れたvalidation inputを自動修復するものではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,受理するkey, algorithm, recipient, countersignature, payload meaningは不要であり,RFCのresultをどう使うかも記載しない</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する）を省略し,他layerがresultを推測してよい</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. COSE protection,key,algorithm,payloadを検証し,local policyとoperationでのresultの扱いをprofileに明記する</label>
+          </fieldset><div class="explain">**解説:**
+A: layeringはrelying-party policyを消しません.
+B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
+C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
+D: Sections 2-10とSection 12がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
         </div>
       </article>
     </section>

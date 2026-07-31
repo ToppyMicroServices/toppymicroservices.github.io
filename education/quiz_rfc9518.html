@@ -25,10 +25,10 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9518","SKILL_SUBTITLE":"Centralization, Decentralization, and Internet Standards","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9518","SKILL_SUBTITLE":"Centralization, Decentralization, and Internet Standards","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,270 +57,100 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate purpose, boundary, and policy decision.">
-        <header><h4>Q1: A design review cites RFC 9518. What decision is this RFC mainly useful for</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what centralization review provides from the acceptance and authorization decisions made by the consuming profile.">
+        <header><h4>Q1: Does RFC 9518 make centralization review sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A profile cites RFC 9518 and claims that using centralization review automatically settles peer acceptance and authorization.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. declaring that every centralized component is forbidden</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. analyzing centralization and decentralization effects created by Internet standards and deployments</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. providing a numeric score that automatically decides protocol acceptability</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Separate the role of centralization review from nearby security functions and policy decisions.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: declaring that every centralized component is forbidden is not the central purpose of RFC 9518. It can be nearby work, but it is not the decision this RFC primarily supports.
-- B: analyzing centralization and decentralization effects created by Internet standards and deployments is the reason this RFC belongs in the review path. It drives checks on inputs, validation, and boundaries.
-- C: providing a numeric score that automatically decides protocol acceptability is outside the RFC boundary. Higher-layer policy and adjacent protocol responsibilities still need separate text.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. analyzing centralization and decentralization effects created by Internet standards and deployments; therefore no profile-specific trust or authorization rules are needed</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. analyzing centralization and decentralization effects created by Internet standards and deployments, while which central services are acceptable and what exit, federation, or portability paths exist remains an explicit profile or deployment decision</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them; therefore that nearby relationship supplies every local acceptance rule</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9518 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 2-4 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
+B: Sections 2-4 supports the mechanism statement, while the application still owns the stated policy boundary.
+C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
+D: RFC 9518 supplies analysis guidance. A citation without documented criteria and design consequences is not the analysis.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Separate RFC-defined processing from application-defined acceptance.">
-        <header><h4>Q2: Which boundaries should a reviewer keep explicit when using RFC 9518. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare who controls participation and change, then document the exit, portability, and independent-implementation alternatives.">
+        <header><h4>Q2: Two review teams reach incompatible centralization conclusions. What must the profile document?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">The profile cites RFC 9518 but leaves the review criteria and their design consequences undefined.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. which central services are acceptable and what exit, federation, or portability paths exist</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Local acceptance policy can be skipped once centralization review is present</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. identify who can exclude participants, change terms, observe behavior, or make switching costly</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Citing RFC 9518 automatically makes the deployment safe</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** centralization review is a building block. Acceptance conditions, authorization, and deployment exceptions must still be explicit.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: which central services are acceptable and what exit, federation, or portability paths exist is not decided by the RFC alone. The relying application must say what success means.
-- B: Skipping local acceptance policy can accept a valid object in the wrong context. That crosses the RFC boundary.
-- C: identify who can exclude participants, change terms, observe behavior, or make switching costly is a boundary the implementation review must preserve. Source and scope mistakes cause false acceptance.
-- D: An RFC citation can be necessary, but deployment configuration, keys, trust, and failure handling are not automatic.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Count deployed endpoints but omit who can exclude participants, change terms, or make exit costly</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Call a design decentralized whenever its data plane is federated, even if identity and discovery use one operator</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Document control points, exit and portability paths, and alternatives that preserve independent implementations</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Delegate the conclusion to the current market leader because deployment share is an objective criterion</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Deployment count does not reveal the actor that controls admission, change, observation, or switching cost.
+B: RFC 9518 asks reviewers to examine several control points; a distributed data path can still depend on centralized identity or discovery.
+C: Sections 3-4 support making the control model and credible alternatives explicit, so review teams evaluate the same design boundary.
+D: Present market share describes current deployment; it does not decide whether concentration risk is acceptable.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="A profile should not leave comparison, encoding, or rejection rules vague.">
-        <header><h4>Q3: A profile uses centralization review. What should the specification define first</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Trace who controls participation, terms, observation, and exit. Deployment convenience is not evidence that concentration risk is absent.">
+        <header><h4>Q3: Which correction addresses this centralization-analysis defect?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Observed production behavior: treating deployment convenience as proof that concentration risk is harmless. The resulting value or conclusion controls an A2A security decision.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Leave input bytes, context values, encoding, and comparison behavior to each implementer</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Use human-readable descriptions as validation sources and let deployments parse prose</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. document design alternatives that preserve interoperability, portability, and multiple independent implementations</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A profile is the contract that makes use of centralization review consistent across implementations.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: If input bytes and context are free-form, implementations verify different values.
-- B: Human-readable text is useful for explanation, but it is unstable as a validation input. Locale and wording changes break it.
-- C: document design alternatives that preserve interoperability, portability, and multiple independent implementations is required. Clear producer rules let verifiers evaluate the same object under the same assumptions.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Count redundant servers at the same provider and treat infrastructure redundancy as independent governance</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Identify who can exclude participants, change terms, observe behavior, or make switching costly</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat a federated protocol name as proof that identity, discovery, and policy control are also decentralized</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Use current adoption as proof that future exclusion, capture, or switching costs are harmless</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Redundant infrastructure can improve availability while leaving control with one organization.
+B: Sections 2-4 direct the review toward control and concentration effects, including the ability to exclude, observe, change conditions, or impede switching.
+C: Protocol topology and operational control are different questions; federation at one layer does not answer the others.
+D: Adoption is not a guarantee against later capture or lock-in, so the review must preserve plausible future failure modes.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Check whether every implementation treats the same input with the same meaning.">
-        <header><h4>Q4: Which implementation behavior creates the clearest interoperability risk</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC 9518 analysis from the deployment decisions made after the analysis; neither category replaces the other.">
+        <header><h4>Q4: After performing the centralization analysis, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">The A2A design review has applied RFC 9518 and now has to decide whether the result is acceptable for a particular operation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. treating deployment convenience as proof that concentration risk is harmless</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Use BCP 14 keywords only for real requirements and document exception criteria</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Document when unsupported extensions are ignored or rejected by the profile</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Interoperability failures appear when the same wire data receives different processing meanings.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: treating deployment convenience as proof that concentration risk is harmless shifts the validation target or meaning. Implementations can then disagree about success.
-- B: Limiting BCP 14 words to real requirements reduces ambiguity rather than creating it.
-- C: Documenting unsupported-extension behavior reduces implementation divergence.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which central services are acceptable and what exit, federation, or portability paths exist</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Identify who can exclude participants, change terms, observe behavior, or make switching costly</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How governance, transparency, and competition concerns are handled</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Analyzing centralization and decentralization effects created by Internet standards and deployments</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 2-4 does not choose this relying-party policy for every deployment.
+B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
+C: The application or deployment must define this consequence beyond the analysis framework itself.
+D: This describes the RFC's analysis scope, not a local acceptance choice.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate transport receipt from object validation.">
-        <header><h4>Q5: A verifier receives input related to centralization review. Which validation step matters most</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
+        <header><h4>Q5: Which review response is justified when centralization review is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Intended use: when a discovery, identity, registry, marketplace, or relay design could concentrate control. Observed defect: depending on a single provider, registry, or broker without documenting failure, capture, or abuse scenarios.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Trust it because it arrived over HTTPS and skip the RFC-specific object checks</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. identify who can exclude participants, change terms, observe behavior, or make switching costly</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Use only the filename, endpoint path, or routing metadata as identity and proof</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9518-q5-caption">
-            <figcaption id="rfc9518-q5-caption">Validation flow before policy decision.</figcaption>
-            <svg viewBox="0 0 780 150" role="img" aria-label="Validation flow before policy decision.">
-              <rect class="flow-box" x="24" y="42" width="130" height="64" rx="10"></rect>
-              <text class="flow-text" x="89" y="79">Producer</text>
-              <line class="flow-arrow" x1="154" y1="74" x2="206" y2="74"></line>
-              <polygon class="flow-arrow-head" points="206,74 194,68 194,80"></polygon>
-              <rect class="flow-box" x="206" y="34" width="250" height="80" rx="10"></rect>
-              <text class="flow-text" x="331" y="69">centralization review</text>
-              <text class="flow-label" x="331" y="91">evidence / data</text>
-              <line class="flow-arrow" x1="456" y1="74" x2="510" y2="74"></line>
-              <polygon class="flow-arrow-head" points="510,74 498,68 498,80"></polygon>
-              <rect class="flow-box" x="510" y="42" width="116" height="64" rx="10"></rect>
-              <text class="flow-text" x="568" y="79">Verifier</text>
-              <line class="flow-arrow" x1="626" y1="74" x2="654" y2="74"></line>
-              <polygon class="flow-arrow-head" points="654,74 642,68 642,80"></polygon>
-              <rect class="flow-box" x="654" y="42" width="102" height="64" rx="10"></rect>
-              <text class="flow-text" x="705" y="69">Policy</text>
-              <text class="flow-label" x="705" y="90">decision</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** centralization review needs validation against its defined inputs and scope, not just its delivery path.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: HTTPS protects transport, but it does not replace validation of centralization review.
-- B: identify who can exclude participants, change terms, observe behavior, or make switching costly is the central step. It separates well-formed input from acceptable input.
-- C: A filename or path can be a routing hint, but it is not enough as identity or security proof.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (analyzing centralization and decentralization effects created by Internet standards and deployments), without resolving the observed defect</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (document design alternatives that preserve interoperability, portability, and multiple independent implementations) and treat local processing success as sufficient</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them), then continue with the same authorization</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Identify the control and capture risks, then require explicit exit, federation, or portability mitigations before accepting the dependency</label>
+          </fieldset><div class="explain">**Explanation:**
+A: A mechanism's purpose does not establish that this instance or context is acceptable.
+B: Correct construction is necessary but not sufficient for verification and local acceptance.
+C: An adjacent specification cannot convert a failed or context-confused result into success.
+D: Sections 2-4 supports resolving the defect before relying on the result. The profile rule is: document design alternatives that preserve interoperability, portability, and multiple independent implementations. The check is: identify who can exclude participants, change terms, observe behavior, or make switching costly. The local policy is: which central services are acceptable and what exit, federation, or portability paths exist.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Classify RFC-defined syntax or algorithms separately from deployment-selected policy.">
-        <header><h4>Q6: Which items are application or deployment policy rather than guarantees from RFC 9518. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Centralization, security, privacy, and end-user reviews ask different questions. Keep their conclusions and owners explicit.">
+        <header><h4>Q6: How should centralization review be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A profile combines centralization review with another protocol layer. Its design note says: RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. control points, dependency structure, interoperability, portability, governance, and switching costs</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. which central services are acceptable and what exit, federation, or portability paths exist</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Well-formed syntax or algorithm processing itself</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. how governance, transparency, and competition concerns are handled</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A specification can define processing rules while still leaving acceptance policy outside the mechanism.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: control points, dependency structure, interoperability, portability, governance, and switching costs is part of the mechanism RFC 9518 addresses directly. It is not the policy layer.
-- B: which central services are acceptable and what exit, federation, or portability paths exist is an application or deployment acceptance condition.
-- C: Well-formed syntax and algorithm processing belong to the RFC-defined side. The meaning of success still needs policy.
-- D: how governance, transparency, and competition concerns are handled is local policy. It should be written for the deployment and threat model.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Focus on which assumption an attacker can exploit.">
-        <header><h4>Q7: Which failure mode should a security review emphasize</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. Treat processing cost as the main risk and rely on caching instead of validation</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. Assume a recent library removes the need to review local inputs and policy</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. depending on a single provider, registry, or broker without documenting failure, capture, or abuse scenarios</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A security review looks for false-acceptance paths, not just whether the mechanism is present.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: Performance can matter, but caching does not replace a security property.
-- B: A recent library helps, but local policy, inputs, and threat model still need review.
-- C: depending on a single provider, registry, or broker without documenting failure, capture, or abuse scenarios is the central failure mode. Attackers exploit this kind of context or trust shift.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Look for responsibility split with adjacent RFCs.">
-        <header><h4>Q8: Which relationship to nearby specifications is the most accurate</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 9518 obsoletes every nearby mechanism whenever related terms look similar</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. centralization review is unrelated to protocol composition, so boundary analysis is unnecessary</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Adjacent specifications are usually safer to read as layered responsibilities, not automatic replacements.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them preserves the responsibility split.
-- B: Obsoletion is explicit in RFC metadata and text. Nearby concepts do not automatically replace one another.
-- C: centralization review matters in protocol composition reviews. Treating it as unrelated hides boundaries.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="Fix success conditions first; do not make the RFC number carry all meaning.">
-        <header><h4>Q9: Which review questions are useful before relying on centralization review. Select all that apply</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Are exact inputs, context, validation rules, and rejection behavior specified</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Can recipients infer missing semantics from the RFC number alone</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Can unsupported extensions or unknown values be treated as success</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. when a discovery, identity, registry, marketplace, or relay design could concentrate control</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Review questions should show whether implementers can reproduce the same success and failure boundary.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: Naming inputs, context, validation rules, and rejection behavior directly reduces implementation differences.
-- B: An RFC number does not define local semantics by itself. A profile or policy must fill the gap.
-- C: Treating unknown values as success can accept extensions or attacker input incorrectly.
-- D: when a discovery, identity, registry, marketplace, or relay design could concentrate control is a real review setting. Fixing success conditions there reduces misuse.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Do not fail open; treat the result as unusable for that decision.">
-        <header><h4>Q10: If validation fails, what is the safest interpretation</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Downgrade it to a warning and accept normally</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Treat it as unusable for that security or policy decision</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Assume later authorization will always repair the problem</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Validation failure is a signal to stop using that input as evidence for the decision.
-
-**Related keywords:**
-- **centralization pressure**: Forces that concentrate control
-- **switching cost**: Cost of moving providers or systems
-- **portability**: Ability to move data or participation
-
-**Options:**
-- A: Downgrading to a warning creates fail-open behavior. Attacker-controlled input can enter the success path.
-- B: Treating the result as unusable for that decision is safe. If fallback exists, it needs explicit policy.
-- C: Authorization is important, but it does not automatically repair broken validation input.
-          </div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. A passed security review makes centralization analysis unnecessary because both reviews evaluate trust</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Multiple endpoints at one provider establish decentralized control, so governance and exit need no separate owner</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. RFC 9518 replaces privacy and end-user review whenever the profile documents portability</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Apply RFC 9518 alongside security, privacy, and end-user review, then document which control, exit, federation, and portability conclusions affect the approved design</label>
+          </fieldset><div class="explain">**Explanation:**
+A: A security review evaluates threats and controls; it does not by itself identify concentration of operational or governance power.
+B: Endpoint count is not the same as independent control, and a single owner can still change terms or block exit.
+C: RFC 9518 explicitly complements rather than replaces security, privacy, and end-user considerations.
+D: Sections 2-4 support a separate centralization analysis whose conclusions are combined explicitly with the other review results.</div>
         </div>
       </article>
     </section>

@@ -25,10 +25,10 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9651","SKILL_SUBTITLE":"Structured Field Values for HTTP","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9651","SKILL_SUBTITLE":"Structured Field Values for HTTP","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,270 +57,100 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate purpose, boundary, and policy decision.">
-        <header><h4>Q1: A design review cites RFC 9651. What decision is this RFC mainly useful for</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what HTTP Structured Fields provides from the acceptance and authorization decisions made by the consuming profile.">
+        <header><h4>Q1: Does RFC 9651 make HTTP Structured Fields sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A profile cites RFC 9651 and claims that using HTTP Structured Fields automatically settles peer acceptance and authorization.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. rewriting the syntax of every existing HTTP field</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. giving new HTTP fields common data types and algorithms for parsing and serialization</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. making relaxed parser behavior interoperable by accepting any convenient input</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Separate the role of HTTP Structured Fields from nearby security functions and policy decisions.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: rewriting the syntax of every existing HTTP field is not the central purpose of RFC 9651. It can be nearby work, but it is not the decision this RFC primarily supports.
-- B: giving new HTTP fields common data types and algorithms for parsing and serialization is the reason this RFC belongs in the review path. It drives checks on inputs, validation, and boundaries.
-- C: making relaxed parser behavior interoperable by accepting any convenient input is outside the RFC boundary. Higher-layer policy and adjacent protocol responsibilities still need separate text.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. giving new HTTP fields common data types and algorithms for parsing and serialization; therefore no profile-specific trust or authorization rules are needed</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. giving new HTTP fields common data types and algorithms for parsing and serialization, while the semantics of the field name and what each member or parameter means remains an explicit profile or deployment decision</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in; therefore that nearby relationship supplies every local acceptance rule</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9651 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 2-4 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
+B: Sections 2-4 supports the mechanism statement, while the application still owns the stated policy boundary.
+C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
+D: RFC 9651 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Separate RFC-defined processing from application-defined acceptance.">
-        <header><h4>Q2: Which boundaries should a reviewer keep explicit when using RFC 9651. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
+        <header><h4>Q2: Two implementations reach incompatible results for HTTP Structured Fields. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">The profile cites RFC 9651 but leaves a core construction or interpretation rule to each implementation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. the semantics of the field name and what each member or parameter means</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Local acceptance policy can be skipped once HTTP Structured Fields is present</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. fail parsing according to the structured algorithm instead of inventing tolerant repairs</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Citing RFC 9651 automatically makes the deployment safe</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** HTTP Structured Fields is a building block. Acceptance conditions, authorization, and deployment exceptions must still be explicit.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: the semantics of the field name and what each member or parameter means is not decided by the RFC alone. The relying application must say what success means.
-- B: Skipping local acceptance policy can accept a valid object in the wrong context. That crosses the RFC boundary.
-- C: fail parsing according to the structured algorithm instead of inventing tolerant repairs is a boundary the implementation review must preserve. Source and scope mistakes cause false acceptance.
-- D: An RFC citation can be necessary, but deployment configuration, keys, trust, and failure handling are not automatic.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only the semantics of the field name and what each member or parameter means and leave the concrete construction or interpretation rule unspecified</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Choose the top-level field type and serialize values exactly according to the structured field algorithms</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Acceptance policy cannot repair incompatible construction inputs or encodings.
+B: A nearby specification relationship does not define this profile's omitted construction rule.
+C: Sections 2 and 4 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
+D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="A profile should not leave comparison, encoding, or rejection rules vague.">
-        <header><h4>Q3: A profile uses HTTP Structured Fields. What should the specification define first</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
+        <header><h4>Q3: Which correction addresses this HTTP Structured Fields review defect?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Observed production behavior: different parsers accept different invalid values for the same security-sensitive field. The parsed result controls an A2A security decision.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Leave input bytes, context values, encoding, and comparison behavior to each implementer</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Use human-readable descriptions as validation sources and let deployments parse prose</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. choose the top-level field type and serialize values exactly according to the structured field algorithms</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A profile is the contract that makes use of HTTP Structured Fields consistent across implementations.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: If input bytes and context are free-form, implementations verify different values.
-- B: Human-readable text is useful for explanation, but it is unstable as a validation input. Locale and wording changes break it.
-- C: choose the top-level field type and serialize values exactly according to the structured field algorithms is required. Clear producer rules let verifiers evaluate the same object under the same assumptions.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document whether a field is a header, trailer, or both as the only remaining concern</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Fail parsing according to the structured algorithm instead of inventing tolerant repairs</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 9651 support was advertised by both peers</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
+B: Sections 1.1 and 6 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
+C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
+D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Check whether every implementation treats the same input with the same meaning.">
-        <header><h4>Q4: Which implementation behavior creates the clearest interoperability risk</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
+        <header><h4>Q4: After processing HTTP Structured Fields, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">The A2A design review has applied RFC 9651 and now has to decide whether the result is acceptable for a particular operation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. embedding JSON or custom comma parsing in a new field when a structured field type would be precise</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Use BCP 14 keywords only for real requirements and document exception criteria</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Document when unsupported extensions are ignored or rejected by the profile</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Interoperability failures appear when the same wire data receives different processing meanings.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: embedding JSON or custom comma parsing in a new field when a structured field type would be precise shifts the validation target or meaning. Implementations can then disagree about success.
-- B: Limiting BCP 14 words to real requirements reduces ambiguity rather than creating it.
-- C: Documenting unsupported-extension behavior reduces implementation divergence.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. The semantics of the field name and what each member or parameter means</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Fail parsing according to the structured algorithm instead of inventing tolerant repairs</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Whether a field is a header, trailer, or both</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Giving new HTTP fields common data types and algorithms for parsing and serialization</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 2-4 does not choose this relying-party policy for every deployment.
+B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
+C: The application or deployment must define this consequence beyond the RFC mechanism itself.
+D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate transport receipt from object validation.">
-        <header><h4>Q5: A verifier receives input related to HTTP Structured Fields. Which validation step matters most</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
+        <header><h4>Q5: Which review response is justified when HTTP Structured Fields is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Intended use: when a new HTTP header or trailer needs interoperable parsing across clients, servers, and intermediaries. Observed defect: allowing different parsers to accept different invalid values for the same security-sensitive field.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Trust it because it arrived over HTTPS and skip the RFC-specific object checks</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. fail parsing according to the structured algorithm instead of inventing tolerant repairs</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Use only the filename, endpoint path, or routing metadata as identity and proof</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9651-q5-caption">
-            <figcaption id="rfc9651-q5-caption">Validation flow before policy decision.</figcaption>
-            <svg viewBox="0 0 780 150" role="img" aria-label="Validation flow before policy decision.">
-              <rect class="flow-box" x="24" y="42" width="130" height="64" rx="10"></rect>
-              <text class="flow-text" x="89" y="79">Producer</text>
-              <line class="flow-arrow" x1="154" y1="74" x2="206" y2="74"></line>
-              <polygon class="flow-arrow-head" points="206,74 194,68 194,80"></polygon>
-              <rect class="flow-box" x="206" y="34" width="250" height="80" rx="10"></rect>
-              <text class="flow-text" x="331" y="69">HTTP Structured Fields</text>
-              <text class="flow-label" x="331" y="91">evidence / data</text>
-              <line class="flow-arrow" x1="456" y1="74" x2="510" y2="74"></line>
-              <polygon class="flow-arrow-head" points="510,74 498,68 498,80"></polygon>
-              <rect class="flow-box" x="510" y="42" width="116" height="64" rx="10"></rect>
-              <text class="flow-text" x="568" y="79">Verifier</text>
-              <line class="flow-arrow" x1="626" y1="74" x2="654" y2="74"></line>
-              <polygon class="flow-arrow-head" points="654,74 642,68 642,80"></polygon>
-              <rect class="flow-box" x="654" y="42" width="102" height="64" rx="10"></rect>
-              <text class="flow-text" x="705" y="69">Policy</text>
-              <text class="flow-label" x="705" y="90">decision</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** HTTP Structured Fields needs validation against its defined inputs and scope, not just its delivery path.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: HTTPS protects transport, but it does not replace validation of HTTP Structured Fields.
-- B: fail parsing according to the structured algorithm instead of inventing tolerant repairs is the central step. It separates well-formed input from acceptable input.
-- C: A filename or path can be a routing hint, but it is not enough as identity or security proof.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (giving new HTTP fields common data types and algorithms for parsing and serialization), without resolving the observed defect</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (choose the top-level field type and serialize values exactly according to the structured field algorithms) and treat local processing success as sufficient</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in), then continue with the same authorization</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+          </fieldset><div class="explain">**Explanation:**
+A: A mechanism's purpose does not establish that this instance or context is acceptable.
+B: Correct construction is necessary but not sufficient for verification and local acceptance.
+C: An adjacent specification cannot convert a failed or context-confused result into success.
+D: Sections 1.1 and 6 supports resolving the defect before relying on the result. The profile rule is: choose the top-level field type and serialize values exactly according to the structured field algorithms. The check is: fail parsing according to the structured algorithm instead of inventing tolerant repairs. The local policy is: the semantics of the field name and what each member or parameter means.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Classify RFC-defined syntax or algorithms separately from deployment-selected policy.">
-        <header><h4>Q6: Which items are application or deployment policy rather than guarantees from RFC 9651. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
+        <header><h4>Q6: How should HTTP Structured Fields be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A profile combines HTTP Structured Fields with another protocol layer. Its design note says: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. Lists, Dictionaries, Items, Parameters, and strict parse and serialize algorithms</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. the semantics of the field name and what each member or parameter means</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Well-formed syntax or algorithm processing itself</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. whether a field is a header, trailer, or both</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A specification can define processing rules while still leaving acceptance policy outside the mechanism.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: Lists, Dictionaries, Items, Parameters, and strict parse and serialize algorithms is part of the mechanism RFC 9651 addresses directly. It is not the policy layer.
-- B: the semantics of the field name and what each member or parameter means is an application or deployment acceptance condition.
-- C: Well-formed syntax and algorithm processing belong to the RFC-defined side. The meaning of success still needs policy.
-- D: whether a field is a header, trailer, or both is local policy. It should be written for the deployment and threat model.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Focus on which assumption an attacker can exploit.">
-        <header><h4>Q7: Which failure mode should a security review emphasize</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. Treat processing cost as the main risk and rely on caching instead of validation</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. Assume a recent library removes the need to review local inputs and policy</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. allowing different parsers to accept different invalid values for the same security-sensitive field</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A security review looks for false-acceptance paths, not just whether the mechanism is present.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: Performance can matter, but caching does not replace a security property.
-- B: A recent library helps, but local policy, inputs, and threat model still need review.
-- C: allowing different parsers to accept different invalid values for the same security-sensitive field is the central failure mode. Attackers exploit this kind of context or trust shift.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Look for responsibility split with adjacent RFCs.">
-        <header><h4>Q8: Which relationship to nearby specifications is the most accurate</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 9651 obsoletes every nearby mechanism whenever related terms look similar</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. HTTP Structured Fields is unrelated to protocol composition, so boundary analysis is unnecessary</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Adjacent specifications are usually safer to read as layered responsibilities, not automatic replacements.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in preserves the responsibility split.
-- B: Obsoletion is explicit in RFC metadata and text. Nearby concepts do not automatically replace one another.
-- C: HTTP Structured Fields matters in protocol composition reviews. Treating it as unrelated hides boundaries.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="Fix success conditions first; do not make the RFC number carry all meaning.">
-        <header><h4>Q9: Which review questions are useful before relying on HTTP Structured Fields. Select all that apply</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Are exact inputs, context, validation rules, and rejection behavior specified</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Can recipients infer missing semantics from the RFC number alone</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Can unsupported extensions or unknown values be treated as success</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. when a new HTTP header or trailer needs interoperable parsing across clients, servers, and intermediaries</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Review questions should show whether implementers can reproduce the same success and failure boundary.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: Naming inputs, context, validation rules, and rejection behavior directly reduces implementation differences.
-- B: An RFC number does not define local semantics by itself. A profile or policy must fill the gap.
-- C: Treating unknown values as success can accept extensions or attacker input incorrectly.
-- D: when a new HTTP header or trailer needs interoperable parsing across clients, servers, and intermediaries is a real review setting. Fixing success conditions there reduces misuse.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Do not fail open; treat the result as unusable for that decision.">
-        <header><h4>Q10: If validation fails, what is the safest interpretation</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Downgrade it to a warning and accept normally</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Treat it as unusable for that security or policy decision</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Assume later authorization will always repair the problem</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Validation failure is a signal to stop using that input as evidence for the decision.
-
-**Related keywords:**
-- **Dictionary**: Keyed Structured Field value
-- **Item**: Single Structured Field value
-- **strict parsing**: Failing instead of repairing invalid input
-
-**Options:**
-- A: Downgrading to a warning creates fail-open behavior. Attacker-controlled input can enter the success path.
-- B: Treating the result as unusable for that decision is safe. If fallback exists, it needs explicit policy.
-- C: Authorization is important, but it does not automatically repair broken validation input.
-          </div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes the semantics of the field name and what each member or parameter means unnecessary; the profile need not say how the RFC result is used</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (fail parsing according to the structured algorithm instead of inventing tolerant repairs) can be skipped and the other layer can infer the result</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (the semantics of the field name and what each member or parameter means), perform the required check (fail parsing according to the structured algorithm instead of inventing tolerant repairs), and state how that result is consumed by the operation</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Layering does not erase relying-party policy.
+B: Success in one layer does not stand in for validation required by another.
+C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
+D: Sections 2-4 and Sections 1.1 and 6 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
         </div>
       </article>
     </section>

@@ -25,10 +25,10 @@
   <link rel="stylesheet" href="quiz.css?v=20260731-2" />
   <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
-  <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8725","SKILL_SUBTITLE":"JSON Web Token Best Current Practices","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8725","SKILL_SUBTITLE":"JSON Web Token Best Current Practices","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,269 +57,100 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="目的, 境界, policy decisionを分けて考えてください.">
-        <header><h4>Q1: RFC 8725をdesign reviewで参照する主な目的はどれですか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JWT BCPが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
+        <header><h4>Q1: RFC 8725のJWT BCPだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileがRFC 8725を参照し,JWT BCPを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. JWTを置き換える新しいtoken formatを作ること</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. signed token内にあるだけでunprofiled claimを安全にすること</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** JWT BCPの役割を, 近いが別のsecurity機能やpolicy判断から切り分けます.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: JWTを置き換える新しいtoken formatを作ることはRFC 8725の中心目的ではありません. 近い設計では関係しても, このRFCが直接解く判断ではありません.
-- B: 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすることがこのRFCを読む主な理由です. 実装やreviewではここから入力, 検証, 境界を確認します.
-- C: signed token内にあるだけでunprofiled claimを安全にすることは範囲外です. RFC 8725だけで上位policyや別protocolの責務までは決まりません.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること.ただしこのendpointで受理するtoken kindとclaimを定めるprofileはprofileまたはdeploymentが明示的に決める</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8725を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 2-3はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
+B: Sections 2-3がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
+C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
+D: RFC 8725はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="RFCが与える処理と, applicationが決める受理条件を分けます.">
-        <header><h4>Q2: RFC 8725を使うときに明示すべき境界はどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
+        <header><h4>Q2: 二つのimplementationがJWT BCPについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">profileはRFC 8725を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. このendpointで受理するtoken kindとclaimを定めるprofile</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. JWT BCPがあればlocal acceptance policyを省略できる</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. RFC 8725を参照すればdeploymentは自動的に安全になる</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** JWT BCPは部品です. 受理条件, authorization, deployment例外は明示する必要があります.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: このendpointで受理するtoken kindとclaimを定めるprofileはRFC本文だけでは決まりません. relying applicationが何を成功とするかを指定します.
-- B: local acceptance policyを省略すると, validな形式を誤ったcontextで受理できます. これはRFCの境界を越えています.
-- C: claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付けるは実装reviewで残すべき境界です. 入力元とscopeを確認しないと誤受理につながります.
-- D: RFC参照は安全性の必要条件になり得ますが, deployment設定, 鍵, trust, failure handlingまで自動では保証しません.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. このendpointで受理するtoken kindとclaimを定めるprofileだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+          </fieldset><div class="explain">**解説:**
+A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
+B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
+C: Sections 3.1-3.12に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
+D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="profileが比較, encode, reject条件を曖昧にしないことが重要です.">
-        <header><h4>Q3: JWT BCPを使うprofileを作るとき, 最初に仕様へ書くべきことはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
+        <header><h4>Q3: このJWT BCPのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">productionで観測した動作: あるissuerやtoken classのtokenを別contextで受理すること.その結果がA2Aのsecurity decisionを左右します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. input byte, context value, encoding, comparison behaviorを各実装者へ任せる</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. human-readable descriptionをvalidation sourceにし, deploymentがproseをparseする</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** profileはJWT BCPの使い方を実装間で同じにするためのcontractです.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: 入力byteやcontextを自由にすると, 実装ごとに別の値を検証してしまいます.
-- B: human-readable textは説明には使えますが, validationのstable inputにするとlocaleや文言変更で壊れます.
-- C: ここでは, explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使うことが必要です. producer側の規則が明確なら, verifierは同じ条件で検証できます.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,keyをissuerへどうscopeしrotationするかだけを残る問題として文書化する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 8725対応をadvertiseしたため,検証せずprocessingを続ける</label>
+          </fieldset><div class="explain">**解説:**
+A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
+B: Section 2に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
+C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
+D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="同じ入力を全実装が同じ意味で扱えるかを見ます.">
-        <header><h4>Q4: もっとも相互運用性を壊しやすい実装はどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
+        <header><h4>Q4: JWT BCPを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A design reviewはRFC 8725を適用し,結果を特定operationで受理するか判断します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. あるissuerやtoken classのtokenを別contextで受理すること</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. BCP 14 keywordsを本当のrequirementsへ限定し, 例外条件も文書化する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. unsupported extensionをignoreまたはrejectする条件をprofileへ明記する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 相互運用性の問題は, 同じwire dataを違う意味で処理したときに表面化します.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: あるissuerやtoken classのtokenを別contextで受理することは検証対象やmeaningをずらします. その結果, 実装間で成功条件が合わなくなります.
-- B: BCP 14を要件へ限定することは, 仕様の曖昧さを減らす側の行動です.
-- C: unsupported extensionの扱いを文書化することは, 実装差を減らすために有効です.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. このendpointで受理するtoken kindとclaimを定めるprofile</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. keyをissuerへどうscopeしrotationするか</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 2-3は,このrelying-party policyを全deployment向けに選びません.
+B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
+C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
+D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="transportで受け取った事実と, objectのvalidationを別々に確認します.">
-        <header><h4>Q5: verifierがJWT BCPに関係する入力を受け取ったとき, 重要なvalidation stepはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
+        <header><h4>Q5: A2A trust boundaryでJWT BCPを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">想定する利用場面: API gateway, authorization server, serviceが複数sourceのJWTを検証する場面.観測した欠陥: algorithm confusion, cross-JWT confusion, weak key, wrong audience tokenの受理.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. HTTPSで届いたことを理由に, RFC-specific object checkを省略してtrustする</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. filename, endpoint path, routing metadataだけをidentityとproofとして使う</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc8725-ja-q5-caption">
-            <figcaption id="rfc8725-ja-q5-caption">検証対象をpolicy decisionへ渡す前に入力と境界を確認する流れ.</figcaption>
-            <svg viewBox="0 0 780 150" role="img" aria-label="検証対象をpolicy decisionへ渡す前に入力と境界を確認する流れ.">
-              <rect class="flow-box" x="24" y="42" width="130" height="64" rx="10"></rect>
-              <text class="flow-text" x="89" y="79">生成側</text>
-              <line class="flow-arrow" x1="154" y1="74" x2="206" y2="74"></line>
-              <polygon class="flow-arrow-head" points="206,74 194,68 194,80"></polygon>
-              <rect class="flow-box" x="206" y="34" width="250" height="80" rx="10"></rect>
-              <text class="flow-text" x="331" y="69">JWT BCP</text>
-              <text class="flow-label" x="331" y="91">evidence / data</text>
-              <line class="flow-arrow" x1="456" y1="74" x2="510" y2="74"></line>
-              <polygon class="flow-arrow-head" points="510,74 498,68 498,80"></polygon>
-              <rect class="flow-box" x="510" y="42" width="116" height="64" rx="10"></rect>
-              <text class="flow-text" x="568" y="79">検証側</text>
-              <line class="flow-arrow" x1="626" y1="74" x2="654" y2="74"></line>
-              <polygon class="flow-arrow-head" points="654,74 642,68 642,80"></polygon>
-              <rect class="flow-box" x="654" y="42" width="102" height="64" rx="10"></rect>
-              <text class="flow-text" x="705" y="79">受理判断</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**判断のポイント:** JWT BCPは受信経路だけでなく, 定義されたinputとscopeで検証される必要があります.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: HTTPSはtransport保護には有効ですが, JWT BCPの個別validationを置き換えません.
-- B: claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付けるが中心です. これによりwell-formedな入力と受理可能な入力を分けられます.
-- C: filenameやpathはrouting hintにはなりますが, identityやsecurity proofとしては不足します.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること）に合うため,観測した欠陥を解消せず受理する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う）だけを適用し,local processingのsuccessを十分条件にする</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+          </fieldset><div class="explain">**解説:**
+A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
+B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
+C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
+D: Section 2に沿って欠陥を解消してからresultを使います.profile rule: explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う.check: claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける.local policy: このendpointで受理するtoken kindとclaimを定めるprofile.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="RFC定義のsyntax/algorithmと, deploymentが選ぶpolicyを分類します.">
-        <header><h4>Q6: RFC 8725だけでは保証されず, applicationまたはdeployment policyで決めるものはどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
+        <header><h4>Q6: JWT BCPとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileはJWT BCPを別protocol layerと組み合わせます.design noteには「RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する」とあります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. algorithm verification, key selection, issuer/audience check, typing, claim validation</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. このendpointで受理するtoken kindとclaimを定めるprofile</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. well-formed syntaxまたはalgorithm処理そのもの</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. keyをissuerへどうscopeしrotationするか</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 仕様が処理規則を定義しても, どの結果を受理するかは別のpolicy判断です.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: algorithm verification, key selection, issuer/audience check, typing, claim validationはRFC 8725が直接扱う中核です. policyではなくmechanism側の内容です.
-- B: このendpointで受理するtoken kindとclaimを定めるprofileはapplicationまたはdeploymentが決める受理条件です.
-- C: well-formed syntaxやalgorithm処理はRFCが定義する側です. ただし成功結果の意味は別途決めます.
-- D: keyをissuerへどうscopeしrotationするかはlocal policyです. 運用とthreat modelに合わせて明文化します.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="攻撃者がどの仮定の隙を使えるかに注目します.">
-        <header><h4>Q7: security reviewで中心に置くべき失敗モードはどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. processing costを主なriskと見なし, validationの代わりにcacheへ依存する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. libraryが新しければlocal inputとpolicyのreviewを不要にする</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. algorithm confusion, cross-JWT confusion, weak key, wrong audience tokenの受理</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** security reviewでは, mechanismを入れた事実よりも, 誤った条件で受理する経路を見ます.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: performanceは重要な場合がありますが, cacheでsecurity propertyを代替する判断は危険です.
-- B: 新しいlibraryは有利ですが, local policy, input, threat modelのreviewは残ります.
-- C: algorithm confusion, cross-JWT confusion, weak key, wrong audience tokenの受理が中心的な失敗モードです. 攻撃者はここを使ってcontextやtrustをずらします.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="近いRFCとの責務分担を見ます.">
-        <header><h4>Q8: 近い仕様との関係としてもっとも正確なのはどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 8725がtermsの近さだけを理由に近いmechanismをすべてobsoleteすると考える</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. JWT BCPはprotocol compositionとは無関係なのでboundary analysisは不要である</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** 隣接仕様は置き換え関係ではなく, layerや責務の違いとして読むのが安全です.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明するという読み方が責務分担を壊しません.
-- B: obsolete関係はRFC本文で明示されるものです. 近いconceptだから置き換えとは限りません.
-- C: JWT BCPはprotocol compositionのreviewで意味を持ちます. 無関係として扱うと境界を見落とします.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="成功条件を先に固定し, RFC番号だけに意味を背負わせないでください.">
-        <header><h4>Q9: JWT BCPへ依存する前に確認すべきreview questionはどれですか. 該当するものをすべて選んでください</h4><span class="type">複数選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. exact input, context, validation rule, and rejection behaviorは明記されているか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. missing semanticsはRFC番号だけからrecipientが推測できるか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. unsupported extensionやunknown valueをsuccessとして扱えるか</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. API gateway, authorization server, serviceが複数sourceのJWTを検証する場面</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** review questionは, 実装者が同じ成功/失敗境界を再現できるかを確認するために使います.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: input, context, validation rule, rejection behaviorの明記は, 実装差を減らす直接的なcheckです.
-- B: RFC番号だけではlocal semanticsは決まりません. profileやpolicyで補う必要があります.
-- C: unknown valueをsuccessにすると, extensionや攻撃入力を誤って受理できます.
-- D: API gateway, authorization server, serviceが複数sourceのJWTを検証する場面は現実のreview対象です. ここで成功条件を固定すると誤用を減らせます.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="fail openではなく, その判断に使えない結果として扱います.">
-        <header><h4>Q10: validationが失敗したとき, もっとも安全な解釈はどれですか</h4><span class="type">単一選択</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. warningに下げて通常どおり受理する</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. そのsecurityまたはpolicy decisionには使えない結果として扱う</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. 後続authorizationが必ず修復すると仮定する</label>
-          </fieldset>
-          <div class="explain">
-**判断のポイント:** validation失敗は, その入力を根拠にした判断を止める信号です.
-
-**関連キーワード:**
-- **algorithm confusion**: alg解釈の取り違え
-- **audience**: tokenの宛先
-- **explicit typing**: token kindの明示
-
-**選択肢:**
-- A: warningへ下げて受理するとfail openになります. 攻撃入力でも成功経路へ入れます.
-- B: そのsecurityまたはpolicy decisionには使えないと扱うのが安全です. 必要なら明示的なfallback policyを別に定義します.
-- C: authorizationは重要ですが, 壊れたvalidation inputを自動修復するものではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,このendpointで受理するtoken kindとclaimを定めるprofileは不要であり,RFCのresultをどう使うかも記載しない</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける）を省略し,他layerがresultを推測してよい</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（このendpointで受理するtoken kindとclaimを定めるprofile）を定義し,必要なcheck（claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける）を行い,そのresultをoperationがどう使うか記載する</label>
+          </fieldset><div class="explain">**解説:**
+A: layeringはrelying-party policyを消しません.
+B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
+C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
+D: Sections 2-3とSection 2がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
         </div>
       </article>
     </section>
