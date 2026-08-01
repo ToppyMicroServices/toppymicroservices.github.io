@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 3986",
       SKILL_SUBTITLE: "URI Generic Syntax",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc3986" target="_blank" rel="noopener noreferrer">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a></li>
       </ul>
+      <p>範囲: RFC 3986はURIのgeneric syntax, reference resolution, comparison methodを定義します. security profileは, authorizationで受理するURI formと有効なequivalence ruleを別途定義する必要があります.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -182,38 +183,48 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="そのcharacterがsyntaxとして働くのか, 1つのcomponent内のliteral dataなのかを考えてください.">
-        <header><h4>Q4: URIでpercent-encodingすべきタイミングとして最も正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="どのslashがURI syntaxで, どのslashがtask identifier内のdataなのかを先に決めてください.">
+        <header><h4>Q4: 意図したtask identifierを保つcomponent contractはどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A2A endpointは<code>/tasks/</code>の後ろに1つのtask identifierを置きます. identifierは3文字の値<code>a/b</code>で, slashはpath-segment delimiterではなくdataです. producerとbackendで1つのURI表現へ合意する必要があります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. URI構造を示すdelimiterも含め, reserved characterを常に全てpercent-encodeする</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. reservedは必須の区切りなので, データとして現れても決してエンコードしない</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. そのコンポーネントで許されない文字や, reservedをデータとして扱いたい場合にエンコードする</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. <code>/tasks/</code>の構造を示すslashも含め, 全slashをencodeする</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. <code>/tasks/a/b</code>を出力し, 2つ目のslashがdataかをbackendごとに推測する</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 構造上のslashを残し, dataのslashを<code>%2F</code>にして, component分割後に一度decodeする</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. generic parserがcomponentを識別する前にURI全体をdecodeする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3986 Sections 2.1と2.4はpercent-encodingを`%HH`形式のoctet表現として定義します. 適否はURI componentと文字の役割で決まります. delimiterとして働くreserved characterはliteralのまま残し, 同じ文字をdataとして使う場合はsyntaxと誤認されないようencodeします. そのcomponentで許されない文字にも適切なencodingが必要です.
+            RFC 3986 Sections 2.1, 2.4, and 7.3はreserved delimiterとencoded dataを区別します. applicationはoctetをdecodeする前にURIをcomponentとsubcomponentへ分割しなければなりません. そうしないとdecoded dataがsyntaxと誤認されます. RFC 3986はtask-ID modelを定義しないため, 1つのsegmentを使うことはprofile側で定めます.
 
-            reserved characterを一律にencodeするとURI構造を壊し, 早すぎるdecodeはdelimiterとdataの区別を失わせます. signed URL, redirect target, path parameterでは, componentを意識した一つの処理順を定義する必要があります. 非ASCII textにはcharacter-to-octet mappingまたはIRI処理も必要であり, RFC 3986は全component共通の一律変換を定めていません.
+            A: 構造上のseparatorまでencodeするとgeneric path構造を壊します.
+            B: raw slashは別segmentを作り, identityをparser固有の推測へ委ねます.
+            C: 正解. syntaxとdataの役割を保ち, 両側へ1つのdecoding boundaryを与えます.
+            D: parse前のdecodeはencoded dataをdelimiterへ変え, component boundaryを変え得ます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="case-insensitiveと定義されたcomponentだけを正規化してください. pathやfragmentにも同じ規則があるとは限りません.">
-        <header><h4>Q5: 意味を変えずに比較しやすくする正規化として一般に安全なのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="genericなcase ruleをcomponentごとに適用し, schemeまたはprofileの規則なしにpathへ広げないでください.">
+        <header><h4>Q5: verifierはsigned targetとrequest targetを同一視してよいか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">signed grantは<code>HTTPS://EXAMPLE.COM/tasks/A</code>を示し, request targetは<code>https://example.com/tasks/a</code>です. profileはRFC 3986のgeneric normalizationだけを採用し, pathの大小文字を同一視する規則を定義していません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. schemeとhostを小文字化する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. path全体を小文字化する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. fragmentを常に削除して比較する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 同一視する. schemeとhostがcase-insensitiveなら全componentも同じである</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 同一視しない. schemeとhostだけを正規化し, pathの不一致は残す</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 両方のURI文字列全体を小文字化してからauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 両targetを取得し, 現在同じcontentなら同一視する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3986 Section 6.2.2.1ではschemeとhostがcase-insensitiveなので, これらの小文字化は一般に意味を保ちます. ただしURI全体に同じ規則は適用できません. pathのcase sensitivityはschemeやserverに依存し, fragmentはHTTP serverへ送られなくてもclient-side navigationへ影響します.
+            RFC 3986 Sections 6.1 and 6.2.2.1では, generic syntaxのschemeとhostはcase-insensitiveです. 他のgeneric componentはschemeが別途定義しない限りcase-sensitiveと仮定されます. URI comparisonは目的依存であり, false-positive equivalenceを避ける必要があります.
 
-            normalizationは比較目的に依存します. ある比較で無害な変換でも, signed value, cache key, routing key, authorization identifierでは意味を変え得ます. profileは正規化するcomponentとtrust boundaryを明示する必要があります.
+            A: hostの規則はpathへ広がりません.
+            B: 正解. 許可された正規化後も, このprofileでは<code>/tasks/A</code>と<code>/tasks/a</code>は異なるidentifierです.
+            C: pathの小文字化はRFCにもprofileにもないequivalenceを作ります.
+            D: ある時点で同じcontentでもauthorization identifierの同一性は証明されません.
           </div>
         </div>
       </article>
@@ -251,6 +262,77 @@
             schemeとhostのcase normalizationはgeneric ruleですが, pathやその他のcomponentはscheme依存です. alias解決やdisplay-name matchingまで受信側が追加すると, attacker-controlled inputから新しいequivalenceを作ってしまいます.
 
             このdraftはこの原則をさらに限定し, decision-sensitive valueを発行またはtrusted policy comparisonの前にcanonicalにし, final acceptance pathではpeerのalias, case variant, URI variant, natural-language interpretationを修復しない設計を採ります. 「入力側でcanonicalizationする」とは, **profileが定めた決定的な変換を信頼済み境界で一度だけ行う**ことであり, verifierが都合よく意味を推測することではありません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="generic parsing, octet decoding, security interpretation, backend利用を1つの明示的な順序へ揃えてください.">
+        <header><h4>Q8: parser differentialを防ぐprocessing contractはどれか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">gatewayはpercent-decode前のraw pathをauthorizeします. backendは後から<code>%2F</code>と<code>%2e</code>をdecodeし, dot-segmentを除去してstorageへ対応付けます. attackerはgatewayには許可されたtask, backendにはadministrative pathと解釈されるencoded pathを送ります.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. raw URIをauthorizeし, decoding順序はbackendごとに選ばせる</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. percent tripletがなくなるまでURI全体を繰り返しdecodeし, その後parseする</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. componentを先にparseし, pathを一度decodeしてauthorizeし, backendも同じ値を使う</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. encoded dotは文字ではないためraw request中のliteral <code>../</code>だけを検査する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986 Sections 2.4 and 7.3はcomponent分割後にdecodeし, security checkをdecode後のdataへ適用するよう定めます. Section 5.2.4はcomplete path segmentに対するdot-segment removalを定義します. RFCはA2A storageのauthorization policyを定めないため, profileが全enforcement pointを1つのidentityへbindする必要があります.
+
+            A: raw valueとdecoded backend valueでは別resourceをauthorizeし得ます.
+            B: repeated decodingはliteral percent dataを再変換し, 危険な変換後にparseすることにもなります.
+            C: 正解. URI boundaryを保ち, security-relevant valueを検査し, backendでの再解釈を防ぎます.
+            D: encoded octetはdereference中にsecurity-significant characterになり得るため不十分です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="文字列prefixはIP address比較ではありません. connection boundaryで使うnumeric destinationを特定してください.">
+        <header><h4>Q9: rare-address-format bypassへ対応するdestination checkはどれか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Agent fetcherは<code>127.</code>で始まるURI hostをblockし, 他の文字列をplatform resolverへ渡します. resolverは<code>2130706433</code>と<code>0x7f000001</code>をloopbackとして受理します. profileはlocal destinationを拒否する方針です.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. attackerの文字列は<code>127.</code>で始まらないためprefix checkを維持する</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. platform resolverが変換できたhost文字列はすべて許可する</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. 非適合literalを拒否し, 接続先numeric addressをpolicy判定する</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. loopbackには一定のsuffixがあるためhost末尾だけを比較する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986 Section 7.4はdecimal, octal, hexadecimalによるalternate IPv4 formをURI syntax外とし, platform routineがそれらを受理し得ると警告します. address filteringを行う場合は文字列prefixやsuffixではなくnumeric valueで判定すべきです.
+
+            A: 文字表現とresolver semanticsの差がまさにbypassです.
+            B: resolution成功はdestinationの許可を意味しません.
+            C: 正解. accepted syntaxとpolicyを実際のnumeric destinationへ揃えます. redirectやname-resolutionの再検査は追加のapplication policyであり, RFC 3986が定める規則ではありません.
+            D: suffix比較もrepresentation依存の文字列検査です.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="b,c" data-difficulty="L4" data-hint="表示上のprefixを信頼する前にauthority subcomponentをparseし, 宣言されたsecretを全URI-bearing sinkから除外してください.">
+        <header><h4>Q10: このAgent Card URLから導くべきreview findingはどれか?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">profileはaccess tokenがbrowser history, proxy log, application logへ露出することをsuccessful attackとします. clientは<code>https://trusted.example@attacker.example/card?access_token=SECRET</code>を渡され, UIは<code>@</code>より前を強調し, fetcherはgeneric URI parsingを行い, loggerは完全なURIを保存します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. authorityで先に現れるためnetwork hostは<code>trusted.example</code>である</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. parsed hostは<code>attacker.example</code>で, 信頼できそうなprefixはuserinfoである</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. profileはこのuserinfo formを拒否し, tokenをURIとlog sinkへ入れないようにする</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. <code>attacker.example</code>のTLS認証は<code>trusted.example</code>の支配も証明する</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. RFC 3986は全URI parserへuserinfoの全面拒否を一律に要求する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986 Sections 3.2.1, 7.5, and 7.6ではuserinfoをhostの前に置き, userinfo内のpassword-like secretをdeprecatedとし, URIが表示・記録されることとmisleading userinfoによるsemantic attackを警告します. ここでのrejectとno-secret-URI ruleは宣言されたprofile threat modelに由来し, RFC 3986のuniversal userinfo banではありません.
+
+            A: 非選択. hostは<code>@</code>の後ろで, 前の文字列はuserinfoです.
+            B: 選択. generic parsingでは<code>attacker.example</code>へrequestを送ります.
+            C: 選択. logging前にdisplay deceptionとprofile-defined disclosure attackの両方を止めます.
+            D: 非選択. あるhostの認証はuserinfo文字列へのauthorityを示しません.
+            E: 非選択. RFCはuserinfo syntaxを認めつつriskを警告し, cleartext passwordをdeprecatedとしています.
           </div>
         </div>
       </article>

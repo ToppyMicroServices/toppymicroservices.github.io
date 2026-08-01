@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 3986",
       SKILL_SUBTITLE: "URI Generic Syntax",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc3986" target="_blank" rel="noopener noreferrer">RFC 3986: Uniform Resource Identifier (URI): Generic Syntax</a></li>
       </ul>
+      <p>Scope: RFC 3986 defines generic URI syntax, reference resolution, and comparison methods. A security profile still has to define which URI forms it accepts and which equivalence rules are valid for authorization.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -147,38 +148,48 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Ask whether the character is acting as syntax or as literal data inside one component.">
-        <header><h4>Q4: When should you percent-encode a character in a URI</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="First decide which slash belongs to URI syntax and which slash is data inside the task identifier.">
+        <header><h4>Q4: Which component contract preserves the intended task identifier?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A endpoint places one task identifier after <code>/tasks/</code>. The identifier is the three-character value <code>a/b</code>; its slash is data, not a path-segment delimiter. The producer and backend need one interoperable URI representation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Percent-encode every reserved character, including delimiters that define the URI structure</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Never encode a reserved character, even when it appears as data, because reserved characters must remain delimiters</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Encode when the character is not allowed in that component or when you need a reserved character to be treated as data</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Encode every slash, including the structural slashes in the <code>/tasks/</code> path</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Emit <code>/tasks/a/b</code> and let each backend infer whether the second slash is data</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Keep structural slashes; encode the data slash as <code>%2F</code>; parse components before one decode</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Decode the complete URI before the generic parser identifies its components</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3986 Sections 2.1 and 2.4 define percent-encoding as an octet representation of the form `%HH`; whether it is appropriate depends on the URI component and the character's role. A reserved character that is serving as a delimiter must remain literal. The same character used as data should be encoded so that a parser does not treat it as syntax. A character not permitted in the component also needs an appropriate encoding.
+            RFC 3986 Sections 2.1, 2.4, and 7.3 distinguish reserved delimiters from encoded data. Applications must split a URI into components and subcomponents before decoding octets; otherwise decoded data can be mistaken for syntax. RFC 3986 does not define the application's task-ID model, so the profile must state that the ID occupies one segment.
 
-            Encoding every reserved character can destroy URI structure, while decoding too early can erase the distinction between delimiter and data. Signed URLs, redirect targets, and path parameters therefore need a single component-aware processing order. Non-ASCII text additionally needs a defined character-to-octet mapping or IRI processing; RFC 3986 does not supply one blanket rule for every component.
+            A: Encoding the structural separators destroys the generic path structure.
+            B: The raw slash creates another path segment and leaves identity to parser-specific guessing.
+            C: Correct. It preserves syntax/data roles and gives both sides one decoding boundary.
+            D: Decoding before parsing can turn encoded data into a delimiter and change component boundaries.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Normalize only components whose case rules are defined as insensitive; do not assume that for paths or fragments.">
-        <header><h4>Q5: Which normalization is generally safe for comparison without changing meaning</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Apply the generic case rule component by component; do not extend it to the path without a scheme or profile rule.">
+        <header><h4>Q5: May the verifier treat these signed and received targets as equivalent?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A signed grant names <code>HTTPS://EXAMPLE.COM/tasks/A</code>. The request target is <code>https://example.com/tasks/a</code>. The profile incorporates only RFC 3986 generic normalization and defines no path case-equivalence rule.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Lowercase the scheme and host</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Lowercase the entire path</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Remove the fragment for all uses including client-side navigation</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; case-insensitive scheme and host make every component case-insensitive</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. No; normalize scheme and host, but retain the unmatched path case</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes; lowercase both complete URI strings before authorization</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Fetch both targets and accept them if they currently return the same content</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3986 Section 6.2.2.1 treats the scheme and host as case-insensitive, so normalizing those components to lowercase is generally semantics-preserving. That rule does not extend to the entire URI: path case can be scheme- or server-dependent, and a fragment can affect client-side navigation even though it is not sent to an HTTP server.
+            RFC 3986 Sections 6.1 and 6.2.2.1 make scheme and host case-insensitive under the generic syntax. Other generic components are assumed case-sensitive unless the scheme says otherwise. URI comparison is purpose-dependent and must avoid false-positive equivalence.
 
-            Normalization is purpose-dependent. A transformation that is harmless for one comparison can change a signed value, cache key, routing key, or authorization identifier in another context. A profile should therefore define exactly which components it normalizes and at which trust boundary.
+            A: The generic rule does not extend host semantics to the path.
+            B: Correct. After allowed normalization, <code>/tasks/A</code> and <code>/tasks/a</code> remain different identifiers for this profile.
+            C: Lowercasing the path invents an equivalence that neither the RFC nor the profile defines.
+            D: Equal content at one moment does not establish authorization-identifier equivalence.
           </div>
         </div>
       </article>
@@ -216,6 +227,77 @@
             Scheme and host case normalization follow generic rules, but paths and other components can be scheme dependent. Receiver-added alias or display-name repair creates new equivalence from attacker-controlled input.
 
             The draft narrows the rule further for decision-sensitive values: canonicalize before issuance or trusted policy comparison, then do not repair peer aliases, case variants, URI variants, or natural-language interpretations in the final acceptance path. “Canonicalize on input” means **apply one deterministic, profile-defined transform at a trusted boundary**, not let the verifier infer convenient meaning.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Keep generic parsing, octet decoding, security interpretation, and backend use in one explicit order.">
+        <header><h4>Q8: Which processing contract prevents this parser differential?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway authorizes a raw path before percent-decoding. A backend later decodes <code>%2F</code> and <code>%2e</code>, removes dot-segments, and maps the result to storage. An attacker submits an encoded path that the gateway sees as a permitted task but the backend interprets as an administrative path.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Authorize the raw URI and let every backend choose its own decoding order</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Repeatedly decode the full URI until no percent triplet remains, then parse it</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Parse components, decode the path once, authorize it, and require the backend to use that result</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Check only for literal <code>../</code> in the raw request because encoded dots are not characters</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986 Sections 2.4 and 7.3 require component separation before decoding and say security checks should apply after decoding. Section 5.2.4 defines dot-segment removal for complete path segments. The RFC does not define an A2A storage authorization policy; the profile must bind every enforcement point to one resulting identity.
+
+            A: A raw-value decision and a decoded backend decision can authorize different resources.
+            B: Repeated decoding can transform literal percent data again and also parses after the dangerous transformation.
+            C: Correct. It preserves URI boundaries, checks the security-relevant value, and prevents backend reinterpretation.
+            D: Encoded octets can become security-significant characters during dereferencing, so a literal-only check is incomplete.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A string prefix is not an IP-address comparison. Identify the numeric destination used at the connection boundary.">
+        <header><h4>Q9: Which destination check addresses the rare-address-format bypass?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An Agent fetcher blocks URI hosts beginning with <code>127.</code> but passes other strings to a platform resolver. That resolver accepts <code>2130706433</code> and <code>0x7f000001</code> as loopback. The profile intends to reject local destinations.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Keep the prefix check because neither attacker string begins with <code>127.</code></label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Accept every host string that the platform resolver can translate successfully</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Reject non-RFC literal forms and filter the numeric addresses used for the connection</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Compare only the final characters of the host because loopback has a stable suffix</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986 Section 7.4 says alternate decimal, octal, and hexadecimal IPv4 forms are outside its URI syntax and warns that platform routines may still accept them. If address filtering is performed, literals should be converted to numeric form and filtered by numeric value, not string prefix or suffix.
+
+            A: The mismatch between text and resolver semantics is exactly the bypass.
+            B: Successful resolution says nothing about whether the destination is permitted.
+            C: Correct. It aligns accepted syntax and policy with the actual numeric destination. Redirect and name-resolution rechecks are additional application-policy concerns, not rules supplied by RFC 3986.
+            D: A suffix comparison is another representation-dependent string test.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="b,c" data-difficulty="L4" data-hint="Parse authority subcomponents before trusting the visible prefix, and keep a declared secret out of every URI-bearing sink.">
+        <header><h4>Q10: Which review findings follow from this Agent Card URL?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">A profile treats disclosure of an access token to browser history, proxy logs, or application logs as a successful attack. A client is given <code>https://trusted.example@attacker.example/card?access_token=SECRET</code>; its UI emphasizes the text before <code>@</code>, its fetcher follows generic URI parsing, and its logger records the complete URI.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. The network host is <code>trusted.example</code> because it appears first in the authority</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. The parsed host is <code>attacker.example</code>; the trusted-looking prefix is userinfo</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. The profile should reject this userinfo form and keep the token out of URI and log sinks</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. TLS authentication of <code>attacker.example</code> proves control of <code>trusted.example</code></label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. RFC 3986 universally requires every URI parser to reject all userinfo</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3986 Sections 3.2.1, 7.5, and 7.6 place userinfo before the host, deprecate password-like secrets in userinfo, warn that URIs are displayed and logged, and describe misleading userinfo as a semantic attack. The exact rejection and no-secret-URI rules here come from the stated profile threat model; RFC 3986 does not impose a universal userinfo ban.
+
+            A: Not selected. The host follows <code>@</code>; the earlier text is userinfo.
+            B: Selected. Generic parsing sends the request to <code>attacker.example</code>.
+            C: Selected. It addresses both the display deception and the profile-defined disclosure attack before logging.
+            D: Not selected. Authenticating one host does not establish authority over the userinfo string.
+            E: Not selected. The RFC permits userinfo syntax while warning about its risks and deprecating cleartext passwords.
           </div>
         </div>
       </article>
