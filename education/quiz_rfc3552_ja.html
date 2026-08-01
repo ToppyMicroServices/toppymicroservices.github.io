@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 3552",
       SKILL_SUBTITLE: "Security Considerationsの書き方",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc3552" target="_blank" rel="noopener noreferrer">RFC 3552: Guidelines for Writing RFC Text on Security Considerations</a></li>
       </ul>
+      <p>範囲: RFC 3552はBCP 72です. security analysisに必要なdue diligenceを定めますが, その構成に従っただけでprotocolの安全性が証明されるわけではありません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +92,7 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="何が起こり得るか, どの前提に立つか, mitigation後に何が残るかという読み手の疑問から考えてください.">
-        <header><h4>Q1: 良いSecurity Considerations sectionの役割として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: 良いSecurity Considerations sectionの役割として最も適切なのはどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. threatとfailure assumptionを暗黙にしたまま全protocol messageを言い換える</label>
@@ -105,157 +106,220 @@
 
             **Security Considerations section** は, protocol や mechanism の security property, threat, failure mode, mitigation を spec に結び付けて説明する節です. 宣伝文句を書く場所ではありません.
 
-            これが役割に最も近いです. 読者はこの節を読んで, 何が守られ, どこに限界があり, どう運用すべきかを判断します.
+            RFC 3552 Sections 1と5は, relevant security issue, foreseeable threat, protection, residual riskを読み手へ伝えることを求めます.
 
-            本文の言い換えだけでは, 何が security 上の論点か分かりません.
-            現実的な脅威, 前提, mitigation を結び付けて説明するのが本筋です.
-            「安全だと約束する」は危険です. security 文書は limitation や residual risk に正直であるべきです.
+            A: protocolの言い換えだけではsecurity consequenceを特定できません.
+            B: 正解. threat, assumption, protection, remaining riskを結び付けるとreview可能な主張になります.
+            C: あらゆるthreat modelで単に「安全」なprotocolはありません. scopeとlimitationが必要です.
 
             良い節は implementer と operator の両方が読んで役に立ちます. protocol の美しさではなく, 失敗の仕方を説明できるかが重要です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="各候補をthreat scope, 保護するsecurity property, residual risk, 技術的でない宣伝に分類してください.">
-        <header><h4>Q2: 入れると有用になりやすい観点はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="protectedという語を, 正確なdata, property, endpoint, 残るunprotected hopへ置き換えてください.">
+        <header><h4>Q2: protection claimをreview可能にするため必要な追加はどれか?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileには「TLSがAgent messageを保護する」とあります. TLSはgatewayで終端され, gatewayは選択したheaderとbodyを別connectionでbackendへ転送します. 認証されるendpointと第2 hopの保護は未定義です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. in-scopeとout-of-scopeのattack</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. 保護されるdataと, confidentiality, integrity, authenticationのどれを提供するか</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. mitigationを適用した後にも残るresidual risk</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. complianceのmarketing claim</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. 保護対象fieldと, 各fieldが得るconfidentiality, integrity, authenticationを特定する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. 認証されるTLS endpointとgatewayでのtrust assumptionを示す</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. 第2 hopのexposureとgateway処理後のresidual riskを説明する</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. 詳細をTLS enabledのcompliance badgeへ置き換える</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3552は, threat environment, protocolが提供するsecurity property, residual riskなど, protocolに結び付いた分析を求めます.
+            RFC 3552 Section 5はlower-layer security protocolを使う場合, 期待するserviceとcombined systemのpropertyを明示するよう求めます. 保護する部分と性質, residual riskの記述も必要です.
 
-            **in scope** は設計が考慮するattack, **protection property** はmechanismが実際に提供する性質, **residual risk** はmitigation後にも残るriskです.
-
-            RFC 3552はattackのscope, security mechanismが保護する部分と性質, mitigation後のresidual riskを記述するよう求めています.
-
-            どのattackを扱い, どれをなぜscope外にするかを読者へ示します.
-            単に"protected"と書かず, confidentiality, integrity, authenticationなどを区別します.
-            mitigationで全riskが消えるわけではないため, 残る露出を明示します.
-            compliance や marketing claim は security analysis ではありません. 安全性を証明する代わりにもなりません.
-
-            privacyやoperationsの記述も関連する仕様では有用です. ただしRFC 3552にない項目を, このRFC固有のchecklistとして提示すべきではありません.
+            A: 選択. dataとsecurity propertyを示さなければ「protected」は曖昧です.
+            B: 選択. TLSはconnection endpointを認証するため, gateway終端がtrust modelへ与える影響を示す必要があります.
+            C: 選択. 最初のTLS hopだけでは第2 connectionと終端後処理を説明できません.
+            D: 非選択. badgeはthreat analysisでもcombined-system claimでもありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="影響が限定的なprotocolでも, そう判断した理由をreview可能にする必要があります.">
-        <header><h4>Q3: draftに"security considerationsはない"と書きたい. より良い対応として近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="aliasは受理可能なresource identityを変えます. transportが同じでも新しい動作を分析してください.">
+        <header><h4>Q3: 「新しいsecurity considerationはない」を適切に置き換える記述はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">extensionはAgent Cardが保護対象resource identifierのaliasを宣言できるようにします. transport messageは増えないためdraftは「新しいsecurity considerationはない」とします. alias source, collision handling, alias非対応実装の動作は未定義です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 影響が小さい理由を述べ, 前提と残余リスクを明示する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. このprotocolの相互作用やdeployment前提を分析せず, 別文書だけを参照する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. protocolの動作と結び付けず, 一般的なsecurity controlだけを列挙する</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. transportが不変ならauthorizationも不変なので元の文を維持する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. alias injection, collision, source trust, 非対応peer, mitigation, 残存riskを調べる</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. aliasとbase resource matchingのcompositionを調べずbase profileだけを参照する</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 実装は安全であるべきとし, alias acceptanceはlocal intuitionへ委ねる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            小さなprotocol変更でも, deployment, 他protocolとの組み合わせ, misuseによってriskが生じます. 根拠のない「考慮事項なし」は, その前提を隠します.
+            RFC 3552 Section 5はknownまたはforeseeable risk, misapplication, related mechanismとのinteractionをdue diligenceとして扱います. 受理するresource identityの変更はwire messageを増やさなくてもauthorizationを変え得ます.
 
-            **residual risk** は mitigation 後にも残るリスク, **assumption** は安全性が成り立つ前提条件です.
-
-            これが最も誠実な書き方です. 影響が小さいならその理由を書き, どんな前提でそう言えるのか, 何が残るのかを明示すべきです.
-
-            影響, 前提, 残余リスクを短くでも示せば, 読み手は判断できます.
-            外部参照だけでは, このprotocol固有の相互作用と前提を分析できません.
-            一般的なcontrolの列挙では, このprotocolが生むthreatや残る露出を説明できません.
-
-            「特に新しいリスクは増やさない」と書くとしても, その文を支える前提を 1 行でいいので添えるのが実務的です.
+            A: transportの不変性はauthorization semanticsの不変性を意味しません.
+            B: 正解. 新しいattack surface, compatibility boundary, control, residual riskを示します.
+            C: base文書の参照だけではextension固有のcompositionを分析できません.
+            D: 「安全」とlocal intuitionではtest可能なtrust ruleになりません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="strongのような形容詞を, asset, attacker, assumption, control, residual riskからなるreview可能なmodelへ置き換えてください.">
-        <header><h4>Q4: Security Considerationsに "Use strong cryptography" としか書かれていない. レビュー可能な記述にする改訂はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="lower-layer service, endpoint, termination boundaryを越えるapplication claimのbindingを特定してください.">
+        <header><h4>Q4: このlower-layer dependencyをreview可能にする改訂はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">draftには「session-bound proofにはmodern TLSを使う」とあります. TLSはgatewayで終端され, gatewayはexporter値をheaderでbackendへ転送します. backendは元TLS channelを検証できず, header integrityとgateway trust boundaryは未定義です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. 推奨するアルゴリズム群と最新実装を指定し, 導入と運用の詳細は各運用者に委ねる</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. 保護する資産と必要な性質, 攻撃者の能力と信頼の前提, 鍵管理, 残余リスクを定義する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. すべての環境で通信路暗号化を必須とし, 最新の暗号スイートで十分な保護と判断する</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. approved cipher suiteを列挙し, forwarded headerをsession-boundと呼ぶ</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. gatewayのTLSだけを必須にし, backend acceptance ruleは文書化しない</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. TLS endpoint, exporter, header integrity, gateway trust, replay riskを定義する</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 有効なaccess grantによりforwarded exporterも同じTLS session由来だとみなす</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            レビュー可能なセキュリティ分析は, 何を守りどの性質を必要とするか, 攻撃者の能力と信頼の前提, 鍵管理, 対策後に残る残余リスクを示します.
+            RFC 3552 Section 5はlower-layer security protocol名だけでは不十分とし, 期待serviceとcombined-system propertyを明記するよう求めます. exporter headerはTLS終端点を越えます.
 
-            この改訂なら, レビュー担当者が保護の主張と成立条件を検証できます. 防御機構を, 保護対象, 脅威, 運用上の前提, 設計が除去しないリスクへ結び付けているためです.
-
-            アルゴリズム名だけでは, 必要なセキュリティ特性, 脅威モデル, 鍵のライフサイクル, 導入前提を確定できません.
-            列挙した各要素によって, 想定する環境に対する保護の主張を具体的に評価できます.
-            暗号スイートだけでは, 認証, 鍵管理, 端点の侵害, 可用性, あらゆる運用形態を扱えません.
-
-            RFC 3552は, 下位層のセキュリティプロトコルに期待するサービスと, 組み合わせたシステムが得る性質を明記し, 残余リスクも明確に説明するよう求めています.
+            A: cipher suiteはforwarded headerを元channelへbindしません.
+            B: 決定的なbackend trustとintegrity assumptionを未定義のまま残します.
+            C: 正解. channel, derivation, trust transition, enforcement, remaining attackをreview可能にします.
+            D: grant validityとchannel provenanceは明示的にbindして検証しない限り独立です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="mitigationの対象, cost, 限界が読み手に分かるかを見てください.">
-        <header><h4>Q5: mitigationを述べるとき, 良いguidanceが持ちやすい性質はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="replyを受け取れる証拠より後へcostly workを移し, distributed attackの限界も残してください.">
+        <header><h4>Q5: このdenial-of-service threatに最も合うmitigation analysisはどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">unauthenticated requestによりgatewayはtask stateを割り当て, 3回のsignature verificationを行います. spoofed-source attackerはreplyを受け取らずに送信できます. stateless cookieでallocation前にreturn routabilityを証明できますが, botnetはcookieへ応答できます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. 何に対する防御かを説明する</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. tradeoffや運用コストを述べる</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. 解けない問題やout of scopeを明確にする</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. 攻撃が不可能だと保証する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 全distributed attackを防げないためdenial of serviceをout of scopeとする</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. costly workの前にcookieを必須にし, spoofingへの効果とcost, botnet exhaustionを残るriskとして示す</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. cryptographyでrequestがtrustworthyになるためsignature checkを先にすべて実行する</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. return routabilityが成立すればcookieがdenial of serviceを防ぐと宣言する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            mitigation名の列挙だけでは, 実装者はdeploymentに適するか判断できません. 対象, cost, limitationまで示す必要があります.
+            RFC 3552 Sections 4.6, 4.6.3.2, and 5はDoS susceptibilityとcountermeasureをpragmaticに説明するよう求めます. receiptの証明はblind spoofed attackのcostを上げますが, 全DDoS sourceを止めません.
 
-            **mitigation** は threat を下げるための具体策, **tradeoff** は性能や運用負荷との交換条件, **out of scope** はその対策では守らない範囲です.
-
-            良い guidance は, 何に効くのか, どんなコストがあるのか, 何は解決しないのかをセットで説明します.
-
-            防御対象が不明だと, その対策を選ぶ理由も検証方法も定まりません.
-            tradeoff を書くと, deploy 可否を現場が判断しやすくなります.
-            scope を明確にすると, その外側を別対策で補う必要が分かります.
-            security は絶対保証ではありません. 「不可能」と言い切る guidance は危険です.
-
-            たとえば「TLS を使う」と書くなら, 何の threat を下げるのか, endpoint compromise は防がないのか, 鍵運用は別途必要か, まで触れると強くなります.
+            A: 全attackを止められないことは, このcheap and severe pathの分析を省く理由になりません.
+            B: 正解. controlをattackへ結び付け, costly workを後段へ移し, distributed residual riskを示します.
+            C: unauthenticated cryptographic work自体がresource exhaustionの標的になります.
+            D: return routabilityはspoofingを狭めますが, benign intentや十分なclient costを証明しません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$" data-difficulty="L1" data-hint="attackerとそのcapabilityに関する前提を表す標準的な英語2語を探してください.">
-        <header><h4>Q6: attackerとcapabilityの前提をまとめた概念を何と呼ぶ (英語2語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Internet threat environmentのminimumにはtrafficをread, remove, modify, injectできるattackerが含まれます.">
+        <header><h4>Q6: threat-model errorを修正する改訂はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
-          <div class="explain">
-            **Explanation:**
-
-            threat modelは, 対象asset, attacker capability, trust assumption, 対象外を記述します. RFC 3552はこれらの前提を使い, 検討すべきattackとcountermeasureの適用範囲を明らかにします.
-
-            passive observationに十分なcontrolでも, messageをinsert, delete, modifyできるactive attackerには不十分な場合があります. したがってcountermeasureの妥当性は, 明示したthreat modelとdeploymentから切り離して評価できません.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="loggingが検出するthreatだけでなく, logを読める・改ざんできる・相関できるattackerと, control適用後に残るriskも列挙してください.">
-        <header><h4>Q7: 「securityのため詳細にloggingする」という提案を, どうSecurity Considerationsへ落とすべきか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <p class="question-premise">Agent間の不正利用を調査するため, request, session proof, task contextを完全な形で長期保存する案があります.</p>
+          <p class="question-premise">profileはAgent requestをencryptしますが, peer authenticationもmessage integrity mechanismもありません. Security Considerationsはpassive eavesdropperだけを評価し, firewall内のdeploymentではactive network attackerが消えるとします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. log accessにauthenticationを要求し, confidentiality, integrity, retention, failure impactは未文書のdeployment defaultへ任せる</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. complete requestのloggingを禁止し, 記録しなければthreatは消えるとしてdetection goalとresidual riskを省略する</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. 検出対象, log自体のassetとattacker, confidentiality・integrity・availability control, 保存範囲, residual riskを明記する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. encryptionにより全active attackerがpassiveになるため元のmodelを維持する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. firewall vendorが内部networkをtrustedと表現すれば元のmodelを維持する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. active channel attackを分析し, scope制限の根拠を示す</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. endpoint compromiseはprotocolで解きにくいためthreat model自体を削除する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3552 Sections 2.3, 3, and 5の中心は, mechanism名だけで済ませず, system-security goal, 明示的なthreat model, 適用するcountermeasure, residual riskを説明することです. loggingは攻撃検出を支えるcontrolである一方, 高価値な情報集合, 改ざん対象, resource-exhaustion経路にもなります.
+            RFC 3552 Sections 3, 3.5, and 5はcommunication channelをほぼ完全に支配するattackerを想定し, 少なくともeavesdropping, replay, insertion, deletion, modification, MITM, DoSの検討を求めます. minimum environmentはfirewallを仮定せずadministrative boundaryを越えます.
 
-            authenticationは「誰がaccessを試みたか」の一部しか扱いません. 過剰権限, credential compromise, data exfiltration, log injection, deletion, storage exhaustion, retention後の残存riskが未分析です.
-            RFC 3552はsystemを全attackから免疫にすることを求めず, out-of-scope threatとcountermeasureを説明するよう求めます. 一律禁止ではoperational requirementとのtrade-offを評価できません.
-            何を検出するためのlogか, 何を守るか, attackerが何をできるか, control後に何が残るかを明示すれば, implementerが必要性とriskをreviewできます.
-
-            この観点では「loggingをattackとみなす」は省略しすぎです. 正確には, **log collectionをattack surfaceおよびprivacy-sensitive assetとしてthreat modelへ含める**ということです. 記録するfield, raw valueを避ける方法, retention, access control, redaction, tamper evidence, failure時の挙動をdeploymentごとに決めます.
+            A: encryptionだけではactive manipulationを防がずpeerも識別しません.
+            B: deployment labelはminimum Internet analysisと正当化の代わりになりません.
+            C: 正解. 必要attack classを戻し, 明示的で根拠あるapplicability limitを許します.
+            D: endpoint-compromise exclusionを置いてもchannel attackは消えません.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="前提はraw secretのloggingをsuccessful attackと定義します. diagnostic utilityは明示したnon-secret dataだけで保ってください.">
+        <header><h4>Q7: 宣言したthreat boundaryを維持するlogging要件はどれか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">threat modelはraw access token, client secret, session proofのいずれかがapplication, proxy, diagnostic logへ到達することをsuccessful attackとして扱います. request IDと明示的なnon-secret error codeはincident responseに使えます.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. log accessがauthenticatedでretentionが短ければraw secretを許可する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. application logだけredactし, proxyとdiagnostic sinkはlocal defaultへ委ねる</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. protected fieldと全対象sinkを定義し, 各sink前でsecretを除去し, 指定したdiagnostic identifierだけを許可する</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. plaintextでなければよいためsecretを可逆暗号化してlogへ保存する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Sections 2.3, 3, and 5はsystem-security goal, asset, attacker capability, countermeasure, residual riskを明示するよう求めます. no-secret-logging policyはRFC 3552のuniversal prohibitionではなく, このprofileのthreat modelから来ます.
+
+            A: authenticated readerでもoverprivilegedまたはcompromisedになり得て, 前提はsecret-bearing sinkを許しません.
+            B: 未対象sinkから同じattack pathが残ります.
+            C: 正解. data, enforcement coverage, allowed diagnosticを定義し, 境界を弱めません.
+            D: reversible contentはsinkへ到達し, decryption capabilityを持つ者へcredentialを露出します.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="最初のtrust boundaryで1つのsemantic representationを決め, signatureとauthorizationのcheckを一致させてください.">
+        <header><h4>Q8: ambiguous inputのattack surfaceを閉じる改訂はどれか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">gatewayはUnicodeとcaseをnormalizeした後にAgent identifierをauthorizeします. signature verificationは受信byteを対象とし, backendは別normalizerを使います. draftには「実装はinputをvalidateする」としかありません. encoding差により3つのcheckが異なるprincipalを識別できます.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. 各transformationはlocalにvalidなのでcomponentごとに独立normalizeする</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. signatureではraw byteだけを比較し, authorization identityの不一致は無視する</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. ingressでcanonical identityを定義し, 各checkをbindして曖昧な形式を拒否する</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. 全raw valueをlogへ保存し, authorization後に手動で不一致を解決する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Sections 3.3.4 and 5はmessage modification threat, authentication assumption, combined-system behaviorの分析を求めます. RFC自体はUnicode canonicalization algorithmを規定しません. 具体的なcanonicalization ruleは, このparser differentialへのapplication設計上の対応です.
+
+            A: independent normalizerにより1つのmessageが異なるsecurity identityを持ちます.
+            B: byte上のsignature validityはauthorization interpretationの相違を直しません.
+            C: 正解. 1つのingress contractでparsing, signature semantics, authorization identityをreview可能にし, trust付与前に不一致を拒否します.
+            D: authorization後のloggingはconfused-identity decisionを防がず, secret-logging boundaryにも反します.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="authenticationはidentityまたはmessage originを確かめます. authorizationはそのidentityがresourceへoperationを実行できるかを決めます.">
+        <header><h4>Q9: 有効なsigned grantから導ける結論はどれか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">backendはidentity grantのsignatureを検証し, issuerを信頼します. grantはAgent Aを示しますが, resource policyはAgent Bだけにtask削除を許可します. reviewerはauthentication成功を理由にrequest受理を提案します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. trusted signatureはauthenticated subjectへ全operationを与えるため受理する</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. authorization policyがAgent Aのtask削除を許可しない限りrejectする</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. 2つのauthentication mechanismからauthorizationが導けるためTLSもvalidなら受理する</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. grant identityを無視し, gatewayのnetwork addressでauthorizeする</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Section 4.4はauthenticationとauthorizationを区別します. valid signatureはclaimのissuerとsubjectを確かめる材料になりますが, resource policyがそのsubjectのoperationを決めます.
+
+            A: authenticationは無制限のpermissionを作りません.
+            B: 正解. authenticated subjectとrequested actionをresource policyへ照合します.
+            C: authentication evidenceが増えてもauthorization ruleの代わりになりません.
+            D: gateway addressはgrant subjectを置き換えずtask-level permissionも表しません.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c" data-difficulty="L4" data-hint="各guaranteeをverifierとtrust boundaryへ対応付け, neighboring control成功後も残るfailureを列挙してください.">
+        <header><h4>Q10: combined-system security analysisに含めるべき記述はどれか?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">Agent Card signatureはvalidで, OAuth grantは期限内で, clientはTLSでgatewayを認証しました. gatewayはidentityとsession-binding headerをbackendへ転送し, backendは元artifactを検証しません. header integrity, freshness, replay handling, gateway compromiseは未定義です.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. Card, grant, TLS, forwarded-header checkは異なるboundaryで異なるpropertyを与える</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. backend acceptanceには明示的なgateway trustとprotected-header contractが必要である</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. freshness, replay, header substitution, gateway compromiseを引き続き分析する必要がある</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. 3つのcontrolが成功すればcomposed requestの安全性は証明される</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. valid grantはforwarded session bindingがclient TLS channel由来だと証明する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Sections 2, 3, and 5はsecurity goal, attacker capability, mechanism assumption, combined-system property, residual riskを分けて記述するよう求めます.
+
+            A: 選択. 各mechanismは異なる問いに答え, 特定verifierで終端します.
+            B: 選択. 元artifactを検証しないbackendにとってevidenceはgateway assertionとそのprotectionです.
+            C: 選択. 前提中のsuccessful checkは未定義attack pathを解決しません.
+            D: 非選択. control数はcomposition proofになりません.
+            E: 非選択. grant validityとchannel provenanceは明示的なbindingを検証しない限り独立です.</div>
         </div>
       </article>
     </section>

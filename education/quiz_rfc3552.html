@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 3552",
       SKILL_SUBTITLE: "Writing Security Considerations",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc3552" target="_blank" rel="noopener noreferrer">RFC 3552: Guidelines for Writing RFC Text on Security Considerations</a></li>
       </ul>
+      <p>Scope: RFC 3552 is BCP 72. It defines due-diligence expectations for security analysis; following its structure does not by itself prove that a protocol is secure.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +92,7 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Start from the reader's threat questions: what can happen, under which assumptions, and what remains after mitigations.">
-        <header><h4>Q1: A good Security Considerations section should primarily</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: What should a good Security Considerations section primarily do?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Restate every protocol message while leaving threat and failure assumptions implicit</label>
@@ -105,157 +106,220 @@
 
             A **Security Considerations section** connects the protocol to its security properties, threats, failure modes, assumptions, and countermeasures.
 
-            RFC 3552 says the section should inform readers of relevant security issues and clearly describe foreseeable threats, protections, and residual risks.
+            RFC 3552 Sections 1 and 5 say the section should inform readers of relevant security issues and clearly describe foreseeable threats, protections, and residual risks.
 
-            Repeating the protocol does not identify its security consequences.
-            Realistic threats, assumptions, and mitigations give readers information they can act on.
-            No protocol is simply “secure” in every threat model. The section must state scope and limitations.
+            A: Repeating the protocol does not identify its security consequences.
+            B: Correct. Threats, assumptions, protections, and remaining risk give readers reviewable claims.
+            C: No protocol is simply “secure” in every threat model. The section must state scope and limitations.
 
             The useful question is not “does the document claim security,” but “under which assumptions does it provide which protections.”
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Classify each candidate as threat scope, a protected security property, residual risk, or nontechnical promotion.">
-        <header><h4>Q2: Useful items to include are (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Replace the word protected with exact data, properties, endpoints, and the unprotected hop that remains.">
+        <header><h4>Q2: Which additions are required to make this protection claim reviewable?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">An A2A profile says, “TLS protects Agent messages.” TLS terminates at a gateway; the gateway forwards selected headers and the body to a backend over a separate connection. The draft does not identify which endpoint is authenticated or whether the second hop is protected.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Attacks that are in scope and out of scope</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Which data is protected and whether the protection is confidentiality, integrity, or authentication</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Residual risks after mitigations are deployed</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Marketing claims about compliance</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Identify the protected fields and whether each gets confidentiality, integrity, or authentication</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. State the authenticated TLS endpoint and the trust assumption at the gateway</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Describe second-hop exposure and residual risk after gateway processing</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Replace the details with a compliance badge showing that TLS is enabled</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3552 calls for analysis tied to the protocol, including its threat environment, the security properties it provides, and residual risks.
+            RFC 3552 Section 5 requires authors using a lower-layer security protocol to specify the services expected from it and the resulting properties of the combined system. It also requires protected portions and properties to be identified and residual risk to be described.
 
-            **In scope** identifies attacks the design considers. **Protection properties** say what cryptography or another mechanism actually provides. **Residual risk** is what can still go wrong after mitigation.
-
-            RFC 3552 calls for the scope of attacks, the portions and properties protected by security mechanisms, and a clear description of remaining risk.
-
-            Readers need to know which attacks are considered and which are excluded, including why.
-            Saying only that data is “protected” is insufficient; the document should distinguish confidentiality, integrity, authentication, and related properties.
-            Mitigation does not erase all risk, so the remaining exposure must be stated.
-            Compliance marketing is not a substitute for security analysis.
-
-            Operational and privacy guidance can still be valuable when relevant, but those topics should not be presented as RFC 3552's specific checklist when the document does not say so.
+            A: Selected. “Protected” is ambiguous without naming data and security properties.
+            B: Selected. TLS authenticates a connection endpoint; the profile must say how gateway termination affects the trust model.
+            C: Selected. The first TLS hop says nothing by itself about the second connection or post-termination processing.
+            D: Not selected. A badge is not a threat analysis or a combined-system security claim.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Even a protocol with limited impact needs the reasoning behind that conclusion to be reviewable.">
-        <header><h4>Q3: Your draft says "This protocol has no security considerations". A better approach is to</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="An alias changes which resource identity can be accepted. Analyze that new behavior even when transport is unchanged.">
+        <header><h4>Q3: Which replacement for “no new security considerations” is adequate?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An extension lets an Agent Card declare aliases for protected resource identifiers. It adds no new transport messages, so the draft says, “This extension has no new security considerations.” Alias sources, collision handling, and the behavior of implementations without alias support are unspecified.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Explain why it has minimal impact and explicitly state assumptions and residual risks</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Refer elsewhere without analyzing this protocol's interactions or deployment assumptions</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. List generic security controls without connecting them to the protocol's behavior</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the sentence because unchanged transport implies unchanged authorization</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Analyze alias injection, collisions, trusted sources, unsupported peers, mitigations, and remaining risk</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Cite the base profile without examining how aliases compose with its resource matching</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. State that implementations should be secure and leave alias acceptance to local intuition</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            A small protocol change can still create risk through deployment, composition, or misuse. An unsupported “no considerations” statement hides those assumptions.
+            RFC 3552 Section 5 requires due diligence for known or foreseeable risks, including misapplication and interaction with related mechanisms. A change to accepted resource identity can alter authorization without adding a wire message.
 
-            An **assumption** is a condition on which the analysis depends. **Residual risk** is exposure that remains after the stated countermeasures.
-
-            If the impact is genuinely limited, explain why, identify the assumptions, and state what the protocol does not address.
-
-            It gives readers enough information to test whether the conclusion applies to their deployment.
-            An external reference cannot replace analysis of this protocol's interactions and assumptions.
-            Generic controls do not explain which threats arise from this protocol or what remains exposed.
-
-            RFC 3552 requires due diligence about known or foreseeable threats, even though no protocol must be immune to every attack.
+            A: Transport stability does not imply stable authorization semantics.
+            B: Correct. It names the new attack surface, compatibility boundary, controls, and residual risk.
+            C: A base reference does not analyze the extension-specific composition.
+            D: “Secure” and local intuition do not give implementers a testable trust rule.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Replace an adjective such as strong with a reviewable model of assets, attackers, assumptions, controls, and remaining exposure.">
-        <header><h4>Q4: A Security Considerations section says only "Use strong cryptography." Which revision makes the guidance reviewable</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Name the lower-layer services, their endpoints, and how the application claim is bound across the termination boundary.">
+        <header><h4>Q4: Which revision makes this lower-layer dependency reviewable?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A draft says, “Use modern TLS for session-bound proof.” TLS terminates at a gateway, which forwards an exporter value in a header to the backend. The backend cannot verify the original TLS channel, and the draft does not define header integrity or the gateway trust boundary.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Name preferred algorithm families and require current implementations, leaving deployment details to operators</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Define protected assets and properties, attacker capabilities and trust assumptions, key management, and residual risk</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Require transport encryption for every deployment and cite a modern cipher suite as sufficient protection</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. List an approved cipher suite and call the forwarded header session-bound</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Require TLS at the gateway and leave the backend's acceptance rule undocumented</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Define the TLS endpoints, exporter derivation, header integrity, gateway trust, and replay/substitution risks</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Treat a valid access grant as proof that the forwarded exporter came from the same TLS session</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            A reviewable security analysis states what is protected and which security properties are required, describes attacker capabilities and trust assumptions, explains key management, and identifies residual risk after mitigation.
+            RFC 3552 Section 5 says naming a lower-layer security protocol is insufficient: expected services and the resulting combined-system properties must be specified. The exporter header crosses the endpoint where TLS terminates.
 
-            This revision supplies the claims and boundary conditions a reviewer needs to test. It connects mechanisms to protected assets, threats, operational assumptions, and risks the design does not eliminate.
-
-            Algorithm names alone do not establish the required security properties, threat model, key lifecycle, or deployment assumptions.
-            Each listed element makes the protection claim specific enough to assess against the intended deployment.
-            A cipher suite does not by itself address authentication, key management, endpoint compromise, availability, or every deployment model.
-
-            RFC 3552 requires the services expected from a lower-layer security protocol and the resulting combined-system properties to be specified, and calls for a clear description of residual risk.
+            A: A cipher suite does not bind a forwarded header to the original channel.
+            B: This leaves the decisive backend trust and integrity assumptions undefined.
+            C: Correct. It makes the channel, derivation, transition of trust, enforcement, and remaining attacks reviewable.
+            D: Grant validity and channel provenance are independent properties unless the protocol explicitly binds them.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="A mitigation is useful only when readers know its target, cost, and limits.">
-        <header><h4>Q5: When discussing mitigations, good guidance tends to (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Move expensive work after evidence that a sender can receive replies, then preserve the residual distributed-attack limit.">
+        <header><h4>Q5: Which mitigation analysis best fits this denial-of-service threat?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An unauthenticated request makes a gateway allocate task state and perform three signature verifications. A spoofed-source attacker can send requests without receiving replies. A stateless cookie can prove return routability before allocation, but a botnet can still answer cookies.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. Explain what the mitigation defends against</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. Note tradeoffs or operational costs</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. Clarify what is out of scope or not solved</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. Guarantee that no attacks are possible</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Call denial of service out of scope because not every distributed attack can be stopped</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Require a cookie before costly work; state its spoofing benefit, cost, and residual botnet risk</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Perform all signature checks first because cryptography makes the request trustworthy</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Claim the cookie prevents denial of service once return routability succeeds</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            A list of countermeasure names is not enough for an implementer to decide whether a mitigation fits a deployment.
+            RFC 3552 Sections 4.6, 4.6.3.2, and 5 require denial-of-service susceptibility and countermeasures to be described pragmatically. Proving receipt can raise the cost of a blind spoofed attack without stopping every DDoS source.
 
-            A **mitigation** reduces a threat; a **trade-off** is its performance, complexity, or operational cost; **out of scope** identifies what the mitigation is not intended to solve.
-
-            Useful guidance explains the defended threat, the cost or constraints, and the remaining limits.
-
-            Without the threat, readers cannot evaluate whether the mitigation is relevant.
-            Costs and constraints affect whether a countermeasure can be deployed correctly.
-            Explicit limits show where another control or a different threat model is needed.
-            RFC 3552 explicitly does not require immunity to every form of attack.
-
-            A mitigation can be valuable without being complete. Clear residual-risk text prevents it from being mistaken for a guarantee.
+            A: Inability to stop every attack does not excuse analysis of this cheap, severe path.
+            B: Correct. It connects the control to the attack, orders costly work, and states the remaining distributed risk.
+            C: Unauthenticated cryptographic work can itself be the resource-exhaustion target.
+            D: Return routability narrows spoofing; it does not prove benign intent or sufficient client cost.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^threat model$" data-difficulty="L1" data-hint="Look for the standard two-word name for assumptions about attackers and their capabilities.">
-        <header><h4>Q6: Name the concept that describes assumed attackers and capabilities (two words)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The minimum Internet threat environment includes an attacker who can read, remove, modify, and inject traffic.">
+        <header><h4>Q6: Which revision corrects the threat-model error?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type two words" />
-          <div class="explain">
-            **Explanation:**
-
-            A threat model states the relevant assets, attacker capabilities, trust assumptions, and exclusions. RFC 3552 uses those assumptions to identify attacks of concern and to delimit what a proposed countermeasure addresses.
-
-            A control adequate against passive observation can fail against an active attacker who inserts, deletes, or modifies messages. Its adequacy therefore cannot be evaluated independently of the stated threat model and deployment.
-          </div>
-        </div>
-      </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="List not only the threat that logging detects, but also attackers who can read, alter, or correlate the log and the risk that remains after controls.">
-        <header><h4>Q7: How should “log everything for security” be turned into useful Security Considerations</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <p class="question-premise">To investigate misuse between agents, a design proposes long-term retention of complete requests, session proofs, and task context.</p>
+          <p class="question-premise">A profile sends encrypted Agent requests but has no peer authentication or message-integrity mechanism. Its Security Considerations evaluates only passive eavesdroppers and says deployment behind a firewall removes active network attackers.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. Require authenticated log access, but leave confidentiality, integrity, retention, and failure impact to undocumented deployment defaults</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. Prohibit complete-request logging, then omit detection goals and residual risk because non-recording removes the logging threat</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. Specify detection goals, log assets and attackers, confidentiality, integrity, and availability controls, collection scope, and residual risk</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Keep the model because encryption converts every active attacker into a passive one</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Keep the model if the firewall vendor describes the internal network as trusted</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Analyze insertion, deletion, modification, replay, and MITM, then justify any scope limit</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Remove the threat model because endpoint compromise is difficult for protocols to solve</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3552 Sections 2.3, 3, and 5 ask authors to identify system-security goals, an explicit threat model, applicable countermeasures, and residual risk rather than merely name a mechanism. Logging can support attack detection, but it can also create a high-value data set, a tampering target, and a resource-exhaustion path.
+            RFC 3552 Sections 3, 3.5, and 5 assume near-complete attacker control of the communications channel and require at least eavesdropping, replay, insertion, deletion, modification, MITM, and denial of service to be considered. The minimum environment crosses administrative boundaries without assuming firewalls.
 
-            Authentication addresses only part of access. Excess privilege, credential compromise, exfiltration, log injection, deletion, storage exhaustion, retention, and remaining risk are still unanalyzed.
-            RFC 3552 does not require immunity to every attack; it asks authors to explain threats, countermeasures, exclusions, and residual risk. A blanket prohibition does not evaluate the operational trade-off.
-            Stating what the log detects, what must be protected, what attackers can do, and what remains after controls gives implementers a reviewable security argument.
-
-            In this sense, “treat logging as an attack” is too compressed. The precise design rule is to **include log collection as an attack surface and privacy-sensitive asset in the threat model**. Field selection, avoidance of raw values, retention, access control, redaction, tamper evidence, and failure behavior then belong to the deployment design.
+            A: Encryption alone does not prevent active manipulation or identify the peer.
+            B: A deployment label cannot replace the minimum Internet analysis and justification.
+            C: Correct. It restores the required attack classes while allowing an explicit, reasoned applicability limit.
+            D: An endpoint-compromise exclusion does not eliminate channel attacks.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The premise declares raw-secret logging to be a successful attack. Preserve diagnostic utility only with explicitly non-secret data.">
+        <header><h4>Q7: Which logging requirement preserves the stated threat boundary?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The threat model treats any raw access token, client secret, or session proof reaching an application, proxy, or diagnostic log as a successful attack. Request IDs and explicit non-secret error codes remain useful for incident response.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Permit raw secrets when log access is authenticated and retention is short</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Redact only application logs and leave proxy and diagnostic sinks to local defaults</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Remove defined secrets before every covered sink; allow only named non-secret diagnostic identifiers</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Encrypt secrets reversibly in logs so the stored values are not plaintext</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Sections 2.3, 3, and 5 require system-security goals, assets, attacker capabilities, countermeasures, and residual risk to be explicit. The no-secret-logging policy comes from this profile's threat model, not from a universal RFC 3552 prohibition.
+
+            A: Authenticated readers can still be overprivileged or compromised, and the premise admits no secret-bearing sink.
+            B: An omitted sink preserves the same attack path.
+            C: Correct. It defines data, enforcement coverage, and allowed diagnostics without weakening the stated boundary.
+            D: Reversible content still reaches a sink and exposes credentials with the decryption capability.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Require one semantic representation at the first trust boundary and make signature and authorization checks agree on it.">
+        <header><h4>Q8: Which revision closes the ambiguous-input attack surface?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway authorizes an Agent identifier after Unicode and case normalization. Signature verification covers the received bytes, and a backend applies a different normalizer. The draft says only, “Implementations validate input.” Different encodings can therefore identify different principals at the three checks.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Let every component normalize independently because all transformations are locally valid</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Compare only the raw bytes for signatures and ignore the authorization identity mismatch</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Define accepted syntax and one canonical identity at ingress, bind checks to it, and reject ambiguous forms</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Log every raw value and resolve disagreements manually after authorization</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Sections 3.3.4 and 5 require message-modification threats, authentication assumptions, and combined-system behavior to be analyzed. It does not itself prescribe a Unicode canonicalization algorithm. The concrete canonicalization rule is an application design response to the demonstrated parser differential.
+
+            A: Independent normalizers let one message acquire different security identities.
+            B: Signature validity over bytes does not repair a different authorization interpretation.
+            C: Correct. A single ingress contract makes parsing, signature semantics, and authorization identity reviewable and rejects disagreement before trust is granted.
+            D: Post-authorization logging neither prevents the confused-identity decision nor fits the secret-logging boundary.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Authentication establishes an identity or message origin. Authorization decides whether that identity may perform this operation on this resource.">
+        <header><h4>Q9: What conclusion follows from a valid signed grant?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A backend verifies the signature on an identity grant and trusts the issuer. The grant names Agent A, but the resource policy permits only Agent B to delete the task. A reviewer proposes accepting the request because authentication succeeded.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Accept, because a trusted signature grants every operation to the authenticated subject</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Reject unless authorization policy permits Agent A to delete this task</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Accept if TLS is also valid, because two authentication mechanisms imply authorization</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Ignore the grant identity and authorize by the gateway's network address</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Section 4.4 distinguishes authentication from authorization. A valid signature can support who issued a claim and which subject it names; resource policy still controls what that subject may do.
+
+            A: Authentication does not create unrestricted permission.
+            B: Correct. The authenticated subject and requested action must be evaluated against the resource policy.
+            C: More authentication evidence does not substitute for an authorization rule.
+            D: The gateway address neither replaces the grant subject nor expresses task-level permission.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c" data-difficulty="L4" data-hint="Trace each guarantee to its verifier and trust boundary; then list failures that successful neighboring controls do not cover.">
+        <header><h4>Q10: Which statements belong in the combined-system security analysis?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">An Agent Card signature is valid, an OAuth grant is unexpired, and the client authenticated the gateway with TLS. The gateway forwards identity and session-binding headers to a backend, which verifies neither original artifact. Header integrity, freshness, replay handling, and gateway compromise are not yet specified.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. Card, grant, TLS, and forwarded-header checks provide distinct properties at distinct boundaries</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. Backend acceptance depends on an explicit gateway trust and protected-header contract</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. Freshness, replay, header substitution, and gateway compromise remain to be analyzed</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. Any three successful controls prove the composed request is secure</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. A valid grant proves the forwarded session binding originated on the client's TLS channel</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 3552 Sections 2, 3, and 5 require security goals, attacker capabilities, mechanism assumptions, combined-system properties, and residual risk to be stated separately.
+
+            A: Selected. Each mechanism answers a different question and terminates at a particular verifier.
+            B: Selected. Without original verification, the backend's evidence is the gateway assertion and the protection given to that assertion.
+            C: Selected. None of the successful checks in the premise resolves these unspecified attack paths.
+            D: Not selected. Control count is not a composition proof.
+            E: Not selected. Grant validity and channel provenance are independent unless an explicit binding is verified.</div>
         </div>
       </article>
     </section>
