@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6797",
       SKILL_SUBTITLE: "HSTS",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6797" target="_blank" rel="noopener noreferrer">RFC 6797: HTTP Strict Transport Security</a></li>
       </ul>
+      <p><strong>範囲:</strong> RFC 6797は, hostがHSTS policyを伝え, conformingなuser agentがそれを学習・強制する方法を定義します. preload登録は別のuser-agent機能であり, HSTS/TLSの成功だけではapplication identity, authorization, delegationは成立しません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,121 +91,94 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="lifetimeと任意のsubdomain scopeを運ぶresponse fieldを探してください.">
-        <header><h4>Q1: browserへHSTS policyを伝えるheaderはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Transport-Security</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Strict-Transport-Security</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Secure-Only</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="fieldを運んだtransportと, そのtransportがsecurity warningなしで完了したかを分けて確認してください.">
+        <header><h4>Q1: user agentのHSTS stateを更新できるresponseはどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">gatewayがapi.exampleから3つのresponseを観測しました. 1つはplain HTTP, 1つはcertificate warningを伴うTLS, 1つはunderlying security errorのないTLSです. すべてに<code>Strict-Transport-Security: max-age=86400</code>があります.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. field valueのsyntaxが正しいため3つすべて</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. warningを伴うものを含む2つのTLS response</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. errorのないTLS responseだけ</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. redirect前のplain HTTP responseだけ</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            conformingなuser agentは, underlying security errorのないsecure transportで受け取った`Strict-Transport-Security` response fieldだけを処理します. このfieldは必須の`max-age`と, 任意の`includeSubDomains`を運びます.
-
-            A: `Transport-Security` は標準 header 名ではありません.
-            B: `Strict-Transport-Security` がHSTS policyを伝えるfieldです.
-            C: `Secure-Only` はHSTS response fieldの名前ではありません.
-          </div>
-        </div>
+A: field syntaxが有効であることは必要ですが十分ではなく, insecure transportで受け取ったSTS fieldは無視します.
+B: RFC 6797 Section 8.1は, secure transportにunderlying errorまたはwarningがないことも要求します.
+C: errorのないsecure responseはtransportの前提を満たし, Known HSTS Host entryを作成または更新できます.
+D: Section 7.2はHSTS Hostがinsecure transport上のresponseにSTS fieldを含めてはならないとし, Section 8.1はuser agentにそのfieldを無視させます.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b" data-difficulty="L2" data-hint="RFC 6797で定義されたdirectiveと, 外部のbrowser登録programで使われるtokenを区別してください.">
-        <header><h4>Q2: RFC 6797がStrict-Transport-Security用に定義するdirectiveはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. max-age</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. includeSubDomains</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. preload</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. allowInsecure</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="まずschemeの規則を適用し, 次にexplicit port 80とそれ以外を区別してください.">
+        <header><h4>Q2: load前にこのURIをどう変換しなければならない?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">user agentはservice.exampleをすでにHSTS Hostとして知っています. <code>http://service.example:8080/tasks</code>をloadするよう指示されました.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. <code>http</code>とport 8080を保ち, server redirectを待つ</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. <code>https://service.example:8080/tasks</code>を使う</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. <code>https://service.example:443/tasks</code>を使う</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. explicit portが443以外のURIをすべて拒否する</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 6797は必須directiveの`max-age`と, 任意directiveの`includeSubDomains`を定義しています. user agentは, fieldの他の部分が有効なら未知のdirectiveを無視して認識済みdirectiveを処理します.
-
-            A: `max-age` はpolicy lifetimeを秒で指定し, field grammar上必須です.
-            B: `includeSubDomains` はpolicyをsubdomainへ任意に広げます.
-            C: `preload` はRFC 6797が定義するdirectiveではなく, browserのpreload登録は別の運用mechanismです.
-            D: `allowInsecure` はRFC 6797のdirectiveではなく, HSTSの目的にも反します.
-          </div>
-        </div>
+A: Section 8.3は, matchingするHTTP URIをload前にuser agentが書き換えるよう要求しており, insecureなserver redirectを待ちません.
+B: schemeを<code>https</code>へ変え, 80以外のexplicit portは保持します.
+C: 80なら443へ変換しますが, RFC 6797はすべてのexplicit portを443へ置換しません.
+D: HSTSはportをまたいで適用されます. そのportがTLSを提供しなければ書換え後のHTTPS requestは失敗し得ますが, port番号だけを理由に拒否する規則ではありません.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="user agentがhostのpolicyをまだ学習していない段階を考えてください.">
-        <header><h4>Q3: HSTSだけでは完全に守れない状況として典型なのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. policyがcache済みの後のrequest</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. 学習済みのincludeSubDomains policyがcoverするsubdomain request</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. browserがまだpolicyを知らないfirst visit</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="HSTSのfailureをuserのacceptance判断へ変換できるかを判定してください.">
+        <header><h4>Q3: certificate validation失敗後, user agentはどうしなければならない?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">agent.exampleはKnown HSTS Hostです. TLS確立時にhostname validationが失敗しましたが, userはwarningをclick-throughして続行したいと考えています.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. userがhostname mismatchを承認すれば続行する</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. HTTPで一度だけretryし, responseをread-only表示する</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. cached policyにincludeSubDomainsがなければ続行する</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. HSTSのclick-through経路を設けず接続を終了する</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            secure transport上のHTTP responseから学習するHSTS policyは, それより前のinsecureなfirst contactを保護できません. user agentがhostをKnown HSTS Hostとして記録する前なら, active attackerが通信へ介入できます.
-
-            RFC 6797 Section 14.6がこのbootstrap vulnerabilityを説明しています.preloaded Known HSTS Host listはgapを緩和できますが, RFC 6797は`preload` header directiveを定義していません.
-
-            A: unexpiredなpolicyがcache済みなら, user agentはそのhostへsecure transportを強制します.
-            B: 学習済みpolicyの`includeSubDomains`は, matchingするsubdomainへenforcementを広げます.
-            C: prior policyのないbootstrap requestには弱さが残ります.
-          </div>
-        </div>
+A: user recourseを認めると, HSTSが除こうとするman-in-the-middle判断を再び開きます.
+B: HTTPへのfallbackはKnown HSTS Host policyに反します.
+C: <code>includeSubDomains</code>はhost coverageを変えますが, coverされたhostのsecure-transport error処理は変えません.
+D: RFC 6797 Section 8.4はunderlying secure-transport errorがあれば接続終了を要求します. Section 12.1は対応するno-user-recourse動作を説明します.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="header grammarが指定する単位でencodeされたdurationとして読んでください.">
-        <header><h4>Q4: max-ageの単位は何</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. seconds</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. minutes</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. days</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="parent entryとchildが独立に保存したentryを分け, domain-name matchingを再実行してください.">
+        <header><h4>Q4: child hostは引き続きHSTSでcoverされる?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise"><code>example.com</code>には<code>includeSubDomains</code>を伴う期限内のHSTS policyがあります. その後<code>api.example.com</code>が, errorのないTLS responseで<code>Strict-Transport-Security: max-age=0</code>を返しました.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. いいえ. child responseがchildとparent両方のpolicyを削除する</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. いいえ. exact hostのmax-age=0が常にsuperdomain matchより優先する</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. はい. childは自身のentryだけを削除し, parentからcoverされ続ける</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. はい. parent policyがあればmax-age=0自体が無視される</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            `max-age`は`delta-seconds` grammarを使い, fieldを受信してからの秒数を1桁以上のdecimal digitで表します. 後で有効なfieldを受け取ると, policy expiryはその受信時刻を基準に更新されます.
-
-            A: RFC 6797 の `max-age` は秒単位です.
-            B: minutesで考えたdurationも秒へ変換して指定します.
-            C: daysで考えたdurationも秒へ変換して指定します.
-          </div>
-        </div>
+A: RFC 6797 Sections 5.3と8.1.1は発行hostごとにpolicyを保持し, childはparent entryを削除できません.
+B: zero lifetimeはchildが独立に保存したpolicyを削除しますが, parent coverageからの除外指定にはなりません.
+C: Sections 5.4と8.2のdomain matchingでは, <code>includeSubDomains</code>がassertされた期限内のparentが引き続きmatchします.
+D: child fieldは処理され, child自身のentryは削除されます. coverageが続く理由は別のparent entryです.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^includesubdomains$" data-difficulty="L2" data-hint="現在のhostより下へscopeを広げることを名前で表す, case-insensitiveなdirectiveを探してください.">
-        <header><h4>Q5: policyを全subdomainへ適用するdirectiveは何 (token 1つ)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the directive" />
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="responseから学ぶpolicyと, first contact前にuser agentへ導入されるpolicyを分けてください.">
+        <header><h4>Q5: bootstrap boundaryを正しく述べたreview結論はどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">新しいA2A dashboardはHTTPをHTTPSへredirectし, HTTPS responseで<code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code>を返します. teamは, siteへ接触したことのないbrowserもRFC 6797だけで最初から保護されると主張しています.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. 正しい. 長いmax-ageは最初のHTTP requestも遡って保護する</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. 誤り. 学習型HSTSにはfirst-contact gapがあり, preloadは別機能である</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. 正しい. RFC 6797は<code>preload</code>を必須STS directiveとして定義する</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. 誤り. userがhostを手動承認するまでHSTSは一切適用されない</label>
+        </fieldset><div class="explain">**Explanation:**
 
-
-            `includeSubDomains`は任意かつvaluelessなdirectiveで,発行hostからsubdomainへHSTS policyを広げます.assertする前に,insecure HTTP serviceへ依存するsubdomainを確認しないと,conformingなuser agentからそのserviceへ到達できなくなる可能性があります.
-          </div>
-        </div>
+A: 後で受け取ったpolicyは, それ以前のinsecure requestを保護できません.
+B: Section 14.6はbootstrap MITM vulnerabilityを示し, Section 12.3はpre-loaded Known HSTS Host listをuser-agent機能として論じます. RFC 6797がSTS directiveとして定義するのは<code>max-age</code>と<code>includeSubDomains</code>だけです.
+C: browserの登録programが運用上このtokenを使うことはあっても, <code>preload</code>はRFC 6797が定義するdirectiveではありません.
+D: errorのないsecure transportで受け取った有効なfieldはpolicyを自動的に確立でき, 手動承認は要件ではありません.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="user agentがpolicyを記憶するため, 失敗時の影響期間が短く観測可能な変更から始めてください.">
-        <header><h4>Q6: HSTSを安全に導入する時, 典型の第一歩として近いのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 最初から巨大max-ageとincludeSubDomainsを入れる</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. 小さなmax-ageから始め, monitorしつつ増やす</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. HTTPでheaderを返し, 高速化する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="HSTSがtransport boundaryで与える保証を列挙し, 未証明のapplication claimを特定してください.">
+        <header><h4>Q6: HSTS/TLSの強制成功からbackendは何を結論できる?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">browserはKnown HSTS HostのA2A gatewayへerrorのないTLSで到達しました. gatewayはAgent Card, bearer grant, high-impact taskの要求をbackendへ転送します. 設計案は, browser接続の成功をcard, grant, sender runtime, task parameter, onward delegationのすべてがauthorizedである証拠として扱います.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. HSTSはsecure host接続をend-to-end task authorizationへ変えるため, 全claimを受理する</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. cardとgrantは自動的に受理し, taskの金額上限だけを再確認する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. HSTSはtransport強制として評価し, 各application claimは個別のprotocolとpolicyで検証する</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. HSTSはgatewayによるapplication credential転送を禁じるため, requestを拒否する</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 6797 Section 6.1.1が`max-age`を定義し, Section 8.1がpolicy processingを説明します.短いlifetimeから始めてdeploymentを観測するのは保守的なrollout practiceであり,RFC 6797がこの順序をnormative requirementとして定めているわけではありません.
-
-            A: 最初から巨大 `max-age` と `includeSubDomains` を入れると, 未準備 subdomain を巻き込んで破壊的になり得ます.
-            B: 短い初期lifetimeならpersistenceを抑えつつ, certificate, redirect, subdomainの問題をmonitorできます.
-            C: conformingなuser agentはinsecure transportで受け取ったSTS fieldを無視します.
-          </div>
-        </div>
+A: RFC 6797はuser-agentのtransport動作を制御します. Agent Card integrity, token validation, runtime attestation, task approval, delegation semanticsは定義しません.
+B: browserがHSTSで保護された接続からgatewayへ到達しても, cardやgrantが自動的にvalidにはなりません.
+C: RFC 6797 Sections 5.2, 8.3, 8.4はtransport policyの強制, URI書換え, secure-transport error処理を定義します. application判断は独立しており, A2A, signature, OAuth, sender-constraining, authorizationの該当規則により, gateway-to-backend trust boundaryを含む追加claimを確立する必要があります.
+D: RFC 6797はapplication-level credentialの転送を許可も禁止もせず, その判断は他protocolとsystemのtrust modelに属します.</div></div>
       </article>
     </section>
 

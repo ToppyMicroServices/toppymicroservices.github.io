@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6797",
       SKILL_SUBTITLE: "HSTS",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6797" target="_blank" rel="noopener noreferrer">RFC 6797: HTTP Strict Transport Security</a></li>
       </ul>
+      <p><strong>Scope:</strong> RFC 6797 defines how a host conveys an HSTS policy and how a conforming user agent learns and enforces it. Preload enrollment is a separate user-agent facility, and successful HSTS/TLS enforcement does not by itself establish application identity, authorization, or delegation.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,121 +91,94 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Find the response field that carries both the lifetime and optional subdomain scope.">
-        <header><h4>Q1: Which header enables HSTS policy in browsers</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Transport-Security</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Strict-Transport-Security</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Secure-Only</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Check both the transport that delivered the field and whether that transport completed without a security warning.">
+        <header><h4>Q1: Which response may update the user agent's HSTS state?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A gateway observes three responses from api.example: one over plain HTTP, one over TLS with a certificate warning, and one over TLS with no underlying security error. Each carries <code>Strict-Transport-Security: max-age=86400</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. All three, because the field value has valid syntax</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. The two TLS responses, including the one with a warning</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. Only the error-free TLS response</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. Only the plain-HTTP response, before any redirect occurs</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            A conforming user agent processes the `Strict-Transport-Security` response field only when it arrives over secure transport without underlying security errors. The field carries the required `max-age` directive and may carry `includeSubDomains`.
-
-            A: `Transport-Security` is not the response-field name defined by RFC 6797.
-            B: `Strict-Transport-Security` is the field that conveys an HSTS policy.
-            C: `Secure-Only` is not the HSTS response-field name.
-          </div>
-        </div>
+A: Valid field syntax is necessary but not sufficient; an STS field received over insecure transport is ignored.
+B: RFC 6797 Section 8.1 also requires the secure transport to have no underlying errors or warnings.
+C: The error-free secure response satisfies the transport precondition and can create or update the Known HSTS Host entry.
+D: Section 7.2 says an HSTS Host MUST NOT include the field in a response conveyed over insecure transport, and Section 8.1 requires the user agent to ignore it.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b" data-difficulty="L2" data-hint="Distinguish directives defined by RFC 6797 from tokens used by external browser enrollment programs.">
-        <header><h4>Q2: Which directives are defined for Strict-Transport-Security by RFC 6797? (select all)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. max-age</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. includeSubDomains</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. preload</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. allowInsecure</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Apply the scheme rule first, then distinguish explicit port 80 from every other explicit port.">
+        <header><h4>Q2: How must this URI be transformed before loading?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">The user agent already knows service.example as an HSTS Host. It is asked to load <code>http://service.example:8080/tasks</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Keep <code>http</code> and port 8080, then follow a server redirect</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Use <code>https://service.example:8080/tasks</code></label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Use <code>https://service.example:443/tasks</code></label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. Reject every URI whose explicit port is not 443</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 6797 defines one required directive, `max-age`, and one optional directive, `includeSubDomains`. User agents must ignore unrecognized directives while processing an otherwise valid field.
-
-            A: `max-age` gives the policy lifetime in seconds and is required by the field grammar.
-            B: `includeSubDomains` optionally extends the policy to subdomains.
-            C: `preload` is not a directive defined by RFC 6797; browser preload enrollment is a separate operational mechanism.
-            D: `allowInsecure` is not an RFC 6797 directive and would conflict with the policy's purpose.
-          </div>
-        </div>
+A: Section 8.3 requires the user agent to rewrite a matching HTTP URI before the load; it does not wait for an insecure server redirect.
+B: The scheme becomes <code>https</code>, and an explicit port other than 80 is preserved.
+C: Port 80 is converted to 443, but RFC 6797 does not replace every explicit port with 443.
+D: HSTS applies across ports; the rewritten HTTPS request may fail if that port does not offer TLS, but the non-443 port is not rejected merely for its number.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Ask what happens before the user agent has learned any policy for the host.">
-        <header><h4>Q3: A limitation of HSTS is that it cannot fully protect</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Requests after the policy is cached</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. A subdomain request covered by a learned includeSubDomains policy</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. The very first visit if the browser has no policy yet</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Decide whether an HSTS failure can be converted into a user acceptance decision.">
+        <header><h4>Q3: What must the user agent do after this certificate failure?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">agent.example is a Known HSTS Host. TLS establishment fails hostname validation, although the user wants to click through the warning and continue.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Continue if the user acknowledges the hostname mismatch</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Retry once over HTTP and display the response as read-only</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. Continue only when the cached HSTS policy was learned without includeSubDomains</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. Terminate the connection without an HSTS click-through path</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            An HSTS policy learned through an HTTP response over secure transport cannot protect an earlier, insecure first contact. An active attacker can interfere before the user agent has recorded the host as a Known HSTS Host.
-
-            RFC 6797 Section 14.6 describes this bootstrap vulnerability. A preloaded Known HSTS Host list can mitigate the gap, but RFC 6797 does not define a `preload` header directive.
-
-            A: Once an unexpired policy is cached, the user agent rewrites insecure loads and enforces secure transport for that host.
-            B: A learned policy with `includeSubDomains` extends enforcement to matching subdomains.
-            C: The bootstrap request remains exposed when the user agent has no prior policy.
-          </div>
-        </div>
+A: User recourse would reopen the man-in-the-middle decision that HSTS is intended to remove.
+B: Falling back to HTTP contradicts the Known HSTS Host policy.
+C: <code>includeSubDomains</code> changes host coverage, not the handling of secure-transport errors for a covered host.
+D: RFC 6797 Section 8.4 requires termination on any underlying secure-transport error. Section 12.1 explains the corresponding no-user-recourse behavior.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Treat the value as a duration encoded in the unit specified by the header grammar.">
-        <header><h4>Q4: What is the unit of max-age in HSTS</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Seconds</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Minutes</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Days</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Keep the parent's entry and the child's independently stored entry separate, then perform domain-name matching again.">
+        <header><h4>Q4: Does HSTS still cover the child host?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise"><code>example.com</code> has an unexpired HSTS policy with <code>includeSubDomains</code>. Later, <code>api.example.com</code> sends a valid error-free TLS response containing <code>Strict-Transport-Security: max-age=0</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. No; the child response deletes both the child and parent policies</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. No; an exact-host max-age of zero always overrides a superdomain match</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes; the child removes only its own entry and remains covered by the parent</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. Yes; max-age of zero is ignored whenever a parent policy exists</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            The `max-age` value uses the `delta-seconds` grammar: one or more decimal digits representing seconds after receipt of the field. Repeated valid fields refresh the policy's expiry relative to their receipt time.
-
-            A: Seconds are the unit required by the RFC 6797 grammar.
-            B: A value intended as minutes must first be converted to seconds.
-            C: A value intended as days must also be converted to seconds.
-          </div>
-        </div>
+A: RFC 6797 Sections 5.3 and 8.1.1 keep policies per issuing host; the child cannot delete the parent's entry.
+B: A zero lifetime removes the child's independently stored policy, but it is not an exclusion from parent coverage.
+C: Domain matching in Sections 5.4 and 8.2 still finds the unexpired parent whose <code>includeSubDomains</code> directive is asserted.
+D: The child field is processed and its own entry is removed; continued coverage comes from the separate parent entry.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^includesubdomains$" data-difficulty="L2" data-hint="Look for the case-insensitive directive whose name explicitly extends scope below the current host.">
-        <header><h4>Q5: What directive applies the policy to all subdomains (one token)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the directive" />
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate a policy learned from a response from a policy installed in the user agent before first contact.">
+        <header><h4>Q5: Which review conclusion correctly states the bootstrap boundary?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A new A2A dashboard redirects HTTP to HTTPS and sends <code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code> on its HTTPS responses. The team claims RFC 6797 alone protects a first-time browser before it has contacted the site.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. Correct; a long max-age retroactively protects the first HTTP request</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. Incorrect; learned HSTS has a first-contact gap, and preloading is separate</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. Correct; RFC 6797 defines <code>preload</code> as a required STS directive</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. Incorrect; HSTS never applies until the user manually approves the host</label>
+        </fieldset><div class="explain">**Explanation:**
 
-
-            `includeSubDomains` is an optional, valueless directive that extends the HSTS policy from the issuing host to its subdomains. Before asserting it, a deployment must account for subdomains that still depend on insecure HTTP services because those services can become unreachable to conforming user agents.
-          </div>
-        </div>
+A: A policy received later cannot secure an earlier insecure request.
+B: Section 14.6 identifies the bootstrap MITM vulnerability, and Section 12.3 discusses a pre-loaded Known HSTS Host list as a user-agent facility. RFC 6797 itself defines only <code>max-age</code> and <code>includeSubDomains</code> as STS directives.
+C: <code>preload</code> is not a directive defined by RFC 6797, even though browser enrollment programs may use that token operationally.
+D: A valid field received over error-free secure transport can establish policy automatically; manual approval is not required.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Because user agents remember the policy, start with a change whose failure window is short and observable.">
-        <header><h4>Q6: A safe rollout strategy for HSTS often starts with</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. Setting a very large max-age and includeSubDomains immediately</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. Setting a small max-age, monitoring, then gradually increasing</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. Sending the header over HTTP because it is faster</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Inventory the guarantee HSTS supplies at the transport boundary, then identify the application claims that remain unproven.">
+        <header><h4>Q6: What may the backend conclude from successful HSTS/TLS enforcement?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A browser reaches an A2A gateway through a Known HSTS Host with error-free TLS. The gateway forwards an Agent Card, a bearer grant, and a requested high-impact task to a backend. The design proposes treating the successful browser connection as proof that the card, grant, sender runtime, task parameters, and onward delegation are all authorized.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept all claims because HSTS turns a secure host connection into end-to-end task authorization</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Accept the card and grant automatically, but recheck only the task's monetary limit</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Treat HSTS as transport enforcement; validate each application claim under its own protocol and policy</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. Reject the request because HSTS forbids gateways from forwarding application credentials</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 6797 Section 6.1.1 defines `max-age`, and Section 8.1 describes policy processing. Starting with a short lifetime and observing the deployment is therefore a conservative rollout practice, not a normative sequence required by RFC 6797.
-
-            A: A long lifetime plus `includeSubDomains` widens both the duration and scope of any configuration error.
-            B: A short initial lifetime limits persistence while monitoring reveals certificate, redirect, and subdomain problems.
-            C: A conforming user agent ignores an STS field received over insecure transport.
-          </div>
-        </div>
+A: RFC 6797 controls user-agent transport behavior; it does not define Agent Card integrity, token validation, runtime attestation, task approval, or delegation semantics.
+B: Neither the card nor the grant becomes valid merely because the browser reached the gateway through an HSTS-protected connection.
+C: RFC 6797 Sections 5.2, 8.3, and 8.4 define transport-policy enforcement, URI rewriting, and secure-transport error handling. The application decisions remain independent: relevant A2A, signature, OAuth, sender-constraining, and authorization rules must establish the additional claims, including the gateway-to-backend trust boundary.
+D: RFC 6797 neither authorizes nor prohibits application-level credential forwarding; that decision belongs to other protocols and the system's trust model.</div></div>
       </article>
     </section>
 
