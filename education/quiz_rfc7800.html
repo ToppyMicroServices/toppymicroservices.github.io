@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7800","SKILL_SUBTITLE":"Proof-of-Possession Key Semantics for JWTs","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7800","SKILL_SUBTITLE":"Proof-of-Possession Key Semantics for JWTs","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate identification of a confirmation key from proof of possession, replay protection, token validation, and resource authorization. Section numbers refer to RFC 7800.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7800" target="_blank" rel="noopener noreferrer">RFC 7800: Proof-of-Possession Key Semantics for JWTs</a></li></ul>
     </section>
 
@@ -66,8 +67,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. It identifies the expected key; the profile must supply and verify the possession proof</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. It authorizes every request made by any presenter that can read the token</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. It converts the JWT into an encrypted token whose claims are hidden from non-holders</label>
-          </fieldset><div class="explain">**Explanation:**
-A: The issuer's token signature authenticates the cnf claim; it does not demonstrate that the request presenter controls the referenced private key.
+          </fieldset><div class="explain">A: The issuer's token signature authenticates the cnf claim; it does not demonstrate that the request presenter controls the referenced private key.
 B: RFC 7800 Sections 3 and 3.6 define the confirmation-key semantics but intentionally leave the actual proof protocol to the application.
 C: cnf is intended to constrain presentation, not grant bearer use or resource permission.
 D: A public confirmation key does not encrypt the JWT.</div>
@@ -82,8 +82,7 @@ D: A public confirmation key does not encrypt the JWT.</div>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Neither key may appear in cnf; only a kid value is permitted</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. A public JWK may be direct; a symmetric key needs confidentiality through an encrypted JWT or key value</label>
             <label class="choice"><input type="radio" name="Q2" value="d"> D. A symmetric key may be public if the JWT lifetime is shorter than the request timeout</label>
-          </fieldset><div class="explain">**Explanation:**
-A: A signature supplies integrity and origin authentication, not confidentiality.
+          </fieldset><div class="explain">A: A signature supplies integrity and origin authentication, not confidentiality.
 B: RFC 7800 defines both direct JWK and key-identifier representations.
 C: RFC 7800 Sections 3.2 and 3.3 distinguish public asymmetric JWK use from symmetric key material that must be encrypted from unauthorized parties.
 D: A short lifetime does not make disclosure of a live MAC key safe.</div>
@@ -98,11 +97,10 @@ D: A short lifetime does not make disclosure of a live MAC key safe.</div>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes, if the JWT audience names the API, because audience also supplies proof freshness</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. No; RFC 7800 mandates one universal nonce format that this implementation failed to include</label>
             <label class="choice"><input type="radio" name="Q3" value="d"> D. No. The profile verifies proof over request context and freshness; RFC 7800 defines key semantics, not proof format</label>
-          </fieldset><div class="explain">**Explanation:**
-A: A reusable fixed-string signature demonstrates key use but not integrity or freshness of a particular request.
+          </fieldset><div class="explain">A: A reusable fixed-string signature demonstrates key use but not integrity or freshness of a particular request.
 B: Audience restricts token recipients; it does not make a separate holder proof fresh.
 C: RFC 7800 Section 3.6 deliberately leaves nonce and proof details to the application protocol.
-D: Sections 3.6 and 4 require the consuming protocol to supply the proof and replay controls needed for its stated acceptance criterion.</div>
+D: The profile's stated request-binding and replay-resistance criteria make the reusable signature insufficient. Section 3.6 leaves the proof format to the application, while Section 4 describes distinct challenges or instance-specific sub-keys as possible replay defenses rather than one universal format.</div>
         </div>
       </article>
       <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A key identifier has meaning only within a resolution namespace. Review which issuer, tenant, or registry supplies that namespace.">
@@ -114,8 +112,7 @@ D: Sections 3.6 and 4 require the consuming protocol to supply the proof and rep
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Scope kid to an authenticated issuer, tenant, or other trusted namespace before selecting the key</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Try every matching key and accept if any proof verifies, without recording which tenant supplied it</label>
             <label class="choice"><input type="radio" name="Q4" value="d"> D. Hash the kid string and use the digest itself as the proof-of-possession key</label>
-          </fieldset><div class="explain">**Explanation:**
-A: RFC 7800 does not make kid globally unique.
+          </fieldset><div class="explain">A: RFC 7800 does not make kid globally unique.
 B: RFC 7800 Section 3.4 says kid content is application specific and works only when the recipient can obtain the identified key. The profile must prevent cross-namespace key confusion.
 C: Trying all keys discards the trusted identity context needed to interpret the identifier.
 D: An identifier digest is not key material and proves no possession.</div>
@@ -130,10 +127,9 @@ D: An identifier digest is not key material and proves no possession.</div>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes, if the token signature is valid and the cnf key has not expired</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. No. A PoP profile rejects missing or invalid proof even after token validation</label>
             <label class="choice"><input type="radio" name="Q5" value="d"> D. No, because a token containing cnf can never carry an aud claim</label>
-          </fieldset><div class="explain">**Explanation:**
-A: RFC 7800 Section 4 explains that proof of possession and audience provide different protections.
+          </fieldset><div class="explain">A: RFC 7800 Section 4 explains that proof of possession and audience provide different protections.
 B: Token validation authenticates the claim, not current possession by this presenter.
-C: This applies the profile's explicit acceptance criterion without inventing a universal bearer-fallback rule for other profiles.
+C: This applies the profile's explicit acceptance criterion without inventing a universal bearer-fallback rule. Section 3.1 requires unknown confirmation members to be ignored only in the absence of application requirements to understand them.
 D: aud and cnf can coexist and address independent security properties.</div>
         </div>
       </article>
@@ -146,11 +142,70 @@ D: aud and cnf can coexist and address independent security properties.</div>
             <label class="choice"><input type="radio" name="Q6" value="b"> B. Keep the boolean header because successful proof verification remains self-authenticating after transport</label>
             <label class="choice"><input type="radio" name="Q6" value="c"> C. Forward only the cnf key because knowing a public key proves the gateway checked its private-key holder</label>
             <label class="choice"><input type="radio" name="Q6" value="d"> D. Treat gateway proof success as final backend authorization because sender constraint includes resource permission</label>
-          </fieldset><div class="explain">**Explanation:**
-A: RFC 7800 Sections 3.6 and 4 leave proof transport and replay controls to the application. The alternatives make the verifier and trust boundary explicit and preserve request context; the resource owner still decides authorization.
+          </fieldset><div class="explain">A: RFC 7800 Sections 3.6 and 4 leave proof transport and replay controls to the application. This is therefore a system-design conclusion: either choice makes the verifier and trust boundary explicit and preserves request context; the resource owner still decides authorization.
 B: An ordinary boolean is not cryptographic evidence and is not bound to a request.
 C: A public key identifies what should be proven, not whether possession was verified.
 D: Proof of possession and resource authorization are independent.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Count proof-of-possession keys, not JSON members. A kid may help select a key without authorizing two key representations.">
+        <header><h4>Q7: How should the recipient process this cnf object?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">To support rollover, an issuer puts both jwk and jku in one cnf object. The jku points to a backup key, and kid accompanies it. The recipient implements RFC 7800 without an extension that defines multiple confirmation keys.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Prefer jwk because a key passed by value always overrides a referenced key</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Try both keys and accept whichever proof verifies first</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Reject the token because one cnf value may represent only one proof-of-possession key</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Accept both because kid removes the one-key restriction</label>
+          </fieldset><div class="explain">A: RFC 7800 defines no precedence between jwk and jku.
+B: Trying both would silently create semantics that the token format does not define.
+C: Section 3.1 says cnf MUST represent only one proof-of-possession key and therefore permits at most one of jwk, jwe, and jku. An application needing multiple keys must define another claim or extension.
+D: Section 3.5 allows kid to select a key in a referenced set; it does not permit a second key representation in cnf.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Check both the transport used to obtain the set and how one key is selected from it.">
+        <header><h4>Q8: May the recipient accept the key obtained through this jku?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A cnf jku uses an http URL. The returned JWK Set contains three keys, but cnf has no kid. The recipient happens to recognize one key from an earlier response.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Yes, because prior recognition replaces transport and key-selection checks</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. No; protected retrieval and a matching kid are both missing</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Yes, if the recipient tries all three keys and one proof verifies</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. No, because RFC 7800 forbids every remote JWK Set</label>
+          </fieldset><div class="explain">A: Cached recognition does not satisfy the requirements for this acquisition and selection.
+B: Section 3.5 requires integrity protection; an HTTP GET MUST use TLS and validate the server identity. When the set contains multiple keys, cnf and the selected JWK MUST carry the same kid.
+C: Trial verification bypasses the specified key-selection condition.
+D: jku is expressly defined; the problem is the unprotected URL and missing selector, not remote retrieval itself.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="The default rule for an unknown member changes when an application profile explicitly requires that member.">
+        <header><h4>Q9: Can this implementation claim conformance to the A2A profile?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A profile requires a registered cnf member named agent_proof. A JWT library does not understand that member, ignores it, and accepts the token after ordinary JWT validation.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Yes, because every unknown cnf member MUST always be ignored</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Yes, because ordinary JWT validation supplies the missing confirmation processing</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. No, because RFC 7800 requires rejection of every unknown cnf member</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. No. This profile requires agent_proof to be understood and processed</label>
+          </fieldset><div class="explain">A: Section 3.1 limits the MUST-ignore rule to the absence of requirements to process the member.
+B: JWT validation protects the claim set but does not implement an application-specific confirmation method.
+C: RFC 7800 deliberately permits extension members and does not impose universal rejection.
+D: Section 3.1 says applications that require particular confirmation members must ensure implementations understand and process them. Acceptance here violates the stated profile, not a universal unknown-member rule.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="A key can constrain presentation and still act as a stable identifier across otherwise separate contexts.">
+        <header><h4>Q10: What is the appropriate privacy review conclusion?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An agent reuses one long-lived confirmation key in JWTs sent to unrelated recipients. Each recipient logs the key identifier, and the logs are later combined. The protocol otherwise verifies possession correctly.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Possession is valid, but the stable key can correlate recipients; key scope and rotation are application choices</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Successful proof makes correlation impossible because private key bytes never leave the presenter</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. RFC 7800 requires a new confirmation key for every individual request</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Removing aud is the RFC-defined way to prevent key correlation</label>
+          </fieldset><div class="explain">A: Section 5 warns that a proof-of-possession key can be a correlation handle. It does not prescribe one universal lifetime, so key scope and rotation are application privacy decisions.
+B: Observers can correlate a stable public key or identifier without learning the private value.
+C: RFC 7800 states the privacy risk but does not mandate per-request keys.
+D: Audience restriction protects a different boundary and removing it would not erase the stable identifier.</div>
         </div>
       </article>
     </section>
