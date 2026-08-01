@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7617",
       SKILL_SUBTITLE: "HTTP Basic認証",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,10 +68,11 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料</h3>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7617" target="_blank" rel="noopener noreferrer">RFC 7617: The "Basic" HTTP Authentication Scheme</a></li>
       </ul>
+      <p>Basic credentialをreusable secretとして扱い、syntax、protection-space reuse、peer trust、hop protection、storage、downstream authorizationを分けて判断する問題です。節番号はRFC 7617を指します。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -89,157 +90,133 @@
       </div>
     </section>
 
-    <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="serverのresponse challengeと, clientのcredential-bearing requestを分けて追います.">
-        <header><h4>Q1: Basic認証のcredentialを送るrequest headerはどれ</h4><span class="type">Multiple Choice</span></header>
+<section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="octetをdecodeし、principalを決める前にfirst-colon delimiter ruleを適用してください。">
+        <header><h4>Q1: Basic user-idにcolonが含まれる場合、どう処理するか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">provisioning formがuser-id <code>ops:admin</code>とpassword <code>secret</code>を受け付けました。clientはBase64 encoding前に<code>ops:admin:secret</code>と連結しようとしています。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Authorization</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Authenticate</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Cookie</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 最後のcolonが常にuser-idとpasswordを分けるため、そのままencodeする</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 最初のcolonがseparatorでrecipientは別のcredential pairとして読むため、input時にuser-idをrejectする</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. colonだけをpercent-encodeし、Basic recipientがBase64 decode後に復元すると仮定する</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            Basic challengeは`WWW-Authenticate`で運ばれ, clientのcredential responseは`Authorization` request headerを使います.
+Bが正解です。Section 2は<code>user-pass</code>をuser-id、1つのcolon、passwordとして構成します。user-idにcolonがあると最初のcolonがdelimiterになるためinvalidです。この例はuser-id <code>ops</code>、password <code>admin:secret</code>として解釈されます。user agentはserialization前に、このinputをrejectする必要があります。
 
-            clientは`Authorization: Basic &lt;token68&gt;`を送ります.
-
-            `Authorization`はHTTP authentication frameworkがcredential用に定義するrequest fieldです.
-            `Authenticate`というrequest fieldはなく, server challengeには`WWW-Authenticate`を使います.
-            `Cookie`は別のstate mechanismであり, Basic credential fieldではありません.
-
-            proxy authenticationでは`Authorization`ではなく`Proxy-Authorization`を使います.
-          </div>
+Aはlast-colon ruleを作っています。CはRFC 7617が<code>user-pass</code>に定義していないescape layerを作っています。これはinput-validation boundaryであり、値を黙って変換するとprovisioning systemとauthentication serverが異なるprincipalを認識します。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="まずuser-pass sequenceを作り, character-to-octet encodingとencryptionを区別します.">
-        <header><h4>Q2: Basic認証のcredentialは一般にどう符号化される</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="advisoryなcharacter-encoding signalを、Base64やtransport confidentialityから分けてください。">
+        <header><h4>Q2: Basic challengeのcharset=UTF-8は何を変えるか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">serverが<code>WWW-Authenticate: Basic realm="agents", charset="UTF-8"</code>を送ります。clientはこのparameterをsupportし、non-ASCIIのuser-idを持ちます。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. user-idとpasswordをcolonで連結した値のone-way hash</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. certificate algorithmでserver public key宛てに暗号化したciphertext</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. user-id, colon, passwordのsequenceをoctet化してBase64</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Base64 encoding前にcredential octetをUTF-8でencryptする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. token68 value内へcharset fieldを追加するようcredential syntaxを変更する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. character dataをNFCへ変換し、UTF-8 octetとしてBase64化することをclientへ提示する</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            Basicはuser-id, 1つのcolon, passwordを連結して`user-pass`を作り, character sequenceをoctetへ変換してからBase64で符号化します.
+Cが正解です。Section 2.1は<code>charset</code>をchallengeだけに定義し、case-insensitiveに比較する<code>UTF-8</code>だけを許します。character dataをUnicode NFCへ変換し、UTF-8 octetにしてからBase64化するというserverの期待を示します。
 
-            Base64は表現を変えるだけで, confidentialityを提供しません.
-
-            wire上のBasic tokenはpassword hashではなく, Base64から元のuser-pass octetを復元できます.
-            Basicはserver public keyでcredentialを暗号化しません.
-            character encodingの段階とBase64の段階を分けたconstructionです.
-
-            default character encodingは一意に固定されておらず, challengeは`charset="UTF-8"`を提示できます.
-          </div>
+Aはcharacter encodingとconfidentialityを混同しています。UTF-8もBase64もreversibleな表現です。Bはextensibleなcredential structureを作っていますが、RFCはBasic credentialがsingle token68であり、この方法では拡張できないと説明します。このparameterはadvisoryですが、共通の期待に従うことでnon-ASCIIのinteroperability failureを避けられます。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="credential transformがone-wayかreversibleか, network pathを何が保護するかを確認します.">
-        <header><h4>Q3: TLSなしのBasic認証が危険な理由として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="最後のslashより後を除いてscopeを求め、scheme、authority、path prefixを比較してください。">
+        <header><h4>Q3: このBasic credentialをpreemptiveに再利用できる範囲はどれか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">clientが<code>http://example.com/docs/index.html</code>へのrequestでauthenticationに成功しました。その後、<code>http://example.com/docs/report</code>、<code>http://example.com/other/</code>、<code>https://example.com/docs/report</code>へのrequestを準備します。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP/2と非互換でHTTP/1.1 connection上でしかparseできない</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. 盗聴されると容易にdecodeされる</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. browserに全cookieをunrelatedなcross-site requestへ付けさせる</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 最初のURIだけで再利用できる。別pathとscheme変更はderived authentication scopeの外である</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. hostnameが同じなら同じprotection spaceなので、3つすべてで再利用できる</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. secure transportは元のHTTP credential scopeを拡張するため、HTTPS URIだけで再利用できる</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            Base64はreversibleなbinary-to-text encodingであり, decodeにsecret keyを必要としません.
+Aが正解です。Section 2.2はpathの最後のslashより後を除き、<code>http://example.com/docs/</code>をauthentication scopeとします。そのprefixを持つresourceにはcredentialをpreemptiveに再利用できます。RFCの例では<code>/other/</code>とHTTPS schemeのvariantはscope外です。
 
-            unprotectedなBasic credentialをpassive observerが取得すると, user-idとpasswordを復元できます.
-
-            BasicはHTTP authentication semanticsで動き, HTTP/2と本質的に非互換ではありません.
-            credentialをin transitで守るにはTLSなどのexternal secure channelが必要です.
-            Basic自体がbrowser cookieをcross-siteへ送信させるわけではありません.
-
-            passwordを使い回していると, 1つのBasic credential漏えいが別systemのaccountにも波及します.
-          </div>
+Bはpathとschemeを無視しています。Cは強いtransportをcredential scope拡張のpermissionに変えていますが、そのようなruleはありません。scope内のreuseは許可（<code>MAY</code>）であり、すべてのmatching requestに送る義務ではありません。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="origin serverのauthentication challengeを, partial content, redirect, proxy authenticationから区別します.">
-        <header><h4>Q4: Basic認証challengeでよく使うstatus codeはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="redirectはdestinationを変えますが、original protection spaceへの所属をdestinationへ付与しません。">
+        <header><h4>Q4: このredirect先へBasic credentialをforwardすべきか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">agentが<code>https://api.example/tasks/7</code>へHTTPS上でauthenticateします。responseは<code>https://collector.example/import</code>へredirectします。libraryは同じAuthorization valueをforwardし、decoded formをlogへ記録しようとしています。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. 401</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. 206</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. 302</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. すべてのredirectはoriginal requestのrealmとcredentialを継承するためforwardする</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 新しいBase64 stringがtarget用のfresh credentialを作るため、decodeして再encode後にforwardする</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. new originでは再利用せず、applicable policyかchallengeを要求し、reusable secretをlogへ残さない</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            RFC 7617 Section 2では, origin serverが401 responseと`WWW-Authenticate` fieldでBasic challengeを送り, clientが後続requestの`Authorization` fieldでcredentialを提示します.
+Cが正解です。Section 2.2がpreemptive reuseを認めるのはauthentication scope内だけです。異なるauthorityはoriginal originのprotection spaceではなく、redirectはcredentialを受け取るpermissionを作りません。new originにはapplicableなchallengeまたは明示的なapplication credential policyが必要です。
 
-            206はpartial content, 302はredirectです. proxy authenticationはoriginの401とは別に407と`Proxy-Authenticate`を使います.
-          </div>
+Aはprotection spaceへの所属が継承されると誤認しています。Bはreversibleな表現を変えるだけで、freshnessもconfidentialityも作りません。Section 4はBasicが容易に復元できるreusable passwordを露出すると説明します。decoded valueをlogから除外することは、このthreatから導く運用対策であり、別のBasic wire-format要件ではありません。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="値をreusable secretとして扱い, forwarding, redirect, loggingの各boundaryを確認します.">
-        <header><h4>Q5: Basic認証credentialの運用上のbest practiceとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Authorization byteが存在する各hopを列挙してください。1つのhopの保護はTLS endpointの先へ自動的に延びません。">
+        <header><h4>Q5: frontend TLSは次のhopのBasic credentialも保護するか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">gatewayがHTTPSをterminateし、同じBasic Authorization headerをobservableなplaintext connectionでbackendへforwardします。operatorはclientがHTTPSを使ったためcredentialは安全だと説明しています。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. history,redirect,logでrequestを再現できるようcredentialをURLへ入れる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. authentication failureを調査できるようcredentialをdecodeして記録する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. untrusted originへ送らず, logにも残さない</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 保護する。Basic credentialが一度でもTLSで届けば、後続hopのBase64 formもconfidentialになる</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 保護しない。TLSは最初のhopで終わり、plaintext backend hopでcredentialが再び露出する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. backendがBase64をdecodeせずencoded tokenだけを比較するなら保護する</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            Basic credentialは再利用可能なsecretなので, TLSで通信経路を保護するだけでなく, redirect, debug output, proxy logへの転送や記録も制限します.
+Bが正解です。Section 4はBasicをphysical carrier上でのcleartext password transmissionとして扱い、HTTPSなどのenhancementなしにsensitive informationを保護する用途へ使うべきでないとしています。TLS protectionはそのconnectionがterminateした地点で終わります。同じcredentialをplaintextでforwardすれば、新しいobservableな露出になります。
 
-            **Authorization header** は credential を直接含む sensitive data です. untrusted origin への転送や log 出力は, そのまま secret 漏えいになります.
-
-            best practice に近いのは, **untrusted origin へ送らず, log にも残さない**ことです.
-
-            URL に入れると browser history, log, analytics, referer などから漏れやすくなります.
-            decode した値を log に出すのは最悪の運用です.
-            trust boundary を越える前に header を落とし, storage にも残さないのが基本です.
-
-            reverse proxy や redirect handler では, `Authorization` をどこで strip するかを明示しておくと事故が減ります.
-          </div>
+Aはhop protectionを、存在しないend-to-end propertyへ変えています。Cはdecodeしないことをsecrecyと混同しています。observerは誰でもBase64をdecodeできます。RFC 7617はgateway architectureを指定しませんが、reusable credentialを運ぶ各hopでprotectionとtrustを判断する必要があります。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^charset$" data-difficulty="L2" data-hint="serverのBasic challengeで, user-pass characterをoctetへ変換する方法を提示するparameterを探します.">
-        <header><h4>Q6: serverがuser-passにUTF-8を期待すると提示するBasic challenge parameterは何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="構文上validなBasic challengeは、server identityもreusable passwordを収集する権限も証明しません。">
+        <header><h4>Q6: counterfeit gatewayがBasic credentialを要求するとき、欠けている保証は何か？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
+          <p class="question-premise">agentがvalidに見えるBasic challengeを返すhostile gatewayへ接続します。agentはpeerをauthenticateせず、ほかのserviceでも使うpasswordを送ります。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. trusted server identityとchannel protection。validなchallenge syntaxだけではpassword収集の権限にならない</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 欠けていない。realm stringがgatewayによるclaimed protection spaceの所有をcryptographically証明する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. 別のBase64 alphabetだけ。encodingを変えればgatewayはpasswordを再利用できない</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-            optionalな**`charset`** authentication parameterはBasic challengeに現れます. RFC 7617で定義される値はcase-insensitiveな`UTF-8`だけです.
+Aが正解です。Section 4はcounterfeit-server spoofingを明示しています。hostile serverやgatewayはpasswordを要求し、保存してからerrorを装えます。TLS peerのauthenticationと、どのserverがどのcredentialを要求できるかの制限が、このtrust boundaryに必要です。
 
-
-            このparameterはadvisoryであり, Base64より前にuser-pass characterをoctetへ変換する方法を扱います. encryption settingでもcredential token内のfieldでもありません.
-
-            character encodingについて合意できないと, non-ASCIIのuser-idやpasswordでinteroperability failureが起きます.
-          </div>
+Bはfree-formなrealm labelをserver identityのproofとして扱っていますが、その性質はありません。Cはpublicなencodingを変えるだけで、credentialをreusableなままにします。password reuseがあると、hostile gatewayが同じuser-idとpasswordをunrelated serviceへ試す可能性があります。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="redirect targetへreusable credentialを送れるか判断する前に, original protection spaceを特定してください.">
-        <header><h4>Q7: RFC 7617が最も強く支持するcredential-handling decisionはどれか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC 7617のstored-password guidanceと、wire syntaxの規範要件を分けてください。">
+        <header><h4>Q7: RFC 7617が支持するpassword storage reviewはどれか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
-          <p class="question-premise">agentが`https://api.example/tasks/7`へHTTPS上のBasicでauthenticateします. originは`https://collector.example/import`へredirectします. client libraryは同じ`Authorization` fieldを転送し, decoded valueをdebug logへ記録しようとしています.</p>
+          <p class="question-premise">Basic-auth serverは全passwordをunsalted fast digestとして保存します。operatorはnetwork requestがoriginal character stringではなくBase64を運ぶため、十分に安全だと主張します。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. targetのschemeやauthorityが異なってもredirectはoriginal realmをinheritするためcredentialを転送する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. freshなBase64 representationが新しいprotection spaceを作るためdecode後に再encodeして転送する</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. new originへ再利用せずapplicableなchallengeかpolicyを要求し, reusable secretをlogへ残さない</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. wire encodingとstorage representationが対応すればoffline recoveryを防げるため、現行設計を受理する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. database漏えいでpasswordが容易に復元されないstorageへ改善し、plaintextとunsalted digestを避ける</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Basicはbyte-for-byteのpassword retrievalを要求するため、decoded plaintextで保存する</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-RFC 7617 Section 2.2がpreemptive reuseを認めるのはprotection spaceのauthentication scope内です. 同sectionの例ではscheme変更もscope外であり, 異なるauthorityもoriginal originのprotection spaceではありません. redirectはnew originへcredentialを渡すpermissionを作りません.
+BがRFC 7617のsecurity guidanceに沿う答えです。Section 4はserverとproxyがpassword dataを何らかの形で必要としつつ、漏えい後の容易な復元を抑え、plaintextやunsalted digestを避けるべきだと述べます。具体的なmodern password-hashing designはこのRFCの範囲外です。
 
-Section 4はBasic passwordが容易にreverseできる形で送られ, sensitive informationの保護にHTTPSなしで使うべきでないと説明します. Base64の再encodeはfreshnessもconfidentialityも作りません. 値はreusable secretのままなので, decoded formのloggingは別のdisclosure pathになります. logへ残さない判断はこのthreatから導くdeployment上の対策であり, RFC 7617が別個のwire-format ruleとして規定するものではありません.
+Aはreversibleなwire representationとsecure at-rest verificationを混同し、offline guessingを無視しています。Cはprotocolを過大解釈しています。Basicはclientが送る形式を定義しますが、plaintext保存を要求しません。これらは新しいBasic credential syntaxではなく、security recommendationです。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="1つのprotection spaceへのauthenticationを、delegation、downstream audience、resource authorizationから分けてください。">
+        <header><h4>Q8: Basicをdelegation tokenに変えないA2A設計はどれか？</h4><span class="type">単一選択 · L4</span></header>
+        <div class="body">
+          <p class="question-premise">gatewayが自身のrealmについてclientのBasic credentialをvalidateしました。その同じAuthorization headerを複数agentへcopyし、各backendにuserとして動作させようとしています。backendごとにresource policyとtrust domainが異なります。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. 1つのgatewayでBasic authenticationに成功すれば全downstream agentをauthorizeするため、そのままforwardする</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. original password proofは全protection spaceでvalidなので、各hopでrealm labelだけを変更する</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. passwordをintended boundaryに留め、downstream identityとauthorizationには別のprotectedでscopedなevidenceを使う</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-new originは自身にapplicableなchallengeを出すか, applicationが明示的なcredential policyを適用できます. redirect handlingだけでfirst originのcredentialを取得させてはいけません.</div>
+Cがapplication designとして正しい結論です。Sections 2と2.2はBasic protection space内でuser-id/password pairをauthenticateし、限定されたcredential reuseを定義します。RFC 7617はtransitive delegation、downstream audience、resource scope、unrelated backendへのauthorityを定義しません。gatewayがclientをauthenticateできても、後続hopにはそのtrust modelに適したprotectedかつ明示的にscopedなmechanismが必要です。
+
+Aはcredential verificationをuniversal authorizationへ変え、全hopでreusable passwordを露出します。Bはlabelを変えるだけで新しいproofやpermissionを作りません。realmはprotection spaceを定義する助けでありdelegationではありません。RFC 7617はreplacement mechanismを指定しないため、applicationが選択して保護します。</div>
         </div>
       </article>
     </section>
