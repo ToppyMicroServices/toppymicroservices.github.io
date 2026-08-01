@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSON Data Interchange Format", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 3, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSON Data Interchange Format", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 4, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -44,7 +44,8 @@
       </div>
     </header>
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate JSON syntax from application schemas and trace representation differences across parsers, signatures, gateways, and authorization. Section numbers refer to RFC 8259.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8259" target="_blank" rel="noopener noreferrer">RFC 8259: JSON Data Interchange Format</a></li></ul>
     </section>
     <section class="card panel" aria-label="Quiz settings">
@@ -63,8 +64,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. Accept it as JSON text, then reject it for failing the A2A message schema</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. Process <code>42</code> as a valid A2A request because the parser accepted it</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. Convert it implicitly to <code>{&quot;value&quot;:42}</code> for interoperability</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 B is correct. RFC 8259 Sections 2 and 3 permit any serialized JSON value as a JSON text, not only an object or array, so <code>42</code> is syntactically valid JSON. An A2A endpoint can nevertheless require a top-level object and named members in its application contract. The failure should be reported as an invalid application message rather than mislabeled as a JSON parse failure. Parser success does not establish message validity, and RFC 8259 defines no implicit object conversion.</div>
         </div>
       </article>
@@ -77,8 +77,7 @@ B is correct. RFC 8259 Sections 2 and 3 permit any serialized JSON value as a JS
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Yes. RFC 8259 defines <code>null</code> as an empty string, so both revoke delegation</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. No. Both can be represented in JSON, but their distinction belongs in the application contract</label>
             <label class="choice"><input type="radio" name="Q2" value="d"> D. Yes, if the parser automatically inserts <code>null</code> for every missing member</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 C is correct. RFC 8259 Sections 3 and 4 define the <code>null</code> literal and object-member syntax, but they do not equate an absent member with a member whose value is <code>null</code>. A contract may validly distinguish “no update” from “explicitly revoke,” but its schema, validation, and authorization components must all apply the same meaning. Automatic parser insertion is not an RFC 8259 behavior and can hide the contract while creating inconsistent interpretations across components.</div>
         </div>
       </article>
@@ -91,8 +90,7 @@ C is correct. RFC 8259 Sections 3 and 4 define the <code>null</code> literal and
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Requiring UTF-8 without a BOM makes object-member order part of the contract</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Use an explicit <code>operation</code> member, and use an array if sequence itself is data</label>
             <label class="choice"><input type="radio" name="Q3" value="d"> D. Sort members everywhere and select the first name after sorting as the operation</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 C is correct. RFC 8259 Sections 1 and 4 describe an object as an unordered collection and note that libraries differ on whether they expose member ordering to calling software. A signature can protect a particular byte sequence, but it does not require every parser API to expose the same order. The operation should be an explicit member, while data whose order is meaningful belongs in an array. A project-wide sorting rule would be an additional contract not supplied by RFC 8259.</div>
         </div>
       </article>
@@ -105,8 +103,7 @@ C is correct. RFC 8259 Sections 1 and 4 describe an object as an unordered colle
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Accept the JSON syntax, validate each element against the batch schema, and reject invalid input</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Reject it in the JSON parser because RFC 8259 forbids mixed-type arrays</label>
             <label class="choice"><input type="radio" name="Q4" value="d"> D. Convert <code>null</code> and the string automatically into empty task objects</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 B is correct. RFC 8259 Section 5 imposes no same-type requirement on array elements, so the body is syntactically valid JSON. An application profile can still define the narrower schema “array of task objects.” Each element must be validated before use, and the API contract can decide whether failure rejects the whole batch or produces per-element errors. Syntactic acceptance does not imply business acceptance, and RFC 8259 defines no such automatic coercion.</div>
         </div>
       </article>
@@ -119,22 +116,17 @@ B is correct. RFC 8259 Section 5 imposes no same-type requirement on array eleme
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Replace <code>NaN</code> with <code>Infinity</code> and forward it as a JSON number</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Enable permissive parsing everywhere and treat the wire extension as an implicit standard</label>
             <label class="choice"><input type="radio" name="Q5" value="d"> D. Reject bare <code>NaN</code> at generation and define another representation in the schema if needed</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 D is correct. RFC 8259 Section 6 excludes <code>NaN</code> and <code>Infinity</code> from the number grammar. Section 9 permits a parser to accept non-JSON extensions, but Section 10 requires generator output to conform strictly to the JSON grammar. One permissive parser's acceptance, or a signature over the bytes, therefore does not make bare <code>NaN</code> interoperable JSON. If non-finite values are needed, the application schema must define the representation and meaning—for example, a string, status member, <code>null</code>, or omission.</div>
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare the identifier with the exactly interoperable integer range for binary64.">
-        <header><h4>Q6: An agent identifier is the integer 9007199254740993 and must round-trip exactly across common runtimes. What is the better representation?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
+        <header><h4>Q6: Which representation avoids cross-runtime identifier rounding?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An Agent Card uses the integer identifier 9007199254740993. A binary64-based gateway and an arbitrary-precision backend must preserve the identifier exactly across parse and reserialization.</p><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q6" value="a"> A. A JSON number with exponent notation so parsers infer arbitrary-precision integer semantics</label>
           <label class="choice"><input type="radio" name="Q6" value="b"> B. A JSON number followed by a type comment declaring exact integer handling</label>
           <label class="choice"><input type="radio" name="Q6" value="c"> C. A JSON string with application-level identifier rules</label>
-        </fieldset><div class="explain">**Explanation:**
-
-Changing number notation does not make a value outside the exact binary64 integer range exact.
-JSON has no comment syntax and the numeric precision issue remains.
-A string avoids numeric rounding and lets the application define identifier syntax.</div></div>
+        </fieldset><div class="explain">A: Exponent notation does not give a parser arbitrary-precision semantics. B: JSON has no comment syntax, and a comment would not change numeric precision. C: RFC 8259 Section 6 identifies the interoperable exact-integer range for binary64; this value is outside it. A string avoids numeric rounding, while the application profile defines its identifier syntax and equality rules.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Track wire encoding, BOM tolerance on receipt, and the byte sequence covered by the signature separately.">
         <header><h4>Q7: Which receiving profile follows from RFC 8259 Sections 8.1 and 11?</h4><span class="type">Multiple Choice</span></header>
@@ -145,8 +137,7 @@ A string avoids numeric rounding and lets the application define identifier synt
             <label class="choice"><input type="radio" name="Q7" value="b"> B. Treat <code>charset=utf-16</code> as the RFC 8259 encoding signal and verify only after transcoding</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. Treat original and transcoded bytes as the same signature input because every receiver must ignore a BOM</label>
             <label class="choice"><input type="radio" name="Q7" value="d"> D. Accept every decodable Unicode encoding as an interoperable application/json representation</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 A is correct. RFC 8259 Section 8.1 requires UTF-8 for JSON exchanged outside a closed ecosystem and prohibits generators from adding a BOM. A parser may ignore an incoming BOM; it is not required to do so. The Section 11 registration for <code>application/json</code> defines no <code>charset</code> parameter. RFC 8259 also defines no signature canonicalization, so transformed bytes cannot silently substitute for the bytes the sender signed. A profile must first fix the wire encoding, then state whether the signature covers exact received bytes or a canonical representation defined by another specification.</div>
         </div>
       </article>
@@ -159,8 +150,7 @@ A is correct. RFC 8259 Section 8.1 requires UTF-8 for JSON exchanged outside a c
             <label class="choice"><input type="radio" name="Q8" value="b"> B. Sort object members alphabetically to eliminate differences in escape spelling</label>
             <label class="choice"><input type="radio" name="Q8" value="c"> C. Ban every JSON escape in security fields and compare only the raw source text</label>
             <label class="choice"><input type="radio" name="Q8" value="d"> D. Filter on the parsed name and pass the same validated representation to security decisions</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 D is correct. RFC 8259 Section 8.3 explains that comparing strings without converting escapes can make two encodings of the same string value appear different. A filter that sees raw spelling while authorization sees the decoded name splits the security boundary. Parse once, compare the decoded Unicode code-unit sequence, and pass the same validated representation to downstream decisions. RFC 8259 does not define a representation-independent signature format; if that property is needed, a separate canonicalization specification is required.</div>
         </div>
       </article>
@@ -173,24 +163,20 @@ D is correct. RFC 8259 Section 8.3 explains that comparing strings without conve
             <label class="choice"><input type="radio" name="Q9" value="b"> B. Rely on native handling because every receiver is required to replace it with U+FFFD</label>
             <label class="choice"><input type="radio" name="Q9" value="c"> C. Validate Unicode scalars before security processing and reject lone surrogates</label>
             <label class="choice"><input type="radio" name="Q9" value="d"> D. Depend on a signature over the original JSON bytes to equalize decoded lengths and values</label>
-          </fieldset><div class="explain">**Explanation:**
-
+          </fieldset><div class="explain">
 C is correct. RFC 8259 Section 8.2 explains that the JSON ABNF can admit bit sequences, such as a lone surrogate, that cannot encode a Unicode character; observed receiver behavior ranges from different lengths and values to fatal runtime exceptions. The RFC does not require a common replacement procedure. An application profile can require interoperable Unicode scalar sequences and reject lone surrogates before data reaches logging, policy, or post-signature processing. A byte signature detects modification but does not make multiple runtimes decode the value identically.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 8259 permits parser limits, while the application decides safe values.">
-        <header><h4>Q10: Where should an A2A service enforce limits on JSON size and nesting depth?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate the limits RFC 8259 permits from the application policy that selects values and enforcement points.">
+        <header><h4>Q10: Which receiver change addresses this resource boundary?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An unauthenticated peer sends a 50 MiB JSON document nested 10,000 levels deep. The service builds the full application model before checking its configured 1 MiB and 64-level policy.</p><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q10" value="a"> A. After authorization and business processing complete</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. At the input boundary before expensive or security-sensitive processing</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. Enforce the declared limits at the input and parser boundary</label>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. Only in the sender because a conforming parser cannot reject deep input</label>
-        </fieldset><div class="explain">**Explanation:**
-
-Late checks allow hostile input to consume parser and application resources first.
-RFC 8259 permits size and depth limits, and early enforcement bounds resource use.
-Parsers may impose limits on text size and maximum nesting depth.</div></div>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. Remove the limits because RFC-conforming JSON has no resource cost</label>
+        </fieldset><div class="explain">A: A late check lets hostile input consume parser and model-building resources first. B: RFC 8259 Section 9 permits limits on text size and maximum nesting depth; applying the profile's declared limits before high-cost processing protects this boundary. C: A parser may impose such limits. D: Grammar conformance says nothing about acceptable resource consumption. The values 1 MiB and 64 levels are application policy, not limits mandated by RFC 8259.</div></div>
       </article>
-      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare the member mapping seen by every security component, not merely whether one parser accepts the octets.">
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Compare the member mapping seen by every security component, not merely whether one parser accepts the octets.">
         <header><h4>Q11: Which design review conclusion is justified by RFC 8259?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">A signed A2A grant contains `{"role":"reader","role":"admin"}`. The signature verifier exposes the first `role`, while the authorization service's JSON library exposes the last. Both process the same signed bytes successfully.</p>
@@ -199,8 +185,7 @@ Parsers may impose limits on text size and maximum nesting depth.</div></div>
             <label class="choice"><input type="radio" name="Q11" value="b"> B. Let each component apply its native duplicate-name behavior because signature coverage makes their member mappings equivalent</label>
             <label class="choice"><input type="radio" name="Q11" value="c"> C. Reject duplicate decision fields at the input boundary and make all security checks consume one unambiguous parsed representation</label>
           </fieldset>
-          <div class="explain">**Explanation:**
-
+          <div class="explain">
 RFC 8259 Section 4 says object names SHOULD be unique and explains the interoperability reason: implementations disagree when names repeat, variously retaining the first, the last, all values, or rejecting the object. A signature over the bytes does not force those parsers to derive the same name-value mapping.
 
 For an authorization field, disagreement creates a security boundary. An A2A profile can strengthen the base JSON guidance by requiring unique names and rejecting duplicates before signature results and authorization data flow into different parsers. The same validated representation should then feed all decision points.
