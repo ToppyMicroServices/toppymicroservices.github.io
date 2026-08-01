@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7517","SKILL_SUBTITLE":"JSON Web Key (JWK)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7517","SKILL_SUBTITLE":"JSON Web Key (JWK)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,8 +45,9 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7517" target="_blank" rel="noopener noreferrer">RFC 7517: JSON Web Key (JWK)</a></li></ul>
+      <p>The questions separate key representation and selection from key provenance, signature validation, and application authorization. Section numbers refer to RFC 7517.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -65,7 +66,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. A cryptographic key represented as a JSON object.</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. An X.509 certification path that replaces certificate validation.</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. A globally trusted identity established by possession of a kid value.</label>
-          </fieldset><div class="explain">RFC 7517 Sections 1 and 2 define a JWK as a JSON object representing a cryptographic key and its properties. The format neither defines OAuth authorization nor makes `kid` a global identity or trust proof, and replacing X.509 certificates is explicitly outside its goals. Interpret the key representation first, then evaluate trust and authorization in their own layers.</div>
+          </fieldset><div class="explain">RFC 7517 Sections 2 and 4 define a JWK as a JSON object representing a cryptographic key and its properties. The format neither defines OAuth authorization nor makes `kid` a global identity or trust proof. A JWK can carry certificate-related members such as `x5c`, but the JWK definition is not itself an X.509 certification path or a substitute for validating one. Interpret the key representation first, then evaluate provenance, trust, and authorization separately.</div>
         </div>
       </article>
       <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Check required key typing, extension handling, and whether array position has built-in meaning.">
@@ -132,7 +133,7 @@
             <label class="choice"><input type="radio" name="Q7" value="b"> B. Publish old and new verification keys for the required overlap, then retire the old key under the token policy.</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. Reuse the old kid on the new unrelated key so cached verifiers continue without configuration changes.</label>
             <label class="choice"><input type="radio" name="Q7" value="d"> D. Let verifiers skip signatures for the remaining hour because the tokens were issued before rollover.</label>
-          </fieldset><div class="explain">RFC 7517 Sections 4.5 and 5.1 allow a verifier to select among set members during rollover, but `kid` remains only a selector within the correct issuer context. Publication overlap must cover the application's token-validity and cache windows so that every still-acceptable signature remains verifiable. Reusing an identifier for unrelated material creates ambiguity, and rollover never justifies accepting an unsigned message.</div>
+          </fieldset><div class="explain">RFC 7517 Sections 4.5 and 5.1 provide a way to select among set members during rollover, but `kid` remains only a selector within the relevant trust context. If the application promises that old tokens remain acceptable for an hour, keeping the old verification key available for the necessary token and cache overlap is an operational consequence of that policy, not a universal RFC 7517 lifetime rule. Accepting another issuer's key, reusing an identifier ambiguously, or skipping signature verification would not preserve the stated trust boundary.</div>
         </div>
       </article>
       <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Compare the public key in the first certificate with the key represented by the JWK members.">
@@ -156,7 +157,7 @@
             <label class="choice"><input type="checkbox" name="Q9" value="b"> B. A matching kid makes the first cached key authoritative across both issuers.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="c"> C. The verifier must still decide whether the selected key is trusted for the asserted issuer and use.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Successful signature verification alone establishes every claim and resource permission.</label>
-          </fieldset><div class="explain">RFC 7517 Section 4.5 does not make `kid` globally unique, so aggregating two issuers and selecting only by that value creates an ambiguous lookup. Cache order cannot repair the problem because Section 5.1 assigns no default preference to JWK Set order. The verifier must first scope key selection by issuer and provenance, then independently apply algorithm, claim, and resource-authorization policy as required by Section 9.1.</div>
+          </fieldset><div class="explain">RFC 7517 Section 4.5 does not make `kid` globally unique, so aggregating two issuers and selecting only by that value creates an ambiguous lookup. Cache order cannot repair the problem because Section 5.1 assigns no default preference to JWK Set order. Following the trust guidance in Section 9.1, the verifier should scope key selection by issuer and provenance, then apply the relevant algorithm, claim, and resource-authorization policies separately.</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Trace where key provenance is established and where the final resource decision is made.">
@@ -168,7 +169,7 @@
             <label class="choice"><input type="radio" name="Q10" value="b"> B. The Agent Card and kid together extend the original signature verification through every intermediary.</label>
             <label class="choice"><input type="radio" name="Q10" value="c"> C. The design must establish trust in the Agent Card-to-key association and protect the gateway assertion used by backend policy.</label>
             <label class="choice"><input type="radio" name="Q10" value="d"> D. The backend must reject every gateway architecture because RFC 7517 requires direct JWT verification by the resource owner.</label>
-          </fieldset><div class="explain">RFC 7517 Section 9.1 ties confidence to how a key was obtained and to the trusted entity asserting its association; it does not grant that key every identity or resource role. TLS can authenticate JWKS retrieval, but neither an Agent Card reference nor `kid` protects a newly created header on a later hop. A gateway design can be valid, yet the gateway-to-backend assertion still needs authenticated integrity and an explicit local authorization rule at the final policy owner.</div>
+          </fieldset><div class="explain">RFC 7517 Section 9.1 ties confidence to how a key was obtained and to the trusted entity asserting its association; it does not grant that key every identity or resource role. TLS can authenticate JWKS retrieval, but neither an Agent Card reference nor `kid` protects a newly created header on a later hop. RFC 7517 does not prescribe the gateway-to-backend mechanism. Under the stated design, however, the backend can rely on the gateway claim only if that trust boundary protects the assertion and the backend applies an explicit local authorization rule.</div>
         </div>
       </article>
     </section>

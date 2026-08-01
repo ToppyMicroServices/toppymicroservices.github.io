@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7517","SKILL_SUBTITLE":"JSON Web Key (JWK)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7517","SKILL_SUBTITLE":"JSON Web Key (JWK)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,8 +45,9 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">参考URL</h3>
+      <h3 id="refs-h">一次資料</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7517" target="_blank" rel="noopener noreferrer">RFC 7517: JSON Web Key (JWK)</a></li></ul>
+      <p>keyの表現・選択と、keyの由来、署名検証、application authorizationを分けて判断する問題です。節番号はRFC 7517を指します。</p>
     </section>
 
     <section class="card panel" aria-label="クイズ設定">
@@ -65,7 +66,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. key valueと属性を含む,JSON objectとして表現された暗号key.</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. certificate validationを置き換えるX.509 certification path.</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. kidの所持によって成立する,世界共通に信頼されたidentity.</label>
-          </fieldset><div class="explain">RFC 7517 Section 1と2は,JWKを暗号keyとその属性を表すJSON objectと定義します.この形式はOAuth authorizationを定義せず,`kid`をglobal identityやtrust proofにするものでもありません.X.509 certificateの置換も目的外です.まずkey表現を読み取り,trustとauthorizationはそれぞれの層で評価します.</div>
+          </fieldset><div class="explain">RFC 7517 Sections 2と4は、JWKを暗号keyとその属性を表すJSON objectと定義します。この形式はOAuth authorizationを定義せず、`kid`をglobal identityやtrust proofにするものでもありません。JWKは`x5c`などのcertificate関連memberを持てますが、JWKの定義自体がX.509 certification pathや、その検証の代替になるわけではありません。key表現を読み取った後、由来、trust、authorizationを別々に評価します。</div>
         </div>
       </article>
       <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="key typeの必須性,extensionの扱い,array順序に既定の意味があるかを確認してください.">
@@ -132,7 +133,7 @@
             <label class="choice"><input type="radio" name="Q7" value="b"> B. 必要な期間は新旧keyを公開し,その後token policyで旧keyを終了する.</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. cache済みverifierのため,新しい無関係なkeyへ旧kidを再利用する.</label>
             <label class="choice"><input type="radio" name="Q7" value="d"> D. rollover前発行のtokenなので,残り1時間はsignatureを検証しない.</label>
-          </fieldset><div class="explain">RFC 7517 Section 4.5と5.1は,rollover中にset内のkeyを選べる構造を与えますが,`kid`は正しいissuer context内のselectorにとどまります.applicationはtoken lifetimeとcache windowを満たす間,受理可能なsignature keyを公開し続ける必要があります.無関係なmaterialへのidentifier再利用はselectionを曖昧にし,rolloverもunsigned messageの受理理由にはなりません.</div>
+          </fieldset><div class="explain">RFC 7517 Sections 4.5と5.1は、rollover中にset memberを選ぶ方法を提供しますが、`kid`は関連するtrust context内のselectorにとどまります。旧tokenを1時間受理するとapplicationが約束するなら、必要なtoken lifetimeとcacheの重複期間に旧verification keyを利用可能にしておくことは、そのpolicyから生じる運用上の判断であり、RFC 7517が一律に定める有効期間ではありません。別issuerのkeyを受け入れること、identifierを曖昧に再利用すること、署名検証を省略することでは、元のtrust boundaryを保てません。</div>
         </div>
       </article>
       <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="先頭certificateのpublic keyと,JWK memberが表すkeyを比較してください.">
@@ -156,7 +157,7 @@
             <label class="choice"><input type="checkbox" name="Q9" value="b"> B. kid一致により,最初のcache keyが両issuerに対してauthoritativeになる.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="c"> C. 選択keyがasserted issuerと用途に対して信頼されるかを別途判断すべきである.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="d"> D. signature検証成功だけで,すべてのclaimとresource permissionが成立する.</label>
-          </fieldset><div class="explain">RFC 7517 Section 4.5は`kid`をglobal uniqueにしないため,2 issuerを統合してその値だけで選ぶcacheはlookupを曖昧にします.Section 5.1はJWK Set順序へ既定の優先順位を与えないので,cache orderもtrust ruleにはなりません.まずissuerとprovenanceでkey selectionをscopeし,Section 9.1に従ってalgorithm,claim,resource authorizationを別に評価します.</div>
+          </fieldset><div class="explain">RFC 7517 Section 4.5は`kid`をglobal uniqueにしないため、2つのissuerを統合してその値だけで選ぶcacheはlookupを曖昧にします。Section 5.1はJWK Setの順序に既定の優先順位を与えないので、cache orderもtrust ruleにはなりません。Section 9.1のtrustに関する指針に従い、key selectionをissuerと由来で限定したうえで、algorithm、claim、resource authorizationのpolicyを別々に適用します。</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="key provenanceを確立する地点と,最終resource判断を行う地点を追ってください.">
@@ -168,7 +169,7 @@
             <label class="choice"><input type="radio" name="Q10" value="b"> B. Agent Cardとkidの組合せが,元のsignature verificationを全intermediaryの先まで拡張する.</label>
             <label class="choice"><input type="radio" name="Q10" value="c"> C. Agent Cardとkeyの関連を信頼する根拠と,backend policyが使うgateway assertionの保護が必要である.</label>
             <label class="choice"><input type="radio" name="Q10" value="d"> D. RFC 7517はresource ownerによる直接JWT検証を必須とするため,すべてのgateway構成をrejectする.</label>
-          </fieldset><div class="explain">RFC 7517 Section 9.1は,keyの取得方法と,その関連を主張するentityへのtrustにconfidenceを結び付けますが,keyへ全identityやresource roleを与えません.TLSはJWKS取得先を認証しても,Agent Card referenceや`kid`と同様,後続hopで新しく作ったheaderを保護しません.gateway構成は可能ですが,gateway-to-backend assertionにはauthenticated integrityと,最終policy ownerの明示的なauthorization ruleが必要です.</div>
+          </fieldset><div class="explain">RFC 7517 Section 9.1は、keyの取得方法と、その関連を主張するentityへのtrustにconfidenceを結び付けますが、keyへすべてのidentityやresource roleを与えるものではありません。TLSはJWKS取得先を認証しても、Agent Card referenceや`kid`と同様、後続hopで新しく作ったheaderを保護しません。RFC 7517はgateway-to-backend mechanismを指定していません。ただし提示された設計でbackendがgatewayのclaimへ依存するには、そのtrust boundaryでassertionを保護し、backendが明示的なlocal authorization ruleを適用する必要があります。</div>
         </div>
       </article>
     </section>
