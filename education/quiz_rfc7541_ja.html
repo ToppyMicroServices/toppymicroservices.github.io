@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7541",
       SKILL_SUBTITLE: "HPACK",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,11 +68,12 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料</h3>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7541" target="_blank" rel="noopener noreferrer">RFC 7541: HPACK</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9113" target="_blank" rel="noopener noreferrer">RFC 9113: HTTP/2</a></li>
       </ul>
+      <p>HPACKのstate、decoder limit、compression riskを扱います。RFC 9113はHPACKが使うHTTP/2 settingの根拠であり、ほかの節番号はRFC 7541を指します。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -141,7 +142,7 @@
           <div class="explain">
             **Explanation:**
 
-            RFC 7541 Section 2.3.2のdynamic tableは, header blockを処理する間にentryが追加またはevictされるconnection固有のstateです. encoderとdecoderは対応するstateを維持し, ずれればindexed referenceを正しく復元できません.
+            RFC 7541 Section 2.3.2のdynamic tableは、header blockを処理する間にentryが追加またはevictされるconnection固有のstateです。各方向には独立したdynamic tableがあります。ある方向のencoder stateと、peer decoderの対応するstateがずれれば、indexed referenceを正しく復元できません。
 
             Section 2.3.1のstatic tableはentryとindexが仕様で固定されています. DNS cacheはHPACKのencoding contextではありません.
           </div>
@@ -149,7 +150,7 @@
       </article>
 
       <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="field nameだけでなく, 値に再利用可能なcredentialまたはsession identifierが含まれるかで分類します.">
-        <header><h4>Q3: 再利用可能なcredentialまたはsession materialを含み, never-indexed表現が妥当な例はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q3: 再利用可能なcredentialまたはsession materialを含み、never-indexed表現の候補になる値はどれか（複数選択）</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Authorization: Bearer &lt;token&gt;</label>
@@ -198,20 +199,20 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^huffman$" data-difficulty="L2" data-hint="RFC 7541 Appendix Bは, header統計から作られた1つのnamed code tableを固定しています.">
-        <header><h4>Q5: HPACKがstring literalに使えるnamed static codeは何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Section 5.2のend-of-string条件を3つ確認し、もっともらしいtextを推測できてもwire dataを補修しないでください。">
+        <header><h4>Q5: 不正なHuffman終端をdecoderはどう扱うか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
+          <p class="question-premise">HPACK string literalでH bitが設定されています。末尾は8 bitのpaddingとなり、EOS codeのmost significant bitsとも一致しません。そのbitを除けば、もっともらしいheader valueになります。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 最後のcomplete symbolより後のbitをすべて除去し、推測できるvalueで処理を続ける</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. paddingが長すぎ、必要なEOS prefixにも一致しないためdecoding errorとする</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 不正なHuffman paddingはH bitを暗黙に解除するため、raw stringとしてdecodeする</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-            string literalには, octet列をHPACK固定の**Huffman** codeで符号化したかを示すflagがあります.
+Bが正解です。Section 5.2が許すpaddingは最大7 bitで、EOS symbolのmost significant bitsに一致するものだけです。7 bitを超えるpaddingやpatternの不一致はdecoding errorであり、encoded EOS symbolが含まれる場合もerrorです。
 
-
-            RFC 7541 Appendix Bが1つのstatic tableを定義するため, connectionごとにcodeを学習または交渉しません. decoderはpaddingとend-of-stringの規則も検証します.
-
-            literalをHuffman符号化するかと, そのheader fieldをdynamic tableへindexするかは別の判断です.
-          </div>
+Aはmalformedなwire dataを黙ってnormalizeし、implementation間で同じblockの解釈が分かれる原因になります。Cのfallbackは仕様にありません。H bitが、そのbyteをどうdecodeするかを決めます。Appendix BがHuffman codeを固定していても、終端検証は省略できません。</div>
         </div>
       </article>
 
@@ -253,9 +254,25 @@
 
 RFC 7541 Sections 7.1と7.1.1はこのattacker modelを直接扱います. mutually distrustfulなentityがcompression contextを共有し, 一方がencoded fieldへ影響しlengthを観測できる状況です. TLSはcontentを保護しますがdynamic-table probingに使えるlengthは残り, low-entropy secretほど推測されやすくなります.
 
-Sections 7.1.2と7.1.3はcompressionの制約を求め, idealにはfieldを構築するentityごとにdynamic-table accessを分離します. CookieとAuthorizationはnever-indexed literalを選び得るsensitive valueの例です. Section 6.2.3はHPACKでre-encodeするintermediaryにもnever-indexed representationの維持を要求します.
+Sections 7.1.2と7.1.3はmitigationの選択肢を説明し、fieldを構築するentityごとのdynamic-table access分離をideal solutionとして示します。CookieとAuthorizationはnever-indexed literalを選び得るsensitive valueの例です。Section 6.2.3は、HPACKでre-encodeするintermediaryにnever-indexed representationの維持を要求します。
 
 never-indexingはliteral lengthを隠さず, 全side channelを解決するものではありません. dynamic tableへの挿入と再利用を防ぐため, remaining length exposureやcompressionをterminate/recreateするhopは別途threat analysisが必要です.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="persistentなdynamic-table stateと、一時的なinteger、string、application header-listのmemoryを分けてください。">
+        <header><h4>Q8: dynamic-table limitを0にすれば、HPACKのmemory riskはすべてなくなるか？</h4><span class="type">単一選択 · L3</span></header>
+        <div class="body">
+          <p class="question-premise">HTTP/2 endpointが<code>SETTINGS_HEADER_TABLE_SIZE = 0</code>をadvertiseしました。そのためdynamic-table entryは保持しませんが、peerは非常に長いinteger encodingとstring literalを含む、frame構造上validなheader blockを送ります。implementationにはinput-length limitがありません。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. なくなる。dynamic tableが0なら、persistent memoryとtemporary decoder memoryの両方が0に制限される</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. なくなる。HTTP/2 frame boundaryにより、すべてのHPACK integerとstringは小さな固定bufferに収まる</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. なくならない。settingはpersistent stateだけを制限し、integer・string・処理量には別のlimitが必要である</label>
+          </fieldset>
+          <div class="explain">**解説:**
+
+Cが正解です。Sections 7.3と7.4はdynamic-table stateとtemporary processing memoryを分けています。decoderはHTTP/2 settingでtable memoryを制限できますが、受理するinteger value、integer encoding length、string literal lengthにもlimitを設ける必要があります。application上の要件を考慮しつつ、sequential processingで一時memoryを減らせます。
+
+Aは1種類のstate limitをdecoding中の全allocationと混同しています。Bはtransport framingとHPACK value limitを混同しています。header blockは複数frameにまたがる可能性があり、Section 7.4はなおimplementation limitを求めます。tableを0にすることは有用ですが、resource-exhaustion対策の全部ではありません。</div>
         </div>
       </article>
     </section>
