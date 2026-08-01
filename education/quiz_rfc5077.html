@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 5077",
       SKILL_SUBTITLE: "TLS Session Resumption via Session Tickets",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc5077" target="_blank" rel="noopener noreferrer">RFC 5077: Session Tickets and TLS Extensions</a></li>
       </ul>
+      <p>Scope: RFC 5077 defines stateless session tickets for earlier TLS versions. TLS 1.3 uses the different PSK-based design in RFC 8446, which obsoletes RFC 5077.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -91,7 +92,7 @@
 
     <section id="questions">
       <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Compare where resumption state lives: a server cache versus an opaque value returned to the client.">
-        <header><h4>Q1: A TLS session ticket is primarily used to</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q1: What is the primary purpose of a TLS session ticket?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Replace certificate validation while preserving authenticated server identity</label>
@@ -101,7 +102,7 @@
           <div class="explain">
             **Explanation:**
 
-            A server places the state needed for resumption, including the master secret and negotiated parameters, in a ticket that it encrypts and integrity-protects. The client stores the opaque ticket and presents it in a later ClientHello.
+            RFC 5077 Sections 1, 2, and 3.1 define a ticket as server-created, cryptographically protected state that lets a TLS server reconstruct a session without retaining per-client state. The client stores it and presents it in a later ClientHello.
 
             A ticket does not replace certificate or endpoint validation in the handshake that establishes the session.
             Session tickets operate inside TLS and do not enable plaintext HTTP.
@@ -111,7 +112,7 @@
       </article>
 
       <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The client stores the value but must not be able to read or modify the server's encoded session state.">
-        <header><h4>Q2: Who protects the confidentiality and integrity of the ticket contents</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q2: Who protects the confidentiality and integrity of the ticket contents?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. The client encrypts and authenticates the ticket with a key from its certificate</label>
@@ -121,7 +122,7 @@
           <div class="explain">
             **Explanation:**
 
-            The ticket is opaque to the client. The server creates it with confidentiality and integrity protection under secret ticket-protection keys, and later decrypts and validates it before using the recovered state.
+            RFC 5077 Sections 2, 4, and 5 make the ticket opaque to the client and require confidentiality and integrity protection. The server creates it under secret ticket-protection keys, then decrypts and validates it before using the recovered state.
 
             The client stores and returns the ticket; it does not encrypt the server's session state with a client private key.
             Ticket construction, protection, validation, and key management are server responsibilities.
@@ -131,7 +132,7 @@
       </article>
 
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Trace what an attacker could recover from recorded traffic after obtaining the protection key.">
-        <header><h4>Q3: A major operational risk of long lived ticket keys is</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q3: What is a major risk of long-lived ticket keys?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. If the key leaks, past captured sessions may become decryptable depending on TLS version and configuration</label>
@@ -141,7 +142,7 @@
           <div class="explain">
             **Explanation:**
 
-            A ticket can contain the TLS master secret. As an operational inference, compromise of a long-lived ticket-protection key can expose state in captured tickets and, for affected TLS versions and configurations, enable decryption of associated recorded resumed traffic. This is why RFC 5077 recommends changing ticket keys regularly.
+            RFC 5077 Sections 4 and 5.5 show that a ticket can contain the TLS master secret and recommend changing ticket keys regularly. As an operational inference, compromise of a long-lived protection key can expose captured ticket state and, for affected TLS versions and configurations, enable decryption of associated recorded resumed traffic.
 
             It captures the possible backward-looking impact while correctly making it conditional on the TLS construction.
             Previously issued tickets protected by the compromised key can also be affected.
@@ -173,7 +174,7 @@
       </article>
 
       <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Compare operational state: per-session server storage versus shared protection-key management.">
-        <header><h4>Q5: A difference between server side session caches and tickets is</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q5: How do server-side session caches and tickets differ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. A session cache avoids server state, while a ticket requires one server entry per client</label>
@@ -183,7 +184,7 @@
           <div class="explain">
             **Explanation:**
 
-            A stateful session cache retains an entry for each resumable session. A ticket moves that state into a client-held opaque value, while the server retains the smaller set of keys needed to protect and recover ticket contents.
+            RFC 5077 Sections 1 and 2 contrast per-session server storage with a client-held opaque ticket. The server retains the smaller set of keys needed to protect and recover ticket contents.
 
             The state placement is reversed: a cache stores per-session server entries, while a ticket moves that state to the client.
             It states the storage-versus-key-management tradeoff that distinguishes stateless tickets.
@@ -193,13 +194,13 @@
       </article>
 
       <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ticket$|^session ticket$" data-difficulty="L1" data-hint="RFC 5077 names the extension and the opaque value after the state it carries.">
-        <header><h4>Q6: What do you call the encrypted blob the client stores to resume a TLS session</h4><span class="type">Short Text</span></header>
+        <header><h4>Q6: What is the encrypted blob stored by the client for TLS resumption called?</h4><span class="type">Short Text</span></header>
         <div class="body">
           <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one or two words" />
           <div class="explain">
             **Explanation:**
 
-            RFC 5077 defines the ticket as an opaque structure that carries session-specific state. The client must not inspect it under an assumed internal format; it stores the value and presents it in the `SessionTicket` extension when requesting resumption.
+            RFC 5077 Sections 2 and 3.2 define the ticket as an opaque structure carrying session-specific state. The client must not assume an internal format; it stores the value and presents it in the `SessionTicket` extension when requesting resumption.
           </div>
         </div>
       </article>
@@ -221,6 +222,75 @@
             Section 5.5 recommends that ticket-protection keys be dedicated to this purpose and changed regularly. Section 5.6 leaves the acceptable lifetime to the server's operational and security requirements. Those sections support containment, rotation, and a lifetime review after compromise, but they do not prescribe one universal fleet topology or shortest lifetime.
 
             RFC 8446 later obsoletes RFC 5077 for TLS 1.3. The premise deliberately concerns a TLS 1.2 deployment using the RFC 5077 mechanism.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate the opaque ticket from the client-side master secret and other cached session state needed to complete the resumed handshake.">
+        <header><h4>Q8: What can an attacker do with only a copied ticket?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An application log contains an opaque TLS 1.2 session ticket. An attacker copies that ticket but obtains neither the client's cached master secret nor the server's ticket-protection key. The attacker sends the ticket in a new ClientHello.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Resume immediately because the ticket is a complete bearer credential</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. The ticket alone is insufficient to complete the resumed handshake</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Decrypt the ticket with the public key in the server certificate</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Force the server to disclose its ticket-protection key in ServerHello</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 5077 Sections 3.1 and 5.2 say the client caches the ticket together with the master secret and other session state. A stolen opaque ticket does not by itself let an attacker resume; the attacker cannot produce the resumed handshake keys and Finished messages without the corresponding secret state.
+
+            A: The ticket is not a self-sufficient bearer credential in this protocol.
+            B: Correct. The premise withholds both paths to the master secret.
+            C: Ticket protection uses server-held symmetric keys, not the certificate public key.
+            D: The protocol does not transmit the ticket-protection key.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Encryption hides ticket contents; it does not make repeated appearances of the same opaque value unlinkable.">
+        <header><h4>Q9: Which privacy conclusion follows from reusing one ticket?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An Agent reuses the same encrypted session ticket in several handshakes. A passive observer cannot decrypt it but can see that the opaque byte string repeats. The profile promises that these connections cannot be correlated.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. The promise holds because confidentiality implies unlinkability</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. The promise holds if the ticket contains no plaintext client identity</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. The promise is unsupported because repeated ticket values can link handshakes</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. The observer can correlate only after learning the server certificate key</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 5077 Section 5.8 requires ticket-content confidentiality but explicitly warns that an on-path observer can correlate handshakes in which the same ticket appears. Confidentiality, anonymity, and unlinkability are distinct properties.
+
+            A: Encryption hides contents; it does not hide equality of visible ciphertext values.
+            B: Removing a plaintext name does not prevent equality comparison.
+            C: Correct. The stated unlinkability guarantee exceeds RFC 5077's mechanism.
+            D: Passive correlation needs neither ticket decryption nor a certificate private key.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="A TLS server can reconstruct authenticated session state while the resource owner independently changes authorization policy.">
+        <header><h4>Q10: Does successful resumption preserve an old delete permission?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A server issued a ticket after certificate-based client authentication when Agent A could delete task T. The ticket remains within its server-selected lifetime, but the task owner has since revoked Agent A's delete permission. TLS resumption succeeds and restores the recorded client identity.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Yes; a valid ticket freezes every application permission until ticket expiry</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. No; use the resumed identity as input and apply the current resource policy</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Yes; ticket confidentiality proves that the authorization policy is unchanged</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. No; TLS resumption is invalid whenever any application policy changes</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 5077 Section 4 allows ticket state to carry client-authentication information so the TLS server retains authentication capabilities on resumption, while Section 5.6 defines ticket lifetime as a server security and operational choice. It does not require application authorization to be snapshotted for that lifetime.
+
+            A: TLS session validity does not freeze resource-owner policy.
+            B: Correct. Current authorization is a separate application decision using the resumed identity as evidence.
+            C: Confidentiality protects ticket contents, not external policy state.
+            D: The application can deny the operation without declaring the TLS resumption itself invalid.
           </div>
         </div>
       </article>
