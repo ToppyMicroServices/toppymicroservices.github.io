@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7258",
       SKILL_SUBTITLE: "Pervasive Monitoring Is an Attack",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7258" target="_blank" rel="noopener noreferrer">RFC 7258: Pervasive Monitoring Is an Attack</a></li>
       </ul>
+      <p><strong>範囲:</strong> RFC 7258は, protocol artifactの無差別かつ非常に大規模な収集をtechnical privacy attackとして扱います. 単一の必須mechanism, 法的分類, 全operational monitoringの禁止を定める文書ではありません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -89,185 +90,110 @@
       </div>
     </section>
 
-    <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="technical threatとしての分類と法的評価を分けた上で, 収集の規模と観測されるartifactの両方を確認します.">
-        <header><h4>Q1: pervasive monitoringをattackとして扱うとは, 何を意味する</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 同意に基づくnetwork operationを含む全てのprotocol inspectionを, 排除すべきpervasive monitoringと分類する</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. contentやmetadataの無差別かつ非常に大規模な収集をprivacyへのtechnical attackとして評価し, 可能な範囲でmitigateする</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. threat modelをapplication contentのpassiveな収集だけに限定し, active measureとmetadata分析は別問題として外す</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+<section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="observerの主張する動機やlegal statusではなく, 収集規模とmethodでbehaviorを分類してください.">
+        <header><h4>Q1: protocol reviewで使うべきthreat分類はどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">commercial operatorが, ほぼ全userのheader, timing, packet size, relationship graphを長期間収集します. 収集はlegalでservice改善目的だと説明しています.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. government surveillanceだけがPMなので対象外</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. application payloadを収集しないため対象外</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. 規模とmetadata収集が該当するためPMとしてmodel化</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. 小規模なdiagnostic traceもすべて同じattackと扱う</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 7258は政治的スローガンではなく, protocol designのthreat modelを更新する文書です. legal statementやpassive eavesdroppingだけの話へ縮めずに扱います.
-
-            **pervasive monitoring** は, protocol artifactを無差別かつ非常に大規模に収集することです. active/passive wiretap, traffic analysis, cryptographic keyのsubversionも含み得ます.
-
-            IETFはPMをprivacyへのtechnical attackとして扱い, 可能なら著しく高コストまたは実行困難にするprotocol設計を目指します.
-
-            RFC 7258は, network managementのような有益なmonitoringとPMを区別しています. 全てのinspection activityを排除するという評価ではありません.
-            定義上の規模, contentとmetadataの収集, technical attackとしての分類, 条件付きのmitigation目標を含んでいます.
-            RFCのmodelにはactive/passive wiretap, traffic analysis, cryptographic keyのsubversionも含まれ, payloadの盗聴だけには限定されません.
-
-            mitigateは完全防止と同義ではありません. costを上げる, covertな監視をovertにする, 検出しやすくすることにも価値があります.
-          </div>
-        </div>
+A: RFC 7258 Section 1はstate, commercial, criminal actorまで動機の幅を挙げ, protocol mitigationでは動機を関連なしとします.
+B: PMはapplication contentだけでなくprotocol metadataとtraffic analysisも含みます.
+C: protocol artifactの無差別かつ非常に大規模な収集はtechnical threatに該当し, legal statusはその設計分類を変えません.
+D: PMは規模と無差別収集で特徴付けられ, Section 2は有益なmonitoringも別に認めます.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="content, metadata, linkability, 不要な長期identifierを, 別々の露出面として確認します.">
-        <header><h4>Q2: pervasive monitoringへの露出を減らしやすい設計選択はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. data in transitをdefaultで暗号化する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. feasibleならprotocol metadataを保護し, traffic-analysis signalを減らす</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. 不要なdataと長期的identifierを最小化する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. benignなmonitoringと悪意あるmonitoringを区別できるよう, stableなcleartext identifierを残す</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="同じ収集手法を使うapproved observerとmalicious observerをprotocol mechanismが区別できるか確認してください.">
+        <header><h4>Q2: approved monitorだけにuniversal observation hookを公開できる?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">protocol案がcleartext correlation identifierを追加します. benevolent operatorはabuse preventionに使い, malicious monitorには同じ能力を与えないと説明しています.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. はい. protocol fieldはobserverの善意を推測できる</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. いいえ. 露出は共有されるため必要性とabuse riskをreviewする</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. はい. intended operatorを文書化すれば二次利用を防げる</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. いいえ. したがって全operational monitoringを除去する</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            content encryptionは重要ですが, RFC 7258はprotocol metadata, traffic analysis, data minimizationも別の論点として挙げています.
-
-            protocolとprivacyの設計レビューで, content protection, metadata exposure, traffic-analysis signal, data minimizationを別々に確認します.
-
-            **protocol metadata** はheaderやidentifierなどの情報です. **traffic analysis** はcorrelation, timing, packet sizeなどから推測します. **data minimization** はprotocolに不要な情報を露出させない考え方です.
-
-            どれも無差別収集に使えるartifactを減らし, correlationを難しくする方向です.
-
-            in-transit encryption は PM 対策の基本です.
-            payloadが見えなくても, metadataやobservable traffic patternは相関に使われます.
-            不要なdataやstable identifierはcore functionに寄与せずlinkabilityを上げます.
-            stableなcleartext identifierはsessionやuserの相関を容易にします. observerの動機は, そのtechnical exposureを変えません.
-
-            RFC 7258は全protocolへ単一mechanismを指定していません. PMとの関連性とarchitectural decisionを説明できることが重要です.
-          </div>
-        </div>
+A: protocolは収集技術をobserverの動機で区別できません.
+B: Section 1は同じ手法が動機に関係なく使われ得るとします. Section 2はbeneficial monitoringとPM abuseの緊張を慎重に検討するよう求めます.
+C: 文書化はlater collectionやcorrelationを技術的に制約しません.
+D: Section 2はnetworkを管理不能にする結果も受け入れられないと明記し, 適切なbalanceの説明を求めます.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="payload encryptionで隠れるものと, observerやcompromised endpointに残る情報を分けて列挙します.">
-        <header><h4>Q3: pervasive monitoringに対するencryptionの寄与を最も正しく表すのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. payload contentを隠すため, peer authenticationとcompromised endpointの保護も同時に保証する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. payloadの露出と共に, traffic analysisに使えるobservable metadataも全て消す</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. content露出を減らすが, metadata, traffic analysis, endpoint compromiseは残り得る</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="payload, endpoint, timing, size, identifier, key compromiseを別々のobservation pathとしてinventoryしてください.">
+        <header><h4>Q3: payload encryptionはこの設計の完全なPM mitigation?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A2A transportはtask bodyを暗号化しますが, stable agent identifier, destination endpoint, message size, timingを露出し, 多数sessionで同じlong-term keyを使います.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. はい. confidential payloadがlinkabilityとtraffic analysisを消す</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. はい. encryptionがendpointとkey compromiseも防ぐ</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. いいえ. contentは保護するがmetadataとcorrelationは残る</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. いいえ. 全metadataを隠せないencryptionには価値がない</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            encryptionは多くのPM mitigationで重要ですが, 完全解と扱うと残る露出を見落とします.
-
-            protocolとprivacyのレビューで, content protection, metadata exposure, endpoint security, key managementを独立に評価します.
-
-            **traffic analysis** は通信量や timing から推測する攻撃, **endpoint compromise** は端点自体が侵害されることです. どちらも payload encryption だけでは消えません.
-
-            encryptionはobserverからcontentを隠せますが, metadata, correlation, peer authentication, compromised endpointの問題を自動では解決しません.
-
-            authenticationとendpoint integrityには別のpropertyとcontrolが必要です.
-            endpoint, timing, size, identifierなどはpayload encryption後も見え得ます.
-            benefitとresidual exposureの両方を表しています.
-
-            PM 対策では, 「何が見えなくなり, 何がまだ見えるか」を毎回分けて説明するのが重要です.
-          </div>
-        </div>
+A: stable identifier, endpoint, timing, sizeはcommunicationを引き続きlinkできます.
+B: Section 1はcryptographic keyのsubversionもPM手法に含め, endpoint securityとkey managementは別に残ります.
+C: Section 2はmetadata confidentiality, traffic analysis, data minimizationをcontent protectionだけでは解決しない論点として挙げます.
+D: mitigationは完全防止でなくてもよく, content confidentialityはresidual exposureがあってもattack costを上げます.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="cache要件がstable identifierを本当に必要とするかを問い, 運用者の意図ではなくlinkabilityを評価します.">
-        <header><h4>Q4: protocolがcacheのためuser identifierをcleartextで送っている. RFC 7258の発想で妥当な次の一手はどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. identifierを避ける, 暗号化する, linkabilityの低いtokenへ置き換えることを検討する</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. benignなcacheだけが目的だと文書化し, stable identifierはcleartextのまま残す</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. 本名を消せば相関できないため, 同じ安定性を持つcleartext pseudonymへ置き換える</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="routing requirementをidentifierのlifetimeとcross-context scopeから分けて検証してください.">
+        <header><h4>Q4: review findingに最も合うredesignはどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">brokerはorganizationをまたぎ何年もstableなcleartext agent identifierでmessageをrouteします. routingは1 exchange内の値を必要としますが, globalまたはlong-term stabilityは不要です.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. routingはbenign目的だと記載してstable値を保つ</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. feasibleならscopedでshort-livedなrouting handleを使う</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. globally stableなcleartext pseudonymへ置き換える</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. delivery不能でもrouting metadataをすべて削除する</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            cleartext identifierはcacheやanalyticsには便利でも, 大規模相関を極端に簡単にします. 便益とlinkabilityの増加を同じ設計判断で評価します.
-
-            **linkability** は別々の通信を同じ主体に結び付けやすい性質です. cleartext identifier はその linkability を強くします.
-
-            identifier を減らす, 暗号化する, linkability の低い token へ置き換える, という方向が RFC 7258 的に妥当です. 観測価値を下げることが狙いです.
-
-            相関しやすさを下げる方向の見直しになっています.
-            benignな目的でもobserverにとっての価値は下がらず, stable identifierはeventを結び付けます.
-            本名を同じstable pseudonymへ置き換えてもlinkabilityは残るため, それだけではcorrelationを防げません.
-
-            PM 対策では, 機能要件と privacy cost を同じテーブルで比較する必要があります.
-          </div>
-        </div>
+A: intended useはlarge-scale observerにとってのstable identifierの価値を下げません.
+B: handleのscopeとlifetimeを絞ればrouting機能を保ちつつcross-context linkabilityを下げます. RFC 7258 Section 2はdata minimizationとearly architectural reviewを挙げます.
+C: real nameを消してもreplacementがglobally stableならcorrelationは残ります.
+D: RFCはprotocol operationの破壊を要求しません. unavoidable disclosureは否定せず特定・最小化します.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="一律のmechanismや法的規則ではなく, 設計責任と関連性の判定を探します.">
-        <header><h4>Q5: 文書の意図として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. 全IETF仕様に専用のPM sectionと1つのmandatory privacy mechanismを要求する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. PMが関連する場合にprotocol設計者がそれを考慮し, 関連するarchitectural decisionを説明できるよう求める</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. application contentを暗号化した後は, PMをdeploymentまたは法的問題だけとして扱う</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="収集が可能なままでもcost, visibility, detectabilityの変化がthreatを変えるか評価してください.">
+        <header><h4>Q5: RFC 7258上, これはmitigationに当たる?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">protocol変更はwell-funded observerによる全traffic correlationを防止できません. 一方でcontentをdefault暗号化し, stable identifierを除き, 残る収集を大幅に高コストかつ検出しやすくします.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. いいえ. mitigationは完全なtechnical preventionを意味する</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. いいえ. 新しいcryptographic primitiveだけがmitigationになる</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. はい. technical changeなしでもprivacy記述だけで十分</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. はい. costとdetectabilityの上昇もattackをmitigateできる</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 7258は「全部onion routingにしろ」と命じる文書ではなく, IETFのdesign baselineを変える文書です. pervasive monitoringの関連性を評価し, architectural decisionを説明する責務を置きます.
-
-            **attacker class** として PM を入れる, とは security considerations の中で passive large-scale observer を真面目に想定することです.
-
-            文書の意図は, IETF に対して pervasive monitoring を security considerations と設計で考慮するよう促すことです.
-
-            RFCは専用sectionを不要と明記しており, 全protocolへ単一mechanismを義務付けていません.
-            関連性を判定し, 関連する設計判断を説明する責任を正しく表しています.
-            metadata, traffic analysis, key subversion, architectural exposureは, payload暗号化後もtechnical designの論点として残ります.
-
-            この文書の価値は, 各 RFC が「metadata や passive observer をどう扱うか」を書く習慣を強めたことにあります.
-          </div>
-        </div>
+A: RFC 7258 Section 2はmitigationが完全防止を意味しないと明記します.
+B: RFCは単一mechanismを指定せず, architectureやoperation visibilityの変更もthreatを変え得ます.
+C: statementだけではcost上昇, covert activityのovert化, detection向上は生じません.
+D: Section 2はattackが可能なままでも, これらを有意なmitigationとして挙げます.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^metadata$" data-difficulty="L2" data-hint="application contentと, 通信を記述するobservableな情報を分けて考えます.">
-        <header><h4>Q6: payloadが暗号化されても, 大規模相関を可能にし得る露出データを一般に何と呼ぶ (1語)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="required headingやunsupported declarationではなく, relevanceとarchitectural choiceの説明を探してください.">
+        <header><h4>Q6: publication前にauthorが示すべきものは何?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">新protocolはrelationship metadataを露出しますが, draftに“Pervasive Monitoring Considerations”というsectionはありません. authorはrequired headingがないため追加review不要と主張します.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. 何も不要. required headingがなければreviewは終わる</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. deployment monitoringがlegalであるというlegal opinion</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. PM relevanceの分析とdesign choiceの根拠</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. future implementationがmetadata leakを解決するというpromise</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            payloadが暗号化されていても, endpoint, timing, sizeなどは相関の材料として残ります. content confidentialityとmetadata exposureを分けて評価します.
-
-            traffic captureやprotocol reviewで, content以外に見えるendpoint, size, timing, identifierをinventoryします.
-
-            **metadata** は, payload 以外に見える通信先, size, timing, identifier, routing 情報などを広く指します.
-
-
-            PM は payload だけでなく metadata からも価値を引き出します. だから encryption だけで終わらず, metadata minimization が続きます.
-
-            metadataのconfidentiality, traffic-analysis resistance, data minimizationは, content encryptionと分けて設計判断を説明します.
-          </div>
-        </div>
+A: Section 2はdedicated sectionが不要としますが, analysis不要とはしていません.
+B: non-technicalなlegal/political questionはRFC 7258が述べるIETF scope外です.
+C: developerはPMとの関連性を説明し, relevantならarchitectural decisionを正当化する必要があります. late changeは高コストなためearly reviewが重要です.
+D: IETFが全implementationをcontrolしなくても, specificationは自身のarchitectural exposureについて責任を持ちます.</div></div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="監査目的の正当性と, 収集する識別子のlinkability・集約範囲・保存期間・二次利用可能性を分けて評価してください.">
-        <header><h4>Q7: security audit用のloggingを設計するとき, RFC 7258の考え方に最も合う判断はどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <p class="question-premise">Agent基盤でincident調査を可能にするため, task ID, tenant ID, key fingerprint, session proofを中央の検索可能なlogへ30日間保存する案が出ています.</p>
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. legitimateなaudit purposeならPMにならないとして, 将来の調査に役立ち得る全fieldをaccess control付きで保存する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. scaleやpurposeにかかわらず保存identifierはPMだとして, stored loggingを全面禁止しlive trafficだけで調査する</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. 調査に必要なfieldだけを残し, 相関可能性を脅威として評価して, access・retention・redaction・分離を設計する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="audit目的をlinkability, aggregation scope, retention, compromise, secondary-use riskから分けてください.">
+        <header><h4>Q7: monitoring tensionを最も適切に扱うlogging設計はどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A2A platformがfull grant, session proof, task ID, tenant ID, key fingerprintを1つのsearchable logへ30日保存する案です. responderはauthorization failureの調査が必要ですが, credential replayや全tenantのcorrelationは不要です.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. security目的ならmisuseされないため全fieldを保持する</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. 保存identifierはすべてPMなのでloggingを全面停止する</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. 必要なderived eventだけを分離・access制御・期限付きで記録する</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. full credentialを保持しstorage volumeだけ暗号化する</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 7258 Section 1がattackとして扱うのは, protocol artifactを無差別かつ非常に大規模に収集する**pervasive monitoring**です. Section 2は有益なmonitoringも認める一方, そのmechanismがPMへ悪用され得ると警告します. 正当なlogも, 識別子を長期間集約すれば, actor・tenant・taskを横断して相関するdata sourceになり得ます.
-
-            収集者の善意やsecurity目的だけでは, 漏えい・内部不正・目的外利用・将来の相関可能性は消えません. 「いつか使うかもしれない」はdata minimizationの根拠になりません.
-            RFC 7258はnetwork managementやattack detectionに役立つmonitoringまで一律に禁止していません. 運用可能性を失わせることも望ましい結論ではありません.
-            必要性をfield単位で説明し, linkabilityを抑え, access scopeとretentionを限定する設計は, monitoringの便益とPMへの悪用可能性の両方を扱います.
-
-            このdraftとの接点は, full grant, session proof, key fingerprint, tenant ID, task IDなどを原則として記録せず, security auditに必要な場合もretention limit, access control, redactionを要求する点です. logging自体を自動的にattackと断定するのではなく, **集約・相関・二次利用できる観測面**としてthreat modelへ入れます.
-          </div>
-        </div>
+A: legitimate purposeはcompromise, insider misuse, secondary use, correlation riskを消しません.
+B: Section 2はbeneficial monitoringを認め, networkを管理不能にすることはacceptableでないとします.
+C: derived failure eventでoperational valueを保ちつつ, data minimization, redaction, scoped access, separation, bounded retentionによりobservation surfaceを減らせます. これはSections 1-2のtensionを適用する判断であり, RFC 7258を詳細logging standardとして扱うものではありません.
+D: at-rest encryptionは一部storage threatには効きますが, collection量, privileged access, linkability, authorized decryption後のcredential replayを最小化しません.</div></div>
       </article>
     </section>
 
