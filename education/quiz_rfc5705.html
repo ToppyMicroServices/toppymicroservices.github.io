@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"Keying Material Exporters for TLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"Keying Material Exporters for TLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -47,6 +47,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">References (URLs)</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc5705" target="_blank" rel="noopener noreferrer">RFC 5705: Keying Material Exporters for TLS</a></li></ul>
+      <p><strong>Scope:</strong> These questions use the RFC 5705 construction with TLS 1.2. TLS 1.3 defines its exporter construction in RFC 8446. RFC 5705 supplies keying material; an application profile must still define context encoding, proof semantics, key handling, and gateway trust.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -63,12 +64,12 @@
           <p class="question-premise">Two TLS 1.2 peers want to derive the same application-specific 32-byte value from their established TLS session.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Only the negotiated cipher suite and desired output length</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. The TLS session, label, optional context and its presence flag, and output length</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. The TLS session, label, context or its absence, and output length</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. The peer certificate subject, HTTP authority, and token audience</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. Any shared application string, provided both peers call it an exporter</label>
           </fieldset><div class="explain">**Explanation:**
 A: The cipher suite participates through the TLS session, but it does not identify the application purpose or context.
-B: RFC 5705 Section 4 defines the exporter using TLS-session state plus a label, optional context and its presence flag, and a requested length. Both peers need the same inputs for the same output.
+B: RFC 5705 Section 4 defines the exporter using TLS-session state plus a label, a context value when provided, and a requested length. Absence of context uses a different construction from a provided zero-length context. Both peers need the same inputs for the same output.
 C: An application may encode selected semantics into its context, but those fields are not implicit exporter inputs.
 D: A shared string not derived with the specified exporter construction is not exported keying material.</div>
         </div>
@@ -122,7 +123,7 @@ D: Length manipulation is not a substitute for disjoint purpose labels and can c
         </div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Independence from TLS traffic keys does not mean an exporter value remains secret after the application discloses that exact value.">
-        <header><h4>Q5: May an exporter-derived MAC key be logged?</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q5: Does RFC 5705 independence make logging this MAC key safe?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">An A2A service derives an exporter value and uses it directly as the MAC key for request proofs. For diagnostics it writes that value to a log readable by the operations team. The team argues that RFC 5705 exporter independence makes this safe.</p>
           <fieldset class="choices">

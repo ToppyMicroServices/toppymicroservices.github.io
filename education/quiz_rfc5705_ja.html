@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"TLS Keying Material Exporters","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"TLS Keying Material Exporters","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -47,6 +47,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">参照（URL）</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc5705" target="_blank" rel="noopener noreferrer">RFC 5705: TLS Keying Material Exporters</a></li></ul>
+      <p><strong>範囲:</strong> ここではTLS 1.2とRFC 5705のconstructionを扱います.TLS 1.3のexporter constructionはRFC 8446で定義されます.RFC 5705はkeying materialを提供しますが,context encoding,proof semantics,key handling,gateway trustはapplication profileが定義します.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -63,12 +64,12 @@
           <p class="question-premise">二つのTLS 1.2 peerが, 確立済みTLS sessionから同じapplication固有の32-byte値を導出したいと考えています. </p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. negotiated cipher suiteと要求output lengthだけ</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. TLS session, label, optional contextとpresence flag, output length</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. TLS session,label,contextまたはその不在,output length</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. peer certificate subject, HTTP authority, token audience</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. 双方がexporterと呼ぶ任意のshared application string</label>
           </fieldset><div class="explain">**解説:**
 A: cipher suiteはTLS sessionを通じて関与しますが, application purposeやcontextは識別しません.
-B: RFC 5705 Section 4は, TLS-session state, label, optional contextとそのpresence flag, 要求lengthからexporterを定義します. 同じoutputには双方で同じinputが必要です.
+B: RFC 5705 Section 4は,TLS-session state,label,提供される場合のcontext value,要求lengthからexporterを定義します.contextなしのconstructionは,zero-length contextを提供する場合と異なります.同じoutputには双方で同じinputが必要です.
 C: applicationがcontextへ選択したsemanticsをencodeする場合はありますが, これらは暗黙のexporter inputではありません.
 D: specified exporter constructionで導出しないshared stringはexported keying materialではありません. </div>
         </div>
@@ -122,7 +123,7 @@ D: lengthの操作はdisjoint purpose labelの代替にならず, materialがove
         </div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="TLS traffic keyからのindependenceは, applicationがそのexporter値自体をdiscloseした後もsecretであるという意味ではありません. ">
-        <header><h4>Q5: exporter-derived MAC keyをlogへ記録してよいか</h4><span class="type">単一選択</span></header>
+        <header><h4>Q5: RFC 5705のindependenceにより,このMAC keyのloggingは安全になるか</h4><span class="type">単一選択</span></header>
         <div class="body">
           <p class="question-premise">A2A serviceはexporter値を導出し, request proofのMAC keyとして直接使います. diagnosticsのためoperations teamが読めるlogへ値を記録します. teamはRFC 5705のexporter independenceにより安全だと主張しています. </p>
           <fieldset class="choices">
