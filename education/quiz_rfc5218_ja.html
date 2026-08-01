@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 5218",
       SKILL_SUBTITLE: "Protocolが採用される条件",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -56,6 +56,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">References (URLs)</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc5218" target="_blank" rel="noopener noreferrer">RFC 5218: What Makes for a Successful Protocol?</a></li></ul>
+      <p><strong>範囲:</strong> RFC 5218は,case studyに基づくInformationalな分析です.success factorは設計reviewのための問いであり,protocolの適合要件でもadoptionの保証でもありません.security claimは別の仕様と検証を必要とします.</p>
     </section>
     <section class="card panel" aria-label="Quiz settings">
       <div class="row" aria-label="Answer reveal controls">
@@ -75,109 +76,88 @@ publicationはdeployment successではありません.
 RFC 5218はoriginal goalの達成とwide deploymentの両方を評価します.wideはinter-domainに限らず,intra-domainでも構いません.
 実装証拠は重要ですが,一つのlab testは広い利用を示しません.</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="technical capability単独ではなく,同じactorにとってのbenefitとadoption costを比較してください.">
-        <header><h4>Q2: 月5ドル節約できるprotocolだが,operatorには100万ドルのcoordinated upgradeが必要である.弱いfactorはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. coordinated upgradeの費用だけからhard scalability boundが必ずあると判断する</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. 高いadoption costだけからopen specificationにできないと判断する</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. adoption costがbenefitを上回るためpositive net valueが弱い</label>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="誰がcostと変更を負担し,誰がbenefitを受けるか,全員の移行前にadopterが価値を得られるかを確認してください.">
+        <header><h4>Q2: RFC 5218のpositive net value分析から,最も適切に導けるreview結果はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">あるA2A profileはclient software vendorにbenefitを与えます.しかし,実際のagentがbenefitを得る前に,全operatorがgatewayとidentity providerを交換する必要があります.移行を約束したoperatorはいません.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. ecosystem全体の総benefitが正なら,costを負担するactorにlocal benefitがなくても十分である</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. costを負うactorにearly local valueがなく,initial adoptionにはriskがある</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. RFC 5218ではimplementationやdeployment前にfailureを確定できるため,このprofileはすでに失敗している</label>
         </fieldset><div class="explain">**Explanation:**
-scale limitは別の問いです.
-specification accessとcost-benefit resultは別です.
-deployment・operation costよりbenefitが大きい必要があり,costとbenefitがadopterに整合しているほど採用しやすくなります.</div></div>
+RFC 5218 Sections 2.1.1と2.1.2は,変更が必要な各organizationでのpositive net valueとearly adopterのbenefitを重視するため,Bは結果を断定せず具体的な弱点を示しています.Aはcostとbenefitの不一致を無視します.Cは強すぎます.Section 1.4は,implementation,deployment,useの機会と十分な時間なしにfailureを判断できないとします.これらは経験的なsuccess factorであり,適合規則ではありません.</div></div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="ecosystem全体が変わる前に,early adopterがbenefitを得られるかを確認してください.">
-        <header><h4>Q3: 最もincrementally deployableなrolloutはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. 一つのorganizationだけで有効化して価値を得られ,legacy peerも動作を継続できる</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. 全network,vendor,endpointが同じUTC時刻に切り替える</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. early adopterが全costを負担し,benefitはnon-adopterだけが得る</label>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="coordination boundaryとearly-adopter valueを比べた上で,compatibilityによってsecurity semanticsが変わらないかを確認してください.">
+        <header><h4>Q3: incremental deploymentと明示的なsecurity boundaryを最もよく両立するrolloutはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">sender-bound authorization modeはoptionalです.一つのadministrative domainが導入しつつ,legacy peerとは従来のtask交換を続けたいとします.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. modeをnegotiateし,両peerが選択した場合だけsender bindingを強制し,それ以外は文書化したlegacy semanticsを維持する</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. 全external agent,broker,identity providerが同時cutoverで移行した後だけ有効にする</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. sender bindingをadvertiseするが,verification失敗時はunbound legacy credentialを黙って同等に扱う</label>
         </fieldset><div class="explain">**Explanation:**
-universal support前に価値があり,backward compatibilityがcoordination costを下げます.
-flag dayは最悪のdeployment dependencyです.
-costとbenefitが逆に配分され,adoption incentiveがありません.</div></div>
+Aではearly adopterがintra-domain valueを得られ,flag dayを避け,fallback semanticsも明示されます.これがSection 2.1.2のdeployment factorです.Bはcoordination dependencyを最大化します.Cはfailure時のsecurity claimを変えます.RFC 5218はその同等性を認めておらず,security profile側で決める事項です.incremental deployabilityはadoption見込みを高めるfactorであり,securityそのものではありません.</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,d" data-difficulty="L2" data-hint="誰がspecificationを読めるか,codeを試せるか,original creatorが離れた後も実装できるかを考えてください.">
-        <header><h4>Q4: protocol adoptionを助けるopennessはどれか.複数選択</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 自由に利用できるimplementation code</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="b"> B. 世界中からdistribution restrictionなしに読めるspecification</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="c"> C. 全implementationと利用に単一vendorのmandatory licenseを要求する</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="d"> D. original creatorが離れても残るstable specification</label>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="benefitとdeployabilityは同程度なので,RFC 5218のtie-breakerを比較し,相関を確実性へ変えないでください.">
+        <header><h4>Q4: RFC 5218を過大解釈せずに適用した比較はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">二つのA2A discovery profileは同程度のbenefitとdeployment costを持ちます.Aにはstableなpublic specificationとfreely availableなimplementationがあります.Bは一vendorのper-use licensed SDKでのみ利用できます.どちらにもdeployment evidenceはありません.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. Aのinitial-adoption factorは強いが,どちらのsuccessも保証されない</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. centralized controlがopen codeとunrestricted useを代替するため,Bのinitial-adoption条件が強い</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. public specificationとcodeは両方の性質を含意するため,Aのinteroperabilityとsecurityは証明済みである</label>
         </fieldset><div class="explain">**Explanation:**
-
-open codeはimplementationを試し,testし,改善するcostを下げます.
-世界中からrestrictionなしに読めるspecificationは,独立実装を可能にします.
-single-vendorのmandatory licenseはadoption costとcontrol dependencyを増やします.
-stabilityとpermanenceがあれば,original creatorが離れた後もinteroperabilityを維持できます.</div></div>
+Section 3は,benefitとdeployabilityが同程度ならopen specificationとcodeが重要になるとします.Sections 2.1.3–2.1.5もcode availability,usage restrictionからの自由,specification availabilityを挙げます.したがってAが根拠のある確率的な比較です.Bは根拠なくfactorを逆転させます.Cはopennessを検証済みのinteroperabilityやsecurityと混同します.RFC 5218はどちらも保証しません.</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="adoptionを始めるfactorと,想定外のscale・用途で利用を維持するfactorを分けてください.">
-        <header><h4>Q5: RFC 5218のcase-study conclusionは,good technical designとinitial successの関係をどう説明するか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. immediate valueやmigration pathがなくてもtechnical eleganceがinitial adoptionを決める</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. initial adoptionはreal needとincremental deploymentに左右され,good designは後のinteroperabilityにも効く</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. technical designはimplementationだけに効き,deployment後のinteroperabilityやextensionには影響しない</label>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="initial-adoption factorと,adoption後のinteroperabilityやsurvivalを支えるqualityを分けてください.">
+        <header><h4>Q5: RFC 5218のcase studyから根拠をもって述べられるdesign reviewはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">Profile Aはtechnicalにcleanですが,全brokerのcoordinated replacementを必要とします.Profile Bはless elegantですが,一domainのurgent nicheを解決し,既存のunmodified applicationの下で動作します.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. RFC 5218ではtechnical qualityがdeployment valueよりinitial adoptionを支配するため,Aが勝つと予測すべきである</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. Bのinitial-adoption条件が強い可能性があるが,design qualityはinteroperabilityや後の成長に引き続き重要である</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. Bがearly userを得れば,technical weaknessはcontinued successやwild successへ影響しなくなる</label>
         </fieldset><div class="explain">**Explanation:**
-value,deployability,opennessによってtechnically inferiorなproposalが勝つこともあります.
-real needとincremental deploymentをinitial factorとして重視しつつ,simplicity,clarity,robustnessも重要なdesign qualityとします.
-qualityを否定せず,successのstageを分けているだけです.</div></div>
+Sections 2.1.1,2.1.2,3はreal needとincremental deployabilityを最も強いinitial factorとするため,Bが慎重な予測です.Section 2.1.7はsimplicity,modularity,robustness,clarityを,特にinitial success後も有用なqualityとします.Aは観察された重み付けを逆転させます.Cはearly adoptionをcontinued successの証明とみなし,Sections 1.3と2.2を無視します.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="extensibilityはoriginal design外の用途に役立ちますが,generic mechanismにもcostがあります.">
-        <header><h4>Q6: RFC 5218の考え方で,extensibilityが最も明確に正当化される状況はどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. purposeやcomplexityに関係なく,option pointを追加できるなら必ず追加する</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. successful protocolはpublication後に変更できないので,extensibilityは使わない</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. 将来の広い利用がdesign goalで,extension mechanismのcostも理解している</label>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="broad reuseが意図したgoalか,extension mechanismが理解済みのinvariantを許容可能なcostで保つかを検討してください.">
+        <header><h4>Q6: RFC 5218に基づく最も妥当なextensibility判断はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">一種類の固定recordだけを運ぶ,narrowly scopedなaudit-export protocolがあります.将来unrelated workflowへ再利用されるかもしれないという理由だけで,arbitrary executable extension payloadを加える提案が出ました.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. RFC 5218はdeployment前に全protocolのextensibility最大化を要求するため採用する</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. concreteなneedを求め,complexityとinvariant riskを比較する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. specializationではlater correctionやcompatible evolutionが望ましくないため,全extensionを拒否する</label>
         </fieldset><div class="explain">**Explanation:**
-特にspecialized protocolではextension machineryもfreeではありません.
-extensibilityはwild successや後の修正を可能にします.
-general-purpose protocolでは利点が明確ですが,specialized protocolでは反射的に追加せず慎重に判断します.</div></div>
+Section 2.2.1はextensibilityをoriginal purpose外の利用と結び付ける一方,specialized protocolでは慎重に検討すべきだとするため,Bが実際のtrade-offです.Aは存在しないrequirementを作り,costを無視します.Cも絶対的です.extensionは後のuseやrepairを可能にする場合があります.RFC 5218はapplication固有のmechanismを選ばず,executable payloadを認めてもいません.</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="想定scale付近にfixed limitやperformance kneeがないかを探してください.">
-        <header><h4>Q7: discovery protocolが全participantへbroadcastし,target deploymentに近い5,000 nodeで急激にcollapseする.不足しているwild-success factorはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. intended scale付近のhard scalability boundがないこと</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. 全failureへhuman-readable error pageを返すこと</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. 全messageを一つのprogramming languageで実装すること</label>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="現在のbounded targetを満たすことと,original design spaceを越えて成長する余地を分けてください.">
+        <header><h4>Q7: scaling evidenceへ最も正確に対応したreview findingはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">agent-discovery protocolは全participantへbroadcastします.testでは5,000 nodeでbroadcast stormによるcollapseが起き,planned first deploymentは4,500 nodeです.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. envisioned scale付近にperformance kneeがあり,first deploymentが収まってもwild successの見込みを弱める</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. first targetを満たせば,scaleがcontinued successやwild successを制限する可能性はなくなる</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. broadcast algorithmを変えなくても,generic extension fieldを追加すればconcernは解消する</label>
         </fieldset><div class="explain">**Explanation:**
-design target付近のbroadcast-storm型のperformance kneeは,original spaceを越える成長を止めます.
-diagnosticではunderlying scale limitを消せません.
-implementation languageは無関係で,freedom of implementationを下げます.</div></div>
+Section 2.2.2は,envisioned scale付近でmeltdownを起こすperformance “knee”をhard scalability boundとして明示するため,Aが正確です.Bはinitially usableなrangeを,より大きなscaleへの余地と混同します.Cはsyntactic extensibilityをremedyと混同し,algorithmを変えていません.RFCはrisk factorを示しており,mandatoryなthresholdを定めてはいません.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="original design envelope内では妥当だったassumptionが,unexpected useでも成立するかを考えてください.">
-        <header><h4>Q8: protocolが想定したpurposeとscaleを大幅に越えて再利用された.reviewerが予期すべきことはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. wider deploymentが全new purposeとscaleを検証するためoriginal assumptionを変更せず使える</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. side effect,scaling failure,incompatible extension,attacker interestの増加が起こり得る</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. popularityがprotocol correctnessを証明するためmaintenanceとthreat reviewは不要になる</label>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="new purposeとscaleをoriginal design spaceへ対応させ,どのassumptionとinvariantに新しいevidenceが必要かを特定してください.">
+        <header><h4>Q8: wild successをdesign-review problemとして扱うresponseはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">low-value internal job向けのtask-approval protocolが,paymentとmedical-device actionにも使われ始めました.implementerは互換性のないfieldを追加し,attackerは曖昧なapprovalから利益を得られます.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. popularityを,original authorization assumptionがnew purposeにも変更なく適用できる証拠とみなす</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. revisionするとearlier successを否定するため,original protocolをfreezeする</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. purpose固有のassumption,invariant,scale,threatを再評価し,new evidenceが必要とする範囲でrevisionまたはconstrainする</label>
         </fieldset><div class="explain">**Explanation:**
-original purposeに適切なdecisionが別用途では不適切なことがあります.
-RFC 5218はperformance problem,invariantを壊す変更,attacker value増加を挙げ,「death by success」の可能性を示します.
-wild successはprotocolをrevision・hardeningする理由にもなります.</div></div>
+Sections 1.2と1.3はwild successをoriginal purposeまたはscaleを越えた成長と定義し,不適切になったassumption,invariantを壊す変更,performance problem,attacker value増加を警告します.Cはpopularityからsafetyを推論せず,そのriskへ応えます.Aは根拠のない推論です.Bも誤りで,Section 1.3はwild successがrevisionの時期を示す場合があるとします.RFCはreviewの枠組みを示しますが,paymentやmedical authorization policyは定めません.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="initial popularityは攻撃価値と,置き換えcostの両方を増やします.">
-        <header><h4>Q9: known security flawがあるprotocolのuserが急増している.RFC 5218に最も合うresponseはどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. popularityをthreat mitigationの証拠とみなし,adoptionが止まるまでrepairを延期する</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. changeの方が危険としてbackward-compatibleなsecurity improvementも定義できないようfreezeする</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. 現在のthreat mitigationを評価し,flawを修正できるdeployable pathを残す</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="early adoptionが示すことと,installed baseがattackerの悪用前にmitigationをdeployできるかを分けてください.">
+        <header><h4>Q9: initial successとsurvivalを適切に分けた結論はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">widely deployedなprotocolにcredential-replay flawがあります.negotiated extensionで修正できますが,大半のdeployed peerはまだ実装していません.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. wide deploymentは,replay threatが全later useで十分mitigateされている証拠である</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. early successはflawと両立し得るが,continued successにはdeployable mitigationが必要である</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. peerがrepairを実装・必須化する前でも,extension pointの存在だけでmitigationは証明される</label>
         </fieldset><div class="explain">**Explanation:**
-popular protocolはより魅力的なattack targetになります.
-evolveできないとknown flawを直しにくくなります.
-initial adoptionとattack下でのsurvivalを分け,security flawとlimited extensibilityの組合せを特に危険と捉えます.</div></div>
+Sections 2.2.3と3は,vulnerabilityがinitial adoptionを妨げない場合がある一方,popular protocolはより価値の高いtargetになると観察します.extensibilityが役立つのはflawを実際に修正できる場合なので,Bはその区別と残るdeployment問題を示します.Aはpopularityをsecurity evidenceとみなします.Cはpotential extensibilityを,installed baseがdeployもenforceもしていないeffective mitigationと混同します.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="一participantが,ecosystem同時移行を待たずに価値を得られるrolloutを選んでください.">
-        <header><h4>Q10: 新しいAgent-to-Agent security profileのadoption条件が最も良いlaunch planはどれか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="need,early-adopter value,coordination,openness,repair pathを比べ,adoption indicatorをsecurity claim自体と分けてください.">
+        <header><h4>Q10: RFC 5218が支持するcombined assessmentはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはsender-constrained task authorizationを追加します.既存agentはまだ実装していません.</p>
+          <p class="question-premise">Plan Aはsender-bound authorization profileとtest codeを公開します.一domainがurgent useでnegotiateでき,legacy exchangeは明示的に弱いsemanticsを維持します.Plan Bのnew mechanismはより強い一方,closed SDKであり,全agent,broker,gateway,identity providerの同時migrationを必要とします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. 一domainだけでも価値を得られるbounded modeを用意し,capabilityを交渉し,legacy peerとも安全にinteroperateする</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. 全agent, broker, identity provider, network operatorへ同時migrationを要求し, legacy interoperabilityを無効にする</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. coordinated ecosystem rolloutのcommitmentが集まるまでspecificationとtest implementationを非公開にする</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Aのinitial-adoption factorは強いが,downgrade behaviorとsender-binding guaranteeには独立したsecurity reviewが必要である</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. stronger cryptographyはcoordination,licensing,early-adopter valueの遅れを上回るため,Bは必ず成功する</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. legacy interoperabilityが一つでも残るprotocolはRFC 5218でincrementally deployableと認められないため,Aは不適格である</label>
           </fieldset><div class="explain">**Explanation:**
-RFC 5218 Section 2.1.2は, Internet全体の同時変更なしにearly adopterが価値を得る性質をincremental deployabilityと説明します. bounded modeはcompatibilityも明示します.
-flag dayは大きなadoption barrierです.
-非公開では独立した評価・実装ができません.RFC 5218はsuccessを保証しませんが,これらの条件が大きく異なると示します.</div>
+Plan Aはreal needへ対応し,一adopterへearly valueを与え,flag dayを避け,open specificationとcodeを提供します.これらはSections 2.1と3のinitial factorなので,Aが根拠のあるadoption比較です.同時にadoption条件からsecurityを推論していません.Bはtechnical qualityを過大評価し,cost,restriction,coordinationを無視します.Cはincremental deployabilityを誤解しています.各modeの異なるguaranteeが明示されれば,compatible operationはdeployabilityを高め得ます.RFC 5218はadoptionもsender-binding correctnessも予測しません.</div>
         </div>
       </article>
     </section>

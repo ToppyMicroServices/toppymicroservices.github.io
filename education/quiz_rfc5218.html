@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 5218",
       SKILL_SUBTITLE: "What Makes for a Successful Protocol?",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -56,6 +56,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">References (URLs)</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc5218" target="_blank" rel="noopener noreferrer">RFC 5218: What Makes for a Successful Protocol?</a></li></ul>
+      <p><strong>Scope:</strong> RFC 5218 is an Informational case-study analysis. Its success factors are design-review questions, not protocol conformance requirements or guarantees of adoption. Security claims still require their own specification and verification.</p>
     </section>
     <section class="card panel" aria-label="Quiz settings">
       <div class="row" aria-label="Answer reveal controls">
@@ -75,109 +76,88 @@ publication is not deployment success.
 RFC 5218 evaluates both achievement of original goals and wide deployment; “wide” can be intra-domain.
 implementation evidence matters, but one lab test does not establish broad use.</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Evaluate benefits and adoption costs for the same actors, not technical capability in isolation.">
-        <header><h4>Q2: A protocol saves an operator $5 per month but requires a $1 million coordinated upgrade. Which factor is weak?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. The protocol necessarily has a hard scalability bound</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. The protocol is necessarily impossible to specify openly</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. Positive net value, because the adoption cost overwhelms the benefit</label>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify who must pay and change, who receives the benefit, and whether an adopter receives value before everyone else migrates.">
+        <header><h4>Q2: Which review conclusion best follows from RFC 5218's positive-net-value analysis?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An A2A profile benefits client-software vendors, but every operator must replace its gateway and identity provider before any deployed agent receives that benefit. No operator has committed to the migration.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Positive aggregate ecosystem value is sufficient even when the actors bearing the cost receive no local benefit</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Initial adoption is at risk because required actors bear upfront cost without early local value; the value chain or rollout needs redesign</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. The profile has already failed, because RFC 5218 permits a definitive failure finding before implementation and deployment</label>
         </fieldset><div class="explain">**Explanation:**
-scale limits are a different question.
-specification access does not determine this cost-benefit result.
-a protocol needs benefits that outweigh deployment and operational costs, preferably with costs and benefits aligned for adopters.</div></div>
+RFC 5218 Sections 2.1.1 and 2.1.2 favor positive net value at each organization required to change and benefit for early adopters, so B identifies the concrete adoption weakness without predicting the outcome. A ignores cost/benefit misalignment. C is too strong: Section 1.4 says failure cannot be determined before sufficient time and opportunity for implementation, deployment, and use. These are empirical success factors, not conformance rules.</div></div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Ask whether an early adopter gains anything before the rest of the ecosystem changes.">
-        <header><h4>Q3: Which rollout is most incrementally deployable?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. One organization can enable it and gain value while legacy peers continue to work</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. Every network, vendor, and endpoint must switch at the same UTC second</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. Early adopters pay the full cost while only non-adopters receive the benefit</label>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Compare the coordination boundary and early-adopter value; then check whether compatibility changes the claimed security semantics.">
+        <header><h4>Q3: Which rollout best combines incremental deployment with an explicit security boundary?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A sender-bound authorization mode is optional. One administrative domain wants to deploy it while continuing ordinary task exchanges with legacy peers.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Negotiate the mode; enforce sender binding only when both peers select it; preserve documented legacy semantics otherwise</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Enable it only after every external agent, broker, and identity provider migrates in one coordinated cutover</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. Advertise sender binding but silently accept an unbound legacy credential as equivalent whenever verification fails</label>
         </fieldset><div class="explain">**Explanation:**
-early adopters obtain value without universal support, and backward compatibility lowers coordination cost.
-a flag day is the worst-case deployment dependency.
-misaligned costs and benefits remove the incentive to adopt.</div></div>
+A gives an early adopter intra-domain value, avoids a flag day, and keeps fallback semantics explicit, matching Section 2.1.2's deployment factors. B maximizes coordination dependencies. C changes a security claim on failure; RFC 5218 does not authorize that equivalence, which belongs in the security profile. Incremental deployability improves adoption prospects, not security by itself.</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,d" data-difficulty="L2" data-hint="Consider who can read the specification, try code, and continue implementation after the original creator leaves.">
-        <header><h4>Q4: Which forms of openness can improve a protocol's chance of adoption? Select all that apply.</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Freely available implementation code</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="b"> B. A specification available worldwide without distribution restrictions</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="c"> C. A mandatory license from one vendor for every implementation and use</label>
-          <label class="choice"><input type="checkbox" name="Q4" value="d"> D. A stable specification that remains available after its original creator leaves</label>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Benefit and deployability are comparable, so examine RFC 5218's tie-breakers without turning correlation into certainty.">
+        <header><h4>Q4: Which comparison applies RFC 5218 without overstating it?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">Two A2A discovery profiles have comparable benefit and deployment cost. A has a stable public specification and freely available implementation. B is available only through one vendor's per-use licensed SDK. Neither has deployment evidence.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. A has stronger initial-adoption factors, but the evidence does not guarantee that either profile will succeed</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. B is stronger initially because centralized control substitutes for open code and unrestricted use</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. A is proven interoperable and secure because public specifications and code imply both properties</label>
         </fieldset><div class="explain">**Explanation:**
-
-Open code lowers the cost of trying, testing, and improving an implementation.
-Worldwide unrestricted specification access permits independent implementation.
-Mandatory single-vendor licensing increases adoption cost and creates a control dependency.
-Stability and permanence let implementers keep interoperating after the original creator leaves.</div></div>
+Section 3 says open specifications and code become significant when benefit and deployability are comparable; Sections 2.1.3–2.1.5 also identify code availability, freedom from usage restrictions, and specification availability. A is therefore the supported probabilistic comparison. B reverses those factors without evidence. C confuses openness with verified interoperability and security, neither of which RFC 5218 guarantees.</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Distinguish factors that start adoption from those that sustain use at unexpected scale and scope.">
-        <header><h4>Q5: What does RFC 5218's case-study conclusion say about good technical design and initial success?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. Technical elegance drives initial adoption even when deployment offers no immediate value or usable migration path</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. Initial adoption usually depends more on real need and incremental deployment; good design still aids later interoperability</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. Technical design affects implementation only, not interoperability, extension, or long-term operation after deployment</label>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate initial-adoption factors from qualities that support interoperability and survival after adoption.">
+        <header><h4>Q5: Which design-review statement is justified by RFC 5218's case studies?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">Profile A is technically cleaner but needs coordinated replacement of all brokers. Profile B is less elegant, solves an urgent niche for one domain, and works beneath existing unmodified applications.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. A should win initially because technical quality dominates deployment value in RFC 5218</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. B may be easier to adopt initially; its design quality still matters after adoption</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. If B gains early users, its technical weaknesses can no longer affect continued or wild success</label>
         </fieldset><div class="explain">**Explanation:**
-technically inferior proposals can win when they provide value, deploy easily, or are more open.
-RFC 5218 ranks real need and incremental deployment as key initial factors while retaining simplicity, clarity, and robustness as important design qualities.
-the RFC does not dismiss technical quality; it distinguishes stages of success.</div></div>
+Sections 2.1.1, 2.1.2, and 3 identify real need and incremental deployability as the strongest initial factors, making B the careful prediction. Section 2.1.7 still treats simplicity, modularity, robustness, and clarity as valuable, especially after initial success. A reverses the observed weighting. C wrongly treats early adoption as proof of continued success and ignores Sections 1.3 and 2.2.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Extensibility helps a protocol enter uses outside its original design, but generic machinery also has a cost.">
-        <header><h4>Q6: When is extensibility most clearly justified under RFC 5218?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. Whenever extra option points can be added, regardless of purpose or complexity</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. Never, because successful protocols cannot change after publication</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. When broader future use is a design goal and the extension mechanism's cost is understood</label>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask whether broad reuse is intended and whether the extension mechanism preserves understood invariants at an acceptable cost.">
+        <header><h4>Q6: What is the most defensible extensibility decision under RFC 5218?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A narrowly scoped audit-export protocol carries one fixed record type. A proposal adds arbitrary executable extension payloads solely because it might someday be reused for unrelated workflows.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept them because RFC 5218 requires every protocol to maximize extensibility before deployment</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Require a concrete need and weigh it against complexity and invariant risk</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Reject all extensions because specialization makes later correction or compatible evolution undesirable</label>
         </fieldset><div class="explain">**Explanation:**
-extension machinery is not free, especially for a specialized protocol.
-extensibility can enable wild success and later fixes.
-general-purpose protocols benefit most clearly, while specialized protocols should add extensibility deliberately rather than reflexively.</div></div>
+Section 2.2.1 links extensibility to use beyond the original purpose but says it should be carefully considered for specialized protocols, so B states the actual trade-off. A invents a requirement and ignores cost. C is also absolute: extensions can enable later uses and repairs. RFC 5218 neither chooses an application-specific mechanism nor authorizes executable payloads.</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Look for a fixed limit or performance knee near the scale the protocol is expected to reach.">
-        <header><h4>Q7: A discovery protocol broadcasts to every participant and collapses abruptly at 5,000 nodes, close to its target deployment. Which wild-success factor is missing?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. Freedom from a hard scalability bound near the intended scale</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. A human-readable error page for every failure</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. A rule requiring all messages to use one programming language</label>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Distinguish fitting today's bounded target from retaining room to grow beyond the original design space.">
+        <header><h4>Q7: Which review finding most precisely addresses the scaling evidence?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An agent-discovery protocol broadcasts to every participant. Tests show a broadcast-storm collapse at 5,000 nodes; the planned first deployment has 4,500.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. The 5,000-node knee weakens wild-success prospects even if the first deployment fits</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Meeting the first target establishes that scale can no longer limit continued or wild success</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. Adding a generic extension field removes the concern without changing the broadcast algorithm</label>
         </fieldset><div class="explain">**Explanation:**
-a broadcast-storm “knee” near the design target prevents growth beyond the initial space.
-diagnostics do not remove the underlying scaling limit.
-implementation language is unrelated and would reduce freedom of implementation.</div></div>
+Section 2.2.2 explicitly treats a performance “knee” causing meltdown near the envisioned scale as a hard scalability bound, so A is precise. B confuses an initially usable range with room for much larger scale. C confuses syntactic extensibility with a remedy; the algorithm is unchanged. The RFC identifies a risk factor, not a mandatory threshold.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Unexpected use can expose assumptions that were reasonable only inside the original design envelope.">
-        <header><h4>Q8: A protocol is reused far beyond its intended purpose and scale. What should reviewers expect?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. Original assumptions become valid unchanged because wider deployment validates every new purpose and scale</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. New side effects, scaling failures, incompatible extensions, and greater attacker interest may appear</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. Maintenance and threat review become unnecessary because popularity demonstrates protocol correctness</label>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Map the new purpose and scale against the original design space, then identify which assumptions and invariants need renewed evidence.">
+        <header><h4>Q8: Which response treats wild success as a design-review problem?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A task-approval protocol designed for low-value internal jobs is now used for payments and medical-device actions. Implementers added incompatible fields, and attackers can profit from ambiguous approvals.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. Treat popularity as evidence that the original authorization assumptions apply unchanged to the new purposes</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. Freeze the original protocol because revision would disprove its earlier success</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. Re-evaluate assumptions, invariants, scale, and threats; revise or constrain the protocol where evidence requires</label>
         </fieldset><div class="explain">**Explanation:**
-design decisions appropriate to the original purpose may be wrong elsewhere.
-RFC 5218 calls out performance problems, invariant-breaking modifications, and increased attacker value—potentially “death by success.”
-wild success can be a reason to revise and harden a protocol.</div></div>
+Sections 1.2 and 1.3 define wild success as growth beyond the original purpose or scale and warn of inappropriate assumptions, invariant-breaking changes, performance problems, and increased attacker value. C addresses those risks without inferring safety from popularity. A makes that unsupported inference. B is wrong because Section 1.3 says wild success may indicate that revision is timely. The RFC frames the review; it does not supply payment or medical authorization policy.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Initial popularity increases both the value of attacking the protocol and the cost of replacing it.">
-        <header><h4>Q9: A protocol has known security flaws but is gaining users quickly. Which response best matches RFC 5218?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. Treat popularity as proof that threats are sufficiently mitigated and postpone repair until adoption stops growing</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. Freeze the protocol so no backward-compatible security improvement can be defined, because change is the larger risk</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. Assess threat mitigation now and preserve a deployable path to repair flaws; security flaws plus limited extensibility can be fatal</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate what early adoption demonstrates from whether the installed base can deploy a mitigation before attackers exploit it.">
+        <header><h4>Q9: Which conclusion properly separates initial success from survival?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A widely deployed protocol has a credential-replay flaw. A negotiated extension can repair it, but most deployed peers do not yet implement the extension.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Wide deployment proves that replay threats are sufficiently mitigated for all later uses</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Early success can coexist with the flaw; continued success requires a deployable mitigation</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. The extension point proves mitigation even before peers implement or require the repair</label>
         </fieldset><div class="explain">**Explanation:**
-popular protocols become more attractive targets.
-inability to evolve makes known flaws harder to correct.
-RFC 5218 distinguishes initial adoption from survival under attack and warns that weak security combined with limited extensibility is especially dangerous.</div></div>
+Sections 2.2.3 and 3 observe that vulnerabilities may not block initial adoption while a popular protocol becomes a more valuable target; extensibility helps only if flaws can actually be addressed. B preserves that distinction and identifies the remaining deployment problem. A treats popularity as security evidence. C treats potential extensibility as an effective mitigation before the installed base deploys or enforces it.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Choose the rollout where one participant can gain value without coordinating a simultaneous ecosystem migration.">
-        <header><h4>Q10: Which launch plan gives a new Agent-to-Agent security profile the strongest adoption position?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Compare need, early-adopter value, coordination, openness, and repair paths; keep adoption indicators separate from the security claim.">
+        <header><h4>Q10: Which combined assessment is supported by RFC 5218?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile adds sender-constrained task authorization. Existing agents do not yet implement it.</p>
+          <p class="question-premise">Plan A publishes a sender-bound authorization profile and test code. One domain can negotiate it for an urgent use while legacy exchanges retain explicitly weaker semantics. Plan B has a stronger new mechanism, but its closed SDK requires every agent, broker, gateway, and identity provider to migrate together.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Offer a bounded mode that one domain can enable for immediate value, negotiate capability, and interoperate safely with legacy peers</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Require every agent, broker, identity provider, and network operator to migrate together, then disable legacy interoperability</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Keep the specification and test implementation private until commitments make a coordinated ecosystem rollout likely</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. A has stronger initial-adoption factors, but its downgrade behavior and sender-binding guarantee still need independent security review</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. B must succeed because stronger cryptography outweighs coordination, licensing, and delayed adopter value</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. A cannot be incrementally deployable because any continued legacy interoperability disqualifies it under RFC 5218</label>
           </fieldset><div class="explain">**Explanation:**
-RFC 5218 Section 2.1.2 calls this incremental deployability: early adopters gain value without a simultaneous Internet-wide change. The bounded mode also keeps compatibility explicit.
-a flag day is a major adoption barrier.
-secrecy prevents independent evaluation and implementation. RFC 5218 does not guarantee success, but it identifies these as materially different conditions.</div>
+Plan A addresses a real need, gives one adopter early value, avoids a flag day, and provides open specification and code—the initial factors in Sections 2.1 and 3. A is therefore the supported adoption comparison and correctly refuses to infer security from adoption conditions. B overweights technical quality and ignores cost, restrictions, and coordination. C misstates incremental deployability: compatible operation can improve it when the modes' different guarantees are explicit. RFC 5218 predicts neither adoption nor sender-binding correctness.</div>
         </div>
       </article>
     </section>
