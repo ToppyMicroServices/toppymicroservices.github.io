@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 2818",
       SKILL_SUBTITLE: "HTTP over TLS (HTTPS)",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -71,7 +71,9 @@
       <h3 id="refs-h">References (URLs)</h3>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc2818" target="_blank" rel="noopener noreferrer">RFC 2818: HTTP Over TLS</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
       </ul>
+      <p>範囲: RFC 2818はInformational RFCであり, 現在はobsoleteです. RFC Editorは後継としてRFC 9110を示しています. RFC 2818を参照する問題は同文書が当時定めた規則を問うものであり, certificate照合の詳細を現在の一般的な指針として提示するものではありません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -138,28 +140,27 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="通信路の性質とendpoint識別を, applicationの権限判定とは分けて考えてください.">
-        <header><h4>Q3: TLSがHTTP messageに対して提供する性質として正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,e" data-difficulty="L3" data-hint="各transport hopの両端を特定してください. 次にchannel protectionをtoken validityやapplication authorizationから分けます.">
+        <header><h4>Q3: backendの境界で正当化できる結論はどれか?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A2A clientは, URIと一致するcertificateを持つgatewayへHTTPS接続します. gatewayはTLSを終端し, 保護されていない内部接続でHTTP requestをbackendへ転送します. requestにはaccess tokenも含まれます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. passive observerに対するconfidentiality</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. wire上のtamperingに対するintegrity</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. certificateに基づくserver authentication</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. application level authorizationの保証</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. RFC 2818のHTTPS保護はclientからgatewayまでのTLS connectionに適用される</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. 転送requestを受けたbackendは, 元のTLS peerを自動的に証明できる</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. access tokenの検証とresource authorizationは別のapplication判断として残る</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. 最初のTLS hopによりgatewayからbackendまでのconfidentialityとintegrityも保証される</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="e"> E. end-to-endの保証を宣言するには, 保護した第2 hopまたはgatewayでの明示的なtrust boundaryが必要である</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **confidentiality** は盗み見の防止, **integrity** は改ざん検知/防止, **server authentication** は接続相手が想定した server かを確認することです. 一方で **authorization** は「その user が何をしてよいか」を決める application 側の判断です.
+            RFC 2818 Sections 2.1と3.1は, 1つのTLS connection内でHTTP dataを運び, そのconnectionのserverを識別する手順を扱います. TLS終端より先へchannelを延長せず, access tokenによるauthorizationも定義しません.
 
-            TLS は transport 上の channel を保護するので, passive observer に対する confidentiality, wire 上の改ざんに対する integrity, certificate に基づく server authentication を提供します.
-
-            TLS は secure channel を作りますが, secure application を自動生成してくれるわけではありません. authz, input validation, session 設計は別途必要です.
-
-            A: 通信内容を第三者が読む難易度を上げる, という意味で TLS の中核です.
-            B: transit 中の tampering を防ぎ, 検知できるようにします.
-            C: certificate 検証を通じて, 接続先 server の identity を確認します.
-            D: authorization は app, API, business rule の責務です. TLS は「誰に何を許すか」までは決めません.
+            A: 選択. この構成ではauthenticated channelはgatewayで終わります.
+            B: 非選択. 転送requestはclient-to-gateway TLS peerのcryptographic evidenceではありません.
+            C: 選択. HTTPS server authenticationはtoken validityやbackend resourceへの権限を決めません.
+            D: 非選択. 別の保護されていないhopはTLSのconfidentialityやintegrityを引き継ぎません.
+            E: 選択. これはRFC 2818が課すdeployment要件ではなく, 最初のhopを越える保証を宣言する前にarchitectureとして定義すべき境界です.
           </div>
         </div>
       </article>
@@ -184,39 +185,142 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="URI schemeはresourceへのaccess方法を識別します. 認証方式やredirect全般を決めるものではありません.">
-        <header><h4>Q5: https schemeについて正しい説明はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="DNS resolutionより前に選ばれたreference identityを特定し, serverへ到達するためのnetwork addressと分けてください.">
+        <header><h4>Q5: RFC 2818に基づくendpoint identificationのreviewとして正しいのはどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">clientは<code>https://agent.example/card</code>をdereferenceします. DNSは<code>203.0.113.10</code>を返し, certificateには<code>agent.example</code>という<code>dNSName</code>があります. clientは特定のcertificateを期待する外部情報を持ちません. reviewerはcertificateをresolved IPとのみ照合する案を示しました.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. httpとは異なるdistinctなURI scheme</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. serverは必ずBasic認証を使う必要がある</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 他originへのredirectを禁止する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. DNS resolutionによりURI hostnameは期待identityではなくなるため, 提案を採用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. URI hostnameをcertificate identityと照合する. この場合resolved IPはreference identityではない</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. TLS encryptionが成功すればactive attackerを排除できるため, identity checkを省略する</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. issuer名だけを照合する. 同じissuerのcertificateはすべてこのserviceを識別する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **distinct URI scheme** とは, `http` と `https` が別々の scheme として定義されている, という意味です. scheme が違えば既定 port も origin も扱いが変わります.
+            RFC 2818 Section 3.1はURI内のhostnameから始め, それをcertificateのserver identityと照合します. URI自体がIP addressを含む場合には別のIP literal ruleを使います.
 
-            `https` は `http` とは異なる URI scheme です. 単なるフラグではなく, URL 解釈と security expectation が変わります.
-
-            scheme の違いは same-origin policy や cookie scope の議論にも影響します. URL の先頭文字列以上の意味を持っています.
-
-            A: これが RFC 2818 を読むときの基本前提です.
-            B: HTTPS を使っても Basic 認証は必須ではありません. auth scheme は別レイヤの選択です.
-            C: `https` scheme 自体が cross-origin redirect を一律禁止するわけではありません.
+            A: DNSはrouting addressを与えますが, このURIのreference hostnameを置き換えません.
+            B: 正解. certificateの<code>dNSName</code>を<code>agent.example</code>と評価します.
+            C: endpoint identificationを伴わないencryptionでは, 間違ったendpointやattackerのendpointとの接続を保護してしまいます.
+            D: issuerへのtrustはpath validationの一部ですが, そのissuerの全certificateがこのserviceを表すことにはなりません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ipaddress$" data-difficulty="L1" data-hint="DNS nameではなくIP literalを使うURIについて, RFC 2818のendpoint identification ruleを確認してください.">
-        <header><h4>Q6: HTTPS URIがIP addressを使う場合, どのsubjectAltName typeがexact matchする必要がある? (token 1つ)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="文字列が同じに見えてもcertificateのname formが誤っている場合があります. URIのIP literalに対する規則を確認してください.">
+        <header><h4>Q6: RFC 2818のIP-literal ruleから導かれる結果はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one token" />
+          <p class="question-premise">clientは<code>https://192.0.2.10/</code>へ接続します. certificateには文字列<code>192.0.2.10</code>を含む<code>dNSName</code>がありますが, <code>iPAddress</code> subjectAltNameはありません.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 表示上の文字列が同じなのでmatchする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. DNS name entryは常にIP address entryより優先されるのでmatchする</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. <code>iPAddress</code> subjectAltNameが存在してURIのIPとexact matchする必要があるためmismatchになる</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. serverがdefault port 443でもlistenする場合だけmatchする</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
 
+            RFC 2818 Section 3.1はURIをIP addressで指定した場合, `iPAddress` subjectAltNameが存在し, URIのaddressとexact matchすることを求めます. 文字列が同じ`dNSName`ではこのruleを満たしません.
 
-            RFC 2818 Section 3.1はserverをIP addressで指定するURIについて, certificateに`iPAddress` subjectAltNameが存在し, URIのaddressとexact matchすると記述しています. DNS hostnameには`dNSName`を使います. RFC 2818はInformationalなので, これは同文書のendpoint-identification手順を説明するものであり, 文書statusを独立したInternet Standards適合性として扱うものではありません.
+            A: ruleは表示文字だけでなくname formも区別します.
+            B: 同文書はhostnameの`dNSName`とIP literalのexact-match ruleを分けています.
+            C: RFC 2818当時のendpoint-identification手順ではこれが正解です.
+            D: portはURI hostを表すcertificate name formを変更しません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="このhistorical RFCが記したruleで, wildcardが消費するdomain-name componentの数を数えてください.">
+        <header><h4>Q7: RFC 2818が記したruleでは, このwildcard identityはmatchするか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">URI hostは<code>api.prod.agents.example</code>です. certificateの<code>dNSName</code>は<code>*.agents.example</code>です. 現在のcertificate service指針ではなく, RFC 2818本文のmatching ruleだけを評価します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. <code>*</code>は先頭の任意個数のcomponentとmatchするので成立する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. wildcardは1 componentを対象とし, <code>api.prod</code>の2つを覆わないので成立しない</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. trusted CAがcertificate chainを発行していれば成立する</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. RFC 2818はすべてのwildcard identityを禁止するので成立しない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Section 3.1は<code>*</code>が1つのdomain-name componentまたはcomponent fragmentとmatchするとし, <code>*.a.com</code>は<code>foo.a.com</code>とはmatchするが<code>bar.foo.a.com</code>とはmatchしない例を示します.
+
+            A: 1つのwildcardに複数componentを消費させています.
+            B: RFC 2818本文のruleでは正解です. <code>*.agents.example</code>が覆えるのは<code>agents.example</code>の直前の1 labelです.
+            C: certificate pathへのtrustとreference identityのmatchは別の検査です.
+            D: 同RFCはwildcard matchingを明記しています. 不成立の理由は全面禁止ではなくdepthです.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="message boundaryを何で判断するかと, TLSがauthenticated closure alertを与えたかを確認してください.">
+        <header><h4>Q8: RFC 2818では, このconnection closeをどう分類するか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">HTTP responseに<code>Content-Length</code>はなく, connection closeだけがbody終端を示します. clientが有効なTLS closure alertを受け取る前にTCP connectionが終了しました.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. TCP closeが宣言済みdelimiterなのでbodyをcompleteとして受理する</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. potentially truncated dataを伴うpremature-close errorとして扱い, TLS sessionを再利用しない</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. certificate validationにより全response byteの到着が証明済みなのでcloseを無視する</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. 同じTLS sessionを先にresumeし, その後で以前のbodyがcompleteか推定する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Sections 2.2と2.2.1は, 有効なTLS closure alertを伴わないtransport closeをpremature closeと呼びます. <code>Content-Length</code>がない場合, clientは意図した終端とattackerによるtruncationを区別できず, errorとして扱い, そのsessionを再利用できません.
+
+            A: unauthenticated closeは, 同sectionが警告する曖昧なsignalそのものです.
+            B: 正解. HTTP truncationのriskとTLS sessionの再利用禁止を両方維持します.
+            C: server authenticationは, 長さが未定義のresponseが意図した終端まで届いたことを証明しません.
+            D: prematurely closed sessionのresumeは明示されたno-reuse ruleに反し, 過去のbody boundaryも証明できません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="このHTTP messageのcompletion, 受信済みbyteへのtrust, prematurely closed TLS sessionの再利用可否を分けてください.">
+        <header><h4>Q9: 宣言されたresponse lengthをすべて受信した場合, どの結論が導けるか?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">responseには有効な<code>Content-Length</code>があり, clientは指定された数のbody byteをすべて受信しました. その後, 有効なTLS closure alertなしにconnectionが終了しました.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. RFC 2818はそのrequestをcompletedとして扱うようclientへ<code>SHOULD</code>とする</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. clientはprematurely closed TLS sessionを引き続き再利用<code>MUST NOT</code>である</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. premature closeだけで受信済みbyteのsecurityが自動的に無効になるわけではない</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. closure alertの欠如はauthenticated TLS closeの受信と同じである</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="e"> E. HTTP lengthが揃ったため, RFC 2818ではそのprematurely closed sessionを安全にresumeできる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Sections 2.2と2.2.1は, HTTP messageがcompleteか, 受信済みprotected dataを信頼できるか, TLS sessionを再利用できるかを別々に扱います.
+
+            A: 選択. Section 2.2.1は宣言量のdataを受け取ったrequestについてこの例外を示します.
+            B: 選択. applicationがcomplete messageを識別できても, Section 2.2はpremature close後のsession再利用を禁止します.
+            C: 選択. 同文書は問題をsubsequent dataのtruncation可能性とし, 受信済みdataの自動的なcompromiseとはしません.
+            D: 非選択. closure alertの欠如がpremature closeとauthenticated closureを分けます.
+            E: 非選択. HTTP completenessはTLS sessionの再利用禁止を解除しません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="endpoint authenticationが答えるのはcertificateと選択済みURIの一致です. 誰がそのURIを選択してよいかには答えません.">
+        <header><h4>Q10: HTTPS validation成功後も不足している保証はどれか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">agentはunsigned discovery messageから<code>https://attacker.example/card</code>を受け取ります. TLSでURLを取得し, certificateは<code>attacker.example</code>を正しく識別します. 取得したCardは保護対象A2A serviceへのauthorityを主張しています.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. 不足はない. certificate成功によりdiscovery sourceがこのAgent Cardを選ぶ権限まで証明される</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. token audience検証だけである. TLSによりCardの全serviceへのauthorityはすでに成立する</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. discovery sourceまたはCard issuerを, その者が主張できるauthorityへ結び付けるpolicy</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. port 443ではmetadataを認証できないため, 別のHTTPS port</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Section 3.1は, endpoint checkがcompromised URI sourceからのattackを防がないと警告します. この場合TLSが証明するのはattackerが選んだURIのendpointへ到達したことであり, 別serviceに関するそのendpointの主張をauthorizeしません.
+
+            A: 選択済みendpointのauthenticationと, そのendpointを選んだ者のauthorizationを混同しています.
+            B: token audienceとCard authorityは別のclaimであり, matching HTTPS certificateだけでは成立しません.
+            C: 正解. applicationには, 誰が保護対象serviceのmetadataを導入または署名できるかというtrust ruleが必要です.
+            D: port選択では欠けているprovenanceとauthority bindingを直せません.
           </div>
         </div>
       </article>

@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 2818",
       SKILL_SUBTITLE: "HTTP Over TLS (HTTPS)",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -71,7 +71,9 @@
       <h3 id="refs-h">References (URLs)</h3>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc2818" target="_blank" rel="noopener noreferrer">RFC 2818: HTTP Over TLS</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
       </ul>
+      <p>Scope: RFC 2818 is an Informational RFC that is now obsolete, with RFC 9110 listed as its successor. Questions that cite RFC 2818 ask what that historical document says; they do not present its certificate-matching details as current general guidance.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -130,24 +132,27 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Consider channel properties and endpoint identification separately from application permissions.">
-        <header><h4>Q3: TLS provides which properties for HTTP messages (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,e" data-difficulty="L3" data-hint="Name the endpoints of each transport hop. Then separate channel protection from token validity and application authorization.">
+        <header><h4>Q3: Which conclusions are justified at the backend boundary?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">An A2A client opens HTTPS to a gateway, whose certificate identity matches the URI. The gateway terminates TLS and forwards the HTTP request to a backend over an unprotected internal connection. The request also carries an access token.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. Confidentiality against passive observers</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. Integrity against tampering on the wire</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Server authentication based on certificates</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. Guaranteed application level authorization</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. RFC 2818's HTTPS protection applies to the client-to-gateway TLS connection</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. The backend automatically obtains proof of the original TLS peer because it received the forwarded request</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. Access-token validation and resource authorization remain separate application decisions</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. The first TLS hop makes the gateway-to-backend hop confidential and integrity protected</label>
+            <label class="choice"><input type="checkbox" name="Q3" value="e"> E. An end-to-end claim needs a protected second hop or an explicitly defined trust boundary at the gateway</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            TLS gives HTTP a protected channel and supports endpoint authentication. It does not determine application identities, roles, or permissions after that channel has been established.
+            RFC 2818 Sections 2.1 and 3.1 describe HTTP data inside a TLS connection and server identification for that connection. They do not extend the channel beyond the endpoint that terminates TLS or define access-token authorization.
 
-            A: Encryption protects message confidentiality against passive network observation.
-            B: TLS record protection detects unauthorized modification in transit.
-            C: Certificate validation and hostname checking support server authentication.
-            D: Application authorization remains a responsibility of the service using HTTPS.
+            A: Selected. The authenticated channel ends at the gateway in this deployment.
+            B: Not selected. A forwarded request is not cryptographic evidence of the client-to-gateway TLS peer.
+            C: Selected. HTTPS server authentication does not decide whether the token is valid or whether its subject may access the backend resource.
+            D: Not selected. A separate unprotected hop does not inherit TLS confidentiality or integrity.
+            E: Selected as an architectural conclusion. This is not a deployment rule imposed by RFC 2818; it is what must be specified before claiming protection beyond the first hop.
           </div>
         </div>
       </article>
@@ -172,35 +177,142 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A URI scheme identifies how a resource is accessed; it does not dictate an authentication method or all redirect behavior.">
-        <header><h4>Q5: A correct statement about the https scheme is</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the reference identity selected before DNS resolution, and distinguish it from the network address used to reach the server.">
+        <header><h4>Q5: Which endpoint-identification review is correct under RFC 2818?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client dereferences <code>https://agent.example/card</code>. DNS returns <code>203.0.113.10</code>, and the certificate contains a <code>dNSName</code> of <code>agent.example</code>. The client has no external information identifying one expected certificate. A reviewer proposes comparing the certificate only with the resolved IP address.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. It is a distinct URI scheme from http</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. It means the server must use Basic auth</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. It forbids redirects to other origins</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept the proposal because DNS resolution replaces the URI hostname as the expected identity</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Compare the URI hostname with the certificate identity; the resolved IP is not the reference identity here</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Skip identity checking because successful TLS encryption already excludes an active attacker</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Compare only the certificate issuer name because any certificate from that issuer identifies the service</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 2818 distinguishes HTTP over TLS by using the `https` protocol identifier in place of `http`. The scheme carries transport and default-port meaning; it does not select an HTTP authentication scheme or impose a universal redirect policy.
+            RFC 2818 Section 3.1 starts from the hostname in the URI and requires the client to compare it with the server identity in the certificate. Its separate IP-literal rule applies when the URI itself contains an IP address.
 
-            A: `https` and `http` are distinct URI schemes with different access semantics.
-            B: Basic authentication is an independent HTTP authentication mechanism and is not required by HTTPS.
-            C: Redirect handling is not categorically prohibited by the `https` scheme.
+            A: DNS supplies a routing address; it does not replace the reference hostname in this URI.
+            B: Correct. The certificate's `dNSName` is evaluated against `agent.example`.
+            C: Encryption without endpoint identification can protect a connection to the wrong or attacker-controlled endpoint.
+            D: Trusting an issuer is part of path validation, but it does not establish that every certificate from that issuer represents this service.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^ipaddress$" data-difficulty="L1" data-hint="Look at RFC 2818's special endpoint-identification rule for a URI written with an IP literal rather than a DNS name.">
-        <header><h4>Q6: When an HTTPS URI uses an IP address, which subjectAltName type must exactly match it? (one token)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The characters can look identical while the certificate name form is still wrong. Check the rule for an IP literal in the URI.">
+        <header><h4>Q6: What result follows from RFC 2818's IP-literal rule?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one token" />
+          <p class="question-premise">A client connects to <code>https://192.0.2.10/</code>. The certificate has a <code>dNSName</code> containing the text <code>192.0.2.10</code>, but no <code>iPAddress</code> subjectAltName.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Match, because the visible character string is identical</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Match, because a DNS name entry is always preferred over an IP address entry</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Mismatch, because an <code>iPAddress</code> subjectAltName must be present and exactly match the URI IP</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Match only when the server also listens on the default port 443</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
 
+            RFC 2818 Section 3.1 says that when the URI is specified as an IP address, an `iPAddress` subjectAltName must be present and must exactly match the URI address. A textually similar `dNSName` does not satisfy that rule.
 
-            RFC 2818 Section 3.1 states that an `iPAddress` subjectAltName is present when the URI identifies the server by an IP address and that it exactly matches the URI's address. A `dNSName` entry is used for DNS hostnames instead. RFC 2818 is Informational, so this describes that document's endpoint-identification procedure rather than treating its status as an independent Internet Standards conformance level.
+            A: Name form is part of the rule, not only the rendered characters.
+            B: The document uses `dNSName` for a hostname and a distinct exact-match rule for an IP literal.
+            C: Correct under RFC 2818's historical endpoint-identification procedure.
+            D: The port does not change which certificate name form represents the URI host.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Count the domain-name components consumed by the wildcard under the rule stated in this historical RFC.">
+        <header><h4>Q7: Does this wildcard identity match under RFC 2818's stated rule?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The URI host is <code>api.prod.agents.example</code>. A certificate contains the <code>dNSName</code> <code>*.agents.example</code>. Evaluate only the matching rule written in RFC 2818, not current certificate-service guidance.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes, because <code>*</code> matches any number of leading components</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. No, because the wildcard covers one component, not <code>api.prod</code></label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Yes, whenever the certificate chain is issued by a trusted CA</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. No, because RFC 2818 prohibits every wildcard identity</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Section 3.1 says that <code>*</code> matches a single domain-name component or component fragment. Its example says <code>*.a.com</code> matches <code>foo.a.com</code>, but not <code>bar.foo.a.com</code>.
+
+            A: This incorrectly lets one wildcard consume multiple components.
+            B: Correct for the rule in RFC 2818. <code>*.agents.example</code> can cover one label before <code>agents.example</code>, not two.
+            C: Certificate-path trust and reference-identity matching are separate checks.
+            D: RFC 2818 explicitly describes wildcard matching; the reason for rejection here is depth, not a categorical ban.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask how the message boundary is known and whether TLS supplied an authenticated closure alert.">
+        <header><h4>Q8: How should the client classify this connection close under RFC 2818?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An HTTP response has no <code>Content-Length</code>; connection close is therefore the only end-of-body signal. The TCP connection ends before the client receives a valid TLS closure alert.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Accept the body as complete because TCP close is the declared delimiter</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Treat it as a premature-close error with potentially truncated data, and do not reuse the TLS session</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Ignore the close because certificate validation already proved every response byte arrived</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Resume the same TLS session first, then infer whether the earlier body was complete</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Sections 2.2 and 2.2.1 call a transport close without a valid TLS closure alert a premature close. With no <code>Content-Length</code>, the client cannot distinguish an intended end from attacker-induced truncation, must treat the close as an error, and must not reuse that session.
+
+            A: The unauthenticated close is exactly the ambiguous signal the section warns about.
+            B: Correct. It preserves both the HTTP truncation warning and the TLS session-reuse prohibition.
+            C: Server authentication does not prove that an unbounded response reached its intended end.
+            D: Resuming the prematurely closed session violates the explicit no-reuse rule and cannot retroactively establish the body boundary.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Separate completion of this HTTP message, trust in bytes already received, and permission to reuse the prematurely closed TLS session.">
+        <header><h4>Q9: Which conclusions follow when the declared response length was fully received?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">A response declares a valid <code>Content-Length</code>, and the client receives exactly that many body bytes. The connection then ends without a valid TLS closure alert.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. RFC 2818 says the client <code>SHOULD</code> treat that request as completed</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. The client still <code>MUST NOT</code> reuse the prematurely closed TLS session</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. The premature close does not by itself invalidate the security of bytes already received</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. The missing closure alert is equivalent to receiving an authenticated TLS close</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="e"> E. Full HTTP length makes resumption of that prematurely closed session safe under RFC 2818</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Sections 2.2 and 2.2.1 separate three decisions: whether the HTTP message is complete, whether earlier protected data remains trustworthy, and whether the TLS session may be reused.
+
+            A: Selected. Section 2.2.1 gives this as the exception for a request whose declared amount of data arrived.
+            B: Selected. Section 2.2 prohibits reuse after a premature close even if the application can identify a complete message.
+            C: Selected. The document says the concern is possible truncation of subsequent data, not automatic compromise of data already received.
+            D: Not selected. A missing closure alert is the defining difference between premature and authenticated closure.
+            E: Not selected. HTTP completeness does not remove the TLS session-reuse prohibition.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Endpoint authentication answers whether the certificate matches the chosen URI. It does not answer who was allowed to choose that URI.">
+        <header><h4>Q10: What guarantee is still missing after successful HTTPS validation?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An agent receives an unsigned discovery message containing <code>https://attacker.example/card</code>. It fetches the URL over TLS; the certificate validly identifies <code>attacker.example</code>. The fetched Card claims authority over a protected A2A service.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. None; certificate success proves that the discovery source was authorized to choose this Agent Card</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Only token audience validation; TLS already establishes the Card's authority over every service</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. A policy binding the discovery source or Card issuer to the authority it may claim</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. A different HTTPS port, because port 443 cannot authenticate metadata</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 2818 Section 3.1 warns that endpoint checking does not protect against a compromised source of the URI. Here TLS proves that the client reached the endpoint named by the attacker-selected URI; it does not authorize that endpoint's claims about another service.
+
+            A: This confuses authentication of the selected endpoint with authorization of the party that selected it.
+            B: Token audience and Card authority are separate claims; neither is created by a matching HTTPS certificate.
+            C: Correct. The application needs a trust rule for who may introduce or sign metadata for the protected service.
+            D: Port selection does not repair the missing provenance and authority binding.
           </div>
         </div>
       </article>
