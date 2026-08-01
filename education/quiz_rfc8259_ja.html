@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSONデータ交換形式", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSONデータ交換形式", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 3, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -54,65 +54,75 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="JSON grammarとapplicationのmessage schemaを分けて考える.">
-        <header><h4>Q1: A2A endpointがtop-levelのJSON objectだけを受理する. RFC 8259との関係はどれ?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. RFC 8259はJSON textとしてobjectとarrayだけを許す</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. endpointはapplication ruleとしてobject要件を課せる</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. parserはschemaを適用できないためendpointは全scalarも受理しなければならない</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JSON parserとA2A message validatorが、それぞれ何を判定するかを分けてください。">
+        <header><h4>Q1: RFC 8259 Sections 2 and 3とapplication schemaを分けた処理はどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A endpointの契約は、top-level objectに<code>taskId</code>と<code>action</code>を要求する。受信bodyはJSON numberの<code>42</code>であり、汎用JSON parserは正常にparseした。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. objectでないため、RFC 8259のJSON grammarに違反したtextとして扱う</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. JSON textとしては受理し、A2A message schemaを満たさない入力として拒否する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. parserが受理したため、<code>42</code>を有効なA2A requestとして処理する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. 相互運用のため、暗黙に<code>{&quot;value&quot;:42}</code>へ変換して処理する</label>
+          </fieldset><div class="explain">**解説:**
 
-RFC 8259では任意のJSON valueをtop-levelにserializeできる.
-applicationは一般的なJSON grammarより受理範囲を狭められる.
-RFC 8259はJSON syntaxを定義するがparse後のschema validationを禁止しない.</div></div>
+Bが適切です。RFC 8259 Sections 2 and 3では、JSON textはobjectやarrayに限らず、serializeされた任意のJSON valueです。したがって<code>42</code>はJSON構文としてvalidです。一方、A2A endpointはapplication contractとしてtop-level objectと必須memberを要求できます。この場合はJSON parserの失敗と偽らず、message schemaを満たさない入力として拒否します。parserの成功はapplication messageの妥当性を保証せず、RFC 8259は暗黙のobject変換も定義していません。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="重複したobject nameを各parserがどう扱うかを比べる.">
-        <header><h4>Q2: requestに{&quot;role&quot;:&quot;reader&quot;,&quot;role&quot;:&quot;admin&quot;}が含まれる. 相互運用上もっとも安全な判断はどれ?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. authorization logicで使う前にobjectをrejectする</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. RFC 8259がlast-winsを定義するため常に最後のvalueを使う</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. 2つのmemberをsortして最初を使う</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="JSONのliteralと、message contractが割り当てる業務上の意味を分けてください。">
+        <header><h4>Q2: RFC 8259だけから<code>null</code>とmember欠落の意味を同一視できるか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">grant更新APIで、client Aは<code>delegate</code>を省略し、client Bは<code>&quot;delegate&quot;:null</code>を送る。authorization serviceは省略を「現在値を維持」、<code>null</code>を「委任を解除」と解釈する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. RFC 8259はmember欠落を<code>null</code>の省略形と定義するため、両者は同じである</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. RFC 8259は<code>null</code>をempty stringと定義するため、両者とも委任解除になる</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 両方ともJSONとして表現できるが、その差の意味はapplication contractで明示する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. parserが欠落memberを自動的に<code>null</code>で補完すれば、contractは不要である</label>
+          </fieldset><div class="explain">**解説:**
 
-object nameはuniqueであるべきでありduplicateの扱いは実装間で予測できない.
-last-winsは一般的な実装例だがRFC 8259の必須動作ではない.
-member orderではduplicate-nameの曖昧さを解消できずparserごとにorderの見え方も異なる.</div></div>
+Cが適切です。RFC 8259 Sections 3 and 4は<code>null</code> literalとobject memberの構文を定義しますが、memberの欠落と<code>null</code>をapplication上同一とする規則は定義しません。更新なしと明示的解除を区別する設計は成立しますが、schema、validation、authorizationの全componentで同じ意味を使う必要があります。parserによる暗黙補完はRFC 8259の動作ではなく、契約を隠してcomponent間の解釈差を生む可能性があります。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="object memberとarray elementを区別する.">
-        <header><h4>Q3: A2A実装はJSON objectのmember orderに意味を持たせてよい?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. よい, すべてのparserがsource orderを保持するため</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. よい, senderがBOMなしUTF-8を使う場合</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. いいえ, orderがmessageの意味ならarrayを使う</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="異なるlibraryがmember orderを公開しない、または並べ替える場合のoperation選択を追ってください。">
+        <header><h4>Q3: RFC 8259 Section 4に照らしたoperation表現の修正はどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">gatewayとreplay workerはobjectの「最初のmember名」をoperationとして扱う。clientは<code>{&quot;cancel&quot;:true,&quot;taskId&quot;:&quot;t1&quot;}</code>を送るが、loggerはmemberをalphabetical orderで再serializeし、別のlibraryは呼出側へorderを公開しない。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. original bytesへ署名すれば、全JSON libraryが最初のmemberを同じように公開する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. UTF-8とBOMなしを要求すれば、object member orderもmessage contractになる</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 明示的な<code>operation</code> memberを使い、順序自体がdataならarrayで表現する</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. すべてのcomponentでmemberをsortし、sort後の最初の名前をoperationにする</label>
+          </fieldset><div class="explain">**解説:**
 
-RFC 8259はmember orderを呼出側に見せるかがlibraryごとに異なるとする.
-encodingの選択でobject-member orderが相互運用可能なcontractになるわけではない.
-arrayはelement positionでorderを表すがobject-member orderへの依存は安全でない.</div></div>
+Cが適切です。RFC 8259 Sections 1 and 4はobjectをunordered collectionとして説明し、member orderをcalling softwareへ見せるかはlibrary間で異なるとしています。署名は特定のbyte sequenceを保護できますが、全parser APIへ同じ順序の公開を要求するものではありません。operationは明示memberとして表し、順序そのものが意味を持つdataにはordered sequenceであるarrayを使います。全componentで独自sort規則を共有する案は、RFC 8259にない追加contractを増やします。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="array elementが同じJSON typeである必要があるかを確認する.">
-        <header><h4>Q4: RFC 8259でvalidなJSON arrayはどれ?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. 全elementが同じJSON typeで少なくとも1つのvalueを持つarrayだけ</label>
-          <label class="choice"><input type="radio" name="Q4" value="b"> B. string, number, object, nullを含むarray</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. non-emptyでobjectと他のJSON valueを決して混在させないarrayだけ</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="containerがvalid JSONであることと、各elementがapplication schemaを満たすことを分けてください。">
+        <header><h4>Q4: RFC 8259 Section 5とtask batch schemaを両立する処理はどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">batch endpointはtask objectのarrayを要求する。入力は<code>[{&quot;id&quot;:&quot;t1&quot;},null,&quot;retry&quot;]</code>であり、JSON parserはarrayとして正常にparseした。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. valid JSON arrayなので、全elementをtaskとしてそのまま処理する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. JSON syntaxは受理し、各elementをbatch schemaで検証して不適合入力を拒否する</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. mixed-type arrayはRFC 8259違反としてJSON parserで拒否する</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. <code>null</code>とstringを空のtask objectへ自動変換して処理する</label>
+          </fieldset><div class="explain">**解説:**
 
-RFC 8259はarray elementにsame-type要件を課さないためmixed valueもvalidである.
-arrayは異なるJSON value typeを混在でき各elementは通常のvalue grammarに従う.
-grammarは1つ以上のelementを持つarrayに加えてempty arrayも許している.</div></div>
+Bが適切です。RFC 8259 Section 5はarray elementへ同一type要件を課さないため、このbodyはJSON構文としてvalidです。しかしapplication profileは「task objectのarray」という狭いschemaを定義できます。各elementを利用前に検証し、batch全体を拒否するかelement単位のerrorを返すかもAPI contractで決めます。構文上の許容を業務上の受理へ直結させたり、規定のない暗黙変換を行ったりしてはいけません。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="programming languageのnumeric typeではなくJSON number grammarを見る.">
-        <header><h4>Q5: senderがNaNをquoteなしのJSON numberとして送った. conforming receiverはどう分類する?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. valid JSONではない</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. receiverがIEEE 754を使うならvalid</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. JSONのnull literalである</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="permissive parserがextensionを受理できることと、generatorが出力すべきtextを比較してください。">
+        <header><h4>Q5: RFC 8259 Sections 6, 9, and 10に沿った修正はどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">telemetry clientが<code>{&quot;latency&quot;:NaN}</code>を生成する。gatewayのpermissive parserは受理して署名結果とともに転送するが、backendのstrict parserは拒否する。非有限値を伝える必要性は未定義である。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. gatewayが受理して署名したため、backendもbare <code>NaN</code>を受理する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. <code>NaN</code>を<code>Infinity</code>へ置換し、JSON numberとして転送する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. backendのparserをpermissive modeへ変更し、wire extensionを暗黙の標準とする</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. bare <code>NaN</code>を生成段階で拒否し、必要ならschemaで別の表現と意味を定義する</label>
+          </fieldset><div class="explain">**解説:**
 
-NaNとInfinityはRFC 8259のnumber grammarに含まれない.
-IEEE 754実装はNaNを表現できるがJSON syntaxは許さない.
-NaNはlowercaseのnull literalでも他のJSON literalでもない.</div></div>
+Dが適切です。RFC 8259 Section 6は<code>NaN</code>と<code>Infinity</code>をnumber grammarから除外します。Section 9はparserがnon-JSON extensionを受理することを許しますが、Section 10はgeneratorの出力へJSON grammarへの厳密な適合を要求します。したがって一つのpermissive parserが受理した事実やbyteへの署名は、bare <code>NaN</code>をinteroperable JSONにしません。非有限値が必要なら、<code>null</code>、string、状態member、member省略などのどれを使うかとその意味をapplication schemaで定義します。</div>
+        </div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="identifierをbinary64でexactに相互運用できるinteger rangeと比べる.">
         <header><h4>Q6: agent identifierが整数9007199254740993であり一般的runtime間でexactにround-tripする必要がある. よりよい表現はどれ?</h4><span class="type">単一選択</span></header>
@@ -126,41 +136,47 @@ number notationを変えてもbinary64のexact integer range外の値はexactに
 JSONにはcomment syntaxがなくnumeric precisionの問題も残る.
 stringならnumeric roundingを避けてapplicationがidentifier syntaxを定義できる.</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="network interoperability ruleとBOM ruleを分けて確認する.">
-        <header><h4>Q7: 独立したsystem間で交換するJSONに適用されるencoding ruleはどれ?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. BOM付きUTF-16がrequired</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. UTF-8を使い先頭BOMを生成しない</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. encodingはobject-member orderで選ぶ</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="wire encoding、BOMの受信許容、署名対象のbyte sequenceを別々に追ってください。">
+        <header><h4>Q7: RFC 8259 Sections 8.1 and 11を踏まえた受信profileはどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">独立した組織間のA2A requestで、senderはBOM付きUTF-16 JSONを生成し、<code>Content-Type: application/json; charset=utf-16</code>を付け、送信byteへ署名する。gatewayはUTF-8へtranscodeした後、その変換後byteをsender署名の検証対象にしている。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. UTF-8・生成BOMなしに限定し、署名対象を受信byteまたは規定のcanonical formとして明示する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. <code>charset=utf-16</code>があるため、RFC 8259上の標準encodingとしてtranscode後に署名を検証する</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. receiverはBOMを必ず無視するため、original byteとtranscoded byteを同じ署名対象として扱う</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Unicodeへdecodeできる限り、任意のencodingをapplication/jsonのinteroperable formとして受理する</label>
+          </fieldset><div class="explain">**解説:**
 
-RFC 8259はclosed ecosystem外で交換するJSONにUTF-8を要求する.
-network上のJSONはUTF-8を使いgeneratorはBOMを付けてはならない.
-member orderはencoding negotiation signalを持たない.</div></div>
+Aが適切です。RFC 8259 Section 8.1はclosed ecosystem外のJSON textへUTF-8を要求し、generatorによるBOM追加を禁止します。parserは受信BOMを無視してもよいだけで、必須ではありません。Section 11の<code>application/json</code>登録には<code>charset</code> parameterが定義されていません。さらにRFC 8259は署名canonicalizationを定義しないため、transcode後のbyteをoriginal byteへの署名と同一視できません。profileはwire encodingを先に固定し、署名がexact received bytesを覆うのか、別仕様で定義したcanonical representationを覆うのかを明示する必要があります。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="sourceのescape表記ではなくdecode後のUnicode code unitを比べる.">
-        <header><h4>Q8: parserがmember name &quot;a\\b&quot;と&quot;a\u005Cb&quot;を受け取った. equalityはどう判断する?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. source byteが異なるため常にdifferent</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. object-member orderも一致する場合だけequal</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. escapeをdecodeして得られたcode unitを比較する</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="raw token spellingと、parse後にsecurity componentが見るmember nameを比較してください。">
+        <header><h4>Q8: RFC 8259 Section 8.3に沿ってname-filter bypassを防ぐ設計はどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">gatewayのfilterはraw JSON tokenが<code>&quot;admin_role&quot;</code>と完全一致する場合だけmemberを拒否する。application parserは<code>&quot;\u0061dmin_role&quot;</code>をdecodeし、同じ<code>admin_role</code> memberとしてauthorization logicへ渡す。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. raw tokenが異なるため、filterとapplicationが異なるnameとして扱うのが正しい</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. object memberをalphabetical orderへ並べ替えれば、escape差も解消される</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. security fieldではすべてのJSON escapeを禁止し、raw textだけを比較する</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. parse後のnameでfilterし、同じvalidated representationをsecurity判断へ渡す</label>
+          </fieldset><div class="explain">**解説:**
 
-異なるescape表記でも同じstring valueをencodeできる.
-string equalityはobject内のmember positionに依存しない.
-RFC 8259はtextual representationを変換した後のcode-unit比較を示す.</div></div>
+Dが適切です。RFC 8259 Section 8.3は、escapeを変換せずにstringを比較すると、同じstring valueを異なるものと誤判定し得ると説明します。filterとauthorization serviceがraw spellingとdecoded nameを別々に見る構成はsecurity boundaryを分断します。inputを一度parseし、decode後のUnicode code-unit sequenceでnameを比較し、同じvalidated representationを後続判断へ渡します。RFC 8259はrepresentation-independentな署名形式までは定義しないため、それが必要なら別途canonicalization仕様を選ぶ必要があります。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="ABNFが表現できる範囲とinteroperableなUnicode処理の保証を分ける.">
-        <header><h4>Q9: lone UTF-16 surrogateを含むJSON stringに対して実装は何を想定すべき?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. receiver behaviorは実装間で予測不能になりうる</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. 全receiverがU+FFFDへreplaceしなければならない</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. UTF-8 encode後にvalid Unicode scalar valueになる</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="JSON ABNFが受理できるbit sequenceと、各componentが同じUnicode valueを見る保証を分けてください。">
+        <header><h4>Q9: RFC 8259 Section 8.2を入力profileへ適用した修正はどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">Agent Cardのdisplay nameにG clefを表すsurrogate pair <code>\uD834\uDD1E</code>がある。UTF-16 middlewareが1 code unitで切断し、JSONへlone surrogate <code>\uD834</code>を書き戻した。gateway、logger、policy serviceはこのstringのlengthとvalueを異なる方法で扱う。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. ABNFで表現できるため、全componentが同じUnicode characterとして扱う前提で受理する</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. receiverは必ずU+FFFDへ変換するので、各componentのnative処理へ任せる</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. security処理前にUnicode scalarを検証し、lone surrogateを拒否する</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. original JSON byteへの署名があれば、decode後のlengthとvalueの差はなくなる</label>
+          </fieldset><div class="explain">**解説:**
 
-RFC 8259はこのdataでlengthやvalueの不一致やruntime failureまで起こりうるとする.
-RFC 8259は共通のreplacement procedureを定義しない.
-lone surrogateをencodeしてもUnicode scalar valueにはならない.</div></div>
+Cが適切です。RFC 8259 Section 8.2は、JSONのABNFがlone surrogateのようなUnicode characterを表せないbit sequenceも許してしまうことを説明し、その受信結果はlengthの不一致からfatal runtime exceptionまで予測不能になり得ると警告します。RFCは全receiverへ共通のreplacement procedureを要求していません。application profileは相互運用可能なUnicode scalar sequenceへ入力を限定し、logging、policy、署名後処理へ渡す前にlone surrogateを拒否できます。byte署名は改変を検出しても、複数runtimeのdecode結果を同一にはしません。</div>
+        </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 8259はparser limitを許し安全な値はapplicationが決める.">
         <header><h4>Q10: A2A serviceはJSON sizeとnesting depthのlimitをどこでenforceすべき?</h4><span class="type">単一選択</span></header>
