@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7616",
       SKILL_SUBTITLE: "HTTP Digest Authentication",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,10 +68,11 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7616" target="_blank" rel="noopener noreferrer">RFC 7616: HTTP Digest Access Authentication</a></li>
       </ul>
+      <p>The questions review Digest as a challenge-response protocol while separating credential proof, replay policy, message coverage, proxy boundaries, and channel protection. Section numbers refer to RFC 7616.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -89,143 +90,133 @@
       </div>
     </section>
 
-    <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Compare the credential representation sent on the wire with the secret material the server uses to verify it.">
-        <header><h4>Q1: Digest authentication aims to avoid sending</h4><span class="type">Multiple Choice</span></header>
+<section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask whether the stored verifier can be used to compute a valid response without recovering the original password.">
+        <header><h4>Q1: How should a leaked Digest verifier be classified?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
+          <p class="question-premise">A service stores <code>H(username:realm:password)</code> for each user. An attacker obtains that database but has not recovered the users' cleartext passwords.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Any headers at all</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. The password in clear form</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. The HTTP status code</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Non-sensitive metadata, because only the original password can authenticate to the realm</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Password-equivalent material for that realm, because it can be used directly to compute valid Digest responses</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. A public identifier, provided the database does not also contain the server nonce values</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**Explanation:**
 
-            Digest computes a response from values including the username, password-derived secret, server nonce, HTTP method, and request URI.
+B is correct. Section 3.6 says a server can verify Authorization as long as H(A1) is available. Section 5.2 therefore requires the password file to be protected as if it contained unencrypted passwords: compromise gives immediate access to documents in that realm without first recovering the original password.
 
-            The client sends a computed Digest response instead of placing the password itself on the wire in clear form.
-
-            A password-derived Digest response is not a complete secure channel, and the server-side H(A1) value is itself sensitive credential material.
-
-            A: Digest still uses HTTP headers, including `WWW-Authenticate` for the challenge and `Authorization` for the response.
-            B: Avoiding clear-form password transmission is a central improvement over Basic authentication.
-            C: HTTP status codes remain part of the exchange; a challenge commonly arrives with 401.
-          </div>
+A confuses not knowing the cleartext password with not possessing a usable verifier. C confuses the long-term credential equivalent with per-challenge nonce data. The realm is part of A1, so compromise does not automatically provide the corresponding verifier for every other realm, although weak passwords remain exposed to brute-force recovery.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Track the direction of the server's challenge separately from the client's credential response.">
-        <header><h4>Q2: Which response header carries a Digest challenge</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare the A2 calculation for qop=auth with the calculation for qop=auth-int.">
+        <header><h4>Q2: Which Digest mode detects this request-body substitution?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
+          <p class="question-premise">A client authenticates <code>POST /transfer</code>. An intermediary changes the entity body from one valid JSON instruction to another but leaves the method, request target, and Authorization header unchanged.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. WWW-Authenticate</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Authorization</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Forwarded</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. <code>qop=auth</code>, because every request body is included in A2 for that mode</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Either mode, because Digest always protects all HTTP fields and message content</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. <code>qop=auth-int</code>, because its A2 includes a hash of the entity body</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**Explanation:**
 
-            A server that lacks an acceptable credential response sends a 401 response with a `WWW-Authenticate: Digest ...` challenge.
+C is correct. Section 3.4.3 defines A2 for <code>auth-int</code> as Method, request-uri, and H(entity-body). A body substitution therefore changes the expected response digest. With <code>auth</code>, A2 contains only Method and request-uri.
 
-            `WWW-Authenticate` carries the server's Digest challenge parameters.
-
-            Proxy authentication uses the parallel `Proxy-Authenticate` and `Proxy-Authorization` fields.
-
-            A: It is the response header that identifies the scheme and supplies values such as `realm`, `nonce`, and `algorithm`.
-            B: `Authorization` is the request header the client uses for its computed Digest response.
-            C: `Forwarded` describes proxy-related request information and does not carry an authentication challenge.
-          </div>
+A assigns body integrity to the wrong qop. B overstates Digest: Section 5.3 says that even <code>auth-int</code> protects only the message parts included in the calculation, and most header fields remain modifiable. Section 3.4.5 also specifies that the entity-body hash is computed before transfer encoding is applied and after it is removed.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Distinguish the protection-space label, the hash-algorithm selector, and the server-controlled challenge value.">
-        <header><h4>Q3: In Digest, a nonce is primarily used to</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="The response digest binds the count, but replay detection also depends on what the server remembers for the nonce.">
+        <header><h4>Q3: What should the server conclude from a repeated nonce count?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
+          <p class="question-premise">For the same username, server nonce, and client nonce, a server that tracks nonce counts has already accepted <code>nc=00000003</code>. It receives another correctly computed Authorization value with the same count.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Label the protection space shown to the user</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Select the hash algorithm used in the Digest computation</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Bind the response to a server challenge whose validity can be checked</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Treat the repeated count as a replay and reject it under the server's nonce-count state</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept it because a mathematically correct Digest response always overrides replay state</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Accept it if the nonce has not expired, because nc is only diagnostic metadata</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**Explanation:**
 
-            A **nonce** is an opaque server-specified challenge value. Its generation and validity policy can limit when or where a captured response is reusable.
+A is correct. Section 3.4 defines <code>nc</code> as the number of requests sent with a nonce and explains that a server can detect replay by maintaining its own count: seeing the same value twice marks a replay. The count and <code>cnonce</code> also participate in the response calculation when qop is used.
 
-            The nonce is included in the Digest computation, so the server can rotate or validate it as part of replay control.
-
-            Stronger replay protection can require short-lived or one-time nonces, with corresponding state and performance costs.
-
-            A: `realm`, not `nonce`, labels the protection space.
-            B: The `algorithm` parameter selects the digest algorithm; it is distinct from the challenge value.
-            C: It identifies the nonce's role without claiming that every nonce policy prevents every replay.
-          </div>
+B confuses credential proof with freshness policy. C ignores the stated replay-tracking state; nonce lifetime and nonce-count uniqueness are distinct checks. RFC 7616 does not make replay protection stateless merely by placing <code>nc</code> on the wire.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Evaluate the parser surface, server-side credential material, and transport protection as three separate operational concerns.">
-        <header><h4>Q4: Why is Digest authentication considered tricky in practice (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Determine what stale=true says failed, and whether it says the underlying username or password was wrong.">
+        <header><h4>Q4: What is the correct client action for a stale nonce challenge?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
+          <p class="question-premise">A server rejects an otherwise valid Digest response because its nonce is no longer valid. It returns a new challenge with <code>stale=true</code> and a fresh nonce.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. It has many parameters and edge cases</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Servers may need access to password equivalent material</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It still benefits from TLS for confidentiality and integrity</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. It removes the need to authenticate the server's identity</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Permanently disable the account because stale=true proves that the password was incorrect</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Retry using the new nonce without necessarily prompting the user for credentials again</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Reuse the old Authorization value unchanged because stale=true extends the previous nonce</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**Explanation:**
 
-            RFC 7616 Section 3 defines the parameter-rich challenge/response operation, and Section 5 analyzes credential, server-authentication, and transport risks.
+B is correct. Section 3.3 defines <code>stale=true</code> to signal rejection because the nonce was stale, allowing the client to retry with the new challenge without necessarily asking for a username and password again.
 
-            Each selected statement describes a separate deployment burden or residual protection need.
-
-            These trade-offs are why many current deployments prefer simpler token-based authentication inside a protected TLS channel.
-
-            A: Parsing and generating the many quoted parameters, algorithm variants, nonce counts, and stale-nonce paths creates interoperability edge cases.
-            B: A server can verify with H(A1), but compromise of that password-equivalent material can enable access within the realm.
-            C: Digest does not give general confidentiality or integrity to the HTTP exchange, so TLS remains valuable.
-            D: A counterfeit server can still present challenges; authenticating the server and channel remains necessary.
-          </div>
+A assigns a credential-failure meaning that the flag is specifically meant to distinguish. C reverses the mechanism: the old nonce is not extended, and the response must be recomputed using the new challenge. A server should set the flag to true only when the received nonce was invalid.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^nonce$" data-difficulty="L1" data-hint="Look for the challenge parameter whose generation, expiration, and reuse policy the server controls.">
-        <header><h4>Q5: What is the parameter name for the server challenge value in Digest (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Preserve the server's preference order, then apply the client's supported set and local policy.">
+        <header><h4>Q5: Which algorithm choice follows the Digest negotiation rules?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
+          <p class="question-premise">A response offers separate Digest challenges in this order: SHA-256, then MD5. The client implements both, but local policy prohibits MD5.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Use MD5 because the last challenge overrides all earlier challenges from the same server</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Refuse Digest because a response containing any prohibited fallback makes every offered algorithm invalid</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Use SHA-256, the first supported challenge that also satisfies local policy</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
 
-            The server-specified challenge value is called a **nonce**. It is opaque to the client and participates in the Digest response computation.
+C is correct. Section 3.7 requires a server's multiple Digest challenges to use different algorithms and to appear in preference order. The client should use the first challenge it supports unless local policy dictates otherwise. Here the preferred challenge is supported and allowed.
 
-
-            A server can embed or track validity information in a nonce to restrict time, resource, client, or reuse conditions. A stale nonce can trigger a new challenge without asking for the password again.
-
-            `cnonce` is a separate client-chosen value; it must not be confused with the server's `nonce`.
-          </div>
+A invents last-one-wins behavior and selects an algorithm Section 3.2 marks not recommended. B is an optional conservative policy, not a conclusion required by RFC 7616; the allowed SHA-256 challenge remains usable under the stated policy. A hostile intermediary can attempt downgrade, which is another reason to protect the exchange with TLS.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate proof in an authentication response from confidentiality and integrity for the complete HTTP exchange.">
-        <header><h4>Q6: A correct statement about Digest and TLS is</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Treat the Authorization uri as an authenticated input that must designate the same resource as the actual request target.">
+        <header><h4>Q6: How should the origin handle a Digest URI mismatch?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
+          <p class="question-premise">After proxy rewriting, the request received by the origin targets <code>/admin/delete</code>, while the Digest Authorization <code>uri</code> is <code>/status</code>. The response digest is otherwise mathematically correct for the header value.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. Digest makes TLS unnecessary</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. TLS still protects the entire exchange</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. TLS breaks Digest by changing headers</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Reject the request because the authenticating server must ensure both values designate the same resource</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Authorize <code>/admin/delete</code> because successful digest verification makes the actual request target irrelevant</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Rewrite the Authorization uri to the received target and keep the original response digest</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**Explanation:**
 
-            Digest authenticates a computed response. TLS protects the HTTP exchange as a channel and normally authenticates the server.
+A is correct. Section 3.4.6 requires the authenticating server to assure that the resource designated by the Authorization <code>uri</code> is the same as the resource in the Request-Line; on mismatch it should return 400 Bad Request. This input-side comparison prevents a proof for one target from authorizing another.
 
-            TLS remains valuable because Digest does not provide general confidentiality or integrity for HTTP messages.
+B ignores a value that is part of A2 and the server's required resource check. C changes authenticated input without recomputing a response using the user's secret. The server must compare the effective meanings at the trust boundary, not canonicalize a mismatch into acceptance.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Keep origin authentication fields on their original path and use the parallel Proxy-* fields for hop authentication.">
+        <header><h4>Q7: How should a proxy add its own Digest authentication?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">An intermediary wants to authenticate the client before forwarding a request. The origin already uses <code>WWW-Authenticate</code> and <code>Authorization</code>.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Replace the origin challenge and Authorization fields with proxy-specific values on the same header names</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Forward origin fields untouched and use 407 with Proxy-Authenticate and Proxy-Authorization for the proxy exchange</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Copy the origin Authorization response into Proxy-Authorization because both protection spaces share one nonce</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
 
-            TLS hides HTTP-level fields from passive observers, though network endpoints, timing, and traffic volume can remain observable.
+B is correct. Sections 3.6 and 3.8 require proxies to be transparent to origin Digest fields. A proxy performing its own authentication uses a 407 response with <code>Proxy-Authenticate</code>, followed by the client's <code>Proxy-Authorization</code> request field.
 
-            A: Not sending the raw password does not make request headers, response bodies, or most message fields confidential or tamper resistant.
-            B: TLS protects the enclosing traffic, including the authentication exchange, while Digest supplies its own credential proof.
-            C: TLS transports HTTP bytes securely; it does not rewrite the Digest input fields in a way that inherently invalidates the response.
-          </div>
+A corrupts the origin authentication exchange rather than adding a separate hop exchange. C conflates distinct protection spaces, challenges, and credentials; the proxy uses its own Digest parameters. A client can in principle authenticate to both proxy and origin, but not from the same response.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="For a state-changing request, trace body integrity, nonce reuse, nonce-count checking, header coverage, and channel protection separately.">
+        <header><h4>Q8: Which review best addresses replay and substitution for this A2A action?</h4><span class="type">Multiple Choice · L4</span></header>
+        <div class="body">
+          <p class="question-premise">An automated agent sends state-changing POST requests with <code>qop=auth</code>. The server accepts a nonce for one hour and does not track nonce counts. A network intermediary can replay captured Authorization fields with a substituted body. No TLS is used.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Keep the design because the URI and method digest automatically provides body integrity, replay prevention, and confidentiality</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Change only the hash from SHA-256 to SHA-512/256; stronger hashing makes nonce tracking and body protection unnecessary</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Protect the channel, bind the entity body with auth-int when applicable, and enforce limited-use nonce or nonce-count replay policy</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+C is correct. Sections 5.4 and 5.5 call for special replay attention on POST and PUT. Limited-use or one-time nonces and nonce-count checking constrain reuse; <code>auth-int</code> binds the entity body. Section 5.1 recommends using Digest over a secure channel such as HTTPS, while Section 5.3 explains that Digest alone does not provide general confidentiality or integrity.
+
+A assigns body protection and replay state to <code>auth</code> and invents confidentiality. B addresses neither attack: Section 5.1 notes that algorithm agility does not rescue low-entropy password use, and a stronger digest does not create freshness state. Even with <code>auth-int</code>, most headers remain outside Digest protection, so the design must not treat it as complete message security.</div>
         </div>
       </article>
     </section>

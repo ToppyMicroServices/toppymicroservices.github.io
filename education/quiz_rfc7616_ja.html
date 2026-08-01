@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7616",
       SKILL_SUBTITLE: "HTTP Digest認証",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,10 +68,11 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料</h3>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7616" target="_blank" rel="noopener noreferrer">RFC 7616: HTTP Digest Access Authentication</a></li>
       </ul>
+      <p>Digestをchallenge-response protocolとして扱い、credential proof、replay policy、message coverage、proxy boundary、channel protectionを分けて判断する問題です。節番号はRFC 7616を指します。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -89,153 +90,133 @@
       </div>
     </section>
 
-    <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="wireへ送るcredential表現と, serverが検証に使うsecret materialを分けて考えます.">
-        <header><h4>Q1: Digest認証が狙う性質として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
+<section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="保存されたverifierから、元のpasswordを復元せずにvalidなresponseを計算できるか確認してください。">
+        <header><h4>Q1: 漏えいしたDigest verifierをどう分類すべきか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">serviceは各userについて<code>H(username:realm:password)</code>を保存しています。attackerがそのdatabaseを取得しましたが、userのcleartext passwordは復元していません。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. headerを一切送らない</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. passwordを平文の形で送らない</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. HTTP status codeを送らない</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 元のpasswordだけがrealmへのauthenticationに使えるため、non-sensitive metadataである</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. validなDigest responseを直接計算できるため、そのrealmではpassword-equivalent materialである</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. databaseにserver nonceも含まれていない限り、public identifierとして扱える</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            Digest認証はpasswordそのものを送らずchallenge-responseを使いますが, secure channelやserver authenticationまで置き換えるものではありません.
+Bが正解です。Section 3.6は、serverがH(A1)を利用できればAuthorizationを検証できるとしています。そのためSection 5.2はpassword fileをunencrypted passwordと同様に保護するよう求めます。漏えいすると、元のpasswordを復元しなくても、そのrealmのresourceへ直ちにaccessできます。
 
-            **Digest auth** は challenge/response を使い, password そのものをそのまま wire に載せないようにする仕組みです. ただし channel 全体を守るわけではありません.
-
-            Digest が狙う中心は, **password を平文の形で送らない**ことです. server challenge と client 応答を組み合わせて検証します.
-
-            平文 password を避けても, metadata 保護や phishing 耐性まで自動で手に入るわけではありません.
-
-            A: header を送らない仕組みではありません. むしろ認証用 parameter を含む header を送ります.
-            B: raw password 送信を避ける, という狙いを正しく表しています.
-            C: status code を送らないこととは無関係です.
-          </div>
+Aはcleartext passwordを知らないことと、利用可能なverifierを持たないことを混同しています。Cはlong-term credential equivalentとchallengeごとのnonceを混同しています。realmはA1に含まれるため、漏えいだけで全realmのverifierが得られるわけではありませんが、弱いpasswordはbrute-force recoveryにもさらされます。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="serverからclientへのchallengeと, clientからserverへのcredential responseの向きを分けて追います.">
-        <header><h4>Q2: Digest challengeを運ぶresponse headerはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="qop=authとqop=auth-intのA2計算を比較してください。">
+        <header><h4>Q2: このrequest bodyの置換を検出するDigest modeはどれか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">clientが<code>POST /transfer</code>をauthenticateします。intermediaryはentity bodyを、あるvalidなJSON instructionから別のものへ変更しますが、method、request target、Authorization headerは変えません。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. WWW-Authenticate</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Authorization</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Forwarded</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. <code>qop=auth</code>。このmodeではすべてのrequest bodyがA2へ含まれる</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. どちらでもよい。Digestは常に全HTTP fieldとmessage contentを保護する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. <code>qop=auth-int</code>。そのA2にはentity bodyのhashが含まれる</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            serverのchallengeはresponseの`WWW-Authenticate`, clientのcredential responseはrequestの`Authorization`に入ります.
+Cが正解です。Section 3.4.3は<code>auth-int</code>のA2をMethod、request-uri、H(entity-body)で構成します。bodyを置き換えると、期待されるresponse digestが変わります。<code>auth</code>のA2に入るのはMethodとrequest-uriだけです。
 
-            server は 401 response で **`WWW-Authenticate`** header を返し, client はそれに応じて **`Authorization`** header を送ります.
-
-            Digest challenge を運ぶのは **`WWW-Authenticate`** です.
-
-            Basic でも Digest でも, 「server が `WWW-Authenticate`, client が `Authorization`」という型は共通です.
-
-            A: challenge を示す response header です.
-            B: `Authorization` は client の応答側です.
-            C: `Forwarded` は proxy metadata で, 認証 challenge には使いません.
-          </div>
+Aはbody integrityを誤ったqopへ割り当てています。BはDigestの保護範囲を過大評価しています。Section 5.3によれば、<code>auth-int</code>でも計算に入る部分だけが保護され、多くのheader fieldは改変可能なままです。Section 3.4.5はentity-body hashを、transfer encodingの適用前と除去後に計算すると定めます。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="protection spaceのlabel, hash algorithmのselector, server-controlled challenge valueを区別します.">
-        <header><h4>Q3: Digestのnonceの主な役割として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="response digestはcountをbindしますが、replay detectionにはserverがnonceについて保持するstateも必要です。">
+        <header><h4>Q3: 同じnonce countを再度受けたserverはどう判断するか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">同じusername、server nonce、client nonceについて、nonce countを追跡するserverは<code>nc=00000003</code>をすでに受理しています。同じcountで正しく計算されたAuthorization valueを再度受信しました。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. userへ示すprotection spaceをlabel付けする</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Digest計算に使うhash algorithmを選ぶ</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. responseを, validityを検査できるserver challengeへ結び付ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. serverのnonce-count stateに基づき、replayとしてrejectする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 数学的に正しいDigest responseはreplay stateより優先するため受理する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. ncはdiagnostic metadataにすぎないため、nonceが期限内なら受理する</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            `nonce`はserverがchallengeへ入れ, responseを特定のchallengeへ結び付けます. 生成と期限管理はreplay resistanceに影響します.
+Aが正解です。Section 3.4は<code>nc</code>を、clientが同じnonceで送ったrequest数と定義します。serverが自身のcountを保持し、同じ値を2回見た場合はreplayとして検出できます。qopを使う場合、countと<code>cnonce</code>はresponse計算にも入ります。
 
-            **replay resistance** は, 過去の認証応答をそのまま再利用されにくくする性質です. **nonce** は server が freshness を持たせるための challenge value です.
-
-            nonce の主な役割は, client 応答を server の fresh な challenge に結び付け, replay を制限しやすくすることです.
-
-            nonce をどう生成し, いつ失効させるかは server 実装の重要な運用論点です.
-
-            A: protection spaceをlabel付けするのは`realm`であり, `nonce`ではありません.
-            B: digest algorithmを選ぶのは`algorithm` parameterであり, challenge valueとは別です.
-            C: nonceの役割を説明しつつ, 全てのnonce policyが全replayを防ぐとは主張していません.
-          </div>
+Bはcredential proofとfreshness policyを混同しています。Cは問題で指定されたreplay-tracking stateを無視しています。nonce lifetimeとnonce-count uniquenessは別のcheckです。<code>nc</code>をwireへ含めるだけで、RFC 7616がreplay protectionをstatelessにするわけではありません。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="parser surface, server-side credential material, transport protectionを別々の運用論点として評価します.">
-        <header><h4>Q4: Digest認証が実運用で難しい理由として正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="stale=trueが何の失敗を示すか、usernameやpasswordの誤りを示すかを分けてください。">
+        <header><h4>Q4: stale nonce challengeに対する正しいclient動作はどれか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">serverは、nonceが有効でなくなったため、ほかはvalidなDigest responseをrejectしました。<code>stale=true</code>と新しいnonceを含むchallengeを返します。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. parameterやedge caseが多い</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. serverがpassword相当materialへアクセスが必要になり得る</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. 交換全体の保護にTLSが依然有効</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. server identityをauthenticateする必要をなくす</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. stale=trueはpassword誤りを証明するため、accountを恒久的にdisableする</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. userへcredentialsを再入力させず、新しいnonceでresponseを計算し直してretryできる</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. stale=trueは旧nonceを延長するため、古いAuthorization valueを変更せず再利用する</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            RFC 7616 Section 3がparameter-richなchallenge/response operationを定義し,Section 5がcredential,server authentication,transportのriskを分析します.
+Bが正解です。Section 3.3は<code>stale=true</code>を、nonceがstaleだったためrejectしたことを示すflagと定義します。clientは必ずしもusernameとpasswordを再入力させず、新しいchallengeでretryできます。
 
-            **password 相当 material** とは, raw password そのものではなくても同等に扱うべき secret です. Digest では server 側保存形式や algorithm choice が運用の負担になります.
-
-            parameterとedge caseの多さは相互運用を難しくし,server-side credential materialにはpassword相当の保護が必要です.DigestはHTTP exchange全体を暗号化しないため,TLSの役割も残ります.
-
-            そのため現代では, TLS 上の token scheme や federated auth が選ばれることが多くなっています.
-
-            A: parameter と corner case が多く, 相互運用性を保つのが難しくなりがちです.
-            B: server がどの形で credential material を保持するかが難題になります.
-            C: Digest だけでは channel 全体を守れないので, TLS の価値は残ります.
-            D: counterfeit serverもchallengeを提示できるため, serverとchannelのauthenticationは依然必要です.
-          </div>
+Aは、このflagが区別するためのcredential failureを誤って割り当てています。Cは仕組みを逆にしています。旧nonceが延長されるのではなく、新しいchallengeでresponseを再計算します。serverは受信したnonceがinvalidだった場合だけ、このflagをtrueにすべきです。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^nonce$" data-difficulty="L1" data-hint="生成, expiration, reuse policyをserverが管理するchallenge parameterを探します.">
-        <header><h4>Q5: Digestでserver challenge valueを指すparameter名は何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="serverのpreference orderを保ち、clientのsupported setとlocal policyを適用してください。">
+        <header><h4>Q5: Digest negotiation ruleに従うalgorithm選択はどれか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
+          <p class="question-premise">responseは、SHA-256、次にMD5という順序で別々のDigest challengeを提示します。clientは両方を実装していますが、local policyはMD5を禁止しています。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 同じserverの最後のchallengeが前のものを上書きするため、MD5を使う</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 禁止されたfallbackが1つでもあれば全algorithmがinvalidになるため、Digestを拒否する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 最初にあるsupported challengeで、local policyも満たすSHA-256を使う</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-            packet traceやauthentication failureの切り分けでは, realm, algorithm, nonceをそれぞれの役割で識別する必要があります.
+Cが正解です。Section 3.7は、複数のDigest challengeが異なるalgorithmを使い、serverのpreference orderで並ぶよう求めます。clientはlocal policyに反しない限り、最初にsupportするchallengeを使うべきです。ここではpreferred challengeがsupportedかつallowedです。
 
-            **`nonce`** は server challenge value で, freshness と replay 制御の手掛かりになります.
-
-
-            debug では「nonce が期限切れか」「nonce の生成規則は適切か」を直接見ることがあります. 用語を正しく結び付けておくと理解が速くなります.
-          </div>
+Aはlast-one-winsという存在しないruleを作り、Section 3.2がnot recommendedとするalgorithmを選びます。Bは選択可能な保守policyではあっても、RFC 7616から必ず導かれる結論ではありません。提示されたpolicyではallowedなSHA-256 challengeを利用できます。hostile intermediaryによるdowngradeを防ぐうえでも、TLSでexchangeを保護することが重要です。</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="authentication response内のproofと, HTTP exchange全体のconfidentiality/integrityを分けます.">
-        <header><h4>Q6: DigestとTLSの関係として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Authorization uriをauthenticated inputとして扱い、実際のrequest targetと同じresourceを示すか確認してください。">
+        <header><h4>Q6: Digest URI mismatchをoriginはどう処理すべきか？</h4><span class="type">単一選択 · L3</span></header>
         <div class="body">
+          <p class="question-premise">proxy rewrite後にoriginへ届いたrequest targetは<code>/admin/delete</code>ですが、Digest Authorizationの<code>uri</code>は<code>/status</code>です。response digestはheader valueについて数学的には正しく計算されています。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. DigestがあるのでTLSは不要</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. TLSは引き続き交換全体を保護する</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. TLSはheaderを変えるのでDigestが壊れる</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. authenticating serverは両方が同じresourceを示すことを確認する必要があるため、requestをrejectする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. digest検証に成功すればactual request targetは無関係になるため、<code>/admin/delete</code>をauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Authorization uriを受信したtargetへ書き換え、元のresponse digestをそのまま使う</label>
           </fieldset>
-          <div class="explain">
-            **Explanation:**
+          <div class="explain">**解説:**
 
-            DigestはHTTP authentication schemeであり, transport confidentiality, integrity, server authenticationを担うTLSとは責務が異なります.
+Aが正解です。Section 3.4.6は、authenticating serverがAuthorizationの<code>uri</code>とRequest-Lineのresourceが同じであることを確認するよう求め、不一致では400 Bad Requestを返すべきとしています。このinput-side comparisonにより、あるtargetのproofが別のtargetをauthorizeすることを防ぎます。
 
-            **TLS** は channel confidentiality / integrity / server authentication に効きます. Digest は主に credential をそのまま送らない工夫であり, transport protection の代わりではありません.
+BはA2に入る値とserverのrequired resource checkを無視しています。Cはuser secretでresponseを再計算せず、authenticated inputを変更しています。serverはtrust boundaryで意味を比較する必要があり、不一致をcanonicalizeして受理してはいけません。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="origin authentication fieldは元の経路で維持し、hop authenticationには対応するProxy-* fieldを使ってください。">
+        <header><h4>Q7: proxyが独自のDigest authenticationを追加する方法はどれか？</h4><span class="type">単一選択 · L3</span></header>
+        <div class="body">
+          <p class="question-premise">intermediaryはrequestをforwardする前にclientをauthenticateしたいと考えています。originはすでに<code>WWW-Authenticate</code>と<code>Authorization</code>を使っています。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. 同じheader名でorigin challengeとAuthorization fieldをproxy固有の値に置き換える</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. origin fieldを変更せずforwardし、proxy exchangeには407、Proxy-Authenticate、Proxy-Authorizationを使う</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 両protection spaceは1つのnonceを共有するため、origin Authorization responseをProxy-Authorizationへcopyする</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-            TLS は交換全体を守るために依然重要です. Digest だけでは channel integrity, metadata protection, certificate validation までは提供できません.
+Bが正解です。Sections 3.6と3.8はproxyにorigin Digest fieldを透過的にforwardするよう求めます。proxyが独自にauthenticateする場合、<code>Proxy-Authenticate</code>を含む407 responseを返し、clientは<code>Proxy-Authorization</code>を送ります。
 
-            「平文 password を送らない」と「安全な通信路を持つ」は別要件です. 現代設計では両方を分けて満たします.
+Aは別hopのexchangeを追加せず、origin authenticationを壊します。Cは異なるprotection space、challenge、credentialを混同しています。proxyは独自のDigest parameterを使います。clientは原理上proxyとoriginの両方へauthenticateできますが、同じresponseから同時に要求されることはありません。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="state-changing requestについて、body integrity、nonce reuse、nonce-count check、header coverage、channel protectionを別々に追ってください。">
+        <header><h4>Q8: このA2A actionのreplayとsubstitutionへ対処するreviewはどれか？</h4><span class="type">単一選択 · L4</span></header>
+        <div class="body">
+          <p class="question-premise">automated agentが<code>qop=auth</code>でstate-changing POSTを送ります。serverはnonceを1時間受理し、nonce countを追跡しません。network intermediaryは取得したAuthorization fieldを別bodyとともにreplayできます。TLSは使っていません。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. URIとmethodのdigestがbody integrity、replay prevention、confidentialityも自動的に与えるため、現行設計を維持する</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. SHA-256をSHA-512/256へ変えるだけで、nonce trackingとbody protectionは不要になる</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. channelを保護し、適用可能ならauth-intでentity bodyをbindし、limited-use nonceまたはnonce-count policyを実施する</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-            A: Digest があっても TLS は不要になりません.
-            B: auth scheme と channel protection の責務分担を正しく述べています.
-            C: TLS を使うこと自体が Digest を壊すわけではありません.
-          </div>
+Cが正解です。Sections 5.4と5.5はPOSTとPUTのreplayへ特別な注意を求めます。limited-useまたはone-time nonceとnonce-count checkは再利用を制約し、<code>auth-int</code>はentity bodyをbindします。Section 5.1はHTTPSなどのsecure channel上でDigestを使うことを推奨し、Section 5.3はDigestだけでは一般的なconfidentialityやintegrityを提供しないと説明します。
+
+Aは<code>auth</code>にbody protectionとreplay stateを与え、存在しないconfidentialityも追加しています。Bはどちらのattackにも対処しません。Section 5.1はalgorithm agilityだけではlow-entropy password利用を安全にできないと述べます。<code>auth-int</code>を使っても多くのheaderはDigest protectionの外にあるため、完全なmessage securityとして扱ってはいけません。</div>
         </div>
       </article>
     </section>
