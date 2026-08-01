@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 3439",
       SKILL_SUBTITLE: "Internet Architectural Guidelines and Philosophy",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 3,
+      PROGRESS_VERSION: 4,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -59,6 +59,7 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc3439" target="_blank" rel="noopener noreferrer">RFC 3439: Some Internet Architectural Guidelines and Philosophy</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc1958" target="_blank" rel="noopener noreferrer">RFC 1958: Architectural Principles of the Internet</a></li>
       </ul>
+      <p>Scope: RFC 3439 is Informational architectural guidance. These questions use it to identify review risks and trade-offs, not as a protocol-conformance checklist.</p>
     </section>
     <section class="card panel" aria-label="Quiz settings">
       <div class="row" aria-label="Answer reveal controls">
@@ -78,109 +79,195 @@
             <label class="choice"><input type="radio" name="Q1" value="d"> D. Treat them as equivalent: the principle compares source-code volume, not operational dependencies</label>
           </fieldset><div class="explain">**Explanation:**
 
-B is the best assessment. RFC 3439 Section 2 treats complexity as an obstacle to scaling and a driver of CAPEX and OPEX. Section 2.4 contrasts upgrading an entire smart core with deploying a service only to participating edges, while Section 3.1 warns that local optimization can introduce complexity and tighter coupling. Because analysis is best effort in the premise, Y satisfies the requirement while reducing mandatory-path work, coordinated upgrades, and failure scope. A single deployment unit or a smaller source-code count does not by itself establish lower system complexity. RFC 3439 is also Informational design guidance, not a protocol-conformance rule that mandates Y. If analysis becomes part of authorization or required audit evidence, the premise changes and Y must be reevaluated against that requirement.</div>
+B is the best assessment. RFC 3439 Section 2 treats complexity as an obstacle to scaling and a driver of CAPEX and OPEX. Section 2.4 contrasts upgrading an entire smart core with deploying a service only to participating edges, while Section 3.1 warns that local optimization can introduce complexity and tighter coupling.
+
+A: A common deployment unit does not erase path dependencies, upgrade coordination, or failure scope.
+B: Correct under the stated best-effort requirement. Y removes optional work from the mandatory path and limits coordinated change.
+C: RFC 3439 does not require centralized retries; that claim reverses its concern about coupling.
+D: Source-code volume is only one possible metric and does not capture operational dependencies.
+
+RFC 3439 is design guidance, not a conformance rule mandating Y. If analysis becomes authorization or required audit evidence, the premise changes and Y must be reevaluated.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The issue is the interaction between endpoint communication state and network-core state, not the mere existence of routes.">
-        <header><h4>Q2: What does the end-to-end argument imply about state in the Internet core?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. The core must be completely stateless at every layer and for every function</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. Every endpoint session should be copied into routing and forwarding state</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. Coarse core state may exist, but its interaction with endpoint state should be minimized</label>
-        </fieldset><div class="explain">**Explanation:**
-the core necessarily maintains coarse-grained state such as routes.
-coupling routing to each endpoint session undermines simplicity and fate sharing.
-RFC 3439 emphasizes near-orthogonality between core state and endpoint communication state.</div></div>
-      </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Ask whether a one-tenant event remains local or forces unrelated participants to react.">
-        <header><h4>Q3: A configuration change for one tenant triggers a global recomputation across every gateway. Which principle identifies the concern?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. The Amplification Principle</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. The requirement for a universal interworking function</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. The rule that every layer must repeat error recovery</label>
-        </fieldset><div class="explain">**Explanation:**
-small perturbations can cause disproportionately large events at scale; RFC 3439 recommends making local changes have local effects.
-the RFC warns against universal interworking.
-duplicated functions across layers are an example of avoidable complexity, not a requirement.</div></div>
-      </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Focus on interdependence and the number of ways that simultaneous events can interact.">
-        <header><h4>Q4: Two individually safe recovery mechanisms repeatedly trigger each other and create a cascading outage. Which analysis fits best?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. The mechanisms prove that more components always increase reliability</label>
-          <label class="choice"><input type="radio" name="Q4" value="b"> B. Tight coupling created an unforeseen feature interaction</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. The failure occurred because the payload was transported without modification</label>
-        </fieldset><div class="explain">**Explanation:**
-component count and interaction can reduce stability.
-the Coupling Principle predicts increased interdependence and unforeseen interactions as systems grow.
-preserving payload is the Minimum Intervention guidance; it does not describe mutually triggering recovery loops.</div></div>
-      </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare distributing an application to consenting endpoints with upgrading every intermediary.">
-        <header><h4>Q5: Why can a smart-edge, simple-core architecture reduce the cost of adding a new service?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. It requires every core node to implement the service before any user benefits</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. It removes all control planes and forwarding state from the network</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. Participating endpoints can adopt the service without upgrading the entire core</label>
-        </fieldset><div class="explain">**Explanation:**
-that is the expensive smart-core model the RFC contrasts.
-a simple core still has routing and forwarding functions.
-distributing edge software to consenting users avoids a network-wide core upgrade.</div></div>
-      </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The critique targets rigid ordering, duplicated work, and hidden information rather than modular structure itself.">
-        <header><h4>Q6: How should “Layering Considered Harmful” be read in RFC 3439?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. Layering has structural value, but excessive rigid layers can duplicate work and obstruct global optimization</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. Every protocol must collapse application, transport, and link functions into one component</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. More vertical layers always lower OPEX by isolating every decision</label>
-        </fieldset><div class="explain">**Explanation:**
-the RFC acknowledges layering's conceptual benefits while warning about ordering constraints, hidden information, and repeated functions.
-it does not ban modular boundaries.
-its operational observation is that extra layering often increases complexity and OPEX.</div></div>
-      </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask whether the intermediary must understand and rewrite information it could instead carry transparently.">
-        <header><h4>Q7: A gateway can encapsulate a payload unchanged or translate every field into a universal internal schema. Which default follows the Principle of Minimum Intervention?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. Translate every field so the gateway owns all application semantics</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. Carry the payload as received when modification is not required</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. Reject all encapsulation because it necessarily violates end-to-end design</label>
-        </fieldset><div class="explain">**Explanation:**
-universal translation increases the scope and coupling of the intermediary.
-RFC 3439 recommends transporting payload without modification where possible.
-the RFC permits data-plane interworking and encapsulation, especially at the edge.</div></div>
-      </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate carrying data between systems from translating their distributed control logic.">
-        <header><h4>Q8: Two unlike networks must interoperate. Which boundary is preferred by RFC 3439?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. Merge both control planes into one universal state machine in the core</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. Replicate every application's policy into every transit node</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. Restrict interworking mainly to data-plane encapsulation at the edge</label>
-        </fieldset><div class="explain">**Explanation:**
-control-plane translation creates a large opportunity for failure.
-it tightly couples transit infrastructure to application state.
-the RFC recommends edge-based data-plane interworking and minimizing control-plane interworking.</div></div>
-      </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="System availability and the availability target of each individual component are not identical questions.">
-        <header><h4>Q9: Which reliability strategy is consistent with RFC 3439's “myth of five nines” discussion?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. Design reliability at system level instead of demanding five nines from every complex component</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. Keep adding mechanisms until each component can independently claim perfect availability</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. Assume packet networking makes component failures irrelevant to end-to-end reliability</label>
-        </fieldset><div class="explain">**Explanation:**
-system-level resilience can use comparatively unreliable components, and attempts to perfect every component may add human and process complexity.
-that can feed the robustness/complexity spiral.
-the argument changes how reliability is composed; it does not dismiss failures.</div></div>
-      </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Count the independently deployed, operated, and failed elements on the path of one request.">
-        <header><h4>Q10: An Agent-to-Agent request must traverse seven mandatory brokers, translators, and policy engines. What is the strongest RFC 3439 review question?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare state needed to forward across the network with state that represents one endpoint conversation.">
+        <header><h4>Q2: Which review conclusion follows from RFC 3439's treatment of core state?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The service works in a small test environment; the concern is whether the mandatory path remains stable and operable at scale.</p>
+          <p class="question-premise">An A2A routing fabric keeps aggregated regional routes. A proposal would also copy every task ID, token expiry, retry count, and conversation state into all transit gateways. Endpoints must be able to restart a task without reconstructing matching state in every gateway.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Can each intermediary scale its own implementation and interface independently?</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Which components can be removed or made optional without losing required behavior?</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Can a shared control plane coordinate the intermediaries and mask their failures?</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Reject both designs because the end-to-end argument prohibits every form of state in the core</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Copy all session state because core replication automatically improves fate sharing</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Retain needed coarse routing state, but challenge coupling it to each endpoint conversation</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Declare the proposal non-conformant because RFC 3439 defines a mandatory gateway database schema</label>
           </fieldset><div class="explain">**Explanation:**
-feature count is not evidence of deployability.
-RFC 3439 Sections 8 and 8.1 tie architectural complexity to component count and recommend minimizing components in the service-delivery path.
-a shared control plane can increase coupling and failure scope rather than reduce the path's obligations.</div>
+
+RFC 3439 Section 2.1 explicitly says the core contains coarse-grained state such as routes. Its concern is interaction between that state and end-to-end communication state.
+
+A: The document does not require a literally stateless core.
+B: Per-session replication increases fate and upgrade coupling; it does not automatically improve them.
+C: Correct. It preserves necessary routing state while questioning the new dependency against the restart requirement.
+D: RFC 3439 is Informational guidance and specifies no gateway schema.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Reduce how many unrelated nodes react to one tenant's event and avoid synchronizing their response.">
+        <header><h4>Q3: Which mitigation best addresses this amplification path?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Changing one tenant's verification-key URL makes a controller invalidate and recompute caches on 10,000 gateways at once. CPU saturation then delays unrelated tenants. The key change need reach only gateways currently serving that tenant, and convergence within five minutes is acceptable.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the global fan-out but add more synchronized retries to finish sooner</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Scope invalidation to affected gateways and stagger bounded updates within five minutes</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Recompute every tenant on every change so all nodes follow one uniform path</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Remove cache expiry so the triggering event never occurs again</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Section 2.2.1 describes the Amplification Principle: small inputs can produce disproportionately large events, especially at scale. The design criterion here permits bounded, staged convergence.
+
+A: Synchronized retry adds another amplification mechanism.
+B: Correct. It localizes the effect and avoids a simultaneous fleet-wide response while meeting the stated convergence bound.
+C: Uniformity does not justify work for unaffected tenants and nodes.
+D: Suppressing future updates would trade the observed load problem for stale security metadata.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Look for synchronized control loops and choose the change that reduces their ability to phase-lock.">
+        <header><h4>Q4: Which response is best supported by the Coupling Principle?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Clients retry failed calls every second. A gateway autoscaler and a backend circuit breaker both evaluate one-second windows. During overload, all three mechanisms repeatedly align, recover briefly, and fail again.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Force every loop onto the same clock so their decisions become deterministic</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Add a fourth synchronized recovery loop to override conflicting decisions</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Introduce bounded jitter/backoff and test the loops together under overload</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Treat each loop as safe because it passes its isolated component test</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Section 2.2.2 associates tight coupling and synchronization with unforeseen failure states and notes that injecting randomness is one way to reduce coupling.
+
+A: A common clock reinforces the phase-locking observed in the premise.
+B: Another synchronized controller adds interactions without removing the cause.
+C: Correct. Bounded jitter reduces synchronization, while system testing evaluates the interaction rather than isolated logic.
+D: Component safety does not establish system safety when control loops interact.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Use the stated optionality and adoption rate. Do not assume that every feature belongs either wholly in the core or wholly at the edge.">
+        <header><h4>Q5: Which placement decision best follows the stated requirement?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A document-summarization feature is optional, used by 2% of tenants, and may fail without blocking message delivery. Proposal A adds its model runtime to every gateway. Proposal B lets participating tenants call a separately deployed edge service.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Choose A because every optional feature must be available in the shared core before adoption</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Favor B because only participants need the feature and delivery must not depend on it</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Choose B because RFC 3439 prohibits every application function in an intermediary</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Treat placement as irrelevant because deployment and failure coupling are not architectural costs</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Section 2.4 contrasts fleet-wide smart-core upgrades with adoption by participating edges. The premise makes summarization optional and outside the delivery SLO.
+
+A: It imposes runtime, upgrades, and failures on the whole fleet before they are needed.
+B: Correct under these requirements. Participating tenants can adopt the feature without making delivery depend on it.
+C: The RFC gives guidance, not a categorical ban on intermediary functions.
+D: Upgrade and failure coupling are central to the comparison. A mandatory security or audit function would require a different assessment.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Review repeated work and missing cross-layer information before deciding whether any boundary should move.">
+        <header><h4>Q6: Which review action correctly applies the layering critique?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A client retries at the task layer, a proxy retries HTTP requests, and a transport library reconnects. Each layer has a different timeout and cannot see the task deadline. Duplicate execution is harmful, but modular ownership remains a project requirement.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Collapse every layer into one component because RFC 3439 rejects modularity</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Keep all retries unchanged because isolation guarantees that they cannot interact</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Define one retry owner and propagate the task deadline while preserving justified boundaries</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Add another retry layer that detects duplicates after they have executed</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Sections 3 and 3.1 acknowledge the structural value of layering but warn about duplicated functions, hidden information, local optimization, and tighter coupling.
+
+A: The critique is not a requirement to remove every module boundary.
+B: The premise already shows shared effects: timeouts combine and duplicate work escapes isolation.
+C: Correct. It removes duplicate recovery ownership and supplies the deadline needed for a coherent decision without discarding modularity.
+D: This adds complexity after the harmful action instead of controlling the interacting retry loops.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Preserve the signed representation needed downstream; make any required normalization an explicit, separately defined operation.">
+        <header><h4>Q7: Which gateway behavior best respects Minimum Intervention?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway verifies a signature over the received Agent message. A downstream verifier also needs that original signed representation. The gateway can carry it unchanged, but a proposed universal schema would rewrite every field. A normalized view is useful only for optional analytics.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Replace the signed representation with the universal rewrite before forwarding</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Carry the signed representation unchanged and derive a separate analytics view</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Reject encapsulation because every intermediary must own the payload semantics</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Normalize differently at each gateway so no common transformation contract is needed</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Section 4 states the Principle of Minimum Intervention: where possible, transport the payload as received without modification. Here preserving the signed representation is also an explicit downstream requirement.
+
+A: Rewriting destroys the representation that downstream signature validation needs unless a new signed contract is defined.
+B: Correct. It preserves the required evidence and confines optional normalization to its consumer.
+C: The principle supports transparent carriage and does not reject edge encapsulation.
+D: Unspecified transformations increase semantic divergence and coupling. If canonicalization is required for security, define it at an explicit input/signing boundary rather than mutate signed data ad hoc.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare the state machines that would need translation with an option that carries data across an edge boundary.">
+        <header><h4>Q8: Which interworking boundary carries the lower stated risk?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Two A2A domains use incompatible lease, revocation, retry, and delegation state machines. A bridge could translate both control planes bidirectionally, or it could encapsulate messages at the edge while each domain keeps its own control state. No isomorphism between the control models has been demonstrated.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Translate every control transition because more shared state reduces failure opportunities</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Merge both domains into a universal core state machine before carrying any data</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Prefer edge data encapsulation and minimize control-plane translation unless its semantics are proven</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Copy both state machines into every transit gateway to preserve local autonomy</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Sections 3.4.1, 4, and 4.1 favor edge data-plane interworking and warn that control-plane interworking creates many opportunities for failure, while recognizing exceptional cases such as demonstrated isomorphism.
+
+A: Undemonstrated semantic translation adds failure modes rather than removing them.
+B: A universal interworking function is the pattern Section 4 warns about.
+C: Correct for the stated uncertainty. It limits coupling while leaving a change trigger: proven control-model semantics and a requirement that encapsulation cannot meet.
+D: Replication expands the state and upgrade surface to unrelated transit nodes.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The RFC challenges one assumption about component targets; it does not calculate availability for the two proposals.">
+        <header><h4>Q9: What can RFC 3439 support in this reliability review?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A service has a 99.99% availability objective. Design X uses two simpler 99.9% components with failover. Design Y uses one claimed 99.999% component plus a complex operator-run recovery process. Common-mode failures, repair time, and failover success have not been measured.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Select X because two 99.9% figures always multiply into the service objective</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Select Y because every component must exceed the service-level objective</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Evaluate system failure modes and operational complexity; the RFC alone cannot choose X or Y</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Ignore component failure because packet switching guarantees end-to-end availability</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Section 7 rejects the assumption that every complex component must itself meet a five-nines system target and warns that added recovery mechanisms can feed a complexity/robustness spiral.
+
+A: Availability does not combine by simple multiplication without independence, repair, and failover data.
+B: This is the component-level assumption the section questions.
+C: Correct. The guidance identifies what to challenge, while the missing measurements prevent a design choice.
+D: Packet switching does not make component and operational failures irrelevant.</div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="b,d,e" data-difficulty="L4" data-hint="Use component count as a review signal, then preserve unique required assurances and respect the document's non-normative status.">
+        <header><h4>Q10: Which conclusions are justified for this seven-component service path?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">Every A2A request traverses seven independently deployed brokers, translators, policy engines, and audit services. Some may enforce unique authorization or evidence requirements; ownership and failure dependencies have not yet been mapped. The path works in a small test environment.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. ACPL proves the outage probability is exactly seven times that of one component</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. Map failure, upgrade, and ownership dependencies and challenge components without unique required behavior</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. Remove authorization and audit checks first because simplicity always overrides security requirements</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. RFC 3439 raises a design risk but does not by itself prove protocol non-conformance</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. Retain a component when its unique required assurance cannot be preserved by a simpler design</label>
+          </fieldset><div class="explain">**Explanation:**
+
+RFC 3439 Sections 8 and 8.1 relate architectural complexity to the number and complexity of elements in a service-delivery path. They provide a review lens, not a numeric availability formula or permission to discard requirements.
+
+A: Not selected. ACPL is qualitative here and supplies no exact outage multiplier.
+B: Selected. The missing dependency map is necessary to test whether each element earns its mandatory-path cost.
+C: Not selected. Simplicity is evaluated subject to required security and evidence properties.
+D: Selected. RFC 3439 is Informational architectural guidance, not a conformance specification for this A2A path.
+E: Selected. Removing an element is justified only if required behavior and assurance survive the redesign.</div>
         </div>
       </article>
     </section>
