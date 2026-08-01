@@ -44,7 +44,7 @@
 	      SKILL_NAME: "RFC 2119 規範語（BCP 14）",
 	      SKILL_SUBTITLE: "MUST / SHOULD / MAY など",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -226,170 +226,144 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2" data-hint="客観的な合否判定を妨げる表現, 必要な制御の任意化, 文書内の衝突を探してください.">
-        <header><h4>Q5: 仕様の実装・テスト・議論を壊しやすい「赤信号」をすべて選べ</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="各文をprofileが宣言した保証と比べ, 適合実装が取る動作を一意に判断できるか確認してください.">
+        <header><h4>Q5: 宣言した適合境界を定義できていないdraft文はどれか?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">Agent Card profileは, 受理する全Cardを認証し, 独立実装同士が相互運用できると宣言しています. draftには次の文があります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. 「可能なら <code>MUST</code>」のような曖昧な条件（例: if possible）</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. BCP 14参照なしで,小文字のshould/mayを規範語っぽく使う</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. 本来必須のセキュリティ制御を <code>MAY</code> にしてしまう</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. 「securely / appropriate / fast」のような未定義の形容詞で <code>MUST</code> を書く</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="e"> E. 同条件下で矛盾する要件を書く（MUSTとMUST NOTが衝突）</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="f"> F. 付録に“参考例（非規範）”を置く（非規範と明記）</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. 「clientは実行可能ならissuerを検証<code>MUST</code>」とし, 実行可能の条件を定義しない</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. 「trusted networkではunsigned Cardを受理<code>MAY</code>」とし, 認証保証の例外を定義しない</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. 「一時error後は速やかにretry <code>MUST</code>」とし, 間隔と回数上限を定義しない</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. 「compressionは<code>OPTIONAL</code>であり, 片方だけが実装する場合も機能を縮小して相互運用<code>MUST</code>」とする</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="e"> E. 1つの有効なexchangeを, 非規範と明記した付録に示す</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
-            RFC 2119 Sections 1–5は規範語の強さを分け,Section 6は相互運用性や危害に必要な箇所で慎重かつ限定的に使うよう求めます.曖昧または矛盾した条件では一貫した適合判定ができません.
+            keywordだけでは, 未定義の条件やprofileの保証との衝突は直りません. RFC 2119 Section 6は相互運用性の確保や危害の抑止に必要な動作へ規範語を慎重に使うよう述べ, Section 7はsecurity上の影響を説明するよう求めます.
 
-
-            - **規範（normative）**: 適合性に直結する部分.
-
-            - **テスト可能**: 客観的にOK/NGを決められること.
-
-            A: 実装者が「無理でした」で逃げられ,合意形成が崩れる.
-            B: 大文字/小文字の曖昧さはRFC 8174がまさに潰したポイント.
-            C: セキュリティを任意にすると,現場で“未実装”が正当化される.
-            D: 未定義語があると `MUST` が実質的に測れない.
-            E: 実装が分岐し,AIレビューでも人間レビューでも収拾がつかない.
-            F: 非規範と明記した例は理解を助けても適合性を変えないため, 赤信号ではありません.
+            A: 選択. 「実行可能なら」の判定を実装ごとに委ねるため, 適合性を一貫して評価できません.
+            B: 選択. profileが保証を狭めるか, 正確な例外とsecurity上の影響を定義しない限り, この許可は全Cardを認証するという宣言と衝突します.
+            C: 選択. 「速やかに」と回数上限の欠如は観測可能な動作を定義せず, loadを増幅する可能性もあります.
+            D: 非選択. RFC 2119 Section 5に沿い, optional機能がなくても, その機能を除いて相互運用できる契約です.
+            E: 非選択. 非規範と明示した例は適合要件を変更しません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="その文をテスト可能にするため, 要求の強さ, 動作の定義, 例外条件の何が不足しているかを考えてください.">
-        <header><h4>Q6: AIが「Clients should verify certificates.」と提案してきた.AIへの指示として最適なのは?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="大文字化だけでは足りません. 利用可能なmode, 各modeの検証内容, failure時の動作を特定してください.">
+        <header><h4>Q6: 独立実装へ明確なsecurity境界と適合境界を与える改訂はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">draftには「clientはserver certificateを検証すべき」とあります. ある実装はWebPKIのpathとnameを検証し, 別の実装は有効期限だけを確認し, 3つ目は事前配布したcertificate pinを使います. 意図した設計はWebPKI検証または明示的に設定したpinning modeを許可し, どの検証failureでも接続を中止するものです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 「何を必須にするか決めず, もっと強い表現に直して」</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. 「動作を定義し, BCP 14の要求レベルと正当化できる例外を示して」</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. 「証明書検証は未定義のまま, SHOULDだけ大文字にして」</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 「clientはcertificateを安全に検証<code>SHOULD</code>」とし, 検査内容を各実装に委ねる</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 「clientはcertificateを検証<code>MUST</code>」とし, WebPKI, pinning, name検査, failure処理を定義しない</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. WebPKIと設定済みpinningのmodeを定義し, 選択したmodeの検証とfailure時の中止を必須にする</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. 検証を<code>OPTIONAL</code>にし, 実装には選択内容の文書化だけを求める</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
-            RFC 2119 Section 3はSHOULDから逸脱する影響の理解と慎重な判断を求めます.RFC 8174 Section 2は表記規則を定めますが,大文字化だけでは未定義の動作を補えません.
+            RFC 2119 Sections 1–5が与えるのは要求levelであり, 欠けているcertificate検証algorithmやmode選択ではありません. RFC 8174 Section 2も大文字表記を明確にしますが, 未定義の動詞をtest可能な要件には変えません.
 
-
-            - **テスト可能**: 相互運用/適合テストで判定できる.
-
-            - **用語定義**: “verify/validate/certificate” の解釈ブレを潰す.
-
-            - **例外**: `SHOULD` を使うなら,逸脱できる条件を言語化する.
-
-            A: 「強い」は主観的で, 適合レベルも検証可能な動作も決まりません.
-            B: 不足している設計判断である動作定義, 要求レベル, 例外条件の3点を指定しています.
-            C: 大文字化すると `SHOULD` に規範的な意味は付きますが, 検証手順はテスト可能になりません.
+            A: 「安全に」は曖昧さを残し, `SHOULD`は意図した設計にない例外経路を作ります.
+            B: `MUST`は強さを示しても, 「検証」の非互換または不安全な解釈を防ぎません.
+            C: 正解. 許可する選択肢, 選んだ各mode内の必須動作, 共通のfailure結果を定義しています.
+            D: 文書化だけでは, 全接続が2つの検証modeの一方を使うという要件を満たしません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="各機能を必須, 推奨, 任意, 禁止のどれに置くか, 別々に対応付けてください.">
-        <header><h4>Q7: 「基本機能は必須,拡張は任意」を書き分けたい.正しい組み合わせは?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 2119 Section 5は, optional機能を提供する実装だけでなく, 提供しないpeerとの関係も扱います.">
+        <header><h4>Q7: このoptional extensionの相互運用契約を完成させる追加はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A2A profileには「payload compressionは<code>OPTIONAL</code>」とあります. compressionを実装するsenderは常に圧縮し, extensionを持たない適合receiverはrequestをdecodeできません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. 基本: MUST / 拡張: MAY</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. 基本: SHOULD / 拡張: MUST</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. 基本: MAY / 拡張: MUST NOT</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. optionalと呼び続けたまま, 全receiverにcompression実装を必須とする</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. supportの通知方法を定義し, peerがsupportを通知しない場合はbase表現の使用をsenderに求める</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 圧縮requestをfailureにし, その非互換を機能縮小と説明する</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. protocol動作を変えず, <code>OPTIONAL</code>を小文字のoptionalへ変える</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
-            RFC 2119 Sections 1と5は,全適合実装に必須の基本機能と,実装者が選べる任意extensionを区別します.
+            RFC 2119 Section 5は, optional itemを持つ実装と持たない実装が, optionの機能自体を除いて相互運用できるよう準備することを求めます.
 
-
-            - `MUST`: 全ての適合実装に必須.
-
-            - `MAY`: 任意（実装の自由）.
-
-            - `MUST NOT`: 禁止.
-
-            A: `MUST` は基本機能を必須にし, `MAY` は拡張の実装を任意にします.
-            B: 基本機能を推奨に弱め, 拡張を必須にするため, 両方の強さが逆です.
-            C: 基本機能を任意にし, 拡張を禁止するため, 別の設計を表します.
+            A: 実質的にcompressionを必須にするため, 宣言したextensionの位置付けと衝突します.
+            B: 正解. 交渉または曖昧でないsupport通知により, 両peerが共通のbase表現へfallbackできます.
+            C: request全体を処理できない状態はcompressionの利点を失うだけではなく, base operationの相互運用を壊します.
+            D: 小文字化はBCP 14上の解釈を変えても, wire上の非互換を直しません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="適合する実装に例外を一切認めない禁止なのかを確認してください.">
-        <header><h4>Q8: 「秘密情報をログに出してはいけない」を規範語で書くならどれ?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="例外を認めないとした境界から始め, 保護対象の値とlog sinkへ届く前の動作を定義してください.">
+        <header><h4>Q8: 宣言したpolicyを弱めず, logging境界をtest可能にする要件はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">threat analysisは, logからraw access tokenまたはclient secretを取得されることをattackとして扱います. request IDは記録できますが, secret値はapplication, proxy, diagnosticのどのlog sinkにも到達させません. 現在のdraftは「実装はsensitive dataのloggingを避ける<code>SHOULD</code>」としています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. 実装は秘密情報をログに出力 <code>MUST NOT</code></label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. 実装は秘密情報をログに出力 <code>SHOULD NOT</code></label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. 実装は秘密情報をログに出力 <code>MAY</code></label>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. incident時にoperatorがraw credentialを必要とする可能性があるため, <code>SHOULD</code>を維持する</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. 保護対象fieldを定義し, 対象となる全sinkの前で除去を必須にし, 明示した非secret identifierだけを許可する</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. application loggerだけを<code>MUST NOT</code>にし, proxyとdiagnostic loggingは未定義にする</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. plaintextが直接見えないため, credentialを可逆暗号化してlogへ保存することを許可する</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
-            RFC 2119 Section 2はMUST NOTを絶対禁止に使います.何を秘密情報とするかも定義すれば,禁止を客観的に試験できます.
+            RFC 2119 Section 2は絶対禁止を表現でき, Sections 6と7は危害につながる動作へ正確な規範語を使い, security上の影響を説明する考え方を示します. logging禁止policy自体はRFC 2119ではなく, このthreat modelから来ます.
 
-
-            `MUST NOT` は「絶対禁止（守らないと不適合）」です.
-
-            何を秘密情報とするかも定義すれば, この禁止をテストできます.
-
-            A: `MUST NOT` は適合実装による秘密情報のログ出力を絶対に禁止します.
-            B: `SHOULD NOT` は原則として避けますが, 慎重に正当化した例外を認めます.
-            C: `MAY` はログ出力を明示的に許可するため, 禁止という意図に反します.
+            A: `SHOULD`の例外は前提と衝突し, threat analysisが保護する値そのものを露出します.
+            B: 正解. data, 対象sink, enforcement point, 許可する非secret出力を特定しています.
+            C: 未定義のsinkからも同じcredentialを取得できるため, 宣言した境界を満たしません.
+            D: 復号能力を得た者にはcredentialを露出し, 「sinkへ到達させない」という要件にも反します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="まれな例外が正当化でき, その影響を慎重に判断する必要があるかに注目してください.">
-        <header><h4>Q9: <code>MUST NOT</code> ではなく <code>SHOULD NOT</code> を使うのが筋なのはどんなとき?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="既知のprotocol modeと明示した条件は直接規定できます. open-endedなSHOULD NOTの例外にする必要はありません.">
+        <header><h4>Q9: 定義済みのstale metadata例外を最も正確に表す文はどれか?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">clientは通常, staleなAgent Cardを拒否します. 定義済みのdisaster-recovery modeでは, operatorがmodeを有効にし, Cardの署名が引き続き有効な場合に限り, 10分以内のstale Cardを受理できます. それ以外のstale利用は許可しません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q9" value="a"> A. どんな事情でも絶対に許されない</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. 原則避けるべきだが,まれに正当化できる例外がある</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. どうでもよい（任意）</label>
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. clientはstale Cardを受理<code>SHOULD NOT</code>だが, local policyで例外を決めてよい</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. clientは定義済みmode以外でstale Cardを受理<code>MUST NOT</code>とし, 全条件を満たす場合だけそのmodeで受理<code>MAY</code>とする</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. clientは必須のdisaster-recovery modeを含め, 全stale Cardを受理<code>MUST NOT</code>とする</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. clientはstale Cardを受理<code>MAY</code>とし, 署名を検査<code>SHOULD</code>とする</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
-            RFC 2119 Section 4は,通常は禁止するが慎重な分析のうえで正当化できる例外があり得る場合にSHOULD NOTを使います.
+            RFC 2119 Section 4は慎重に検討した例外があり得る場合の`SHOULD NOT`を定義します. しかし前提は完全な例外条件をすでに定義しているため, 条件付きの規範要件の方が境界を正確に伝えます.
 
-
-            - `MUST NOT`: 絶対禁止.
-
-            - `SHOULD NOT`: 非推奨（例外があり得る）.
-
-            - `MAY`: 任意/許可.
-
-            A: 例外を一切認めない場合は, 絶対禁止を示す `MUST NOT` が合います.
-            B: `SHOULD NOT` は通常避けるべきだが例外的に正当化できる動作に合います.
-            C: 単に任意の動作は `MAY` で表し, `SHOULD NOT` は使いません.
+            A: 定義済みのrecovery mode以外にも未指定の例外を作ります.
+            B: 正解. その他のstale利用を禁止し, 許可をmode, age, operator操作, 有効な署名という条件へ限定します.
+            C: 必須のrecovery動作と衝突します.
+            D: stale受理を一般的な任意動作にし, 署名検証も弱めるため, 前提より広い許可です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="規範語の解釈が一貫し, テスト可能で, セキュリティと相互運用性を損なわないかを確認してください.">
-        <header><h4>Q10: RFC 2119 / BCP 14の使い方レビューとして「効く」チェック項目を選べ</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="optionを実装する許可と, peer間で必要なsemantics, trust rule, 共通動作を分けてください.">
+        <header><h4>Q10: このaudience alias extensionについて, BCP 14から導けるreview結論はどれか?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">base profileは, verifierがtokenのaudienceをrequested resourceと照合<code>MUST</code>としています. extensionはaudience aliasを受理<code>MAY</code>としますが, aliasのsyntaxも信頼できるsourceも定義せず, aliasを実装しないpeerの動作にも触れていません. それでもprofileは全適合実装間の相互運用性を宣言しています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. 規範語はALL CAPSで,文書がBCP 14を参照している</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. <code>MUST</code>/<code>MUST NOT</code> が客観的にテスト可能になっている</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. <code>SHOULD</code>/<code>SHOULD NOT</code> の例外条件が文書化されている</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. <code>MAY</code>（任意）がセキュリティ/相互運用性をうっかり弱めていない</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. 厳しそうに見せるため <code>MUST</code> を多用する</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. <code>MAY</code>はalias supportの実装を許可しても, 有効または信頼できるaliasを定義しない</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. optionを持つ実装と持たない実装には, alias機能を縮小する場合を含め, 共通動作の定義が必要である</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. 宣言したbase相互運用性にaliasが必要なら, 必要な動作を単なる任意にはできない</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. security関連のextensionでは, deployment範囲に関係なく全<code>MAY</code>を<code>MUST</code>へ変える必要がある</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. RFC 8174により, 大文字の規範語の近くにある小文字のmayも規範的な許可になる</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
+            RFC 2119 Section 5はitemをoptionalにしながらも, その機能自体を除いて, optionを持つ実装と持たない実装の相互運用を求めます. Sections 6と7は選択が相互運用性やsecurityへ影響する場合の注意を求めます. RFC 8174が特別な意味を与えるのはBCP 14の規約下にある大文字表記です.
 
-            - **誤解されない**: 読み手が同じ解釈になる.
-
-            - **テストできる**: 適合判定ができる.
-
-            - **区別できる**: 必須・推奨・任意が混ざらない.
-
-            RFC 2119 Sections 1–5は規範語の意味を定義し, Sections 6–7は相互運用性や危害に関わる箇所で慎重に使うよう求めます. RFC 8174 Section 2は標準boilerplateの下でBCP 14の意味を大文字表記へ限定します.
-
-            A: 大文字表記とBCP 14参照により, 規範的な解釈が明示されます.
-            B: テストできない必須文は, レビューに使える適合境界を示せません.
-            C: 例外条件を記述することで, `SHOULD` と `SHOULD NOT` が恣意的になるのを防げます.
-            D: 任意の動作でも, 非互換や安全性低下を生まないかの確認が必要です.
-            E: `MUST` の数は品質を示さず, 根拠のない必須要件は妥当な実装まで制約します.
+            A: 選択. 要求levelは, 欠けているalias data modelとtrust ruleの代わりにはなりません.
+            B: 選択. 一方のpeerがoptional機能を持たない場合の動作をprofileが定義する必要があります.
+            C: 選択. 無条件に宣言した相互運用性に必要な動作を, 同時に実装者の選択へ委ねることはできません.
+            D: 非選択. RFC 2119は不要な必須要件を戒めます. 適切なlevelは実際の範囲と影響で決まります.
+            E: 非選択. RFC 8174では小文字の語は通常の英語として解釈されます.
           </div>
         </div>
       </article>

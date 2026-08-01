@@ -43,7 +43,7 @@
       SKILL_NAME: "RFC 2119 Key Words (BCP 14)",
       SKILL_SUBTITLE: "MUST / SHOULD / MAY, etc.",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -200,170 +200,144 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2" data-hint="Look for wording that prevents objective pass/fail evaluation, makes a necessary control optional, or creates an internal conflict.">
-        <header><h4>Q5: Select all red flags that make normative requirements hard to implement or test</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Compare each clause with the profile's stated assurance, then ask whether a conforming implementation can determine exactly what to do.">
+        <header><h4>Q5: Which draft clauses fail to define the stated conformance boundary?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">An Agent Card profile states that every accepted Card is authenticated and that independent implementations must interoperate. Its draft contains the following clauses.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. “MUST do X if possible” (vague qualifier)</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. Using lowercase “should/may” as if they were normative, without a BCP 14 reference</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. Using <code>MAY</code> for a security control that should be mandatory</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. Using <code>MUST</code> with undefined terms like “securely”, “appropriate”, or “fast”</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="e"> E. Writing contradictory requirements under the same conditions</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="f"> F. Adding an informative example in an appendix (clearly labeled non-normative)</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. “A client <code>MUST</code> validate the issuer if practical,” with no definition of practical</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. “A server <code>MAY</code> accept an unsigned Card on a trusted network,” with no exception to the authentication claim</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. “After a transient error, a client <code>MUST</code> retry quickly,” with no retry interval or limit</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. “Compression is <code>OPTIONAL</code>; peers <code>MUST</code> interoperate when only one implements it, with reduced functionality”</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="e"> E. A clearly labeled non-normative appendix showing one valid exchange</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 2119 Sections 1–5 assign distinct strengths to the keywords, and Section 6 says they should be used carefully and sparingly where interoperability or harm requires them; vague or contradictory conditions prevent consistent conformance decisions.
+            The key word alone cannot repair an undefined condition or a conflict with the profile's stated guarantee. RFC 2119 Section 6 says imperatives are for behavior required for interoperability or to limit harm, and Section 7 asks authors to explain security consequences.
 
-
-            - **Normative**: affects conformance (what must be implemented).
-
-            - **Testable**: a reviewer can objectively decide pass/fail.
-
-            A: “if possible” breaks testability; implementers can always claim it wasn’t possible.
-            B: RFC 8174 exists because case matters; lowercase wording often becomes disputable.
-            C: turning security into “optional” is a common failure mode.
-            D: undefined adjectives make `MUST` unenforceable.
-            E: contradictions create incompatible implementations and endless debates.
-            F: A clearly identified non-normative example can aid understanding without changing conformance, so it is not a red flag.
+            A: Selected. “If practical” leaves the mandatory condition to each implementation, so conformance cannot be evaluated consistently.
+            B: Selected. The permission contradicts the unconditional authentication claim unless the profile defines a narrower claim or a precise exception and its security consequences.
+            C: Selected. “Quickly” and the missing retry limit do not define observable behavior and can also amplify load.
+            D: Not selected. This applies RFC 2119 Section 5: an optional feature can be absent while peers remain interoperable, possibly with reduced functionality.
+            E: Not selected. A clearly identified informative example does not change conformance requirements.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask what information is still missing before the sentence can be tested: requirement strength, defined behavior, and exception conditions.">
-        <header><h4>Q6: AI suggested: “Clients should verify certificates.” What is the best instruction to give the AI?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Capitalization is only one issue. Identify the supported modes, the validation performed in each mode, and the failure behavior.">
+        <header><h4>Q6: Which revision gives independent implementations the clearest security and conformance boundary?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A draft says, “Clients should verify the server certificate.” One implementation performs WebPKI path and name validation, another checks only expiry, and a third uses a pre-provisioned certificate pin. The intended design permits either WebPKI validation or the explicitly configured pinning mode, and every validation failure must abort the connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. “Use stronger wording without deciding which behavior is mandatory.”</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. “Define the behavior, choose its BCP 14 level, and state any justified exceptions.”</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. “Capitalize SHOULD while leaving certificate verification undefined.”</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. “Clients <code>SHOULD</code> verify certificates securely,” leaving each implementation to choose the checks</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. “Clients <code>MUST</code> verify certificates,” without defining WebPKI, pinning, name checks, or failure handling</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Define WebPKI and configured-pinning modes, require the specified validation in the selected mode, and require abort on failure</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Make validation <code>OPTIONAL</code> and require implementations only to document their choice</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 2119 Section 3 requires the implications of a SHOULD exception to be understood and weighed; RFC 8174 Section 2 addresses the keyword convention, but capitalization alone cannot define the missing behavior.
+            RFC 2119 Sections 1–5 supply requirement levels, not the missing certificate-validation algorithm or mode selection. RFC 8174 Section 2 likewise clarifies capitalization; it does not turn an undefined verb into a testable requirement.
 
-
-            - **Testable requirement**: can be validated by an interop/conformance test.
-
-            - **Define terms**: avoid “certificate”/“validate” meaning different things to different readers.
-
-            - **Exceptions**: if you use `SHOULD`, specify what justifies deviation.
-
-            A: “Stronger” is subjective and does not decide the intended conformance level or testable behavior.
-            B: It asks for the three missing design decisions: defined behavior, requirement level, and exception conditions.
-            C: Capitalization gives `SHOULD` normative force but still leaves the verification procedure untestable.
+            A: “Securely” preserves the ambiguity, and `SHOULD` creates an exception path not present in the intended design.
+            B: `MUST` states strength but still allows incompatible and insecure interpretations of “verify.”
+            C: Correct. It defines the permitted alternatives, the mandatory behavior within each alternative, and the common failure result.
+            D: Documentation does not satisfy the stated requirement that every connection use one of the two validation modes.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Map each feature independently to required, recommended, optional, or prohibited.">
-        <header><h4>Q7: Base feature is mandatory; extension is optional. Which pair matches that intent?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 2119 Section 5 constrains both sides of an optional feature, not only the implementation that provides it.">
+        <header><h4>Q7: Which addition correctly completes the interoperability contract for this optional extension?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A profile says, “Payload compression is <code>OPTIONAL</code>.” A sender that implements compression always uses it. A conforming receiver without the extension then cannot decode the request.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. Base: MUST, Extension: MAY</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. Base: SHOULD, Extension: MUST</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. Base: MAY, Extension: MUST NOT</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Require every receiver to implement compression while continuing to call it optional</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Define support signaling and require senders to use the base representation when the peer does not signal compression support</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Let compressed requests fail and describe the resulting incompatibility as reduced functionality</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Change <code>OPTIONAL</code> to lowercase “optional” without changing protocol behavior</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 2119 Sections 1 and 5 distinguish behavior required of every conforming implementation from a truly optional extension.
+            RFC 2119 Section 5 says implementations with and without an optional item must be prepared to interoperate, except for the feature the option itself provides.
 
-
-            - `MUST`: required for all conforming implementations.
-
-            - `MAY`: optional; implementers can choose.
-
-            - `MUST NOT`: prohibited.
-
-            A: `MUST` makes the base mandatory, and `MAY` leaves implementation of the extension optional.
-            B: This makes the base only recommended and makes the extension mandatory, reversing both levels.
-            C: This makes the base optional and prohibits the extension, expressing a different design.
+            A: This makes compression mandatory in substance and contradicts the advertised extension status.
+            B: Correct. Negotiated or otherwise unambiguous support lets both peers fall back to the common base representation.
+            C: Failure to process the entire request is not merely loss of the compression benefit; the base operation no longer interoperates.
+            D: Lowercase changes the BCP 14 interpretation but does not repair the wire-level incompatibility.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Decide whether the text allows any conforming exception to the prohibition.">
-        <header><h4>Q8: You want to forbid logging secrets. Which sentence best matches that intent?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Start from the stated no-exception boundary, then define the protected values and the behavior before data reaches a log sink.">
+        <header><h4>Q8: Which requirement makes the logging boundary testable without weakening the stated policy?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A threat analysis treats possession of raw access tokens or client secrets from logs as an attack. Request IDs may be logged, but secret values must never reach application, proxy, or diagnostic log sinks. The draft currently says, “Implementations <code>SHOULD</code> avoid logging sensitive data.”</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. Implementations MUST NOT log secrets</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. Implementations SHOULD NOT log secrets</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. Implementations MAY log secrets</label>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Keep <code>SHOULD</code> because operators might need raw credentials during an incident</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Define protected fields, remove them before every covered sink, and permit only named non-secret identifiers</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Use <code>MUST NOT</code> only for the application logger and leave proxy and diagnostic logging unspecified</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Permit reversible encryption of credentials in logs because plaintext is not directly visible</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 2119 Section 2 uses MUST NOT for an absolute prohibition. Defining what counts as secret information makes the prohibition testable.
+            RFC 2119 Section 2 can express the absolute prohibition, while Sections 6 and 7 support using precise imperatives where behavior can cause harm and explaining the security consequence. The threat model, not RFC 2119 alone, supplies the no-logging policy.
 
-
-            `MUST NOT` expresses an absolute prohibition required for conformance.
-
-            The specification should also define which values count as secrets so the prohibition is testable.
-
-            A: `MUST NOT` makes secret logging an absolute prohibition for conforming implementations.
-            B: `SHOULD NOT` discourages the behavior but still permits a carefully justified exception.
-            C: `MAY` expressly permits the behavior and therefore contradicts the prohibition.
+            A: A `SHOULD` exception would contradict the premise and expose exactly the values the threat analysis protects.
+            B: Correct. The requirement identifies the data, the covered sinks, the enforcement point, and the allowed non-secret output.
+            C: An attacker can obtain the same credentials from the unspecified sinks, so the stated boundary is incomplete.
+            D: Reversible log content still exposes credentials to anyone who obtains the decryption capability and violates the “must never reach a sink” requirement.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Focus on whether rare exceptions are legitimate and require careful judgment.">
-        <header><h4>Q9: When is <code>SHOULD NOT</code> more appropriate than <code>MUST NOT</code>?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A known protocol mode with explicit conditions can be specified directly; it need not become an open-ended SHOULD NOT exception.">
+        <header><h4>Q9: Which wording most precisely expresses the defined stale-metadata exception?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Clients normally reject stale Agent Cards. A defined disaster-recovery mode may accept a Card up to 10 minutes stale only when an operator has enabled the mode and the Card's signature still validates. No other stale use is allowed.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q9" value="a"> A. When the behavior is never acceptable under any circumstances</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. When the behavior is discouraged, but rare justified exceptions can exist</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. When the behavior is optional and doesn’t matter</label>
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Clients <code>SHOULD NOT</code> accept stale Cards, but local policy may decide otherwise</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Prohibit stale Cards outside the defined mode; permit them inside it only when every stated condition holds</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Clients <code>MUST NOT</code> accept any stale Card, including in the required disaster-recovery mode</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Clients <code>MAY</code> accept stale Cards and <code>SHOULD</code> check their signatures</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 2119 Section 4 uses SHOULD NOT when a behavior is normally prohibited but a valid exception may exist after careful analysis.
+            RFC 2119 Section 4 allows carefully weighed exceptions to `SHOULD NOT`, but the premise already defines the complete exception. Conditional normative requirements communicate that boundary more precisely.
 
-
-            - `MUST NOT`: absolute prohibition.
-
-            - `SHOULD NOT`: discouraged; exceptions may exist with justification.
-
-            - `MAY`: optional/permission.
-
-            A: If no exception is acceptable, the absolute prohibition is `MUST NOT`.
-            B: `SHOULD NOT` fits a behavior that is normally avoided but may be justified in exceptional circumstances.
-            C: A behavior that is simply optional is expressed with `MAY`, not `SHOULD NOT`.
+            A: This creates unspecified exceptions beyond the defined recovery mode.
+            B: Correct. It prohibits all other stale use and confines the permission to the stated mode, age, operator action, and valid signature.
+            C: This contradicts the required recovery behavior.
+            D: This makes stale acceptance generally optional and weakens signature validation, which is broader than the premise.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="A useful review asks whether each key word is interpreted consistently, testable, and compatible with security and interoperability.">
-        <header><h4>Q10: Pick the best review checklist items for RFC 2119 / BCP 14 usage</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Separate the permission to implement an option from the semantics, trust rules, and common behavior needed between peers.">
+        <header><h4>Q10: Which review conclusions follow from BCP 14 for this audience-alias extension?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A base profile says a verifier <code>MUST</code> match a token's audience to the requested resource. An extension says a verifier <code>MAY</code> accept audience aliases, but defines neither alias syntax nor their trusted source, and says nothing about peers that do not implement aliases. The profile still claims interoperability among all conforming implementations.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. Key words are in ALL CAPS and the document references BCP 14</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. Every <code>MUST</code>/<code>MUST NOT</code> is objectively testable</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. Any allowed exceptions (for <code>SHOULD</code>/<code>SHOULD NOT</code>) are documented</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. Optional features (<code>MAY</code>) don’t accidentally weaken security or interoperability</label>
-            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. Prefer using more <code>MUST</code> to sound strict</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. <code>MAY</code> permits implementation of alias support but does not define which aliases are valid or trustworthy</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. Implementations with and without the option need defined common behavior, possibly with reduced alias functionality</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. If aliases are required for the claimed base interoperability, the design cannot leave the necessary behavior merely optional</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. Any security-related extension must replace every <code>MAY</code> with <code>MUST</code>, regardless of deployment scope</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. RFC 8174 makes lowercase “may” a normative permission when it appears near uppercase requirements</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
+            RFC 2119 Section 5 makes an item optional while requiring implementations with and without it to remain interoperable, except for the optional function itself. Sections 6 and 7 require care when the choice affects interoperability or security. RFC 8174 gives special meanings only to the uppercase forms under the BCP 14 convention.
 
-            - **Clear**: readers agree on meaning.
-
-            - **Testable**: conformance can be evaluated.
-
-            - **Scoped**: optional vs mandatory is explicit.
-
-            RFC 2119 Sections 1–5 define the key-word meanings, Sections 6–7 require care where interoperability or harm is at stake, and RFC 8174 Section 2 limits the BCP 14 meanings to the capitalized forms under its standard boilerplate. This is therefore an application-level checklist, not an L3 design judgment.
-
-            A: Uppercase and the BCP 14 reference make the normative interpretation explicit.
-            B: A mandatory statement that cannot be tested does not give reviewers a usable conformance boundary.
-            C: Documented exception conditions keep `SHOULD` and `SHOULD NOT` from becoming arbitrary.
-            D: Optional behavior still needs review for incompatible or insecure outcomes.
-            E: More `MUST` statements do not improve a specification; unjustified mandates can constrain valid implementations.
+            A: Selected. Requirement strength cannot substitute for the missing alias data model and trust rule.
+            B: Selected. The profile must define what happens when one peer lacks the optional feature.
+            C: Selected. A behavior necessary to the profile's unconditional interoperability claim cannot simultaneously be left to implementation choice.
+            D: Not selected. RFC 2119 warns against unnecessary mandates; the correct level depends on the actual scope and consequences.
+            E: Not selected. Lowercase words retain their ordinary English meanings under RFC 8174.
           </div>
         </div>
       </article>
