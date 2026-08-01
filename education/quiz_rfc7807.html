@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7807",
       SKILL_SUBTITLE: "Problem Details",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference and status</h3>
+      <p>RFC 7807 has been obsoleted by RFC 9457. These questions examine RFC 7807 as published; use the <a href="quiz_rfc9457.html">RFC 9457 quiz</a> for the current specification. Section numbers below refer to RFC 7807.</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7807" target="_blank" rel="noopener noreferrer">RFC 7807: Problem Details for HTTP APIs</a></li>
       </ul>
@@ -90,127 +91,95 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Distinguish a generic JSON container from the media type that explicitly carries Problem Details semantics.">
-        <header><h4>Q1: What is the media type for a JSON Problem Details response</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. application/json</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. application/problem+json</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. text/problem+json</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 6.1 registers `application/problem+json` so recipients can recognize both the JSON encoding and the Problem Details semantics. Plain `application/json` identifies only the serialization. Section 6.2 separately registers `application/problem+xml` for XML.
-
-            A: It can work but does not convey the Problem Details semantics
-            B: Standard for JSON problem details
-            C: Not defined
-          </div>
-        </div>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Distinguish a generic JSON container from the registered media type that carries Problem Details semantics.">
+        <header><h4>Q1: Which media type identifies a JSON Problem Details response?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. application/json</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. application/problem+json</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. text/problem+json</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. application/http-error</label>
+        </fieldset><div class="explain">RFC 7807 Section 6.1 registers `application/problem+json`. `application/json` describes generic JSON but not the Problem Details semantics; the other two types are not registered by RFC 7807. Section 6.2 separately registers `application/problem+xml`.</div></div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2" data-hint="Classify each name by whether it describes the problem category, this occurrence, or implementation-only debugging data.">
-        <header><h4>Q2: Which are standard members of a Problem Details object (select all)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. type</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. title</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. status</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. detail</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. instance</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="f"> F. stackTrace</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1 defines `type`, `title`, `status`, `detail`, and `instance`. Section 3.2 permits a problem type to add extension members, but `stackTrace` is not a standard member and would need an explicitly documented problem-type definition. Clients that do not recognize an extension must ignore it.
-
-            A: type identifies the problem type with a URI reference.
-            B: title is a short, human-readable summary of the problem type.
-            C: status carries the HTTP status code generated by the origin server for this occurrence.
-            D: detail gives a human-readable explanation specific to this occurrence.
-            E: instance is a URI reference identifying this particular occurrence.
-            F: stackTrace is not a standard member and can expose implementation details.
-          </div>
-        </div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate the five base members from a problem-type extension, then apply the evolution rule for an unknown extension.">
+        <header><h4>Q2: How should the generic client process this response?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A response contains type, title, status, detail, instance, and a problem-specific retry_token member. The client understands the five base members but not retry_token.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Reject the whole document because every member must be standardized</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Treat retry_token as another standardized base member</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Process the base members and ignore the unknown extension</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. Parse detail to infer the missing retry_token semantics</label>
+        </fieldset><div class="explain">A: Section 3.2 requires clients to ignore extensions they do not recognize, enabling problem types to evolve. B: Section 3.1 defines the five base members; retry_token is type-specific. C: This preserves the common semantics without inventing extension behavior. D: Section 3.1 says consumers SHOULD NOT parse detail for machine information; an understood extension is the safer channel.</div></div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the member that gives a stable identifier for a reusable problem category, not an occurrence or numeric status.">
-        <header><h4>Q3: What is the intended meaning of type</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. A numeric error code that must match the HTTP status</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. The server hostname that produced the error</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. A URI reference that identifies the problem type</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1 defines `type` as a URI reference that identifies the problem category. A dereferenceable documentation URI is common but not required. When `type` is absent, its value is assumed to be `about:blank`, which gives the problem the semantics of its HTTP status code.
-
-            A: status is the HTTP status code
-            B: host is not the meaning of type
-            C: This enables stable categorization of errors
-          </div>
-        </div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="Identify which value is stable for machines, which can be localized, and which describes one occurrence.">
+        <header><h4>Q3: Which client change follows the member semantics?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">Two responses use the same type URI. Their titles are localized into English and Japanese, and their detail strings differ by account. A client currently branches on the English title.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Branch on detail because occurrence text is the stable machine identifier</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Require title to remain English for every recipient</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat each localized title as a different problem type</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. Branch on type; present title to people and detail for this occurrence</label>
+        </fieldset><div class="explain">A: detail is human-readable, occurrence-specific, and not a machine contract. B: Section 3.1 permits title changes for localization. C: Localization does not create a new type. D: Consumers MUST use type as the primary identifier; title is advisory and detail explains this occurrence.</div></div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Compare the numeric payload member with the status code on the origin server's actual HTTP response.">
-        <header><h4>Q4: According to RFC 7807, what should the status member contain when it is present</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Repeat the status code generated by the origin server for that response</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Contain an application-specific string such as "NOT_FOUND"</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Predict the status code expected from the client's next retry</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1 defines the optional `status` member as the HTTP status code generated by the origin server for this occurrence.
-            An intermediary can change the response status in transit, so a generic client should use the actual HTTP response status rather than treat the payload member as a separate authority.
-
-            A: It duplicates the origin response status as a convenience for clients.
-            B: status is numeric in the standard members
-            C: status describes this occurrence; it does not predict a later response.
-          </div>
-        </div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A generator and an intermediary can create different mismatch cases. Do not invent a universal precedence rule that the RFC says is unclear.">
+        <header><h4>Q4: What is the defensible interpretation of this status mismatch?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An origin generates HTTP 409 with status: 409 in the problem body. A gateway later changes the HTTP status to 502 but forwards the body unchanged. A generic client receives 502 and status: 409.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. The body always overrides HTTP, so generic software must behave as if it received 409</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. Generic HTTP uses 502; status may preserve the origin value, but the mismatch has no universal precedence</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. The mismatch proves the origin violated its generator requirement</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. The client should average both values and retry as a 4xx response</label>
+        </fieldset><div class="explain">A: The status member is advisory and generic HTTP software uses the actual response status. B: Sections 3.1 and 5 explicitly describe intermediary changes and say relative precedence is unclear. C: The premise says the origin emitted matching values; the gateway created the mismatch. D: RFC 7807 defines no merge algorithm.</div></div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^title$" data-difficulty="L1" data-hint="Separate the stable, short summary of a problem type from the longer description of one occurrence.">
-        <header><h4>Q5: Which member is a short human readable summary of the problem (one word)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the member name" />
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1 defines `title` as the short, human-readable summary of a problem type. Except for localization, it should remain stable across occurrences. By contrast, `detail` describes this particular occurrence and can vary between requests.
-          </div>
-        </div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="When type is absent, determine the default semantics before treating title text as a machine-readable subtype.">
+        <header><h4>Q5: What may a client conclude from this omitted type?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A 429 response omits type and sends title: "Quota exhausted". A client wants to treat that title as a standardized quota-exhaustion subtype.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. The implicit type is about:blank; a custom subtype needs an explicit type URI</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. The title automatically becomes the type identifier when type is absent</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. The response has no problem type and is invalid JSON</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. Every 429 response has quota-exhaustion semantics under RFC 7807</label>
+        </fieldset><div class="explain">A: Section 4.2 makes about:blank the default and gives it no semantics beyond the HTTP status code; its title SHOULD be the recommended status phrase, subject to localization. B: title never becomes the primary identifier. C: omission is explicitly allowed. D: A status code does not create the proposed application-specific subtype.</div></div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate the common base vocabulary from problem-type-specific extensions, then consider how unknown extensions are handled.">
-        <header><h4>Q6: Two endpoints return the common Problem Details base members but define different extension members. What may a generic client safely assume</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. Each endpoint's extensions can redefine the meanings of the base members</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. Base members have common semantics; extensions depend on the problem type</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. Clients must reject a problem document that has an unknown extension</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Sections 3.1 and 3.2 separate common base members from problem-type-specific extensions. An extension cannot redefine the standard members.
-
-            A generic client can process the standard members consistently, but it needs the problem type's definition to understand that type's extensions.
-
-            A client should branch on the problem type before relying on an extension, rather than parsing the human-readable detail member.
-
-            A: Extensions add problem-specific information; they do not redefine the standard members for each endpoint.
-            B: The base vocabulary is shared while extensions carry type-specific semantics.
-            C: RFC 7807 requires clients to ignore extension members they do not recognize, allowing problem types to evolve.
-          </div>
-        </div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Machine behavior should depend on a documented problem type and extension, not prose that can change for users.">
+        <header><h4>Q6: Which validation-error client is robust to wording changes?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">The validation-error type defines an invalid_params array. Client A extracts field names with a regular expression over detail. Client B first checks type, then reads invalid_params when it understands that extension.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Client A, because detail is the normative machine interface</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Client A, because extension members must be ignored even when understood</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Client B, because type namespaces extension semantics and detail is for people</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. Neither, because problem types cannot define arrays</label>
+        </fieldset><div class="explain">A: Section 3.1 discourages parsing detail for information. B: Unknown extensions MUST be ignored, but a client may use an extension whose problem-type definition it understands. C: Sections 3.1 and 3.2 support this division. D: Extensions can carry problem-specific structures, including arrays.</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A URI identifier can be compared without being fetched during error handling.">
+        <header><h4>Q7: Should the client automatically fetch this type URI?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An agent receives an unrecognized type URI whose host resolves to an internal address. Its generic error handler would dereference every unknown type to discover instructions.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes, because every type URI MUST resolve before the response is valid</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Yes, because an HTTP URI is executable recovery metadata</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. No, because type is forbidden from resolving to documentation</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. No. Use type as an identifier; do not automatically dereference it</label>
+        </fieldset><div class="explain">A: Dereferenceability is encouraged for human documentation, not required for validity. B: The URI identifies a type; it is not an instruction to execute a request. C: Section 4 encourages HTML documentation at the URI. D: Section 3.1 says consumers SHOULD NOT automatically dereference type. Treating the value as untrusted before any optional fetch also avoids turning error parsing into an SSRF path.</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Both fields are URI references, so identify the base URI before comparing or dereferencing them.">
+        <header><h4>Q8: How should the client interpret these relative references?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A problem document whose base URI is https://api.example/tasks/7 contains type: "../problems/quota" and instance: "#attempt-2".</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. Reject both because type and instance must be absolute URIs</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. Resolve both against the document base URI under RFC 3986</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. Resolve type against the API origin but leave instance as an opaque string</label>
+          <label class="choice"><input type="radio" name="Q8" value="d"> D. Resolve both against the type documentation URI</label>
+        </fieldset><div class="explain">A: Section 3.1 permits relative URI references for both members. B: It requires both to be resolved relative to the document's base URI under RFC 3986 Section 5. C: instance follows the same base-resolution rule. D: The type URI is not the base for instance.</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate what RFC 7807 says about public error content from additional safe logging controls chosen by the application.">
+        <header><h4>Q9: Which review finding is grounded without overstating the RFC?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An API returns a database stack trace in detail and copies attacker-controlled detail, including line breaks, into a line-oriented audit log without encoding.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. RFC 7807 requires stack traces so clients can debug the implementation</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Logging makes attacker-controlled detail trusted and safe to expose</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Remove sensitive internals and encode untrusted detail safely in structured logs</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. RFC 7807 defines a mandatory Unicode canonicalization algorithm for audit logs</label>
+        </fieldset><div class="explain">A: Sections 4 and 5 say Problem Details is not an implementation debugging tool and warn against exposing stack dumps. B: Moving data into a log does not authenticate it; raw delimiters can corrupt log records. C: Minimizing public details is RFC-grounded; input-safe structured logging is a separate application defense, not an RFC 7807 mandate. D: RFC 7807 specifies no logging canonicalization algorithm.</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Track the HTTP status seen by generic software, the advisory body member, and the field used for machine classification.">
+        <header><h4>Q10: Which end-to-end assessment identifies all three boundary failures?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A backend returns HTTP 403 with a specific problem type. A gateway changes the HTTP status to 200, leaves status: 403 in the body, and localizes title. An A2A client treats 200 as success, then branches on the English title when it notices the body.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. Preserve HTTP error semantics and branch on type, not localized title</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. Keep 200 because the body status always controls generic HTTP behavior</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. Keep title-based branching but disable localization at the backend</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. Remove type because status and title together are the primary identifier</label>
+        </fieldset><div class="explain">A: RFC 7807 Sections 3.1 and 5 make HTTP status the general error signal for generic software, require generators to align the body status with it, and define type as the primary machine identifier. If a gateway intentionally maps the response into another envelope, that mapping needs explicit application semantics rather than an unexplained 200/403 split. B: status is advisory. C: title is advisory and may be localized. D: status and title do not replace a specific type URI.</div></div>
       </article>
     </section>
 

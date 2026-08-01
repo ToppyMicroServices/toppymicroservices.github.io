@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7807",
       SKILL_SUBTITLE: "Problem Details",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料と仕様の状態</h3>
+      <p>RFC 7807はRFC 9457によって廃止・置換されています。このページはRFC 7807の公開時点の内容を扱います。現行仕様は<a href="quiz_rfc9457_ja.html">RFC 9457クイズ</a>で確認してください。以下のSection番号はRFC 7807を指します。</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7807" target="_blank" rel="noopener noreferrer">RFC 7807: Problem Details for HTTP APIs</a></li>
       </ul>
@@ -90,127 +91,95 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="汎用のJSON containerと, Problem Detailsの意味を明示するmedia typeを区別します.">
-        <header><h4>Q1: JSONのProblem Details responseのmedia typeはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. application/json</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. application/problem+json</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. text/problem+json</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 6.1は,JSON encodingだけでなくProblem Detailsとしての意味もrecipientが識別できるよう,`application/problem+json`を登録しています.単なる`application/json`はserializationしか示しません.Section 6.2はXML向けに`application/problem+xml`を別途登録しています.
-
-            A: 汎用JSONとして処理できますが, payloadがProblem Details vocabularyに従うことをmedia typeで示せません.
-            B: RFC 7807がJSON Problem Details用に登録したdedicated media typeです.
-            C: `text/problem+json`はRFC 7807で登録されていません.
-          </div>
-        </div>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="汎用JSONと、Problem Detailsの意味を持つ登録済みmedia typeを分けてください。">
+        <header><h4>Q1: JSON Problem Details responseを示すmedia typeはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. application/json</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. application/problem+json</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. text/problem+json</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. application/http-error</label>
+        </fieldset><div class="explain">RFC 7807 Section 6.1は`application/problem+json`を登録しています。`application/json`は汎用JSONを示しますが、Problem Detailsの意味までは示しません。ほかの2つはRFC 7807の登録対象ではありません。Section 6.2はXML用の`application/problem+xml`を別に登録しています。</div></div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d,e" data-difficulty="L2" data-hint="各memberがproblemの分類, 個別の発生事象, 実装内部のdebug情報のどれを表すか整理します.">
-        <header><h4>Q2: Problem Details objectの標準memberはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. type</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. title</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. status</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. detail</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. instance</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="f"> F. stackTrace</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1は`type`,`title`,`status`,`detail`,`instance`を標準memberとして定義します.Section 3.2はproblem type固有のextension memberを許しますが,`stackTrace`は標準memberではなく,使うならproblem typeの定義で明示する必要があります.未知のextensionは無視します.
-
-            A: typeはURI referenceでproblem typeを識別します.
-            B: titleはproblem typeの短いhuman-readable summaryです.
-            C: statusはこの発生事象についてorigin serverが生成したHTTP status codeです.
-            D: detailはこの発生事象に固有のhuman-readable explanationです.
-            E: instanceは個別の発生事象を識別するURI referenceです.
-            F: stackTraceは標準memberではなく, 実装内部の情報を露出させるおそれもあります.
-          </div>
-        </div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="5つのbase memberとproblem type固有のextensionを分け、未知extensionの進化規則を適用してください。">
+        <header><h4>Q2: 汎用clientはこのresponseをどう処理すべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">responseにはtype、title、status、detail、instanceと、problem固有のretry_token memberがある。clientは5つのbase memberを理解するが、retry_tokenは理解しない。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. すべてのmemberが標準でなければならないため文書全体をrejectする</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. retry_tokenを6つ目の標準base memberとして扱う</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. base memberを処理し、未知のextensionを無視する</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. detailを解析してretry_tokenの意味を推測する</label>
+        </fieldset><div class="explain">A: Section 3.2は、problem typeを進化可能にするため、認識できないextensionを無視するようclientへ求めます。B: Section 3.1が定義するbase memberは5つで、retry_tokenはtype固有です。C: 共通semanticsを処理しつつ、未定義の動作を作らない方法です。D: Section 3.1はmachine情報をdetailから解析しないよう勧めます。理解できるextensionを使う方が安全です。</div></div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="個別の発生事象や数値statusではなく, 再利用できるproblem分類の安定した識別子を探します.">
-        <header><h4>Q3: typeの意図として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP statusと一致必須の数値error code</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. errorを出したserverのhostname</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. problem typeを識別するURI reference</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1は`type`をproblem categoryを識別するURI referenceと定義します.documentationへdereferenceできるURIは一般的ですが必須ではありません.`type`を省略した場合は`about:blank`とみなされ,HTTP status codeがproblemの意味を与えます.
-
-            A: statusがHTTP status
-            B: typeの意味ではない
-            C: errorの安定分類に使える
-          </div>
-        </div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="machine向けに安定する値、localizeできる値、1回の発生事象を説明する値を分けてください。">
+        <header><h4>Q3: member semanticsに沿うclient修正はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">2つのresponseは同じtype URIを使う。titleは英語と日本語へlocalizeされ、detailはaccountごとに異なる。clientは現在、英語titleで処理を分岐している。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. 発生事象ごとのdetailをstableなmachine identifierとして分岐する</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. すべてのrecipientに英語titleを要求する</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. localizeされたtitleごとに別problem typeとして扱う</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. typeで分岐し、titleを人へ示し、detailを今回の説明に使う</label>
+        </fieldset><div class="explain">A: detailは人向けで発生事象ごとに変わり、machine contractではありません。B: Section 3.1はlocalizationによるtitle変更を許します。C: localizationは新しいtypeを作りません。D: consumerはtypeをprimary identifierとして使わなければならず、titleはadvisory、detailは今回の発生事象の説明です。</div></div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="payload内の数値memberを, origin serverが実際に生成したHTTP responseのstatus codeと比較します.">
-        <header><h4>Q4: RFC 7807では, status memberを含める場合に何を入れるか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. そのresponseについてorigin serverが生成したstatus codeを繰り返す</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. NOT_FOUNDのようなapplication固有の文字列を入れる</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. clientの次回retryで予想されるstatus codeを入れる</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1は,optionalな`status` memberを,この発生事象についてorigin serverが生成したHTTP status codeと定義します.
-            intermediaryが転送中にresponse statusを変更する場合があるため, 汎用clientはpayloadを別系統のstatus authorityとせず, 実際のHTTP response statusを使います.
-
-            A: client向けの便宜として, origin responseのstatusをpayloadにも示します.
-            B: 標準memberのstatusは文字列ではなく数値です.
-            C: statusは今回の発生事象を記述するもので, 後のresponseを予測しません.
-          </div>
-        </div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="generatorとintermediaryでは不一致の原因が異なります。RFCが不明確とする一律の優先順位を作らないでください。">
+        <header><h4>Q4: このstatus不一致をどう解釈するのが妥当か？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">originはHTTP 409とbodyのstatus: 409を生成した。gatewayがHTTP statusだけを502へ変更し、bodyはそのまま転送した。汎用clientは502とstatus: 409を受信する。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. bodyが常にHTTPを上書きするため、汎用softwareも409として動作する</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. 汎用HTTPは502を使う。bodyはorigin値を残し得るが、一律の優先順位はない</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. 不一致はoriginがgenerator要件に違反した証拠である</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. 2つの値を平均し、4xx responseとしてretryする</label>
+        </fieldset><div class="explain">A: status memberはadvisoryで、汎用HTTP softwareは実際のresponse statusを使います。B: Sections 3.1と5はintermediaryによる変更を明記し、両者の相対的優先順位は不明確だとします。C: premiseではoriginの値は一致し、gatewayが不一致を作っています。D: RFC 7807に値を統合するalgorithmはありません。</div></div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^title$" data-difficulty="L1" data-hint="problem typeの安定した短いsummaryと, 1回の発生事象を詳述する文字列を分けて考えます.">
-        <header><h4>Q5: problemの短いhuman readable summaryを表すmemberは何 (1語)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the member name" />
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Section 3.1は`title`をproblem typeの短いhuman-readable summaryと定義します.localizationを除けば,発生事象ごとに変えるものではありません.対して`detail`はこの発生事象を説明するため,requestごとに内容が変わり得ます.
-          </div>
-        </div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="type省略時のdefault semanticsを確認し、titleをmachine-readable subtypeとして扱えるか判断してください。">
+        <header><h4>Q5: typeの省略からclientが結論できることはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">429 responseがtypeを省略し、title: "Quota exhausted"を返した。clientはこのtitleを標準化されたquota-exhaustion subtypeとして扱いたい。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. implicit typeはabout:blank。独自subtypeには明示的type URIが必要</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. typeを省略するとtitleが自動的にtype identifierになる</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. problem typeがないためinvalid JSONである</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. RFC 7807ではすべての429がquota-exhaustion semanticsを持つ</label>
+        </fieldset><div class="explain">A: Section 4.2はabout:blankをdefaultとし、HTTP status codeを超えるsemanticsを与えません。そのtitleはlocalizationを除き推奨status phraseとすべきです。B: titleはprimary identifierになりません。C: 省略は明示的に許されています。D: status codeだけでは、このapplication固有subtypeを作れません。</div></div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="共通のbase vocabularyとproblem type固有のextensionを分け, 未知のextensionをどう扱うか確認します.">
-        <header><h4>Q6: 2つのエンドポイントがProblem Detailsの共通メンバーを返しつつ, それぞれ異なる拡張メンバーを定義している. 汎用クライアントが安全に仮定できることはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 各エンドポイントの拡張で, 標準メンバーの意味を上書きできる</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. 標準メンバーの意味は共通で, 拡張はproblem typeごとに解釈する</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. 未知の拡張があれば, クライアントはProblem Details文書を拒否する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 7807 Sections 3.1と3.2は,共通の標準memberとproblem type固有のextensionを分けます.extensionで標準memberの意味を上書きすることはできません.
-
-            汎用クライアントは標準メンバーを共通に処理できますが, 拡張を理解するには該当するproblem typeの定義が必要です.
-
-            クライアントが拡張に依存する場合は, 人が読むためのdetailを解析せず, problem typeを確認して処理を分けます.
-
-            A: 拡張はproblem type固有の情報を追加するものであり, エンドポイントごとに標準メンバーを再定義するものではありません.
-            B: 標準メンバーは共通に扱え, 拡張はproblem type固有の情報を表します.
-            C: RFC 7807は, 認識できない拡張メンバーを無視するようクライアントに求めており, problem typeを拡張可能にしています.
-          </div>
-        </div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="machine動作は、変化し得る人向け文章ではなく、文書化されたproblem typeとextensionへ依存させます。">
+        <header><h4>Q6: wording変更に強いvalidation-error clientはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">validation-error typeはinvalid_params arrayを定義する。Client Aはdetailへ正規表現を適用してfield名を抽出する。Client Bはtypeを確認し、そのextensionを理解する場合だけinvalid_paramsを読む。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. detailが規範的machine interfaceなのでClient A</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. 理解できるextensionも無視しなければならないためClient A</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. typeでextensionを解釈し、detailは人向けなのでClient B</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. problem typeはarrayを定義できないため、どちらも不適切</label>
+        </fieldset><div class="explain">A: Section 3.1はdetailから情報を解析しないよう勧めます。B: 未知extensionは無視しますが、problem type定義を理解するclientはそのextensionを利用できます。C: Sections 3.1と3.2がこの分担を支えます。D: extensionはarrayを含むproblem固有構造を持てます。</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="URI identifierは、error処理中に取得しなくても比較できます。">
+        <header><h4>Q7: clientはこのtype URIを自動取得すべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">agentは未知のtype URIを受け取った。そのhostはinternal addressへ解決される。汎用error handlerは未知typeをすべてdereferenceして説明を取得する設計である。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. type URIはresponse validation前に必ずresolveしなければならないため取得する</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. HTTP URIは実行可能なrecovery metadataなので取得する</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. typeがdocumentationへresolveすることは禁止されるため取得しない</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. 取得しない。文字列をidentifierとして使い、自動dereferenceによるfetch boundaryを作らない</label>
+        </fieldset><div class="explain">A: 人向けdocumentationへresolveできることは推奨ですが、validity要件ではありません。B: URIはtypeを識別し、request実行を指示しません。C: Section 4はHTML documentationへのresolutionを推奨します。D: Section 3.1はtype URIを自動dereferenceしないよう勧めます。任意の取得前にuntrusted valueとして扱えば、error parsingがSSRF経路になることも防げます。</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="両fieldはURI referenceです。比較やdereferenceの前にbase URIを特定してください。">
+        <header><h4>Q8: clientはこのrelative referenceをどう解釈すべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">base URIがhttps://api.example/tasks/7であるproblem documentに、type: "../problems/quota"とinstance: "#attempt-2"が含まれる。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. typeとinstanceはabsolute URIでなければならないため両方をrejectする</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. RFC 3986に従い、両方をdocumentのbase URIに対してresolveする</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. typeはAPI originへresolveし、instanceはopaque stringのままにする</label>
+          <label class="choice"><input type="radio" name="Q8" value="d"> D. 両方をtype documentation URIへresolveする</label>
+        </fieldset><div class="explain">A: Section 3.1は両memberにrelative URI referenceを許します。B: RFC 3986 Section 5に従い、documentのbase URIへresolveする必要があります。C: instanceにも同じbase-resolution ruleが適用されます。D: type URIはinstanceのbaseではありません。</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="RFC 7807がpublic error contentについて述べることと、applicationが追加する安全なlogging controlを分けてください。">
+        <header><h4>Q9: RFCを過大解釈しないreview findingはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">APIはdatabase stack traceをdetailで返し、改行を含むattacker-controlled detailをencodeせずline-oriented audit logへコピーする。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. clientがdebugできるようRFC 7807はstack traceを必須にする</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. logへ移すとattacker-controlled detailはtrustedになり、公開しても安全である</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. sensitive internalsを除き、detailをuntrustedとしてstructured logへ安全にencodeする</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. RFC 7807はaudit log用Unicode canonicalization algorithmを必須にする</label>
+        </fieldset><div class="explain">A: Sections 4と5はProblem Detailsを実装debug toolとせず、stack dump公開を警告します。B: logへのcopyはdataをauthenticateせず、raw delimiterはlog recordを壊し得ます。C: public detailの最小化はRFCに基づきます。入力を安全にencodeしたstructured loggingは別のapplication防御であり、RFC 7807の一律要件ではありません。D: RFC 7807はlogging canonicalization algorithmを定義しません。</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="汎用softwareが見るHTTP status、advisoryなbody member、machine分類に使うfieldを追ってください。">
+        <header><h4>Q10: 3つのboundary failureを捉えるend-to-end評価はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">backendはHTTP 403とspecific problem typeを返す。gatewayはHTTP statusを200へ変え、bodyのstatus: 403を残し、titleをlocalizeする。A2A clientは200をsuccessとして扱い、bodyに気付くと英語titleで分岐する。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. HTTP error semanticsを保ち、localized titleではなくtypeで分岐する</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. body statusが汎用HTTP動作を常に支配するため200を維持する</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. title-based分岐を維持し、backendのlocalizationだけを無効にする</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. statusとtitleがprimary identifierになるためtypeを削除する</label>
+        </fieldset><div class="explain">A: RFC 7807 Sections 3.1と5では、HTTP statusが汎用softwareへ一般的error semanticsを伝え、generatorはbody statusと一致させる必要があります。typeがprimary machine identifierです。gatewayが別envelopeへ意図的にmappingするなら、説明のない200/403分離ではなくapplication semanticsを明示する必要があります。B: body statusはadvisoryです。C: titleはadvisoryでlocalize可能です。D: statusとtitleはspecific type URIを置き換えません。</div></div>
       </article>
     </section>
 
