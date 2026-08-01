@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6455",
       SKILL_SUBTITLE: "WebSocket protocol",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6455" target="_blank" rel="noopener noreferrer">RFC 6455: The WebSocket Protocol</a></li>
       </ul>
+      <p><strong>範囲:</strong> RFC 6455はopening handshake, framing, masking, control frame, connection closeを定義します. Originはbrowser-originのsignalであり, maskingは暗号化ではありません. handshake成功やsubprotocol選択もapplicationのauthenticationまたはauthorizationではありません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,138 +91,105 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="opening handshakeと, connection成立後に使うframingを分けて考えてください.">
-        <header><h4>Q1: WebSocket接続は通常どの形で始まる</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="101 statusだけでなく, serverのproofとnegotiated capabilityのすべてをclientが検証します.">
+        <header><h4>Q1: clientはOPEN stateへ移ってよいか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">clientはextensionを一つもofferしていません. serverは正しいUpgrade, Connection, Sec-WebSocket-Acceptを伴う101 responseを返しましたが, Sec-WebSocket-Extensionsでextensionも選択しました.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. clientがsupportするWebSocket subprotocolを通知するDNS request</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. serverとの双方向message channelを確立するUDP datagram</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. connection upgradeを要求するHTTP request</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6455 の WebSocket は, 最初に **HTTP request** を送り, `Upgrade: websocket` などで protocol 切替を要求します. ここが browser, proxy, origin の責務境界になります.
-
-            通常の始まり方は, connection upgrade を要求する HTTP request です. その handshake が成立したあとに WebSocket framing へ切り替わります.
-
-            ここを理解していると, なぜ HTTP/2 では別の bootstrapping が必要になるのかも追いやすくなります.
-
-            A: DNSはserver名の解決に使われますが, WebSocket subprotocolの通知やopening handshakeは行いません.
-            B: RFC 6455はUDP datagramでmessage channelを確立しません.
-            C: HTTP handshake から始めて protocol を切り替える, という要点を正しく言っています.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 正しいSec-WebSocket-Acceptが任意のserver extensionを許可するためOPENにする</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. unknown response fieldは無効なのでextensionを無視してOPENにする</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. serverがofferされていないextensionを選んだためWebSocket connectionをfailする</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. OPEN後にextensionを初めて使うframeだけをretryする</label>
+          </fieldset><div class="explain">**解説:**
+A: Sec-WebSocket-Acceptはclient keyから導出したhandshake responseを検証しますが, unsolicited extensionを許可しません.
+B: Sec-WebSocket-Extensionsはこのcontextで意味を持つ定義済みnegotiation fieldです.
+C: RFC 6455 Section 4.1 step 5は, clientがofferしていないextensionをresponseが選んだ場合にconnectionをfailするよう要求します.
+D: 無効なnegotiationのためdata-framing phaseへ移れません.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="secureなvariantでは, baseのWebSocket schemeに1文字加わります.">
-        <header><h4>Q2: WebSocketとTLS上のWebSocketに対応するschemeの組はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Originはbrowser保護のためscript contextを示します. generic clientのidentity proofでもあるかを判断します.">
+        <header><h4>Q2: serverはOriginから何を判断できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">privileged endpointが`Origin: https://trusted.example`だけをclient credentialとして受理します. browser scriptとautonomous A2A clientの両方が接続できます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. wsとwss</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. httpとhttps</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. tcpとtls</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            **`ws`** は plaintext の WebSocket, **`wss`** は TLS 上の WebSocket です. つまり `wss` は confidentiality と integrity の面で `https` に近い期待値を持ちます.
-
-            `wss`ではopening handshakeとその後のWebSocket frameがTLS上を通り,`ws`とはtransport protectionの有無が異なります.
-
-            `wss` でも app 認証が自動で解決するわけではありません. 守られるのは channel です.
-
-            A: WebSocket 用 scheme を正しく表しています.
-            B: `http` と `https` は HTTP の scheme であり, WebSocket 用ではありません.
-            C: `tcp` と `tls` は transport / security layer の名称で, URI scheme ではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. RFC 6455が全senderに保護を要求するため全clientを認証できる</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. browser-origin policyには使えるがnon-browser identityには別の認証が必要である</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. browserしかfieldを送れないため, 不在ならnon-browser clientを認証できる</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. TLSはclient-supplied valueをapplication accountにbindされたidentity claimへ変える</label>
+          </fieldset><div class="explain">**解説:**
+A: Section 4.1はbrowser clientにOriginを要求しますが, 適合するuse caseのnon-browser clientにも送信を許します. universal credentialではありません.
+B: Sections 4.2.2と10.2はOriginをscript originのacceptance判断に使います. non-browser clientは偽のOriginを送れるため, authenticationとauthorizationは別に必要です.
+C: non-browser clientもOriginを含められるので, 有無からclient typeやidentityを認証できません.
+D: TLSは設定に応じてtransportとTLS peerを認証しますが, 任意のrequest metadataをapplication identityにはしません.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="browserはambient credentialを付けられるため, serverはhandshakeを開始したsiteを評価する必要があります.">
-        <header><h4>Q3: browserからvictimのcookieを使ってprivilegedなWebSocketを開かれるのを避けたい. 関連するcheckはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="maskingはintermediaryの挙動に対する仕組みで, transport encryptionとは独立して適用されます.">
+        <header><h4>Q3: serverはこのframeをどう処理しなければならないか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">有効なwss handshake後, clientがMASK=0のwell-formed text frameを送ります. implementationはTLSがconfidentialityを守るため受理しました.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Origin headerを無視する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Origin headerをallowlistと照合する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Accept-Languageを必須にする</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6455 Sections 4.1と4.2.2はbrowserの`Origin` inputとserverのorigin acceptance判断を定めます.server側ではallowlistと照合して,想定外originからprivileged WebSocketを開けないようにします.
-
-            browser から victim の cookie を使った接続を防ぎたいなら, **Origin header を allowlist と照合する**のが基本です.
-
-            non-browser clientは任意のheader valueを送れるため, Origin checkをclient identityの証明にはできません. app認証とauthorizationは別に必要です.
-
-            A: Origin を無視すると, browser 由来の cross-site 接続を見分ける手掛かりを捨てます.
-            B: server 側で Origin を検証するのが一般的な防御です.
-            C: `Accept-Language` は言語嗜好の header で, cross-site 制御には使えません.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. encrypted connectionではclient maskingがoptionalなので受理する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. payloadにcredentialやexecutable textがなければ受理する</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. server側でframeをmaskして復元したpayloadの処理を続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. TLS上でもclient-to-server frameはmask必須なのでconnectionをcloseする</label>
+          </fieldset><div class="explain">**解説:**
+A: RFC 6455 Section 5.1はWebSocketがTLS上かどうかにかかわらずmaskingを要求します.
+B: requirementはpayloadのsensitivityではなくframe directionで決まります.
+C: client maskの欠如はprotocol errorであり, serverがmasking keyを作って修復できません.
+D: Section 5.1はunmasked client frameを受けたserverにcloseを要求し, status code 1002を許します. maskingはTLS encryptionの代替ではありません.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="challenge-responseの向きを追ってください. clientが入力を送り, serverがresponseを導出します.">
-        <header><h4>Q4: Sec-WebSocket-Accept計算の元になるrandom valueをclientが送るheaderはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="control frameはlarge payloadの完了を待たず制御できるようfragmented messageへ割り込めます.">
+        <header><h4>Q4: receiverはPingをどう処理すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">大きなtext messageをfragmentで受信中です. continuation frameの間に有効なPing frameが届きました. receiverはtext messageが完成するまでPingをbufferします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Sec-WebSocket-Key</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Sec-WebSocket-Accept</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Sec-WebSocket-Token</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            client は **`Sec-WebSocket-Key`** を送り, server はそれを使って **`Sec-WebSocket-Accept`** を計算して返します. これにより, 相手が WebSocket handshake を理解していることを確かめやすくなります.
-
-            random value の元になる header を client が送るのは **`Sec-WebSocket-Key`** です.
-
-            ここは app 認証 token の header とは別です. handshake 成立確認と business auth を混同しないことが重要です.
-
-            A: client 側の challenge に当たる値です.
-            B: **`Sec-WebSocket-Accept`** は server が返す側です.
-            C: **`Sec-WebSocket-Token`** という標準 header はここでは使いません.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. control frameはfragment間に現れ得るためreassembly中にPingを処理する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. continuation sequenceへ割り込んだためPingをfinal fragmentとして扱う</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. fragmented message内にはframeを置けないためconnectionをfailする</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Ping payloadをtext messageへ追加しUTF-8 validation後にacknowledgeする</label>
+          </fieldset><div class="explain">**解説:**
+A: Sections 5.4と5.5はfragmented messageの途中にcontrol frameを許し, endpointに処理能力を要求します. Pingには通常Section 5.5.2に従ってPongを返します.
+B: continuationとPingはopcodeが異なり, Pingはdata messageを終了しません.
+C: 別data messageのinterleaveは通常できませんが, control frameは明示的な例外です.
+D: control payloadはfragmented application messageのpayloadではありません.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="transport setup, handshake後のframing, channel protection, application identityを分けてください.">
-        <header><h4>Q5: WebSocketについて正しい説明はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="intermediaryがboundaryを変えられるのは, boundaryに意味を与えるnegotiated semanticsを理解する場合です.">
+        <header><h4>Q5: intermediaryはmessageをre-fragmentしてよいか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">proxyはhandshakeを観測しましたが, negotiated WebSocket extensionを実装していません. buffer削減のため, このconnectionのdata-message fragmentをcoalesce・splitしようとしています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. handshake後はWebSocket framingでmessageを送る</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. wssは盗聴やtamperingへの耐性を高める</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. clientはserverへ送る全frameをmaskする</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. protocolがapplication認証を保証する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            opening handshake, data framing, channel protection, application identityは別のlayerです. connectionがOPENになるとWebSocket frameを使い, client-to-server frameはmaskされ, `wss`ではTLSがchannelを保護します.
-
-            `wss` を使っても, Origin check や token 検証が不要になるわけではありません. transport protection と app security は別です.
-
-            A: HTTP の request/response のまま話し続けるわけではなく, WebSocket framing に切り替わります.
-            B: `wss` は盗聴や tampering への耐性を高めます.
-            C: RFC 6455は, TLSの有無にかかわらずclientがserverへ送る全frameのmaskを要求します.
-            D: protocol 自体が app 認証を保証するわけではありません. 認証方式は app と deployment に依存します.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. extensionの有無にかかわらずframe boundaryは意味を持たないため可能である</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. resulting frameをすべて125 byte以下にすれば可能である</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. negotiated extensionのsemanticsを理解しない限りfragmentationを変更してはならない</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. intermediaryはどのWebSocket connectionでもfragmentationを変更できない</label>
+          </fieldset><div class="explain">**解説:**
+A: Section 5.4はextensionがfragmentにまたがるExtension dataへ意味を与え得ると説明します.
+B: 125-byte limitはcontrol frameに適用され, data messageのre-fragmentを許可も規律もしません.
+C: Section 5.4はextensionがnegotiatedされ, intermediaryがそのsemanticsを理解しない場合のfragmentation変更を禁止します.
+D: extensionがない場合, またはintermediaryがhandshakeを観測して関連extensionをすべて理解する場合にはre-fragmentが許され得ます.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^origin$" data-difficulty="L2" data-hint="serverが許可siteのlistと照合するrequest metadataを考えてください.">
-        <header><h4>Q6: browser origin制御でよく使うrequest header名は何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="protocol確立, subprotocol syntax, client authentication, application operationのauthorizationを分けます.">
+        <header><h4>Q6: 成功したhandshakeは何を証明するか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
-
-            **`Origin`** header は browser が送る接続元 origin の情報で, server は allowlist と照合して想定外 site からの接続を弾けます.
-
-
-            `Referer` や cookie ではなく, WebSocket handshake で通常見るのは `Origin` です. 名前を即答できると security review が速くなります.
-          </div>
+          <p class="question-premise">A2A serverが有効なwss handshakeを完了し, `Sec-WebSocket-Protocol: agent-admin`を選択しました. credentialやgrantを確認せずdestructiveなadmin commandを認可します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. subprotocol選択が名前を認証するためclientのadmin identity所有を証明する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. WebSocketとselected protocolは確立するがadmin authorityは独立した検証が必要である</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. fresh client keyからSec-WebSocket-Acceptを計算した場合だけauthorizationを証明する</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. TLSがchannelを保護しserver certificateが有効ならauthorizationを証明する</label>
+          </fieldset><div class="explain">**解説:**
+A: Sec-WebSocket-Protocolはapplication protocolの利用をnegotiateします. client identity proofではありません.
+B: RFC 6455 Sections 4と11.3.4はconnectionとsubprotocol選択を確立します. client authenticationはhandshakeへ追加できますが, grant verificationとcommand authorizationは構成するapplication設計の責務です.
+C: Sec-WebSocket-Acceptは偶然のnon-WebSocket responseがclient validationを通ることを防ぎます. authorization credentialではありません.
+D: 通常のserver-authenticated TLSはchannelを保護しserverを識別しますが, clientのadmin entitlementは証明しません.</div>
         </div>
       </article>
     </section>

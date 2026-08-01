@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6455",
       SKILL_SUBTITLE: "The WebSocket Protocol",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6455" target="_blank" rel="noopener noreferrer">RFC 6455: The WebSocket Protocol</a></li>
       </ul>
+      <p><strong>Scope:</strong> RFC 6455 defines the opening handshake, framing, masking, control frames, and connection closure. Origin is a browser-origin signal, masking is not encryption, and a successful handshake or subprotocol selection is not application authentication or authorization.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,120 +91,105 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Separate the opening handshake from the framing used after the connection is established.">
-        <header><h4>Q1: A WebSocket connection typically starts as</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A 101 status is necessary, but the client also validates the server's proof and every negotiated capability.">
+        <header><h4>Q1: Should the client enter the OPEN state?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client offered no extensions. The server replies 101 with correct Upgrade, Connection, and Sec-WebSocket-Accept fields, but also selects an extension in Sec-WebSocket-Extensions.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. A DNS request that advertises the WebSocket subprotocols supported by the client</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. A UDP datagram that establishes a bidirectional message channel with the server</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. An HTTP request that asks to upgrade the connection</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6455 opens a WebSocket connection with an HTTP/1.1 request containing an upgrade offer. Only after the server returns a valid handshake response does the connection enter the OPEN state and begin WebSocket framing.
-
-            A: DNS may resolve the server name, but it does not advertise WebSocket subprotocols or perform the opening handshake.
-            B: RFC 6455 does not establish its message channel with a UDP datagram.
-            C: An HTTP request carrying `Upgrade: websocket` is the specified opening form.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Enter OPEN because a valid Sec-WebSocket-Accept authorizes any server extension</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Enter OPEN but ignore the extension because unknown response fields have no effect</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Fail the WebSocket connection because the server selected an unoffered extension</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Retry only the frame that first uses the extension after entering OPEN</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sec-WebSocket-Accept validates the handshake response derived from the client's key; it does not authorize unsolicited extensions.
+B: Sec-WebSocket-Extensions is a defined negotiation field, not an ignorable unknown field in this context.
+C: RFC 6455 Section 4.1 step 5 requires the client to fail when the response selects an extension that the client did not offer.
+D: The invalid negotiation prevents the connection from entering the data-framing phase.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The secure variant adds one letter to the base WebSocket scheme.">
-        <header><h4>Q2: Which pair of schemes matches WebSocket and WebSocket over TLS</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Origin identifies the script context for browser protection; decide whether that signal also proves a generic client's identity.">
+        <header><h4>Q2: What may the server conclude from Origin?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A privileged endpoint accepts `Origin: https://trusted.example` as its only client credential. Browser scripts and autonomous A2A clients can both connect to the endpoint.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. ws and wss</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. http and https</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. tcp and tls</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6455 registers `ws` for WebSocket and `wss` for WebSocket over a TLS-protected connection. These are WebSocket URI schemes; the opening handshake still uses HTTP semantics.
-
-            A: `ws` and `wss` are the registered WebSocket scheme pair.
-            B: `http` and `https` identify HTTP resources rather than WebSocket resources.
-            C: TCP and TLS name protocol layers, not the URI schemes requested here.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. The value authenticates every client because RFC 6455 requires all senders to protect it</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. It can support browser-origin policy, but non-browser identity needs a separate authenticated mechanism</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Its absence authenticates a non-browser client because only browsers are able to send the field</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. TLS makes the client-supplied value an identity claim bound to the application account</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 4.1 requires Origin from browser clients but permits it from suitable non-browser clients; the field is not a universal credential.
+B: Sections 4.2.2 and 10.2 use Origin to decide which script origins may connect. RFC 6455 explicitly notes that non-browser clients can send a fabricated Origin; authentication and authorization remain separate.
+C: A non-browser client may include Origin, so presence or absence does not authenticate its type or identity.
+D: TLS protects transport and authenticates the TLS peer according to its configuration; it does not convert arbitrary request metadata into application identity.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="A browser can attach ambient credentials, so the server must evaluate which site initiated the handshake.">
-        <header><h4>Q3: A server wants to prevent a browser from using a victim's cookies to open a privileged WebSocket. Which check is relevant</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Masking addresses intermediary behavior and applies independently of transport encryption.">
+        <header><h4>Q3: How must the server handle this frame?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">After a valid wss handshake, a client sends an otherwise well-formed text frame with MASK=0. The implementation accepts it because TLS already protects confidentiality.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Ignore the Origin header entirely</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Validate the Origin header against allowed origins</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Require the client to send Accept-Language</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6455 Sections 4.1 and 4.2.2 define the browser `Origin` input and the server's origin-acceptance decision. A server can compare it with expected origins and reject an unacceptable browser origin, commonly with HTTP 403.
-
-            This check does not authenticate non-browser clients, which can supply arbitrary header values; application authentication and authorization remain separate controls.
-
-            A: Ignoring `Origin` discards the protocol's signal for detecting unauthorized cross-origin browser use.
-            B: An allowlist check addresses the browser-origin condition in the scenario.
-            C: `Accept-Language` expresses language preferences and says nothing about the initiating site.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept it because client masking is optional on an encrypted connection</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept it only when the payload contains no credentials or executable text</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Mask the frame at the server and continue processing the recovered payload</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Close the connection; client-to-server frames must be masked even over TLS</label>
+          </fieldset><div class="explain">**Explanation:**
+A: RFC 6455 Section 5.1 says masking applies whether or not WebSocket runs over TLS.
+B: The requirement depends on frame direction, not application payload sensitivity.
+C: A missing client mask is a protocol error; the server cannot repair it by inventing a masking key.
+D: Section 5.1 requires the server to close upon an unmasked client frame and permits status code 1002. Masking is not a substitute for TLS encryption.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Follow the challenge-response direction: the client sends an input, and the server derives a response.">
-        <header><h4>Q4: Which header is used by the client to carry a random value that the server uses to compute Sec-WebSocket-Accept</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Control frames may interrupt a fragmented message precisely so control latency does not wait for a large payload.">
+        <header><h4>Q4: What should the receiver do with the Ping?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A large text message is arriving in fragments. Between continuation frames, a valid Ping frame arrives. The receiver buffers it until the text message is complete.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Sec-WebSocket-Key</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Sec-WebSocket-Accept</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Sec-WebSocket-Token</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            The client sends a base64-encoded 16-byte random value in `Sec-WebSocket-Key`. The server combines the encoded value with the fixed GUID, hashes it, and returns the result in `Sec-WebSocket-Accept`.
-
-            A: `Sec-WebSocket-Key` is the request field supplying the client's input.
-            B: `Sec-WebSocket-Accept` is the response field derived by the server.
-            C: RFC 6455 does not define `Sec-WebSocket-Token` for this handshake step.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Handle the Ping during reassembly because control frames may appear between fragments</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Treat the Ping as the final fragment because it interrupts the continuation sequence</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Fail the connection because no frame may appear inside a fragmented message</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Append the Ping payload to the text message and acknowledge it after UTF-8 validation</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 5.4 and 5.5 allow control frames in the middle of a fragmented message and require endpoints to handle them. A Ping generally receives a Pong under Section 5.5.2.
+B: Continuation and Ping have different opcodes; Ping does not terminate the data message.
+C: Other data messages normally cannot be interleaved, but control frames are the explicit exception.
+D: Control payload is not part of the fragmented application's message payload.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Separate transport setup, post-handshake framing, channel protection, and application identity.">
-        <header><h4>Q5: Which statements about WebSocket are correct (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="An intermediary may alter boundaries only when it understands the negotiated semantics that can attach meaning to those boundaries.">
+        <header><h4>Q5: May the intermediary re-fragment the message?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A proxy observed the handshake but does not implement a negotiated WebSocket extension. To reduce buffering, it plans to coalesce and split the connection's data-message fragments.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. After the handshake, messages are framed in the WebSocket format</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. Using wss helps prevent passive observation and tampering</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. A client masks every frame that it sends to the server</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. The protocol guarantees that the application is authenticated</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            The opening handshake, data framing, channel protection, and application identity are separate layers. Once open, the protocol uses WebSocket frames; client-to-server frames are masked, while TLS on `wss` protects the channel.
-
-            A: Messages after the handshake are carried in WebSocket frames rather than ordinary HTTP request/response messages.
-            B: A correctly authenticated TLS connection for `wss` protects against passive observation and in-transit modification.
-            C: RFC 6455 requires every frame sent from a client to a server to be masked, even when TLS is used.
-            D: WebSocket does not define the application's user-authentication policy.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes, because frame boundaries never have semantics under any extension</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes, if each resulting frame is at most 125 bytes long</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. No; it must not change fragmentation without understanding negotiated extension semantics</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No, because intermediaries may never change fragmentation on any WebSocket connection</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 5.4 says extensions can assign meaning to Extension data across fragments.
+B: The 125-byte limit applies to control frames; it neither authorizes nor governs re-fragmenting data messages.
+C: Section 5.4 prohibits an intermediary from changing fragmentation when extensions were negotiated and it does not understand their semantics.
+D: Re-fragmentation can be allowed when no extensions were negotiated, or when the intermediary saw and understands all relevant extension semantics.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^origin$" data-difficulty="L2" data-hint="The server compares this request metadata with its allowed site list.">
-        <header><h4>Q6: Name the request header commonly used to enforce allowed browser origins (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Separate protocol establishment, subprotocol syntax, client authentication, and authorization of an application operation.">
+        <header><h4>Q6: What does the successful handshake prove?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
-
-
-            In a browser opening handshake, `Origin` identifies the origin of the script that requested the connection. The server can reject origins it does not accept, but it must not treat this client-supplied field as proof of identity for a non-browser client.
-          </div>
+          <p class="question-premise">An A2A server completes a valid wss handshake and selects `Sec-WebSocket-Protocol: agent-admin`. It then authorizes destructive admin commands without checking any credential or grant.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. It proves the client owns the admin identity because subprotocol selection authenticates its name</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. It establishes WebSocket and the selected protocol, but admin authority still needs independent verification</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. It proves authorization only when Sec-WebSocket-Accept was computed from a fresh client key</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. It proves authorization whenever TLS protects the channel and the server certificate is valid</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sec-WebSocket-Protocol negotiates application protocol use; it is not a client-identity proof.
+B: RFC 6455 Sections 4 and 11.3.4 establish the connection and subprotocol selection. Client authentication may be added during the handshake, but grant verification and command authorization are responsibilities of the composed application design.
+C: Sec-WebSocket-Accept prevents an accidental non-WebSocket response from satisfying the client validation; it is not an authorization credential.
+D: Ordinary server-authenticated TLS protects the channel and identifies the server, not the client's admin entitlement.</div>
         </div>
       </article>
     </section>
