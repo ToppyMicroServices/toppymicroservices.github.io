@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate deterministic key identification from key provenance, proof of possession, key attributes, and authorization. Section numbers refer to RFC 7638.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7638" target="_blank" rel="noopener noreferrer">RFC 7638: JSON Web Key (JWK) Thumbprint</a></li></ul>
     </section>
 
@@ -69,8 +70,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Build the hash input before considering how its digest is encoded or used.">
-        <header><h4>Q2: Which steps belong to the RFC 7638 thumbprint calculation? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q2: Which two changes make this implementation follow the RFC 7638 calculation? Select two.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">Two agents receive semantically equivalent JWKs with different member order, whitespace, and optional metadata. Their current code hashes each received JSON document unchanged, so it produces different identifiers for the same key.</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Include every optional JWK member so no metadata is lost.</label>
             <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Use required members in lexicographic order with no whitespace.</label>
@@ -80,8 +82,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Use only the members required to represent this key type, in lexicographic order.">
-        <header><h4>Q3: Which members form the hash input for an RSA public JWK?</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q3: Which member set should the verifier place in the RSA thumbprint input?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A verifier receives an RSA public JWK containing alg, e, kid, kty, n, use, and x5c. It must recompute the RFC 7638 thumbprint used by its peer.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. e, kty, and n.</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. alg, e, kid, kty, and n.</label>
@@ -102,8 +105,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Determine whether private parameters must enter an identifier that both holders can reproduce.">
-        <header><h4>Q5: Which calculation gives public- and private-key holders the same identifier for one key pair?</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q5: Which calculation should both components use for the shared key-pair identifier?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A signing service stores a private RSA JWK, while a verifier stores only the corresponding public JWK. The components must independently derive the same RFC 7638 identifier without exposing private parameters.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. Hash all private parameters so only the private-key holder can identify it.</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Compute the thumbprint of the corresponding public-key JWK representation.</label>
@@ -113,8 +117,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Separate a producer-chosen opaque identifier from a value independently recomputed by multiple parties.">
-        <header><h4>Q6: Which statements about the thumbprint hash function are correct? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q6: Which two review conclusions correctly separate opaque lookup from recomputation? Select two.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">Profile P requires independent thumbprint recomputation across agents. Profile Q only transports a producer-generated thumbprint as an opaque kid lookup value. Neither profile currently states a hash function.</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q6" value="a"> A. The application selects the hash function, and recomputing parties must agree on it.</label>
             <label class="choice"><input type="checkbox" name="Q6" value="b"> B. RFC 7638 fixes SHA-256 for every application for all time.</label>
@@ -148,7 +153,7 @@
         </div>
       </article>
       <article class="q card" data-id="Q9" data-type="ms" data-answer="c,d" data-difficulty="L3" data-hint="Review both disclosure of symmetric material and uniqueness assumptions about accepted representations.">
-        <header><h4>Q9: Which two findings should block this thumbprint deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q9: Which two findings prevent the service from justifying these security uses under Section 7? Select two.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <p class="question-premise">A service publishes SHA-256 thumbprints of low-entropy symmetric keys in logs. It also accepts non-canonical RSA encodings and uses thumbprint inequality as a blacklist for banned keys.</p>
           <fieldset class="choices">
@@ -156,7 +161,7 @@
             <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Thumbprint inequality reliably proves that a transformed key is unrelated to every banned key.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Symmetric-key thumbprints should be concealed unless the hash and key entropy sufficiently resist disclosure.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Accepted key representations must be validated before thumbprint uniqueness is relied upon.</label>
-          </fieldset><div class="explain">RFC 7638 Section 7 warns that exposing a symmetric-key thumbprint can reveal information about the secret and recommends concealment unless the application can justify sufficient protection. It also shows that alternate representations can defeat a simple thumbprint blacklist and conditions uniqueness on one validated, unambiguous JWK representation. A design using the digest as a security boundary must document both the input entropy and the accepted representation.</div>
+          </fieldset><div class="explain">RFC 7638 Section 7 says a symmetric-key thumbprint should typically be concealed unless the application context and hash provide sufficient protection against disclosure; this is a conditional recommendation, not a categorical publication ban. It also says thumbprint comparison is not a reliable key blacklist and conditions uniqueness on a validated, unambiguous JWK representation. Here, the stated low entropy defeats the service's disclosure justification, while acceptance of non-canonical encodings defeats its blacklist assumption.</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Track which step identifies a key, which demonstrates possession, and which authorizes a resource action.">

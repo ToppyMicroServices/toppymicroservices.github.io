@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">参考URL</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>決定的な鍵識別と、鍵の出所、所持証明、鍵属性、認可を分けて扱います。Section番号はRFC 7638を指します。</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7638" target="_blank" rel="noopener noreferrer">RFC 7638: JSON Web Key (JWK) Thumbprint</a></li></ul>
     </section>
 
@@ -69,8 +70,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="digestのencode方法や用途を考える前に,hash inputを構成してください.">
-        <header><h4>Q2: RFC 7638のthumbprint計算に含まれるstepはどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q2: この実装をRFC 7638の計算へ合わせる変更はどれか.2つ選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">2つのagentが、member順、whitespace、optional metadataの異なる、意味的には等価なJWKを受信する。現在の実装は受信JSONをそのままhashするため、同じkeyに異なるidentifierを生成している。</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. metadataを失わないよう,すべてのoptional JWK memberを含める.</label>
             <label class="choice"><input type="checkbox" name="Q2" value="b"> B. required memberだけを残し,nameを辞書順に並べ,whitespaceを除く.</label>
@@ -80,8 +82,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="このkey typeを表すためのrequired memberだけを辞書順で選んでください.">
-        <header><h4>Q3: RSA public JWKのhash inputを構成するmemberはどれか？</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q3: verifierがRSA thumbprint inputへ入れるmember setはどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">verifierはalg、e、kid、kty、n、use、x5cを含むRSA public JWKを受信した。peerが使うRFC 7638 thumbprintを再計算する必要がある。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. e,kty,n.</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. alg,e,kid,kty,n.</label>
@@ -102,8 +105,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="両方のholderが再現するidentifierへprivate parameterが必要かを考えてください.">
-        <header><h4>Q5: public-key holderとprivate-key holderが同じkey-pair identifierを得る計算はどれか？</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q5: 両componentが共有key-pair identifierへ使う計算はどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">signing serviceはprivate RSA JWKを保持し、verifierは対応するpublic JWKだけを保持する。private parameterを公開せず、双方が同じRFC 7638 identifierを独立に導出する必要がある。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. private parameterをすべてhashし,private-key holderだけが識別できるようにする.</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. 対応するpublic-key JWK表現のthumbprintを計算する.</label>
@@ -113,8 +117,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="producerが作るopaque identifierと,複数partyが独立に再計算する値を分けてください.">
-        <header><h4>Q6: thumbprintのhash functionについて正しい記述はどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q6: opaque lookupと再計算を正しく分けるreview結論はどれか.2つ選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">Profile Pはagent間でthumbprintを独立に再計算する。Profile Qはproducerが作ったthumbprintをopaqueなkid lookup値として運ぶだけである。どちらもhash functionを明記していない。</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q6" value="a"> A. applicationがhash functionを選び,再計算するpartyは同じものへ合意する.</label>
             <label class="choice"><input type="checkbox" name="Q6" value="b"> B. RFC 7638はすべてのapplicationへ永続的にSHA-256を固定する.</label>
@@ -148,7 +153,7 @@
         </div>
       </article>
       <article class="q card" data-id="Q9" data-type="ms" data-answer="c,d" data-difficulty="L3" data-hint="symmetric materialの漏えいと,受理する表現のuniqueness assumptionを確認してください.">
-        <header><h4>Q9: このthumbprint運用を止めるべきfindingはどれか.2つ選べ.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q9: Section 7の下で、このsecurity利用を正当化できなくするfindingはどれか.2つ選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <p class="question-premise">serviceはlow-entropy symmetric keyのSHA-256 thumbprintをlogで公開する.さらにnon-canonicalなRSA encodingを受理し,thumbprint不一致をbanned keyのblacklistとして使う.</p>
           <fieldset class="choices">
@@ -156,7 +161,7 @@
             <label class="choice"><input type="checkbox" name="Q9" value="b"> B. thumbprint不一致はtransformed keyが全banned keyと無関係だと確実に示す.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="c"> C. hashとkey entropyが漏えいへ十分強いと確認できなければsymmetric-key thumbprintを隠す.</label>
             <label class="choice"><input type="checkbox" name="Q9" value="d"> D. thumbprintのuniquenessを利用する前に,受理するkey表現をvalidationする.</label>
-          </fieldset><div class="explain">RFC 7638 Section 7は,symmetric-key thumbprintの公開がsecretの情報を漏らし得るため,applicationが十分な保護を説明できない限り隠すよう勧めます.同Sectionは,alternate representationが単純なthumbprint blacklistを回避できる例も示し,uniquenessを1つの検証済みで曖昧でないJWK表現に依存させます.digestをsecurity boundaryにするなら,input entropyと受理するrepresentationの両方を定義する必要があります.</div>
+          </fieldset><div class="explain">RFC 7638 Section 7は、application contextとhashが漏えいに対して十分な保護を与える場合を除き、symmetric-key thumbprintを通常は隠すべきだと述べます。これは条件付きの推奨であり、公開を一律に禁じる要件ではありません。同Sectionはthumbprint比較をkey blacklistとして信頼できないとし、uniquenessを検証済みで曖昧でないJWK表現に依存させます。この例では、明示された低entropyが公開の正当化を崩し、non-canonical encodingの受理がblacklistの前提を崩します。</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="keyを識別するstep,possessionを示すstep,resource actionをauthorizeするstepを追ってください.">
