@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6585",
       SKILL_SUBTITLE: "Additional HTTP Status Codes",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -74,6 +74,7 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9111" target="_blank" rel="noopener noreferrer">RFC 9111: HTTP Caching</a></li>
       </ul>
+      <p><strong>Scope:</strong> RFC 6585 defines four optional status codes and their cache requirements. It does not define how a rate-limiting server identifies a user or counts requests, make 428 a complete concurrency-control strategy, or authorize bypassing TLS authentication to reach a captive portal.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -144,18 +145,19 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="A retry only helps if it changes the condition that caused 428; consider what identifies the resource version the client intended to update.">
-        <header><h4>Q3: A client receives 428 after trying to update a resource. What retry strategy best matches the RFC's intent</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A retry only helps if it changes the condition that caused 428; consider what identifies the resource version the client intended to update.">
+        <header><h4>Q3: Which retry satisfies the server's demand?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client receives 428 after attempting an unconditional update to a resource that other actors can modify concurrently.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. Retry the same unconditional update at fixed intervals until the server accepts it</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Fetch or remember the current validator, then retry the update with a conditional header such as If-Match</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Obtain the current validator, then retry with a matching If-Match precondition</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat 428 as 503 and retry later because conditional requests are only advisory</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            The value of `428 Precondition Required` lies in the recovery path. It should steer the client toward a conditional request, not a blind retry loop.
+            RFC 6585 Section 3 makes the recovery path part of `428 Precondition Required`: the response SHOULD explain how to resubmit the request successfully. It should steer the client toward a conditional request, not a blind retry loop.
 
             A **validator** is metadata such as an `ETag` that helps identify a specific version of a representation. `If-Match` is a conditional header commonly used to say “apply this update only if the resource still matches this validator.”
 
@@ -271,9 +273,10 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask whether replaying this response to a different request or tenant could transfer a request-specific failure to the wrong client.">
-        <header><h4>Q7: A shared cache in front of your API sees a 429 for one tenant's token. Which handling best matches RFC 6585</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask whether replaying this response to a different request or tenant could transfer a request-specific failure to the wrong client.">
+        <header><h4>Q7: How must the shared cache handle the response?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A shared cache in front of an API receives a 429 response caused by one tenant's token-specific rate limit.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q7" value="a"> A. Store it aggressively so unrelated clients fail fast too</label>
             <label class="choice"><input type="radio" name="Q7" value="b"> B. Do not store the 429 for replay to this or other clients</label>
@@ -297,9 +300,10 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="During an attack, compare the value of a detailed response with the server resources required to generate it.">
-        <header><h4>Q8: During a request flood or header-bomb attack, which operational choice is most consistent with RFC 6585</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="During an attack, compare the value of a detailed response with the server resources required to generate it.">
+        <header><h4>Q8: May the server omit the detailed status response?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">During a request flood or header-bomb attack, generating a 429 or 431 response for every rejected request would consume resources needed to keep the service available.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q8" value="a"> A. The server must return 429 or 431 for every bad request, even if that spends more resources</label>
             <label class="choice"><input type="radio" name="Q8" value="b"> B. The server should always replace 429 and 431 with 503, regardless of the cause</label>
@@ -349,9 +353,10 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Use the field identified in the 431 response to decide what must change before an otherwise equivalent request can succeed.">
-        <header><h4>Q10: A client receives 431 Request Header Fields Too Large, and the response identifies its Cookie field as too large. Which retry most directly follows RFC 6585</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Use the field identified in the 431 response to decide what must change before an otherwise equivalent request can succeed.">
+        <header><h4>Q10: Which retry changes the rejection condition?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client receives 431 Request Header Fields Too Large, and the response identifies its Cookie field as the oversized field.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q10" value="a"> A. Reduce or remove the offending Cookie field, then resubmit an otherwise equivalent request</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. Add If-Match while retaining the oversized Cookie field, then resubmit the request</label>
@@ -368,6 +373,23 @@
             B: `If-Match` addresses a precondition and lost-update risk; it does not reduce an oversized header field.
             C: Waiting is useful for rate limiting, but time does not make an unchanged Cookie field smaller.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="HTTP status processing begins only after the transport has authenticated the intended HTTPS peer.">
+        <header><h4>Q11: May the agent bypass the certificate error to process 511?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">On public Wi-Fi, an A2A client requests `https://api.example/tasks`. TLS presents a certificate for `login.portal`, followed by bytes resembling a 511 response with a portal link. The client proposes ignoring the certificate mismatch so it can process the 511.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. Yes; status 511 proves that the mismatched TLS peer is an authorized network intermediary</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. No; fail TLS authentication and handle portal discovery through a separately trusted mechanism</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. Yes, but only when the portal link names a host different from the requested origin</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. Yes, provided the original HTTPS request did not carry Cookie or Authorization fields</label>
+          </fieldset><div class="explain">**Explanation:**
+A: A status code inside an unauthenticated TLS stream cannot authenticate the intermediary that supplied it.
+B: RFC 6585 Section 7.4 says captive-portal interception on TLS produces a certificate error. RFC 6585 defines 511 semantics after HTTP is available; it does not authorize bypassing TLS peer authentication.
+C: A different link target can be expected in a valid 511 representation, but it cannot retroactively authenticate the failed TLS connection.
+D: Omitting credentials reduces some exposure but does not make the presented certificate valid for `api.example`.</div>
         </div>
       </article>
     </section>
