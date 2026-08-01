@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 6265（Cookies）クイズ | ToppyMicroServices</title>
-  <meta name="description" content="RFC 6265 ドリル: Cookieの基礎と, Secure/HttpOnlyなどの属性を理解する." />
+  <meta name="description" content="RFC 6265の設計レビュー問題. Cookie処理, scope, 順序, 保持, security boundaryを検討する." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc6265_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,13 +13,13 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 6265（Cookies）クイズ | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 6265 ドリル: Cookieの基礎と, Secure/HttpOnlyなどの属性を理解する." />
+  <meta property="og:description" content="RFC 6265の設計レビュー問題. Cookie処理, scope, 順序, 保持, security boundaryを検討する." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc6265_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 6265（Cookies）クイズ | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 6265 ドリル: Cookieの基礎と, Secure/HttpOnlyなどの属性を理解する." />
+  <meta name="twitter:description" content="RFC 6265の設計レビュー問題. Cookie処理, scope, 順序, 保持, security boundaryを検討する." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc6265.html" />
@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6265",
       SKILL_SUBTITLE: "Cookies",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6265" target="_blank" rel="noopener noreferrer">RFC 6265: HTTP State Management Mechanism</a></li>
       </ul>
+      <p><strong>範囲:</strong> RFC 6265はCookieとSet-Cookie field, user agentの処理を定義します. Cookie valueをapplicationがどう解釈するかは定義せず, Path, Domain, Secure, HttpOnlyも完全なauthorization boundaryにはしません. CSRF対策とserver-side session policyはapplicationの責務です.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,122 +91,105 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="保存stateを作成または更新するresponse側の指示と, それを返すrequest headerを区別してください.">
-        <header><h4>Q1: browserへcookieを設定するresponse headerはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="多くのHTTP fieldではcommaがlist構文になりますが, cookie attributeの値にもcommaが現れます.">
+        <header><h4>Q1: gatewayは複数のSet-Cookie fieldをどう転送すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">originが二つのSet-Cookie fieldを返しました. 一方のExpires dateにはcommaが含まれます. gatewayは通常, 重複fieldを一つのcomma-separated valueへ結合します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Cookie</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Set-Cookie</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Accept-Cookie</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `Set-Cookie` は, cookieを保存または更新するようuser agentへ指示するresponse headerです. `Cookie` は反対向きで, 保存済みcookieのうちrequestに適用できるものをuser agentがserverへ返すときに使います.
-
-            A: `Cookie` は保存済みcookieをserverへ返すrequest headerです.
-            B: `Set-Cookie` はcookie stateの作成または更新に使うresponse headerです.
-            C: `Accept-Cookie` はRFC 6265で定義されたheaderではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 反復できるHTTP fieldはすべて同じlist semanticsなので結合する</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. foldingでSet-Cookieの意味が変わり得るため別々のfieldを保つ</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 一つのresponseではcookieを一つしか作れないため最後のfieldだけを保つ</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. clientがrequest headerを保存するため一つのCookie fieldへ変換する</label>
+          </fieldset><div class="explain">**解説:**
+A: RFC 6265 Section 3はSet-Cookieを例外として扱います. commaがsyntax内にも現れるため, 通常のfoldingは意味を変え得ます.
+B: Section 3はorigin serverが複数のSet-Cookie fieldをfoldしないことをSHOULD NOTとします. 別々に保てばこの曖昧さを避けられます.
+C: originは複数のSet-Cookie fieldを含められます. 同名cookieやraceへの勧告はありますが, 一response一cookieという制限ではありません.
+D: Cookieは保存済みcookieをuser agentが返すrequest fieldであり, response側のSet-Cookieを置き換えません.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="各名称がHTTP cachingではなくSet-Cookie syntaxに属するかを確認してください.">
-        <header><h4>Q2: cookie attributeとして一般的なものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="requestを選ぶ動作と, 同じhost上の相互に信頼しないserviceを隔離する保証を分けてください.">
+        <header><h4>Q2: このdeployment reviewとして適切なのはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">相互に信頼しない二つのapplicationがexample.comを共有します. 管理者は/financeと/gamesを割り当て, Path attributeでsecurity-sensitiveなcookieを隔離できると判断しました.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Secure</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. HttpOnly</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Path</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Max-Age</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. Cache-Control</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6265は, cookieのtransport, APIへの露出, path scope, lifetimeを制御するattributeを定義しています. HTTP cache directiveは別のheader fieldに属し, `Set-Cookie`内のcookie attributeにはなりません.
-
-            A: `Secure` はuser agentがsecureと判断するprotocolに送信を制限します.
-            B: `HttpOnly` は通常のscript accessなど, non-HTTP APIからcookieを除外します.
-            C: `Path` はcookieを適用できるrequest pathを制限します.
-            D: `Max-Age` はcookieのlifetimeを秒で指定し, `Expires`より優先されます.
-            E: `Cache-Control` はHTTP cachingを制御するheaderで, `Set-Cookie` attributeではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. なる. serviceは自分のrequest path配下にしかcookieを設定できない</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 両cookieにHttpOnlyも付ければscriptがpath isolationを強制する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Path matchingはrouting用であり, cookie integrityのisolationにはならない</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. ならない. RFC 6265は全cookieにroot pathを使うよう要求する</label>
+          </fieldset><div class="explain">**解説:**
+A: RFC 6265 Section 8.6ではresponseが任意のPathを設定できると説明します. request pathによる設定範囲の制限はありません.
+B: HttpOnlyはnon-HTTP APIからのaccessを制限します. Pathをintegrity boundaryにはしません.
+C: Sections 4.1.2.4と8.6はpath matchingとsecurity isolationを区別し, 同一hostの異なるpathで相互に信頼しないserviceがsecurity-sensitive cookieを使うことを避けるよう勧告します.
+D: non-rootのPathは許されています. 問題はPathの利用自体ではなく, isolationを依存させることです.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="user agentがどのAPIからのaccessを拒むかに注目してください. 保存値を暗号化するattributeではありません.">
-        <header><h4>Q3: HttpOnlyの主な効果はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="送信中のconfidentialityと, 保存cookieを誰が置き換えられるかを分けて追ってください.">
+        <header><h4>Q3: Secure attributeだけでは得られない保証はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">HTTPS serviceがsession cookieにSecureを付けています. 本物のcookieはHTTPで送信されないため, active network attackerはreplacement cookieを注入できないとreviewしました.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. client side scriptからcookieへアクセスしにくくする</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. cookie valueを暗号化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. cookieを1つのrequest pathに制限する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `HttpOnly` はcookieのhttp-only flagを設定します. conformingなuser agentはnon-HTTP API用のcookie stringを作るときにそのcookieを除外するため, 通常のclient-side scriptからのaccessを減らせます. valueを暗号化したり, script injection自体を解消したりする機能ではありません.
-
-            A: non-HTTP APIからcookieを隠すことがhttp-only flagの役割です.
-            B: `HttpOnly` は保存時にも送信時にもcookieを暗号化しません.
-            C: request pathのscopeは`Path` attributeが制御します.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 正しい. Secureは保存前にcookieへ署名する</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. HttpOnlyも加えればSet-Cookie responseを認証するため正しい</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. HTTPS endpointがplain HTTP requestを拒否すれば常に正しい</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 結論が強すぎる. Secureは送信を制限するがcookie integrityを単独では守らない</label>
+          </fieldset><div class="explain">**解説:**
+A: Secureは送信条件のflagです. RFC 6265はbrowserによる署名処理を定義しません.
+B: HttpOnlyはnon-HTTP APIからのaccessを制約し, Secureとは独立しています. response headerを認証しません.
+C: Section 8.6は, 正規serviceがHTTPSだけを使っても, attackerがinsecure responseになりすましてSet-Cookieを注入できると説明します.
+D: Sections 4.1.2.5と8.6はSecureの保証を限定し, overwrite attackを明記します. 追加のintegrity・session controlはapplicationとdeploymentの責務です.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="user agentがcookieを送る条件を制約するattributeです. 署名や保存期間の制御ではありません.">
-        <header><h4>Q4: Secure attributeの意味として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="操作を指定した主体と, credentialを知らない主体のrequestにもbrowserがauthorityを付ける点を確認します.">
+        <header><h4>Q4: cookieの確認だけでは何を確立できないか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">agentがattacker指定のpageを開きました. そのpageはbank.exampleへ送金requestを送らせます. browserは有効なSecure, HttpOnly session cookieを自動添付し, bankはそのcookieだけで送金を認可します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. browserがcookieへ署名する</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. cookieが削除できなくなる</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. HTTPSのようなsecure transportでのみ送信される</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `Secure` はcookieのsecure-only flagを設定します. user agentはrequest URIがsecureと判断するprotocol, 通常はHTTPSを使う場合にだけそのcookieを送ります. valueへの署名, 変更不能化, expiryの指定ではありません.
-
-            `Secure`の保護範囲には限界があります. RFC 6265は, active network attackerがinsecure channelからSecure cookieを上書きできる点も述べています.
-
-            A: RFC 6265は`Secure` cookieをbrowserが署名する処理を定義していません.
-            B: 削除とexpiryはcookieの置換, `Max-Age`, `Expires`, storage ruleが制御します.
-            C: secure protocolへの送信制限がsecure-only flagの役割です.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 欠ける保証はない. browserによるcookie所持が送金を選んだ主体も証明する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. cookieはsession stateを認証しても, userまたはtrusted agentがこの送金を指定したとは証明しない</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. cookie confidentialityだけが欠けるため, valueを暗号化すればrequest intentを証明する</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. cookie persistenceだけが欠けるため, Max-Ageを延ばせばrequest intentを証明する</label>
+          </fieldset><div class="explain">**解説:**
+A: 自動添付ではattackerがrequestを指定し, user agentがambient authorityを付けられます.
+B: RFC 6265 Section 8.2はdesignationとauthorizationの分離をCSRF/confused-deputy riskの根として説明します. 具体的なrequest authorization対策はapplication設計であり, RFC 6265のcookie処理ruleではありません.
+C: 暗号化はcookie内容を保護できますが, request中の操作を誰が選んだかは証明しません.
+D: lifetimeは保持期間に関係し, session authorityと要求された操作の関係は確立しません.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Domain attributeを省いたcookieと, domainを明示したcookieを比べてください.">
-        <header><h4>Q5: serverがDomain attributeなしでcookieを設定した. RFC 6265ではどのscopeになる?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="user agent algorithmには推奨順序がありますが, server向けの節はその順序への依存を警告します.">
+        <header><h4>Q5: serverは先頭の同名cookieをauthoritativeと扱ってよいか</h4><span class="type">単一選択</span></header>
         <div class="body">
+          <p class="question-premise">requestに`SID=finance; SID=other`があり, Pathの異なる同名cookieから生成されています. backendはSection 5.4が長いpathを先にするよう勧めるため, 常に先頭値を信頼します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. 現在のhostの全subdomainへ送られる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. host-onlyとなり, 同じhostにだけ返される</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 同じpathを使う任意のhostへ送られる</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6265 Section 5.3 step 6は`Domain`がない場合にhost-only flagを設定し, canonicalizeしたrequest hostをcookieのdomainにします. Section 5.4は後続requestのhostがそのdomainと同一の場合だけcookieを返します. 固定されたscope ruleの適用問題なのでL2であり, L3の設計reviewではありません.
-
-            A: subdomainへのdomain-matchは, 有効な`Domain` attributeがあるcookieに関係します.
-            B: attributeの省略によってorigin serverのhostに結び付くhost-only cookieになります.
-            C: `Path` matchは追加条件であり, 無関係なhostへcookieを許可しません.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. よい. Section 5.4のorderingは全senderが従うMUSTである</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. よい. Cookie fieldは各cookieのPathも運ぶためserverが順序を検証できる</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. よくない. serverは順序依存のauthorityを避け, cookie設計を曖昧でなくすべきである</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. よくない. user agentは同じ名前のcookieを二つ送ることを禁止される</label>
+          </fieldset><div class="explain">**解説:**
+A: Section 5.4のsortはSHOULDであり, すべてのuser agentがその順序にしないとも記載します. 普遍的なMUSTではありません.
+B: Section 4.2.2によればCookieはPathやDomainなどのattributeを返しません.
+C: Section 4.2.2は, 特に同名cookieについてserverがserialization orderへ依存しないことをSHOULD NOTとします. 一意の名前または曖昧でないserver-side処理なら, 得られないmetadataにauthorityを依存させずに済みます.
+D: DomainまたはPathが異なる同名cookieは同時に送られ得ます.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^cookie$" data-difficulty="L1" data-hint="response側のsetterではなく, request側のheader名を使ってください.">
-        <header><h4>Q6: cookieをserverへ返すrequest header名は何 (1語)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="expiry attributeはlifetimeの上限を設定します. その期間の保存を約束するものではありません.">
+        <header><h4>Q6: serverはMax-Ageまでcookieが保存されると信頼できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
-
-
-            user agentはdomain, path, secure-only, http-onlyなどの条件がrequest contextに合う保存済みcookieから, `Cookie` request headerを組み立てます. `Set-Cookie`はresponse側のfieldなので, この問いの名前ではありません.
-          </div>
+          <p class="question-premise">workflow cookieにMax-Age=86400を設定しました. serverはその一日以内にcookieがなければtamperingの証拠と扱い, user accountを恒久的に拒否します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. できない. user agentはより早くevictできるため, cookie不在は想定すべきstateである</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. できる. Max-Ageは指定秒数ちょうどの保持を要求する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. できる. 早期evictionはserverがexpired replacementを送った場合だけ許される</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. できない. Max-Ageは表示用metadataでcookie expiryに影響しない</label>
+          </fieldset><div class="explain">**解説:**
+A: Section 4.1.2.2はMax-Ageを最大lifetimeとし, user agentがその期間保持する必要はないとします. Sections 5.3と8.6もcapacityによる削除を許し, serverが保持を信頼しないよう警告します. recoveryとreauthentication policyはapplicationの選択です.
+B: Max-Ageは処理時のexpiry timeを決めますが, 最小保持期間は課しません.
+C: past expiryによるreplacementは削除方法の一つですが, user操作, privacy control, storage limitでも削除されます.
+D: Max-Ageには定義された処理semanticsがあり, Expiresと両方あればMax-Ageが優先されます.</div>
         </div>
       </article>
     </section>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFC 6265 Quiz | ToppyMicroServices</title>
-  <meta name="description" content="RFC 6265 drill. Practice HTTP cookie basics and common security attributes." />
+  <meta name="description" content="RFC 6265 design-review quiz covering cookie processing, scope, ordering, retention, and security boundaries." />
   <link rel="canonical" href="https://www.toppymicros.com/education/quiz_rfc6265.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -13,13 +13,13 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="RFC 6265 Quiz | ToppyMicroServices" />
-  <meta property="og:description" content="RFC 6265 drill. Practice HTTP cookie basics and common security attributes." />
+  <meta property="og:description" content="RFC 6265 design-review quiz covering cookie processing, scope, ordering, retention, and security boundaries." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_rfc6265.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RFC 6265 Quiz | ToppyMicroServices" />
-  <meta name="twitter:description" content="RFC 6265 drill. Practice HTTP cookie basics and common security attributes." />
+  <meta name="twitter:description" content="RFC 6265 design-review quiz covering cookie processing, scope, ordering, retention, and security boundaries." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_rfc6265.html" />
@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6265",
       SKILL_SUBTITLE: "Cookies",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6265" target="_blank" rel="noopener noreferrer">RFC 6265: HTTP State Management Mechanism</a></li>
       </ul>
+      <p><strong>Scope:</strong> RFC 6265 defines the Cookie and Set-Cookie fields and user-agent processing. It does not define a cookie value's application semantics or make Path, Domain, Secure, or HttpOnly a complete authorization boundary. CSRF defenses and server-side session policy remain application responsibilities.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,122 +91,105 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Distinguish the response instruction that creates or updates stored state from the request header that returns it.">
-        <header><h4>Q1: Which response header is used to set a cookie in a browser</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="A comma is ordinary list syntax for many HTTP fields, but it also appears inside one cookie attribute.">
+        <header><h4>Q1: How should a gateway forward multiple Set-Cookie fields?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An origin returns two Set-Cookie fields. One contains an Expires date with a comma. A gateway normally combines repeated fields into one comma-separated value.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Cookie</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Set-Cookie</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Accept-Cookie</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `Set-Cookie` is a response header that instructs a user agent to store or update a cookie. `Cookie` travels in the opposite direction: the user agent uses it in a request to return applicable stored cookies.
-
-            A: `Cookie` is the request header used to return stored cookies to the server.
-            B: `Set-Cookie` is the response header defined for creating or updating cookie state.
-            C: `Accept-Cookie` is not a header defined by RFC 6265.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Combine them because every repeated HTTP field has identical list semantics</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Preserve separate fields because folding can change Set-Cookie semantics</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Keep only the last field because a response can create only one cookie</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Convert them into one Cookie field because clients store request headers</label>
+          </fieldset><div class="explain">**Explanation:**
+A: RFC 6265 Section 3 identifies Set-Cookie as an exception: comma also appears in its syntax, so ordinary folding can alter meaning.
+B: Section 3 says origin servers SHOULD NOT fold multiple Set-Cookie fields. Preserving the separate fields avoids that ambiguity.
+C: An origin can include multiple Set-Cookie fields; the recommendation concerns duplicate names and races, not a one-cookie response limit.
+D: Cookie is the request field by which a user agent returns applicable stored cookies; it cannot replace response-side Set-Cookie.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="Check whether each name belongs to Set-Cookie syntax rather than HTTP caching.">
-        <header><h4>Q2: Which are common cookie attributes (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate request-selection behavior from isolation against a mutually distrusting service on the same host.">
+        <header><h4>Q2: Is Path a security boundary between two services?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Two mutually distrusting applications share example.com. The administrator assigns /finance and /games and relies on Path attributes to keep each application's security-sensitive cookies isolated.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Secure</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. HttpOnly</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Path</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Max-Age</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. Cache-Control</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6265 defines attributes that control a cookie's transport, API exposure, path scope, and lifetime. HTTP cache directives belong to a different header field and do not become cookie attributes inside `Set-Cookie`.
-
-            A: `Secure` limits transmission to a protocol that the user agent considers secure.
-            B: `HttpOnly` excludes the cookie from non-HTTP APIs, such as ordinary script access.
-            C: `Path` limits the request paths for which the cookie is applicable.
-            D: `Max-Age` sets the cookie's lifetime in seconds and takes precedence over `Expires`.
-            E: `Cache-Control` controls HTTP caching; it is not a `Set-Cookie` attribute.
-          </div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Yes, because a service can set cookies only for paths beneath its request path</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Yes, if both cookies also use HttpOnly, because scripts then enforce path isolation</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. No; Path controls request selection but does not provide integrity isolation between the services</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. No, because RFC 6265 requires every cookie to use the root path instead</label>
+          </fieldset><div class="explain">**Explanation:**
+A: RFC 6265 Section 8.6 notes that a response can set an arbitrary Path; the request path does not confine what Path it may set.
+B: HttpOnly limits exposure through non-HTTP APIs. It does not turn Path into an integrity boundary.
+C: Sections 4.1.2.4 and 8.6 distinguish path matching from security isolation and advise against security-sensitive cookies for mutually distrusting services on different paths of one host.
+D: The RFC permits non-root Path values. The defect is relying on them for isolation, not using them at all.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Focus on which user-agent API is denied access; this attribute does not encrypt the stored value.">
-        <header><h4>Q3: What does HttpOnly primarily do</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Track confidentiality during transmission separately from who can replace a stored cookie.">
+        <header><h4>Q3: What guarantee does Secure fail to provide?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An HTTPS service marks its session cookie Secure. Its review concludes that an active network attacker cannot inject a replacement cookie because the real cookie is never sent over HTTP.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Prevent access to the cookie via client side scripts</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Encrypt the cookie value</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Restrict the cookie to one request path</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `HttpOnly` sets the cookie's http-only flag. A conforming user agent excludes such a cookie when a cookie string is generated for a non-HTTP API, reducing ordinary client-side script access without encrypting the value or eliminating script injection.
-
-            A: Blocking exposure through non-HTTP APIs is the purpose of the http-only flag.
-            B: `HttpOnly` does not encrypt the cookie in storage or on the wire.
-            C: Request-path scope is controlled by the `Path` attribute, not `HttpOnly`.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. The conclusion follows because Secure signs the cookie before storage</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. The conclusion follows if HttpOnly is added, because it authenticates Set-Cookie responses</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. The conclusion follows whenever the HTTPS endpoint refuses all plain HTTP requests</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. The conclusion is too strong; Secure limits sending but does not by itself protect cookie integrity</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Secure sets a transmission flag; RFC 6265 defines no browser signature operation for it.
+B: HttpOnly constrains non-HTTP API access and is independent of Secure; it does not authenticate response headers.
+C: Section 8.6 explains that an attacker can impersonate an insecure response and inject Set-Cookie even when the genuine service uses HTTPS exclusively.
+D: Sections 4.1.2.5 and 8.6 limit Secure's guarantee and explicitly describe overwrite attacks. Additional integrity and session controls belong to the application and deployment.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="This attribute constrains when the user agent transmits the cookie; it is not a signature or persistence control.">
-        <header><h4>Q4: What does Secure mean for a cookie</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Ask who designates the operation and whether the browser supplies authority without that party knowing the credential.">
+        <header><h4>Q4: What does the cookie check fail to establish?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An agent opens an attacker-selected page. That page causes the browser to submit a transfer request to bank.example. The browser automatically attaches a valid Secure, HttpOnly session cookie, and the bank authorizes the transfer solely from that cookie.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. The cookie is digitally signed by the browser</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. The cookie cannot be deleted</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. The cookie is sent only over secure transport like HTTPS</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `Secure` sets the secure-only flag. The user agent sends that cookie only when the request URI uses a protocol it considers secure, typically HTTPS. The attribute does not sign the value, make it immutable, or determine its expiry.
-
-            `Secure` protects confidentiality only in limited ways; RFC 6265 notes that an active network attacker can overwrite a Secure cookie from an insecure channel.
-
-            A: RFC 6265 does not assign the browser a signing operation for a `Secure` cookie.
-            B: Deletion and expiry are governed by cookie replacement, `Max-Age`, `Expires`, and storage rules.
-            C: Restricting transmission to a secure protocol is exactly what the secure-only flag controls.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Nothing is missing because possession by the browser proves who selected the transfer</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. The session cookie is valid, but it does not prove that a trusted party designated this transfer</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Only cookie confidentiality is missing, so encrypting the value establishes request intent</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Only cookie persistence is missing, so a longer Max-Age establishes request intent</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Automatic attachment lets an attacker designate a request while the user agent supplies ambient authority.
+B: RFC 6265 Section 8.2 identifies this separation of designation and authorization as the basis of CSRF/confused-deputy risk. The concrete request-authorization defense is an application design choice, not a cookie-processing rule defined by RFC 6265.
+C: Encryption can protect cookie contents but does not prove who selected the operation carried by the request.
+D: Lifetime affects retention, not the relationship between session authority and the requested action.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Compare a cookie with no Domain attribute to one that explicitly names a domain.">
-        <header><h4>Q5: A server sets a cookie without a Domain attribute. What scope does RFC 6265 assign to it?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The user-agent algorithm has a preferred order, but the server-facing section warns about depending on it.">
+        <header><h4>Q5: May a server treat the first same-name cookie as authoritative?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A request contains `SID=finance; SID=other`, created from same-name cookies with different Path values. The backend always trusts the first value because Section 5.4 recommends longer paths first.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. It is sent to every subdomain of the current host</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. It is host-only and sent only to that host</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. It is sent to any host that uses the same path</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6265 Section 5.3, step 6 sets the host-only flag and uses the canonicalized request host as the cookie's domain when `Domain` is absent. Section 5.4 returns it only when a later request host is identical to that domain.
-
-            A: Subdomain matching is associated with a present and valid `Domain` attribute, not an omitted one.
-            B: Omission creates a host-only cookie tied to the origin server's host.
-            C: `Path` matching is an additional condition and never grants a cookie to unrelated hosts.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; the Section 5.4 ordering is a MUST that every sender follows</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes; the Cookie field carries each cookie's Path so the server can verify the order</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. No; the server should avoid order-dependent authority and disambiguate its cookie design</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; a user agent is forbidden from sending two cookies with the same name</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 5.4 says the user agent SHOULD sort, and notes that not all user agents do so. That is not a universal MUST.
+B: Section 4.2.2 states that Cookie does not return attributes such as Path or Domain.
+C: Section 4.2.2 says servers SHOULD NOT rely on serialization order, especially for same-name cookies. Unique names or unambiguous server-side handling avoid making authority depend on unavailable metadata.
+D: Same-name cookies with different Domain or Path values can legitimately appear together.</div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^cookie$" data-difficulty="L1" data-hint="Use the request-side header name, not the response-side setter.">
-        <header><h4>Q6: What is the request header name that sends cookies back to the server (one word)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="An expiry attribute sets an upper lifetime; it is not a promise that storage will last that long.">
+        <header><h4>Q6: Can a server rely on a cookie remaining stored until Max-Age?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
-
-
-            A user agent builds the `Cookie` request header from stored cookies whose domain, path, secure-only, and http-only conditions match the request context. `Set-Cookie` is the response-side field and therefore is not the requested name.
-          </div>
+          <p class="question-premise">A workflow cookie has Max-Age=86400. The server treats its absence during that day as proof of tampering and permanently rejects the user's account.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. No; absence is expected state because a user agent may evict the cookie earlier</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Yes; Max-Age requires retention for exactly the stated number of seconds</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Yes; early eviction is permitted only after the server sends an expired replacement</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. No; Max-Age is display metadata and never influences cookie expiry</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 4.1.2.2 calls Max-Age a maximum lifetime and says the user agent need not retain the cookie for that duration. Sections 5.3 and 8.6 also permit capacity-driven removal and warn servers not to rely on retention. Recovery and reauthentication policy are application choices.
+B: Max-Age determines an expiry time when processed; it does not impose a minimum retention period.
+C: Replacement with a past expiry is one deletion mechanism, but users, privacy controls, and storage limits can also remove cookies.
+D: Max-Age has defined processing semantics and takes precedence over Expires when both occur.</div>
         </div>
       </article>
     </section>
