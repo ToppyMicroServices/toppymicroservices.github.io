@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9449", "SKILL_SUBTITLE": "OAuth 2.0 Demonstrating Proof of Possession", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9449", "SKILL_SUBTITLE": "OAuth 2.0 Demonstrating Proof of Possession", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -81,7 +81,7 @@ C: Additional OAuth and application checks establish client identity and permitt
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="The proof must demonstrate possession of an asymmetric private key.">
         <header><h4>Q3: Which JOSE algorithm is acceptable for a DPoP proof?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. A locally accepted registered asymmetric signature algorithm</label>
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. A registered asymmetric algorithm allowed by local policy</label>
           <label class="choice"><input type="radio" name="Q3" value="b"> B. none because HTTPS authenticates the proof</label>
           <label class="choice"><input type="radio" name="Q3" value="c"> C. A shared-secret MAC whose secret is placed in jwk</label>
         </fieldset><div class="explain">**Explanation:**
@@ -114,17 +114,17 @@ A: ath is a hash binding inside the signed proof and is not token encryption.
 B: TLS server identity selection is outside the ath claim.
 C: The token hash prevents substituting another token under a captured proof.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Validate request binding, freshness, token binding, and key binding.">
-        <header><h4>Q6: What must a resource server compare when validating a DPoP proof?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="After proof-level checks, bind the proof to both this HTTP request and this access token.">
+        <header><h4>Q6: JWT structure, signature, required claims, replay, freshness, and nonce checks have passed. Which remaining comparisons bind the proof to this protected-resource request and token?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. htm, htu, proof time, ath, and the token&#x27;s bound public key</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. Only jti because it identifies every HTTP request globally</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. Only the JWT signature because all claims are advisory</label>
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Compare htm and htu, verify ath against the token value, and match the proof key to the token binding</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Compare only jti because it globally identifies the request, token, and resource server</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Compare only the JWT signature because the request and token claims are advisory metadata</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: These checks bind the signed JWT to the current request and access token.
-B: jti uniqueness alone does not bind method, URI, token, time, or key.
-C: DPoP&#x27;s required claims have mandatory validation semantics.</div></div>
+A: RFC 9449 Section 4.3 requires the resource server to match `htm` and `htu`, validate `ath` against the presented access token, and verify that the proof key matches the token's confirmation binding. The stem states that the other Section 4.3 checks already passed.
+B: `jti` alone does not bind the method, URI, access-token value, or confirmation key.
+C: A valid signature is necessary but does not replace validation of the signed claims.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="The nonce lets the server contribute unpredictable freshness.">
         <header><h4>Q7: A server sent a DPoP-Nonce value. What must the next applicable proof do?</h4><span class="type">Multiple Choice</span></header>
@@ -162,16 +162,16 @@ A: A server supporting DPoP must not bypass the key proof by accepting the bound
 B: Lifetime validity does not satisfy the token&#x27;s sender constraint.
 C: The resource server cannot rewrite the authorization server&#x27;s token binding.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A script running inside the legitimate application context can use available capabilities.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="A script running inside the legitimate application context can use available capabilities.">
         <header><h4>Q10: What residual risk remains for a browser client after adopting DPoP?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q10" value="a"> A. A stolen token can always be used without the bound key</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. XSS code can invoke the signing key through the compromised client context</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. XSS can use the signing key through the client context</label>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. HTTPS becomes unable to authenticate the resource server</label>
         </fieldset><div class="explain">**Explanation:**
 
 A: Preventing token-only use is the principal benefit of sender constraining.
-B: A non-extractable key may resist export but not malicious use by code executing in the client.
+B: RFC 9449 Section 11.4 explains that a non-extractable key may resist export but not malicious use by code executing in the client.
 C: DPoP does not disable TLS server authentication.</div></div>
       </article>
     </section>

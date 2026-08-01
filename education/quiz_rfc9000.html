@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9000",
       SKILL_SUBTITLE: "QUIC Transport",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -101,14 +102,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** transport, multiplexed, secure, UDP. QUIC provides streams and reliability features with integrated security.
-            **Correct (B):** QUIC is a transport protocol that uses UDP as its substrate, supports multiplexed streams, and integrates TLS 1.3 style security.
-            **Options:**
+            transport, multiplexed, secure, UDP. QUIC provides streams and reliability features with integrated security.
+            QUIC is a transport protocol that uses UDP as its substrate, supports multiplexed streams, and integrates TLS 1.3 style security.
+
 
             - A (incorrect): QUIC is a distinct transport over UDP, not an extension negotiated inside TCP.
             - B (correct): This matches the RFC 9000 description.
             - C (incorrect): QUIC uses UDP datagrams but adds secure connection state, reliable streams, loss recovery, and congestion control.
-            **Related:** HTTP/3 uses QUIC as its transport.
+            HTTP/3 uses QUIC as its transport.
           </div>
         </div>
       </article>
@@ -117,9 +118,9 @@
         <header><h4>Q2: What is a primary purpose of a QUIC connection ID</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Allow connection continuity across address changes</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Replace TLS certificates</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Encode the full URI of the request</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Maintain connection continuity when a network address changes</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Replace certificate-based server authentication</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Carry the complete application request URI</label>
           </fieldset>
           <figure class="flow-diagram answer-figure" aria-labelledby="rfc9000-q2-caption">
             <figcaption id="rfc9000-q2-caption">A QUIC connection ID lets the connection survive path changes because the transport is not identified only by the old IP:port tuple.</figcaption>
@@ -149,14 +150,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** connection ID, migration. A connection ID helps identify a connection independently of the IP and port tuple.
-            **Correct (A):** Connection IDs help keep a connection stable even when the network path changes and can also support load balancing.
-            **Options:**
+            connection ID, migration. A connection ID helps identify a connection independently of the IP and port tuple.
+            Connection IDs help keep a connection stable even when the network path changes and can also support load balancing.
+
 
             - A (correct): This enables mobility and smoother handoffs.
             - B (incorrect): Certificates and authentication are part of TLS, not connection ID.
             - C (incorrect): URIs belong to application protocols like HTTP, not to transport identifiers.
-            **Related:** Some deployments use connection IDs to route packets through load balancers without exposing client addresses.
+            Some deployments use connection IDs to route packets through load balancers without exposing client addresses.
           </div>
         </div>
       </article>
@@ -172,77 +173,77 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** RFC 9000 Section 2 defines a QUIC stream as an ordered sequence of bytes, but QUIC does not define an ordering between bytes on different streams.
-            **Correct (C):** Loss on stream 4 prevents delivery past that stream's gap, while independently received data on streams 8 and 12 can still be delivered.
-            **Options:**
+            RFC 9000 Section 2 defines a QUIC stream as an ordered sequence of bytes, but QUIC does not define an ordering between bytes on different streams.
+            Loss on stream 4 prevents delivery past that stream's gap, while independently received data on streams 8 and 12 can still be delivered.
+
 
             - A (incorrect): QUIC has no connection-wide byte order that requires streams 8 and 12 to wait for stream 4.
             - B (incorrect): Bytes within stream 4 remain ordered, so data after its gap cannot be delivered first; other streams need not wait.
             - C (correct): This preserves ordering within stream 4 without imposing that ordering on streams 8 and 12.
-            **Related:** A byte gap on stream 4 does not impose in-order delivery blocking on streams 8 and 12, although congestion control can still affect the connection as a whole.
+            A byte gap on stream 4 does not impose in-order delivery blocking on streams 8 and 12, although congestion control can still affect the connection as a whole.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Classify each statement as receiver-capacity control, network congestion control, or application security.">
-        <header><h4>Q4: Which statements about QUIC flow control are true (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify which of the two independent receive limits has actually stopped this stream.">
+        <header><h4>Q4: Which credit update addresses the reported block?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A sender has reached the advertised offset limit on stream 8 and emits STREAM_DATA_BLOCKED. The connection-wide MAX_DATA limit still has ample credit, and the receiving application has consumed more bytes from stream 8.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. It can limit data per stream</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. It can limit data across the entire connection</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It provides backpressure so a receiver is not overwhelmed</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. It replaces application authentication</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Increase only MAX_DATA, because every stream consumes connection credit</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Advertise a larger MAX_STREAM_DATA limit for stream 8</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Advertise a smaller stream limit so the sender recomputes its offset</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Send an HTTP/2 WINDOW_UPDATE frame on stream 8</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** flow control, backpressure. Flow control is about limiting how much data the sender may transmit before the receiver grants more credit.
-            **Correct (A,B,C):** QUIC uses flow control at multiple levels and it protects receivers.
-            **Options:**
-
-            - A (correct): Per-stream flow control prevents one stream from consuming all receiver memory.
-            - B (correct): Connection-level flow control caps overall buffered data.
-            - C (correct): This is the purpose: controlled resource usage.
-            - D (incorrect): Authentication is handled by TLS and application logic, not flow control.
-            **Related:** Flow control is different from congestion control. Congestion control is about network capacity, not receiver capacity.
+            A: Connection credit is not the exhausted limit, so increasing it alone leaves stream 8 blocked.
+            B: RFC 9000 Section 4.1 defines separate stream and connection limits. MAX_STREAM_DATA raises the absolute offset allowed on the identified stream.
+            C: A smaller advertised limit has no effect; senders ignore updates that do not increase the limit.
+            D: WINDOW_UPDATE belongs to HTTP/2. QUIC uses MAX_STREAM_DATA and MAX_DATA frames.
+            Decision rule: Diagnose the exhausted limit before granting credit; stream credit and connection credit solve different receiver-capacity constraints.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Classify streams by which endpoint may send data on them after creation.">
-        <header><h4>Q5: What types of streams does QUIC support</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate possession of connection keys from proof that the new address is reachable on this path.">
+        <header><h4>Q5: How should the server handle the new client address?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">After the handshake is confirmed, a server receives a successfully protected non-probing packet for the existing connection from a new client IP:port tuple, consistent with NAT rebinding. That address has not previously been validated.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Bidirectional and unidirectional streams</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only one byte stream for the entire connection</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Only datagram frames with no reliability</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Treat the address as validated because packet protection proves return-path reachability</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Close the connection because any source-address change is a protocol violation</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Permit migration if policy allows it and initiate PATH_CHALLENGE/PATH_RESPONSE validation</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Validate the path when an ACK for any packet sent to the new address arrives</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** bidirectional stream, unidirectional stream. QUIC supports different stream directions depending on protocol needs.
-            **Correct (A):** Both stream types exist.
-            **Options:**
-
-            - A (correct): Many application protocols map different message flows onto different stream types.
-            - B (incorrect): That describes TCP, not QUIC.
-            - C (incorrect): QUIC is reliable for its streams. Datagram support is an extension, not the baseline stream model.
-            **Related:** HTTP/3 uses multiple unidirectional control streams plus bidirectional request streams.
+            A: Authentic packet protection associates the packet with the connection, but RFC 9000 Section 8.2 requires a matching PATH_RESPONSE to prove reachability for the new path.
+            B: Section 9 explicitly supports migration and requires path validation after a peer-address change unless that address was already validated.
+            C: Sections 8.2 and 9.3 support this sequence. The recipient can respond on the new path while respecting migration and anti-amplification rules, and it must start validation if none is underway.
+            D: Section 8.2.3 says an ACK is not adequate path validation because it can be spoofed; the unpredictable PATH_CHALLENGE value must be returned.
+            Decision rule: A valid connection packet can trigger migration handling, but only the path-validation exchange establishes reachability for the new address pair.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^udp$" data-difficulty="L1" data-hint="Distinguish QUIC's IP transport substrate from the reliability and congestion-control semantics QUIC implements itself.">
-        <header><h4>Q6: QUIC is designed to run over which IP transport protocol</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="State exactly what connection continuity and path validation prove, then evaluate the separate authorization input.">
+        <header><h4>Q6: Which security review conclusion stays within RFC 9000's guarantees?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <p class="question-premise">An A2A gateway authenticates an agent when a QUIC connection starts, but stores the source IP address as the authorization principal. The connection later migrates, path validation succeeds for a new address, and the gateway plans to authorize privileged requests because the QUIC connection ID is unchanged.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept; successful path validation proves that the new source address belongs to the originally authenticated human or agent</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Reject all migration; RFC 9000 requires an application's principal to remain bound to the first IP address</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Keep the connection, but authorize with session or application identity—not path reachability</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Accept only after issuing a new connection ID, because connection-ID rotation re-authenticates the application principal</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** UDP. QUIC uses UDP packets as its substrate to enable user-space evolution and avoid TCP ossification.
-            **Correct:** UDP.
-            **Why others are wrong:** QUIC is not TCP-based. SCTP is also not the base here.
-            **Related:** Running over UDP does not mean QUIC is unreliable. QUIC implements reliability and congestion control at the protocol layer.
+            A: RFC 9000 Section 8.2 validates reachability of an address pair; it does not define the application principal behind that address.
+            B: Section 9 permits connection migration. RFC 9000 does not require application authorization to use the first source address.
+            C: This keeps the transport guarantee and the application decision distinct. The authenticated session can continue while authorization uses evidence designed for principal identity.
+            D: Connection IDs support routing and continuity and can reduce linkability; rotating one is not application re-authentication.
+            Decision rule: RFC 9000 Sections 8.2 and 9 establish path and connection properties. They neither require IP-based authorization nor decide which application identity model to adopt.
           </div>
         </div>
       </article>

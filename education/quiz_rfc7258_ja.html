@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7258",
       SKILL_SUBTITLE: "Pervasive Monitoring Is an Attack",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,18 +101,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** RFC 7258は政治的スローガンではなく, protocol designのthreat modelを更新する文書です. legal statementやpassive eavesdroppingだけの話へ縮めずに扱います.
+            RFC 7258は政治的スローガンではなく, protocol designのthreat modelを更新する文書です. legal statementやpassive eavesdroppingだけの話へ縮めずに扱います.
 
-            **用語:** **pervasive monitoring** は, protocol artifactを無差別かつ非常に大規模に収集することです. active/passive wiretap, traffic analysis, cryptographic keyのsubversionも含み得ます.
+            **pervasive monitoring** は, protocol artifactを無差別かつ非常に大規模に収集することです. active/passive wiretap, traffic analysis, cryptographic keyのsubversionも含み得ます.
 
-            **Correct (B):** IETFはPMをprivacyへのtechnical attackとして扱い, 可能なら著しく高コストまたは実行困難にするprotocol設計を目指します.
+            IETFはPMをprivacyへのtechnical attackとして扱い, 可能なら著しく高コストまたは実行困難にするprotocol設計を目指します.
 
-            **選択肢:**
-            - A (incorrect): RFC 7258は, network managementのような有益なmonitoringとPMを区別しています. 全てのinspection activityを排除するという評価ではありません.
-            - B (correct): 定義上の規模, contentとmetadataの収集, technical attackとしての分類, 条件付きのmitigation目標を含んでいます.
-            - C (incorrect): RFCのmodelにはactive/passive wiretap, traffic analysis, cryptographic keyのsubversionも含まれ, payloadの盗聴だけには限定されません.
+            RFC 7258は, network managementのような有益なmonitoringとPMを区別しています. 全てのinspection activityを排除するという評価ではありません.
+            定義上の規模, contentとmetadataの収集, technical attackとしての分類, 条件付きのmitigation目標を含んでいます.
+            RFCのmodelにはactive/passive wiretap, traffic analysis, cryptographic keyのsubversionも含まれ, payloadの盗聴だけには限定されません.
 
-            **関連:** mitigateは完全防止と同義ではありません. costを上げる, covertな監視をovertにする, 検出しやすくすることにも価値があります.
+            mitigateは完全防止と同義ではありません. costを上げる, covertな監視をovertにする, 検出しやすくすることにも価値があります.
           </div>
         </div>
       </article>
@@ -128,26 +128,25 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** content encryptionは重要ですが, RFC 7258はprotocol metadata, traffic analysis, data minimizationも別の論点として挙げています.
+            content encryptionは重要ですが, RFC 7258はprotocol metadata, traffic analysis, data minimizationも別の論点として挙げています.
 
-            **実務での機会:** protocolとprivacyの設計レビューで, content protection, metadata exposure, traffic-analysis signal, data minimizationを別々に確認します.
+            protocolとprivacyの設計レビューで, content protection, metadata exposure, traffic-analysis signal, data minimizationを別々に確認します.
 
-            **用語:** **protocol metadata** はheaderやidentifierなどの情報です. **traffic analysis** はcorrelation, timing, packet sizeなどから推測します. **data minimization** はprotocolに不要な情報を露出させない考え方です.
+            **protocol metadata** はheaderやidentifierなどの情報です. **traffic analysis** はcorrelation, timing, packet sizeなどから推測します. **data minimization** はprotocolに不要な情報を露出させない考え方です.
 
-            **Correct (A,B,C):** どれも無差別収集に使えるartifactを減らし, correlationを難しくする方向です.
+            どれも無差別収集に使えるartifactを減らし, correlationを難しくする方向です.
 
-            **選択肢:**
-            - A (correct): in-transit encryption は PM 対策の基本です.
-            - B (correct): payloadが見えなくても, metadataやobservable traffic patternは相関に使われます.
-            - C (correct): 不要なdataやstable identifierはcore functionに寄与せずlinkabilityを上げます.
-            - D (incorrect): stableなcleartext identifierはsessionやuserの相関を容易にします. observerの動機は, そのtechnical exposureを変えません.
+            in-transit encryption は PM 対策の基本です.
+            payloadが見えなくても, metadataやobservable traffic patternは相関に使われます.
+            不要なdataやstable identifierはcore functionに寄与せずlinkabilityを上げます.
+            stableなcleartext identifierはsessionやuserの相関を容易にします. observerの動機は, そのtechnical exposureを変えません.
 
-            **関連:** RFC 7258は全protocolへ単一mechanismを指定していません. PMとの関連性とarchitectural decisionを説明できることが重要です.
+            RFC 7258は全protocolへ単一mechanismを指定していません. PMとの関連性とarchitectural decisionを説明できることが重要です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="payload encryptionで隠れるものと, observerやcompromised endpointに残る情報を分けて列挙します.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="payload encryptionで隠れるものと, observerやcompromised endpointに残る情報を分けて列挙します.">
         <header><h4>Q3: pervasive monitoringに対するencryptionの寄与を最も正しく表すのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -158,20 +157,19 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** encryptionは多くのPM mitigationで重要ですが, 完全解と扱うと残る露出を見落とします.
+            encryptionは多くのPM mitigationで重要ですが, 完全解と扱うと残る露出を見落とします.
 
-            **実務での機会:** protocolとprivacyのレビューで, content protection, metadata exposure, endpoint security, key managementを独立に評価します.
+            protocolとprivacyのレビューで, content protection, metadata exposure, endpoint security, key managementを独立に評価します.
 
-            **用語:** **traffic analysis** は通信量や timing から推測する攻撃, **endpoint compromise** は端点自体が侵害されることです. どちらも payload encryption だけでは消えません.
+            **traffic analysis** は通信量や timing から推測する攻撃, **endpoint compromise** は端点自体が侵害されることです. どちらも payload encryption だけでは消えません.
 
-            **Correct (C):** encryptionはobserverからcontentを隠せますが, metadata, correlation, peer authentication, compromised endpointの問題を自動では解決しません.
+            encryptionはobserverからcontentを隠せますが, metadata, correlation, peer authentication, compromised endpointの問題を自動では解決しません.
 
-            **選択肢:**
-            - A (incorrect): authenticationとendpoint integrityには別のpropertyとcontrolが必要です.
-            - B (incorrect): endpoint, timing, size, identifierなどはpayload encryption後も見え得ます.
-            - C (correct): benefitとresidual exposureの両方を表しています.
+            authenticationとendpoint integrityには別のpropertyとcontrolが必要です.
+            endpoint, timing, size, identifierなどはpayload encryption後も見え得ます.
+            benefitとresidual exposureの両方を表しています.
 
-            **関連:** PM 対策では, 「何が見えなくなり, 何がまだ見えるか」を毎回分けて説明するのが重要です.
+            PM 対策では, 「何が見えなくなり, 何がまだ見えるか」を毎回分けて説明するのが重要です.
           </div>
         </div>
       </article>
@@ -187,18 +185,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** cleartext identifierはcacheやanalyticsには便利でも, 大規模相関を極端に簡単にします. 便益とlinkabilityの増加を同じ設計判断で評価します.
+            cleartext identifierはcacheやanalyticsには便利でも, 大規模相関を極端に簡単にします. 便益とlinkabilityの増加を同じ設計判断で評価します.
 
-            **用語:** **linkability** は別々の通信を同じ主体に結び付けやすい性質です. cleartext identifier はその linkability を強くします.
+            **linkability** は別々の通信を同じ主体に結び付けやすい性質です. cleartext identifier はその linkability を強くします.
 
-            **Correct (A):** identifier を減らす, 暗号化する, linkability の低い token へ置き換える, という方向が RFC 7258 的に妥当です. 観測価値を下げることが狙いです.
+            identifier を減らす, 暗号化する, linkability の低い token へ置き換える, という方向が RFC 7258 的に妥当です. 観測価値を下げることが狙いです.
 
-            **選択肢:**
-            - A (correct): 相関しやすさを下げる方向の見直しになっています.
-            - B (incorrect): benignな目的でもobserverにとっての価値は下がらず, stable identifierはeventを結び付けます.
-            - C (incorrect): 本名を同じstable pseudonymへ置き換えてもlinkabilityは残るため, それだけではcorrelationを防げません.
+            相関しやすさを下げる方向の見直しになっています.
+            benignな目的でもobserverにとっての価値は下がらず, stable identifierはeventを結び付けます.
+            本名を同じstable pseudonymへ置き換えてもlinkabilityは残るため, それだけではcorrelationを防げません.
 
-            **関連:** PM 対策では, 機能要件と privacy cost を同じテーブルで比較する必要があります.
+            PM 対策では, 機能要件と privacy cost を同じテーブルで比較する必要があります.
           </div>
         </div>
       </article>
@@ -214,18 +211,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** RFC 7258は「全部onion routingにしろ」と命じる文書ではなく, IETFのdesign baselineを変える文書です. pervasive monitoringの関連性を評価し, architectural decisionを説明する責務を置きます.
+            RFC 7258は「全部onion routingにしろ」と命じる文書ではなく, IETFのdesign baselineを変える文書です. pervasive monitoringの関連性を評価し, architectural decisionを説明する責務を置きます.
 
-            **用語:** **attacker class** として PM を入れる, とは security considerations の中で passive large-scale observer を真面目に想定することです.
+            **attacker class** として PM を入れる, とは security considerations の中で passive large-scale observer を真面目に想定することです.
 
-            **Correct (B):** 文書の意図は, IETF に対して pervasive monitoring を security considerations と設計で考慮するよう促すことです.
+            文書の意図は, IETF に対して pervasive monitoring を security considerations と設計で考慮するよう促すことです.
 
-            **選択肢:**
-            - A (incorrect): RFCは専用sectionを不要と明記しており, 全protocolへ単一mechanismを義務付けていません.
-            - B (correct): 関連性を判定し, 関連する設計判断を説明する責任を正しく表しています.
-            - C (incorrect): metadata, traffic analysis, key subversion, architectural exposureは, payload暗号化後もtechnical designの論点として残ります.
+            RFCは専用sectionを不要と明記しており, 全protocolへ単一mechanismを義務付けていません.
+            関連性を判定し, 関連する設計判断を説明する責任を正しく表しています.
+            metadata, traffic analysis, key subversion, architectural exposureは, payload暗号化後もtechnical designの論点として残ります.
 
-            **関連:** この文書の価値は, 各 RFC が「metadata や passive observer をどう扱うか」を書く習慣を強めたことにあります.
+            この文書の価値は, 各 RFC が「metadata や passive observer をどう扱うか」を書く習慣を強めたことにあります.
           </div>
         </div>
       </article>
@@ -237,17 +233,16 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** payloadが暗号化されていても, endpoint, timing, sizeなどは相関の材料として残ります. content confidentialityとmetadata exposureを分けて評価します.
+            payloadが暗号化されていても, endpoint, timing, sizeなどは相関の材料として残ります. content confidentialityとmetadata exposureを分けて評価します.
 
-            **実務での機会:** traffic captureやprotocol reviewで, content以外に見えるendpoint, size, timing, identifierをinventoryします.
+            traffic captureやprotocol reviewで, content以外に見えるendpoint, size, timing, identifierをinventoryします.
 
-            **用語:** **metadata** は, payload 以外に見える通信先, size, timing, identifier, routing 情報などを広く指します.
+            **metadata** は, payload 以外に見える通信先, size, timing, identifier, routing 情報などを広く指します.
 
-            **Correct:** **metadata**.
 
-            **Why this matters:** PM は payload だけでなく metadata からも価値を引き出します. だから encryption だけで終わらず, metadata minimization が続きます.
+            PM は payload だけでなく metadata からも価値を引き出します. だから encryption だけで終わらず, metadata minimization が続きます.
 
-            **関連:** metadataのconfidentiality, traffic-analysis resistance, data minimizationは, content encryptionと分けて設計判断を説明します.
+            metadataのconfidentiality, traffic-analysis resistance, data minimizationは, content encryptionと分けて設計判断を説明します.
           </div>
         </div>
       </article>
@@ -257,18 +252,18 @@
         <div class="body">
           <p class="question-premise">Agent基盤でincident調査を可能にするため, task ID, tenant ID, key fingerprint, session proofを中央の検索可能なlogへ30日間保存する案が出ています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. security目的のlogはprivacy attackにならないので, 将来必要になり得るfieldをすべて保存する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. monitoringは常にattackなので, incident調査に必要な記録も含めてloggingを全面的に禁止する</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. legitimateなaudit purposeならPMにならないとして, 将来の調査に役立ち得る全fieldをaccess control付きで保存する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. scaleやpurposeにかかわらず保存identifierはPMだとして, stored loggingを全面禁止しlive trafficだけで調査する</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. 調査に必要なfieldだけを残し, 相関可能性を脅威として評価して, access・retention・redaction・分離を設計する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 7258がattackとして扱うのは, protocol artifactを無差別かつ非常に大規模に収集する**pervasive monitoring**です. 正当な運用目的があるlogも, 識別子を長期間集約すれば, actor・tenant・taskを横断して相関するdata sourceになり得ます.
+            RFC 7258 Section 1がattackとして扱うのは, protocol artifactを無差別かつ非常に大規模に収集する**pervasive monitoring**です. Section 2は有益なmonitoringも認める一方, そのmechanismがPMへ悪用され得ると警告します. 正当なlogも, 識別子を長期間集約すれば, actor・tenant・taskを横断して相関するdata sourceになり得ます.
 
-            - A (incorrect): 収集者の善意やsecurity目的だけでは, 漏えい・内部不正・目的外利用・将来の相関可能性は消えません. 「いつか使うかもしれない」はdata minimizationの根拠になりません.
-            - B (incorrect): RFC 7258はnetwork managementやattack detectionに役立つmonitoringまで一律に禁止していません. 運用可能性を失わせることも望ましい結論ではありません.
-            - C (correct): 必要性をfield単位で説明し, linkabilityを抑え, access scopeとretentionを限定する設計は, monitoringの便益とPMへの悪用可能性の両方を扱います.
+            収集者の善意やsecurity目的だけでは, 漏えい・内部不正・目的外利用・将来の相関可能性は消えません. 「いつか使うかもしれない」はdata minimizationの根拠になりません.
+            RFC 7258はnetwork managementやattack detectionに役立つmonitoringまで一律に禁止していません. 運用可能性を失わせることも望ましい結論ではありません.
+            必要性をfield単位で説明し, linkabilityを抑え, access scopeとretentionを限定する設計は, monitoringの便益とPMへの悪用可能性の両方を扱います.
 
             このdraftとの接点は, full grant, session proof, key fingerprint, tenant ID, task IDなどを原則として記録せず, security auditに必要な場合もretention limit, access control, redactionを要求する点です. logging自体を自動的にattackと断定するのではなく, **集約・相関・二次利用できる観測面**としてthreat modelへ入れます.
           </div>

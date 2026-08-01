@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 6234","SKILL_SUBTITLE":"US Secure Hash Algorithms","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 6234","SKILL_SUBTITLE":"US Secure Hash Algorithms","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what SHA/HMAC/HKDF algorithms provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 6234 make SHA/HMAC/HKDF algorithms sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Check which algorithms the document actually specifies and which ones it only points to in other RFCs.">
+        <header><h4>Q1: What does RFC 6234 itself specify?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 6234 and claims that using SHA/HMAC/HKDF algorithms automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An A2A draft cites only RFC 6234 as the complete normative definition of SHA-256, HMAC-SHA-256, and HKDF-SHA-256.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. selecting exact SHA, HMAC, and HKDF computations for interoperable implementations and test vectors; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. selecting exact SHA, HMAC, and HKDF computations for interoperable implementations and test vectors, while which algorithms are acceptable today and how migration away from weak choices works remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS, JWS, COSE, and attestation profiles often reference hash algorithms but define their own protocol checks; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 6234 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. All three algorithms, including the HMAC key-processing and HKDF extract-and-expand rules</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. SHA-256 and HMAC-SHA-256, while HKDF is defined completely in an appendix</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. SHA-224/256/384/512 and sample code; HMAC and HKDF are referenced to RFC 2104 and RFC 5869</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Only test vectors; all algorithm processing is implementation-defined</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 4-7 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 4-7 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 6234 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: RFC 6234 does not reproduce the full HMAC or HKDF specifications.
+B: Section 7.1 gives HMAC context and a reference, not a complete HMAC specification; HKDF is likewise external.
+C: RFC 6234 Sections 1 and 4-6 specify the SHA family members in scope, Section 7.1 points to RFC 2104 for HMAC, Section 7.2 points to RFC 5869 for HKDF, and Section 8 contains sample code.
+D: The SHA processing is specified; it is not left to each implementation.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for SHA/HMAC/HKDF algorithms. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The SHA function accepts a bit string. A protocol still has to say which bits represent its structured value and how many output bits it uses.">
+        <header><h4>Q2: What must an A2A profile define before hashing a structured value?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 6234 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">Two conforming SHA-256 libraries receive the same logical task object, but one implementation hashes UTF-8 JSON and the other hashes a platform object serialization.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which algorithms are acceptable today and how migration away from weak choices works and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: TLS, JWS, COSE, and attestation profiles often reference hash algorithms but define their own protocol checks</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Specify domain separation, input encoding, hash agility, and whether a MAC or KDF is required</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Nothing; SHA-256 normalizes equivalent application objects before processing</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Only the human-readable field order, because character encoding and numeric representation do not affect a digest</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. The exact algorithm, canonical input bytes or bits, and any output-length or truncation rule</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Only how the digest is displayed, because all 256-bit implementations hash structured values identically</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Section 7 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: RFC 6234 hashes the supplied bit string and does not know application-level equivalence.
+B: Character encoding, field encoding, and numeric representation all change the input bits.
+C: RFC 6234 Sections 1, 2, and 4 define algorithm-level input and processing. Canonicalization and truncation are profile choices that must be fixed for interoperable protocol use.
+D: Display encoding is downstream of the digest and cannot reconcile different hash inputs.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this SHA/HMAC/HKDF algorithms review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Hash equality follows byte equality, not semantic equality. Decide where one representation becomes authoritative.">
+        <header><h4>Q3: Where should canonicalization occur before digest verification?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: two implementations hash different byte encodings or truncate the output differently. The result controls an A2A security decision.</p>
+          <p class="question-premise">A client sends JSON and a SHA-256 digest. A gateway parses and rewrites the JSON before forwarding it. The backend hashes the rewritten bytes, while the client hashed the original bytes. The design intends the digest to authenticate the client's exact request representation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how digest outputs are compared, stored, and versioned as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify the exact algorithm name, input bytes, output length, truncation rule, and test-vector behavior</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: TLS, JWS, COSE, and attestation profiles often reference hash algorithms but define their own protocol checks</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 6234 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep both byte representations and accept either digest if the parsed JSON objects compare equal</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify authoritative input bytes before rewriting, or require one canonical representation for signer and verifier</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Let the gateway recompute the client's digest after rewriting because SHA-256 identifies semantic content</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Hash both versions and concatenate the digests so either representation proves the client's intent</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 9 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: Parsed-object equality is a different claim from authentication of the exact client representation.
+B: RFC 6234 Sections 1 and 4 process a specific bit string. The A2A profile must define which bytes carry the security meaning and preserve or canonically reproduce them at the verifier.
+C: Recomputing at the gateway changes the party and bytes behind the digest claim.
+D: Concatenation does not establish which bytes the client authenticated and introduces an undefined construction.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing SHA/HMAC/HKDF algorithms, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="The acceptance criterion names a keyed construction, not merely a digest with some secret input. Compare the implemented construction with that named profile.">
+        <header><h4>Q4: Does a secret-prefixed SHA-256 construction satisfy an HMAC profile?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 6234 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">The A2A profile requires HMAC-SHA-256 for request authentication. One implementation instead computes SHA-256(secret || request-bytes) and passes its own test vectors.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which algorithms are acceptable today and how migration away from weak choices works</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify the exact algorithm name, input bytes, output length, truncation rule, and test-vector behavior</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How digest outputs are compared, stored, and versioned</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Selecting exact SHA, HMAC, and HKDF computations for interoperable implementations and test vectors</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes, because any SHA-256 input containing a secret is an HMAC construction</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Yes, if local test vectors pass and the secret is at least 256 bits</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. It depends only on whether the implementation truncates both outputs to the same length</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. No. It is not HMAC; implement the referenced HMAC construction and shared test vectors</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 4-7 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: HMAC has a defined inner/outer keyed construction; secret concatenation is not that construction.
+B: Self-generated vectors demonstrate consistency with itself, not conformance to HMAC.
+C: Equal output length does not make two algorithms equivalent.
+D: RFC 6234 Section 7.1 points to RFC 2104 for HMAC. The review conclusion follows from the profile's explicit HMAC requirement; RFC 6234 alone does not make a general security judgment about every raw-hash construction.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when SHA/HMAC/HKDF algorithms are used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A hash primitive and a key-derivation profile serve different roles. Look for extract, expand, and purpose-separation inputs.">
+        <header><h4>Q5: Does raw SHA-256 satisfy an HKDF-based key schedule?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a specification needs reproducible digest, MAC, or KDF behavior across implementations. Observed defect: using a raw hash where a keyed MAC or KDF is required.</p>
+          <p class="question-premise">An A2A design must derive separate request-proof and audit keys from shared input keying material. The profile says HKDF-SHA-256, but an implementation computes SHA-256(input-keying-material) once and uses the result for both purposes.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (selecting exact SHA, HMAC, and HKDF computations for interoperable implementations and test vectors), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (specify domain separation, input encoding, hash agility, and whether a MAC or KDF is required) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (TLS, JWS, COSE, and attestation profiles often reference hash algorithms but define their own protocol checks), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes, because using SHA-256 gives the same security semantics as every SHA-256-based KDF</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes, if each consumer labels the result after the shared digest has already been computed</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. No. Use the specified HKDF extract-and-expand construction with distinct purpose inputs</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No, because RFC 6234 forbids SHA-256 from appearing inside any key-derivation function</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 9 supports resolving the defect before relying on the result. The profile rule is: specify domain separation, input encoding, hash agility, and whether a MAC or KDF is required. The check is: verify the exact algorithm name, input bytes, output length, truncation rule, and test-vector behavior. The local policy is: which algorithms are acceptable today and how migration away from weak choices works.</div>
+A: Sharing a hash primitive does not make different constructions semantically equivalent.
+B: A label applied only after one shared key exists does not give the KDF distinct derivation inputs.
+C: RFC 6234 Section 7.2 points to RFC 5869 for HKDF. The profile must define the HKDF inputs, including purpose separation, and test the resulting construction.
+D: SHA-256 is commonly the hash used by HKDF; the problem is replacing the named KDF with a raw digest.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should SHA/HMAC/HKDF algorithms be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Track exact bytes, the party authenticating them, and the trust transition separately. Digest computation alone does not supply authentication semantics.">
+        <header><h4>Q6: Which digest pipeline preserves the client's A2A proof?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines SHA/HMAC/HKDF algorithms with another protocol layer. Its design note says: TLS, JWS, COSE, and attestation profiles often reference hash algorithms but define their own protocol checks.</p>
+          <p class="question-premise">A client signs a request digest. A gateway parses and normalizes the request, then sends the backend normalized bytes, the original digest, and an unsigned header saying that client verification succeeded. The backend authorizes the normalized operation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which algorithms are acceptable today and how migration away from weak choices works unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify the exact algorithm name, input bytes, output length, truncation rule, and test-vector behavior) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which algorithms are acceptable today and how migration away from weak choices works), perform the required check (verify the exact algorithm name, input bytes, output length, truncation rule, and test-vector behavior), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept the original digest against normalized bytes because a correct SHA-256 implementation preserves semantic equivalence</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Verify client proof over canonical bytes at the backend, or trust a protected gateway assertion binding the original and normalized request</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Recompute an unsigned digest at the gateway and treat matching output length as continuity of the client's signature</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Keep the unsigned success header but require the backend to run the RFC 6234 sample code over whichever bytes it received</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 4-7 and Section 9 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: SHA-256 operates on exact input bits and does not preserve application-semantic equivalence across encodings.
+B: This makes the authenticated representation and verifier explicit. RFC 6234 Sections 1 and 4 supply digest processing; signature verification, assertion protection, request mapping, and authorization come from the composing profile.
+C: Output length says nothing about who authenticated the normalized bytes.
+D: Correct sample-code output cannot authenticate an unsigned success claim or choose authoritative request semantics.</div>
         </div>
       </article>
     </section>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8785", "SKILL_SUBTITLE": "JSON Canonicalization Scheme", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8785", "SKILL_SUBTITLE": "JSON Canonicalization Scheme", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -126,7 +126,7 @@ A: RFC 8785 deliberately does not apply Unicode normalization.
 B: Visual similarity is not a rule for changing the parsed string data.
 C: Changing string data would change the value being canonicalized and could break signatures.</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="JCS selects the ECMAScript binary64 serialization behavior.">
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Separate the parsed numeric value from the spelling seen in the source JSON.">
         <header><h4>Q7: How are JSON numbers serialized by JCS?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. Using the specified ECMAScript double-precision number serialization</label>
@@ -150,29 +150,33 @@ A: Silent replacement changes the data and would make signature behavior ambiguo
 B: RFC 8785 requires errors for invalid Unicode and non-JSON numeric values.
 C: JCS does not define lossy conversion to null.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Deterministic representation is narrower than business-level equivalence.">
-        <header><h4>Q9: Two implementations produce the same JCS bytes. What can be concluded?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. The JSON claims are authorized for every recipient</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. Every string is semantically equivalent in all languages</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. They agreed on the canonical representation of the same constrained JSON data</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="JCS starts from a constrained parsed data model; it does not reconcile two parser interpretations of invalid input.">
+        <header><h4>Q9: Which validation boundary prevents the parser differential?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A signed Agent Card arrives as JSON containing two <code>endpoint</code> property names. The signature component keeps the first value when parsing, while the request router later keeps the last value. The team proposes applying JCS independently in both components.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Accept the card when either parser can produce a valid JCS byte sequence</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Sort the duplicate properties lexicographically and let the router choose one</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Reject duplicate names at the input boundary and use one validated data model downstream</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. Verify the signature before parsing, then permit each component to parse independently</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Canonicalization does not grant authorization.
-B: JCS preserves code points and does not interpret natural-language meaning.
-C: JCS provides deterministic bytes but leaves claim meaning and trust to the application.</div></div>
+RFC 8785 Section 3.1 requires JCS input objects not to contain duplicate property names. Canonicalization operates on already constrained parsed data; it cannot make conflicting first-value and last-value interpretations equivalent. C removes the ambiguity before signature verification and routing diverge. A and B accept invalid JCS input, while D is impossible for JCS because constructing the signature input requires the parsed data model.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="JCS defines serialization, not which logical data is inside the signature.">
-        <header><h4>Q10: For a signed Agent Card, which boundary must the application profile still define?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. Only the color used to display the card</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. Field presence, signed-object construction, and verification policy</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. A rule that canonical bytes remove the need for key validation</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Check the data model before asking whether its serialization and signature are deterministic.">
+        <header><h4>Q10: Does the valid signature preserve the amount intended by the issuer?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A payment grant encodes <code>amount=9007199254740993</code> as a JSON number. The issuer's implementation parses it as an IEEE 754 double, rounds it, applies JCS, and signs the result. A verifier reproduces the rounded JCS bytes, so the signature verifies, but the business layer displays the original decimal from a separately retained input buffer.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. Yes; signature validity proves every retained representation has the same numeric value</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. No; the profile must encode out-of-range integers safely and authorize the signed data model</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. Yes; JCS restores integer precision that was lost before canonicalization</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. No; RFC 8785 prohibits JSON numbers in every cryptographic application</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Display styling does not determine cryptographic coverage.
-B: All parties must build the same logical object and apply the same acceptance rules around JCS.
-C: Deterministic bytes do not authenticate the signing key.</div></div>
+RFC 8785 Section 3.1 limits JCS number data to values expressible as IEEE 754 double precision and recommends strings for higher-precision values, with Appendix D describing such handling. JCS faithfully signs the parsed value; it cannot recover precision already lost or bind an unsigned side buffer. B fixes both boundaries. D is too broad because ordinary JSON numbers within the permitted model are supported.</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

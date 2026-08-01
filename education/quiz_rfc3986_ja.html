@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 3986",
       SKILL_SUBTITLE: "URI Generic Syntax",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,23 +101,9 @@
           <div class="explain">
             **Explanation:**
 
-            `//`は, 後続文字列をauthorityとしてparseするか, 別のpath formとしてparseするかを決める境界です.
+            RFC 3986 Section 3では, `//`がauthorityを含むgrammar branchを選びます. authorityは次の`/`, `?`, `#`の直前まで続き, userinfo, host, portを含み得ます. 一方, `?`はquery, `#`はfragmentの開始です.
 
-            **実務での機会:** URI parser, reverse proxy, router, security filterの解釈を揃えないと, routingやvalidationの差になります.
-
-            **Terms:** authority, delimiter, scheme. generic syntaxでは, authorityは"//"に続いて現れ, その後にpath, query, fragmentへ進む.
-
-            **Correct (C):** "//"がauthorityの開始を示す. authorityは userinfo, host, port を含み得る.
-
-            **Options:**
-
-            - A (incorrect): #はfragmentの開始.
-
-            - B (incorrect): ?はqueryの開始.
-
-            - C (correct): //がauthority introducer.
-
-            **Related:** 全てのURIがauthorityを使うわけではない. `mailto:user@example.com`のように, authorityなしでpath-rootlessを使うURIもある.
+            authorityは必須ではありません. 例えば`mailto:user@example.com`は`//`なしのpath-rootless formを使います. parser, proxy, router, security filterは, routingやpolicy判断の前にこのgrammar boundaryを同じように解釈する必要があります.
           </div>
         </div>
       </article>
@@ -126,8 +113,8 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. user:pass@example.com:8443</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. /a</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com:8443/a?x=1</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. https://user:pass@example.com</label>
           </fieldset>
           <figure class="flow-diagram answer-figure" aria-labelledby="rfc3986-ja-q2-caption">
             <figcaption id="rfc3986-ja-q2-caption">RFC 3986 は, URI を 1 本の文字列ではなく component の並びとして読みます. 例を分解して, どこまでが authority なのかを目で追えるようにすると混乱しにくくなります.</figcaption>
@@ -164,21 +151,14 @@
 
             hostだけをauthorityとして扱うと, 同じcomponentに属するuserinfoやportを落とします.
 
-            **実務での機会:** authority境界はproxy設定, origin比較, access log, URL security reviewで使います.
+            authority境界はproxy設定, origin比較, access log, URL security reviewで使います.
 
-            **Terms:** authority, userinfo, host, port. authorityは `//` の直後から, 次の `/`, `?`, `#` の手前までです. その中に userinfo, host, port が含まれます.
+            RFC 3986 Section 3.2のauthorityは`[userinfo@]host[:port]`です. この例では`//`の直後から`/a`の手前まで, つまり`user:pass@example.com:8443`が該当します. userinfoは`user:pass`, hostは`example.com`, portは`8443`です.
 
-            **RFCを読むときの見方:** URI の問題で迷ったら, まず `scheme -> authority -> path -> query -> fragment` の順に線を引くように見ます. RFC 3986 は component ごとの責務を定義しているので, 文字列全体を一気に読もうとするより, 区切り記号ごとに切る方が理解しやすいです.
+            `example.com:8443/a?x=1`はauthorityを越えてpathとqueryまで含みます.
+            `https://user:pass@example.com`はschemeを含みportを落としているため,authority componentそのものではありません.
 
-            **Correct (A):** この例では userinfo が `user:pass`, host が `example.com`, port が `8443` です. つまり authority 全体は `user:pass@example.com:8443` になります. host だけを抜き出した `example.com` は authority の一部にすぎません.
-
-            **Options:**
-
-            - A (correct): `[userinfo@]host[:port]` の形に一致しています.
-            - B (incorrect): `example.com` は host 部分だけで, authority 全体ではありません.
-            - C (incorrect): `/a` は authority の後ろに来る path です.
-
-            **Related:** `user:password`形式はRFC 3986でdeprecatedです. applicationはpasswordをcleartext表示したり暗号化せず保存したりすべきではありません. ここではauthority grammarの説明だけに使っています.
+            こうした境界の誤りはproxy routing, origin比較, logging, authorizationの結果を変え得ます. またRFC 3986はuserinfo内のcleartext passwordをdeprecatedとしています. このpassword風の文字列はgrammarの説明用であり, applicationがcredentialとして表示・保存するための例ではありません.
           </div>
         </div>
       </article>
@@ -195,30 +175,14 @@
           <div class="explain">
             **Explanation:**
 
-            reservedは, forbiddenやunsafeという意味ではなく, generic syntaxでdelimiterになり得る分類です.
+            RFC 3986 Sections 2.2と2.3はURI characterをreservedとunreservedに分けます. `?`と`#`はgen-delims, `&amp;`はsub-delimsであり, `~`はunreservedです.
 
-            **実務での機会:** query builder, router, signature処理, redirect validationではdelimiterとdataの区別が必要です.
-
-            **Terms:** reserved, unreserved, gen-delims, sub-delims. reservedは, コンポーネントによって区切りとして意味を持ち得るため, データとして使うならpercent-encodingが必要になることがある.
-
-            **Correct (A,B,C):** ?, # はgen-delims, &amp; はsub-delims. ~ はunreservedで, 通常はエンコード不要.
-
-            **Options:**
-
-            - A (correct): ?はpathとqueryの区切りとして使われる.
-
-            - B (correct): #はfragmentの開始.
-
-            - C (correct): &amp; はsub-delimsで, query内ではアプリ側の区切りとして使われがち.
-
-            - D (incorrect): ~はunreservedなのでreservedではない.
-
-            **Related:** reservedは"危険"ではなく"区切りとして解釈され得る"という意味. どこでエンコードすべきかはコンテキスト依存.
+            reservedはforbiddenやunsafeという意味ではなく, componentやschemeによってdelimiterになり得るという分類です. query構築, signature処理, redirect validationでは, 文字がsyntaxなのかdataなのかを保つ必要があります. reserved characterをdataとして使う場合はpercent-encodingが必要になり得ます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="そのcharacterがsyntaxとして働くのか, 1つのcomponent内のliteral dataなのかを考えてください.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="そのcharacterがsyntaxとして働くのか, 1つのcomponent内のliteral dataなのかを考えてください.">
         <header><h4>Q4: URIでpercent-encodingすべきタイミングとして最も正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -229,22 +193,9 @@
           <div class="explain">
             **Explanation:**
 
-            percent-encodingはcomponent依存です. 一律encodeは構造を変え, encode不足はdataをdelimiterに見せます.
+            RFC 3986 Sections 2.1と2.4はpercent-encodingを`%HH`形式のoctet表現として定義します. 適否はURI componentと文字の役割で決まります. delimiterとして働くreserved characterはliteralのまま残し, 同じ文字をdataとして使う場合はsyntaxと誤認されないようencodeします. そのcomponentで許されない文字にも適切なencodingが必要です.
 
-            **実務での機会:** signed URL, redirect target, API path parameter, parser differential対策でこの判断を使います.
-
-            **Terms:** percent-encoding, component, delimiter vs data. percent-encodingは%HHでoctetを表し, 構文を壊さず曖昧性を無くす仕組み.
-
-            **Correct (C):** 文字がそのコンポーネントで許可されない場合や, reservedが区切りではなくデータとして必要な場合にエンコードする.
-
-            **Options:**
-
-            - A (incorrect): delimiterとして働くreserved characterはliteralのまま必要です. encodeするとURIの構造や意味が変わります.
-
-            - B (incorrect): reservedはデータとして出したいこともある. その場合はエンコードして区切り解釈を避ける.
-
-            - C (correct): 目的が"構文的に正しい"と"意図した意味"を両立させること.
-            **Related:** 早すぎるdecodeは, 区切りとデータの区別を失ってバグの原因になります. 非ASCII textにはcharacterからoctetへの定義やIRI処理も必要で, RFC 3986だけから全component共通の一律ルールは導けません.
+            reserved characterを一律にencodeするとURI構造を壊し, 早すぎるdecodeはdelimiterとdataの区別を失わせます. signed URL, redirect target, path parameterでは, componentを意識した一つの処理順を定義する必要があります. 非ASCII textにはcharacter-to-octet mappingまたはIRI処理も必要であり, RFC 3986は全component共通の一律変換を定めていません.
           </div>
         </div>
       </article>
@@ -260,22 +211,9 @@
           <div class="explain">
             **Explanation:**
 
-            URI normalizationは比較に役立ちますが, 安全でない変換は別resourceを参照させます.
+            RFC 3986 Section 6.2.2.1ではschemeとhostがcase-insensitiveなので, これらの小文字化は一般に意味を保ちます. ただしURI全体に同じ規則は適用できません. pathのcase sensitivityはschemeやserverに依存し, fragmentはHTTP serverへ送られなくてもclient-side navigationへ影響します.
 
-            **実務での機会:** cache key, allowlist, routing table, deduplication, signed URLの処理でnormalizationを選びます.
-
-            **Terms:** normalization, scheme, host, path, fragment. 正規化は表記を変えつつ同じ参照を維持しようとする操作.
-
-            **Correct (A):** schemeとhostは一般に大文字小文字を区別しないので, 小文字化はよくある安全な手順.
-
-            **Options:**
-
-            - A (correct): 多くの処理で意味が変わらない.
-            - B (incorrect): pathの大文字小文字はschemeやサーバ実装依存で, 変えると別リソースになる可能性がある.
-
-            - C (incorrect): fragmentはサーバへ送られないが, クライアント側で意味を持つので常に削除は安全ではない.
-
-            **Related:** 署名付きURL, キャッシュキー, ルーティングは正規化の影響を強く受ける.
+            normalizationは比較目的に依存します. ある比較で無害な変換でも, signed value, cache key, routing key, authorization identifierでは意味を変え得ます. profileは正規化するcomponentとtrust boundaryを明示する必要があります.
           </div>
         </div>
       </article>
@@ -287,17 +225,9 @@
           <div class="explain">
             **Explanation:**
 
-            fragmentは同じURI表示内にありますが, queryやpathとは処理規則が違います.
+            RFC 3986 Section 3.5は`#`の後ろをfragmentと呼びます. fragmentはprimary resourceに対するsecondary resourceを識別し, 解釈方法はmedia typeやclient contextに依存します.
 
-            **実務での機会:** browser navigation, document anchor, client-side router, URI比較でfragmentを独立componentとして扱います.
-
-            **Terms:** fragment component. RFC 3986では, #の後ろはfragmentで, 二次リソースやクライアント側参照を指す.
-
-            **Correct:** fragment.
-
-            **Why others are wrong:** queryは?で始まり, pathはauthorityの後の階層部分, schemeは:の前. これを取り違えるとパースが崩れる.
-
-            **Related:** fragmentは通常HTTPリクエストとしてサーバへ送信されない.
+            fragmentはdereference前に分離されるため, user agentは通常HTTP requestへ含めません. これは`?`で始まりresource requestの一部になるqueryとは異なります. 両者の混同はparsingとpolicy判断の双方を変えます.
           </div>
         </div>
       </article>
@@ -314,11 +244,11 @@
           <div class="explain">
             **Explanation:**
 
-            RFC 3986はURI comparisonに単一の万能規則を置いていません. 比較目的によってtrade-offが異なり, scheme定義やapplication固有の規則が必要になるためです. 特にsecurity decisionでは, 別のidentifierを同一と誤認するfalse positiveを避ける必要があります.
+            RFC 3986 Sections 6.1 and 6.2はURI comparisonに単一の万能規則を置いていません. 比較目的によってtrade-offが異なり, scheme定義やapplication固有の規則が必要になるためです. 特にsecurity decisionでは, 別のidentifierを同一と誤認するfalse positiveを避ける必要があります.
 
-            - A (incorrect): ある時点で同じ表現を返すことは, authorization上のidentity equivalenceを証明しません. redirect, virtual hosting, shared content, 一時的なroutingによって結果が一致することがあります.
-            - B (correct): RFC 3986は不要なaliasを減らすため, URI producerがalready-normalized formを一貫して出す考え方を示します. security profileでは, そのcanonical formと比較規則をtrusted boundaryで固定すると, verifierごとの推測をなくせます.
-            - C (incorrect): schemeとhostのcase normalizationはgeneric ruleですが, pathやその他のcomponentはscheme依存です. alias解決やdisplay-name matchingまで受信側が追加すると, attacker-controlled inputから新しいequivalenceを作ってしまいます.
+            ある時点で同じ表現を返すことは, authorization上のidentity equivalenceを証明しません. redirect, virtual hosting, shared content, 一時的なroutingによって結果が一致することがあります.
+            RFC 3986は不要なaliasを減らすため, URI producerがalready-normalized formを一貫して出す考え方を示します. security profileでは, そのcanonical formと比較規則をtrusted boundaryで固定すると, verifierごとの推測をなくせます.
+            schemeとhostのcase normalizationはgeneric ruleですが, pathやその他のcomponentはscheme依存です. alias解決やdisplay-name matchingまで受信側が追加すると, attacker-controlled inputから新しいequivalenceを作ってしまいます.
 
             このdraftはこの原則をさらに限定し, decision-sensitive valueを発行またはtrusted policy comparisonの前にcanonicalにし, final acceptance pathではpeerのalias, case variant, URI variant, natural-language interpretationを修復しない設計を採ります. 「入力側でcanonicalizationする」とは, **profileが定めた決定的な変換を信頼済み境界で一度だけ行う**ことであり, verifierが都合よく意味を推測することではありません.
           </div>

@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9113",
       SKILL_SUBTITLE: "HTTP/2",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,14 +101,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** multiplexing, stream, connection. HTTP/2 introduces a binary framing layer where independent streams can share one connection.
-            **Correct (B):** Multiplexing reduces head-of-line blocking at the HTTP application layer compared to HTTP/1.1 pipelining.
-            **Options:**
+            multiplexing, stream, connection. HTTP/2 introduces a binary framing layer where independent streams can share one connection.
+            Multiplexing reduces head-of-line blocking at the HTTP application layer compared to HTTP/1.1 pipelining.
+
 
             - A (incorrect): HTTP semantics remain defined by RFC 9110.
             - B (correct): This is the major transport-level change.
             - C (incorrect): HTTP/2 typically runs over TLS, but it does not replace TLS.
-            **Related:** HTTP/2 improves efficiency but still runs over TCP, so transport-level head-of-line can still exist.
+            HTTP/2 improves efficiency but still runs over TCP, so transport-level head-of-line can still exist.
           </div>
         </div>
       </article>
@@ -123,14 +124,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** frame, binary framing layer. HTTP/2 encodes data as a sequence of frames with a standard header.
-            **Correct (C):** Frames carry headers, data, settings, and control signals.
-            **Options:**
+            frame, binary framing layer. HTTP/2 encodes data as a sequence of frames with a standard header.
+            Frames carry headers, data, settings, and control signals.
+
 
             - A (incorrect): CRLF lines are HTTP/1.1 syntax.
             - B (incorrect): Chunked transfer coding is an HTTP/1.1 framing mechanism.
             - C (correct): Frames are the basis of HTTP/2 transport.
-            **Related:** Application semantics are expressed via sequences of frames on streams.
+            Application semantics are expressed via sequences of frames on streams.
           </div>
         </div>
       </article>
@@ -146,77 +147,77 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** stream ID, initiator. Stream IDs indicate order and who created the stream.
-            **Correct (A):** Clients use odd-numbered stream IDs. Servers use even-numbered stream IDs.
-            **Options:**
+            stream ID, initiator. Stream IDs indicate order and who created the stream.
+            Clients use odd-numbered stream IDs. Servers use even-numbered stream IDs.
+
 
             - A (correct): This rule helps endpoints detect protocol errors.
             - B (incorrect): This reverses the defined rule.
             - C (incorrect): Parity is meaningful in HTTP/2.
-            **Related:** Stream ID ordering is also used to prevent reuse and to detect invalid frames on closed streams.
+            Stream ID ordering is also used to prevent reuse and to detect invalid frames on closed streams.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Check which frame payload consumes the flow-control window, how many window scopes exist, and which frame replenishes them.">
-        <header><h4>Q4: Which statements about HTTP/2 flow control are true (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="DATA is constrained by two independent windows; increasing only one does not release the other.">
+        <header><h4>Q4: Which update lets stream 5 resume sending DATA?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An HTTP/2 sender has exhausted both the flow-control window for stream 5 and the connection window. The receiver has consumed enough DATA and wants transmission on stream 5 to continue.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. It limits how much DATA can be in flight</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. It applies to header frames the same way as DATA frames</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. It exists at both the stream and connection level</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. WINDOW_UPDATE is used to increase the available window</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Send WINDOW_UPDATE only on stream 5</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Send WINDOW_UPDATE only on stream 0</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Increase both the stream 5 and connection windows</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Send SETTINGS_MAX_CONCURRENT_STREAMS for stream 5</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** flow control, window, DATA, WINDOW_UPDATE. Flow control protects endpoints from being overwhelmed by too much incoming data.
-            **Correct (A,C,D):** Flow control is a window-based mechanism for DATA and it is tracked per stream and for the overall connection.
-            **Options:**
-
-            - A (correct): The window limits how much DATA can be sent before receiving updates.
-            - B (incorrect): Flow control is primarily about DATA. Header frames are managed differently.
-            - C (correct): Both per-stream and connection-level windows exist.
-            - D (correct): WINDOW_UPDATE increases the flow-control window.
-            **Related:** Misconfigured windows can cause stalls that look like network problems but are actually protocol backpressure.
+            A: Stream credit remains unusable while the connection window is zero.
+            B: Connection credit alone does not release stream 5's own zero window.
+            C: RFC 9113 Sections 5.2 and 6.9 define independent stream and connection windows for DATA; both exhausted limits must increase.
+            D: SETTINGS_MAX_CONCURRENT_STREAMS limits creation of streams and does not replenish DATA credit.
+            Decision rule: Diagnose every exhausted flow-control scope. A sender can emit DATA only when both its stream and connection windows permit it.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Look for a connection-level control frame whose parameters change how the peer sends or interprets HTTP/2 traffic.">
-        <header><h4>Q5: What is the purpose of the SETTINGS frame</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The compressed block can refer to dynamic-table state that exists only on its original connection.">
+        <header><h4>Q5: How must the gateway forward these HTTP fields?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A gateway terminates one HTTP/2 connection and opens a separate HTTP/2 connection to a backend. For efficiency, it plans to copy the client's raw HPACK field block into a HEADERS frame on the backend connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. It carries application payload bytes</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. It communicates configuration parameters for the connection</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. It acknowledges received DATA frames</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Copy the bytes unchanged because HPACK state is shared by every HTTP/2 connection to one origin</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Decode on the client connection and encode the resulting fields in the backend connection's HPACK context</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Copy the bytes after replacing only the stream ID in the frame header</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Send SETTINGS_HEADER_TABLE_SIZE=0 after the copied field block to make it portable</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** SETTINGS, connection parameters. Endpoints use SETTINGS to advertise limits and preferences like frame size and concurrent streams.
-            **Correct (B):** SETTINGS is a control mechanism to tune and constrain the connection.
-            **Options:**
-
-            - A (incorrect): DATA frames carry payload.
-            - B (correct): SETTINGS carries connection configuration.
-            - C (incorrect): HTTP/2 uses different signals for acknowledgments and flow control.
-            **Related:** Peers must acknowledge SETTINGS. Failing to respect them can be a protocol error.
+            A: HPACK dynamic-table state is not shared across connections, even when the origin is the same.
+            B: RFC 9113 Section 4.3.1 defines one encoder and decoder context per endpoint per connection. Translation across a gateway requires semantic fields to be decoded and re-encoded for the next context.
+            C: Stream-ID replacement does not repair dynamic-table references created on the first connection.
+            D: A later SETTINGS value cannot retroactively make an already encoded field block decodable.
+            Decision rule: Compression bytes are connection-bound protocol state; only the reconstructed HTTP fields can safely cross the gateway boundary.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^goaway$" data-difficulty="L1" data-hint="Name the connection-level frame that marks the last stream the sender might have processed and prevents new work from being assumed.">
-        <header><h4>Q6: Which frame signals graceful shutdown of an HTTP/2 connection</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Use Last-Stream-ID to separate definitely unprocessed work from work that might already have taken effect.">
+        <header><h4>Q6: Which retry decision follows from this GOAWAY?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the frame name" />
+          <p class="question-premise">A client sent non-idempotent POST requests on streams 5 and 9. Before either response arrives, the server sends GOAWAY with Last-Stream-ID 7. No application-level deduplication contract exists.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Retry both POST requests because GOAWAY means no stream was processed</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Retry neither request because GOAWAY makes every stream outcome unknowable</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Retry stream 9; resolve stream 5's possible effect before any retry</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Retry stream 5 only, because lower-numbered streams are excluded by Last-Stream-ID</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** GOAWAY. GOAWAY tells the peer that the sender will not accept new streams and indicates the last stream it processed.
-            **Correct:** GOAWAY. It supports graceful draining.
-            **Why others are wrong:** RST_STREAM resets one stream, not the whole connection. SETTINGS configures behavior but does not shut down.
-            **Related:** Clients should retry requests on streams that were not processed, depending on method idempotency.
+            A: RFC 9113 Section 6.8 says streams up to and including Last-Stream-ID might have been processed.
+            B: Streams with IDs above the value are not and will not be processed, so stream 9 has a definite transport outcome.
+            C: Section 6.8 permits stream 9 to be treated as never created. Stream 5 might have taken effect; RFC 9110 Section 9.2.2 requires application knowledge before automatically repeating its non-idempotent POST.
+            D: The interpretation is reversed: lower or equal IDs might have been processed, while higher IDs are excluded.
+            Decision rule: GOAWAY establishes a processing boundary, not universal retry safety. Combine that boundary with the method's effect and any application deduplication guarantee.
           </div>
         </div>
       </article>

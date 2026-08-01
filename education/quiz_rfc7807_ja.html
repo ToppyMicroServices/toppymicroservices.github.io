@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7807",
       SKILL_SUBTITLE: "Problem Details",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -99,13 +100,12 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** media type, Problem Details
-            **Correct (B):** payloadの意味を示すため, 専用media typeを定義している
-            **Options:**
-            - A (incorrect): 汎用JSONとして処理できますが, payloadがProblem Details vocabularyに従うことをmedia typeで示せません.
-            - B (correct): RFC 7807がJSON Problem Details用に登録したdedicated media typeです.
-            - C (incorrect): `text/problem+json`はRFC 7807で登録されていません.
-            **Related:** XML向けにはapplication/problem+xmlがある
+
+            RFC 7807 Section 6.1は,JSON encodingだけでなくProblem Detailsとしての意味もrecipientが識別できるよう,`application/problem+json`を登録しています.単なる`application/json`はserializationしか示しません.Section 6.2はXML向けに`application/problem+xml`を別途登録しています.
+
+            A: 汎用JSONとして処理できますが, payloadがProblem Details vocabularyに従うことをmedia typeで示せません.
+            B: RFC 7807がJSON Problem Details用に登録したdedicated media typeです.
+            C: `text/problem+json`はRFC 7807で登録されていません.
           </div>
         </div>
       </article>
@@ -123,16 +123,15 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** members, extensibility
-            **Correct (A,B,C,D,E):** これらが標準member
-            **Options:**
-            - A (correct): typeはURI referenceでproblem typeを識別します.
-            - B (correct): titleはproblem typeの短いhuman-readable summaryです.
-            - C (correct): statusはこの発生事象についてorigin serverが生成したHTTP status codeです.
-            - D (correct): detailはこの発生事象に固有のhuman-readable explanationです.
-            - E (correct): instanceは個別の発生事象を識別するURI referenceです.
-            - F (incorrect): stackTraceは標準memberではなく, 実装内部の情報を露出させるおそれもあります.
-            **Related:** extension memberは追加できるが, 安定仕様として文書化する
+
+            RFC 7807 Section 3.1は`type`,`title`,`status`,`detail`,`instance`を標準memberとして定義します.Section 3.2はproblem type固有のextension memberを許しますが,`stackTrace`は標準memberではなく,使うならproblem typeの定義で明示する必要があります.未知のextensionは無視します.
+
+            A: typeはURI referenceでproblem typeを識別します.
+            B: titleはproblem typeの短いhuman-readable summaryです.
+            C: statusはこの発生事象についてorigin serverが生成したHTTP status codeです.
+            D: detailはこの発生事象に固有のhuman-readable explanationです.
+            E: instanceは個別の発生事象を識別するURI referenceです.
+            F: stackTraceは標準memberではなく, 実装内部の情報を露出させるおそれもあります.
           </div>
         </div>
       </article>
@@ -147,18 +146,17 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** URI reference, problem type
-            **Correct (C):** typeは分類子で, document URLやabout:blankを使うことが多い
-            **Options:**
-            - A (incorrect): statusがHTTP status
-            - B (incorrect): typeの意味ではない
-            - C (correct): errorの安定分類に使える
-            **Related:** about:blankは, typeがHTTP statusにより暗黙と解釈される
+
+            RFC 7807 Section 3.1は`type`をproblem categoryを識別するURI referenceと定義します.documentationへdereferenceできるURIは一般的ですが必須ではありません.`type`を省略した場合は`about:blank`とみなされ,HTTP status codeがproblemの意味を与えます.
+
+            A: statusがHTTP status
+            B: typeの意味ではない
+            C: errorの安定分類に使える
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="payload内の数値memberを, origin serverが実際に生成したHTTP responseのstatus codeと比較します.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="payload内の数値memberを, origin serverが実際に生成したHTTP responseのstatus codeと比較します.">
         <header><h4>Q4: RFC 7807では, status memberを含める場合に何を入れるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -168,13 +166,13 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** status member
-            **Correct (A):** status memberを含める場合, この発生事象についてorigin serverが生成したHTTP status codeを入れます.
-            **Options:**
-            - A (correct): client向けの便宜として, origin responseのstatusをpayloadにも示します.
-            - B (incorrect): 標準memberのstatusは文字列ではなく数値です.
-            - C (incorrect): statusは今回の発生事象を記述するもので, 後のresponseを予測しません.
-            **Related:** intermediaryが転送中にresponse statusを変更する場合があるため, 汎用clientはpayloadを別系統のstatus authorityとせず, 実際のHTTP response statusを使います.
+
+            RFC 7807 Section 3.1は,optionalな`status` memberを,この発生事象についてorigin serverが生成したHTTP status codeと定義します.
+            intermediaryが転送中にresponse statusを変更する場合があるため, 汎用clientはpayloadを別系統のstatus authorityとせず, 実際のHTTP response statusを使います.
+
+            A: client向けの便宜として, origin responseのstatusをpayloadにも示します.
+            B: 標準memberのstatusは文字列ではなく数値です.
+            C: statusは今回の発生事象を記述するもので, 後のresponseを予測しません.
           </div>
         </div>
       </article>
@@ -186,11 +184,7 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **`title`** は problem の短い human-readable summary, **`detail`** はその発生事象に固有の説明です.
-
-            **Correct:** **title**. localizationの場合を除き, 同じproblem typeの発生事象ごとに変えるものではありません.
-
-            **Related:** **detail** は個別のrequestに応じて内容が変わり得ます. client UIやlogでは, 安定したsummaryと個別事情を分けて扱えます.
+            RFC 7807 Section 3.1は`title`をproblem typeの短いhuman-readable summaryと定義します.localizationを除けば,発生事象ごとに変えるものではありません.対して`detail`はこの発生事象を説明するため,requestごとに内容が変わり得ます.
           </div>
         </div>
       </article>
@@ -206,16 +200,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** Problem Detailsは共通の標準メンバーを定義します. problem typeは, その問題固有の情報を表す拡張メンバーを追加できます.
+            RFC 7807 Sections 3.1と3.2は,共通の標準memberとproblem type固有のextensionを分けます.extensionで標準memberの意味を上書きすることはできません.
 
-            **Correct (B):** 汎用クライアントは標準メンバーを共通に処理できますが, 拡張を理解するには該当するproblem typeの定義が必要です.
+            汎用クライアントは標準メンバーを共通に処理できますが, 拡張を理解するには該当するproblem typeの定義が必要です.
 
-            **選択肢:**
-            - A (incorrect): 拡張はproblem type固有の情報を追加するものであり, エンドポイントごとに標準メンバーを再定義するものではありません.
-            - B (correct): 標準メンバーは共通に扱え, 拡張はproblem type固有の情報を表します.
-            - C (incorrect): RFC 7807は, 認識できない拡張メンバーを無視するようクライアントに求めており, problem typeを拡張可能にしています.
+            クライアントが拡張に依存する場合は, 人が読むためのdetailを解析せず, problem typeを確認して処理を分けます.
 
-            **関連:** クライアントが拡張に依存する場合は, 人が読むためのdetailを解析せず, problem typeを確認して処理を分けます.
+            A: 拡張はproblem type固有の情報を追加するものであり, エンドポイントごとに標準メンバーを再定義するものではありません.
+            B: 標準メンバーは共通に扱え, 拡張はproblem type固有の情報を表します.
+            C: RFC 7807は, 認識できない拡張メンバーを無視するようクライアントに求めており, problem typeを拡張可能にしています.
           </div>
         </div>
       </article>

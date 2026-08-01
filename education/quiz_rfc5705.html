@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"Keying Material Exporters for TLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"Keying Material Exporters for TLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what TLS exporter provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 5705 make TLS exporter sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="This question is scoped to the TLS versions and exporter construction specified by RFC 5705, not the later TLS 1.3 construction.">
+        <header><h4>Q1: Which inputs define RFC 5705 exported keying material?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 5705 and claims that using TLS exporter automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">Two TLS 1.2 peers want to derive the same application-specific 32-byte value from their established TLS session.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. deriving application-specific keying material from an established TLS connection; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. deriving application-specific keying material from an established TLS connection, while what the exported bytes authorize, identify, or bind in the application protocol remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 5705 defines exporters for older TLS usage, and later TLS 1.3 channel binding work builds on exporter ideas; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 5705 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Only the negotiated cipher suite and desired output length</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. The TLS session, label, optional context and its presence flag, and output length</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. The peer certificate subject, HTTP authority, and token audience</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Any shared application string, provided both peers call it an exporter</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-4 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 3-4 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 5705 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: The cipher suite participates through the TLS session, but it does not identify the application purpose or context.
+B: RFC 5705 Section 4 defines the exporter using TLS-session state plus a label, optional context and its presence flag, and a requested length. Both peers need the same inputs for the same output.
+C: An application may encode selected semantics into its context, but those fields are not implicit exporter inputs.
+D: A shared string not derived with the specified exporter construction is not exported keying material.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for TLS exporter. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="A TLS Finished message authenticates the handshake transcript, not every later application message used to select an exporter context.">
+        <header><h4>Q2: How should an application establish exporter purpose and context?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 5705 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A protocol negotiates an exporter use after the TLS handshake. Its context includes a task identifier sent in an application message.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only what the exported bytes authorize, identify, or bind in the application protocol and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 5705 defines exporters for older TLS usage, and later TLS 1.3 channel binding work builds on exporter ideas</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Define a collision-resistant exporter label and context string for the application purpose</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Reuse a generic label for every feature because the context alone always prevents cross-protocol use</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Omit negotiation because TLS Finished already covers all post-handshake application messages</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Let each peer normalize the task identifier independently as long as it recognizes the same task</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Use an application-specific label and securely agree the exact context encoding before using the output</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Section 3 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: RFC 5705 Sections 3 and 5 use labels for purpose separation; a generic label weakens that separation.
+B: Section 3 notes that upper-layer messages used to establish context are not automatically covered by TLS Finished.
+C: Semantically similar but byte-distinct contexts produce different outputs and can create interpretation gaps.
+D: Section 3 requires the application context to be securely established and the exporter use to be signaled; the label identifies the application purpose.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this TLS exporter review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify the TLS session whose secret state produced the bytes and the endpoint that actually possesses that state.">
+        <header><h4>Q3: Can a backend treat forwarded exporter bytes as its own channel evidence?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: comparing exporter bytes that were derived with a different label, context, or connection. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A gateway terminates a client TLS 1.2 session, derives RFC 5705 output, and forwards the bytes to a backend over another TLS session. The backend wants to use them as proof that the client shares keying material with the backend connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how exporter output is encoded and transported as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Check that both peers use the same label, context, length, and connection before comparing derived bytes</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 5705 defines exporters for older TLS usage, and later TLS 1.3 channel binding work builds on exporter ideas</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 5705 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Yes, because exporter output remains associated with any later TLS channel carrying the same bytes</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes, if the gateway and backend use the same exporter label on their independent sessions</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. No. Output is scoped to the client-gateway session; the backend may instead trust a protected gateway assertion</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. No, because RFC 5705 forbids exporter output from being transported by an application</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 5 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: RFC 5705 Section 4 associates output with one TLS session, label, and context; transport does not change its origin.
+B: Equal labels on sessions with different TLS state do not make the outputs evidence of one shared channel.
+C: This preserves the exporter scope and separates it from a gateway trust model. The assertion's integrity, authentication, and semantics belong to the A2A profile.
+D: An application can use or transport derived values subject to its security design; the error is the claim attached to the forwarded value.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing TLS exporter, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Purpose separation is an input-design property. Comparing output lengths or operation names after derivation does not repair a shared namespace.">
+        <header><h4>Q4: How should two exporter purposes be separated?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 5705 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">The same TLS session derives a 32-byte request-proof key and a 32-byte audit-chain key. The draft uses the identical label and context for both, then distinguishes them only by the calling function.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. What the exported bytes authorize, identify, or bind in the application protocol</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Check that both peers use the same label, context, length, and connection before comparing derived bytes</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How exporter output is encoded and transported</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Deriving application-specific keying material from an established TLS connection</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Keep the inputs because different calling functions make the derived keys cryptographically independent</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Use distinct application labels, plus separate contexts when additional instance separation is needed</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Keep one label but compare the operation name only after each key has been used</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Request different output lengths and truncate both results to 32 bytes</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-4 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Identical exporter inputs on one session produce the same material regardless of the caller's function name.
+B: RFC 5705 Section 5 says the same label with the same master secret must not be used for different purposes. Distinct labels provide purpose separation; context serves the profile-defined role described in Sections 3 and 4.
+C: A post-derivation comparison cannot undo key reuse.
+D: Length manipulation is not a substitute for disjoint purpose labels and can create overlapping material.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when TLS exporter is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Independence from TLS traffic keys does not mean an exporter value remains secret after the application discloses that exact value.">
+        <header><h4>Q5: May an exporter-derived MAC key be logged?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when an application proof or key confirmation value must be tied to the TLS session. Observed defect: reusing a generic label across different protocol purposes or omitting context where separation is needed.</p>
+          <p class="question-premise">An A2A service derives an exporter value and uses it directly as the MAC key for request proofs. For diagnostics it writes that value to a log readable by the operations team. The team argues that RFC 5705 exporter independence makes this safe.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (deriving application-specific keying material from an established TLS connection), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (define a collision-resistant exporter label and context string for the application purpose) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 5705 defines exporters for older TLS usage, and later TLS 1.3 channel binding work builds on exporter ideas), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; exporter independence makes disclosed output unusable for computing application MACs</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes, if TLS traffic secrets are not logged alongside it</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes, if the log entry omits the exporter label and context</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No. The logged value is the MAC key for that purpose despite its separation from TLS traffic keys</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 5 supports resolving the defect before relying on the result. The profile rule is: define a collision-resistant exporter label and context string for the application purpose. The check is: check that both peers use the same label, context, length, and connection before comparing derived bytes. The local policy is: what the exported bytes authorize, identify, or bind in the application protocol.</div>
+A: Independence limits compromise between exporter uses and TLS internals; it does not revoke a disclosed key.
+B: Keeping traffic secrets private does not preserve the confidentiality of the logged application key.
+C: The key itself is sufficient for its direct MAC use in this design.
+D: RFC 5705 Section 5 discusses independence properties. Those properties do not make exporter output public; application handling must protect material according to how it is used.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should TLS exporter be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="A retry on another TLS connection preserves some application facts but changes the exporter scope. Decide which component must verify the proof after the retry.">
+        <header><h4>Q6: How should a gateway retry preserve an exporter-bound proof?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines TLS exporter with another protocol layer. Its design note says: RFC 5705 defines exporters for older TLS usage, and later TLS 1.3 channel binding work builds on exporter ideas.</p>
+          <p class="question-premise">A client sends a valid grant and a proof derived from TLS session A to a gateway. The gateway retries the request to a backend over TLS session B. The backend owns the resource and must know whether the proof covered the retried method, target, and body.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes what the exported bytes authorize, identify, or bind in the application protocol unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (check that both peers use the same label, context, length, and connection before comparing derived bytes) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (what the exported bytes authorize, identify, or bind in the application protocol), perform the required check (check that both peers use the same label, context, length, and connection before comparing derived bytes), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Verify at the gateway and protect a request-bound assertion, or use backend-verifiable end-to-end proof; session A is not session B</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Reuse session A exporter bytes on session B because a valid grant preserves the TLS binding</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Derive new output on session B and call it the client's proof because the label and context can remain unchanged</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Verify only the grant at the backend because grant validity implies both exporter possession and request integrity</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 3-4 and Section 5 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 5705 Section 4 scopes output to its TLS session and exporter inputs. The two alternatives accurately place the verifier and trust boundary while preserving request context. Backend authorization remains separate.
+B: Grant validity and TLS-session binding are independent guarantees.
+C: Session B output proves knowledge at the session B endpoints, not at the original client endpoint.
+D: A grant does not by itself prove exporter possession or integrity of the retried request.</div>
         </div>
       </article>
     </section>

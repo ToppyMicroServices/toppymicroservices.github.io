@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6585",
       SKILL_SUBTITLE: "Additional HTTP Status Codes",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** RFC 6585 を, 「番号が増えた」という話で終わらせるのはもったいないです. 本質は client と server のやり取りを少し具体的にすることです.
+            RFC 6585 を, 「番号が増えた」という話で終わらせるのはもったいないです. 本質は client と server のやり取りを少し具体的にすることです.
 
-            **用語:** **status code** は server から client への意味づけです. **具体的な status code** があると, retry, backoff, 修正方法を client が読み取りやすくなります.
+            **status code** は server から client への意味づけです. **具体的な status code** があると, retry, backoff, 修正方法を client が読み取りやすくなります.
 
-            **実務での機会:** API gateway, SDK, browser, proxy の設計で, 400 や 503 だけでは行動が曖昧になる場面を減らせます.
+            API gateway, SDK, browser, proxy の設計で, 400 や 503 だけでは行動が曖昧になる場面を減らせます.
 
-            **選択肢:**
-            - A (incorrect): 既存体系を捨てる RFC ではありません.
-            - B (correct): これが RFC 6585 の価値です.
-            - C (incorrect): 新しい auth scheme を定義する文書ではありません.
+            良い設計レビューでは, 「この failure を client がどう解釈して次に何をするか」まで確認します.
 
-            **関連:** 良い設計レビューでは, 「この failure を client がどう解釈して次に何をするか」まで確認します.
+            A: 既存体系を捨てる RFC ではありません.
+            B: これが RFC 6585 の価値です.
+            C: 新しい auth scheme を定義する文書ではありません.
           </div>
         </div>
       </article>
@@ -129,18 +129,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 428 は conflict 系の error と混ざりやすいですが, RFC 6585 では lost update を避けるために conditional request を強制する用途が中心です.
+            428 は conflict 系の error と混ざりやすいですが, RFC 6585 では lost update を避けるために conditional request を強制する用途が中心です.
 
-            **用語:** **precondition** は `If-Match` のように, 条件が満たされたときだけ method を適用する仕組みです. **lost update** は古い内容を持った client が新しい更新を消してしまう事故です.
+            **precondition** は `If-Match` のように, 条件が満たされたときだけ method を適用する仕組みです. **lost update** は古い内容を持った client が新しい更新を消してしまう事故です.
 
-            **実務での機会:** document 編集, 設定管理, admin API など, 同じ resource を複数人や複数 process が触る場面で重要です.
+            document 編集, 設定管理, admin API など, 同じ resource を複数人や複数 process が触る場面で重要です.
 
-            **選択肢:**
-            - A (correct): conditional updateを必須にするとclientが変更対象のversionを示すため, stale writeによる新しい内容の上書きを防げます.
-            - B (incorrect): quota超過には`429 Too Many Requests`を使い, 必要なら`Retry-After`などで待機時間を伝えます.
-            - C (incorrect): network loginの介入には`511 Network Authentication Required`を使います. lost updateの条件ではありません.
+            428 の価値は error を返すこと自体ではなく, 「条件を付けてもう一度送ってほしい」と client に伝えられることです.
 
-            **関連:** 428 の価値は error を返すこと自体ではなく, 「条件を付けてもう一度送ってほしい」と client に伝えられることです.
+            A: conditional updateを必須にするとclientが変更対象のversionを示すため, stale writeによる新しい内容の上書きを防げます.
+            B: quota超過には`429 Too Many Requests`を使い, 必要なら`Retry-After`などで待機時間を伝えます.
+            C: network loginの介入には`511 Network Authentication Required`を使います. lost updateの条件ではありません.
           </div>
         </div>
       </article>
@@ -156,18 +155,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 428 の価値は recovery path にあります. blind retry をさせるための error ではありません.
+            428 の価値は recovery path にあります. blind retry をさせるための error ではありません.
 
-            **用語:** **validator** は `ETag` のように version を識別する手掛かりです. `If-Match` は, その validator が一致するときだけ更新したい, と伝える条件付き header です.
+            **validator** は `ETag` のように version を識別する手掛かりです. `If-Match` は, その validator が一致するときだけ更新したい, と伝える条件付き header です.
 
-            **実務での機会:** collaborative editing や admin 画面で, 上書き事故を防ぎながら再送する設計に直結します.
+            collaborative editing や admin 画面で, 上書き事故を防ぎながら再送する設計に直結します.
 
-            **選択肢:**
-            - A (incorrect): 条件なし再送では lost update の危険が残ります.
-            - B (correct): これが 428 の意図に沿った retry です.
-            - C (incorrect): 503 に読み替える話ではありません.
+            server 側は 428 を返すだけでなく, どの conditional request を期待するかを説明できると親切です.
 
-            **関連:** server 側は 428 を返すだけでなく, どの conditional request を期待するかを説明できると親切です.
+            A: 条件なし再送では lost update の危険が残ります.
+            B: これが 428 の意図に沿った retry です.
+            C: 503 に読み替える話ではありません.
           </div>
         </div>
       </article>
@@ -204,18 +202,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** per-client の rate limiting と, service 全体の availability 低下を混同すると, client の retry も運用判断もずれます.
+            per-client の rate limiting と, service 全体の availability 低下を混同すると, client の retry も運用判断もずれます.
 
-            **用語:** **429 Too Many Requests** は client 側の rate や quota の超過を表します. **503 Service Unavailable** は service 側の広い availability 問題を示します. **511** は local network access の話です.
+            **429 Too Many Requests** は client 側の rate や quota の超過を表します. **503 Service Unavailable** は service 側の広い availability 問題を示します. **511** は local network access の話です.
 
-            **実務での機会:** SDK の backoff, rate-limit dashboard, on-call の切り分けで, 「誰の問題か」を正しく伝える必要があります.
+            SDK の backoff, rate-limit dashboard, on-call の切り分けで, 「誰の問題か」を正しく伝える必要があります.
 
-            **選択肢:**
-            - A (correct): service が元気で client だけが制限超過なら 429 が自然です.
-            - B (incorrect): 503 は service 側の availability 問題を連想させます.
-            - C (incorrect): 511 は captive portal 系の用途です.
+            status code は責任分担を伝える道具でもあります.
 
-            **関連:** status code は責任分担を伝える道具でもあります.
+            A: service が元気で client だけが制限超過なら 429 が自然です.
+            B: 503 は service 側の availability 問題を連想させます.
+            C: 511 は captive portal 系の用途です.
           </div>
         </div>
       </article>
@@ -232,19 +229,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** `Retry-After` は小さな header ですが, client の行動を大きく変えます. ここを雑にすると retry storm が起きやすいです.
+            `Retry-After` は小さな header ですが, client の行動を大きく変えます. ここを雑にすると retry storm が起きやすいです.
 
-            **用語:** **Retry-After** は, どれくらい待ってから再試行すべきかを示す response header です. 値は **delay-seconds** でも **HTTP date** でも表せます.
+            **Retry-After** は, どれくらい待ってから再試行すべきかを示す response header です. 値は **delay-seconds** でも **HTTP date** でも表せます.
 
-            **実務での機会:** SDK, browser, bot, batch job の backoff 実装を揃えるときに重要です.
+            SDK, browser, bot, batch job の backoff 実装を揃えるときに重要です.
 
-            **選択肢:**
-            - A (correct): これが最も典型的な使い方です.
-            - B (incorrect): HTTP date も使えます.
-            - C (correct): 失敗の意味に retry の手掛かりを足せます.
-            - D (incorrect): 有用ですが, 常に必須とは限りません.
+            「あとで試して」と伝えるなら, どのくらい待つかも一緒に伝える方が client 実装は安定します.
 
-            **関連:** 「あとで試して」と伝えるなら, どのくらい待つかも一緒に伝える方が client 実装は安定します.
+            A: これが最も典型的な使い方です.
+            B: HTTP date も使えます.
+            C: 失敗の意味に retry の手掛かりを足せます.
+            D: 有用ですが, 常に必須とは限りません.
           </div>
         </div>
       </article>
@@ -261,24 +257,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 431 を 1 行の bad header 用だと思い込むと, cookie 肥大化や proxy chain の事故を見落とします.
+            431 を 1 行の bad header 用だと思い込むと, cookie 肥大化や proxy chain の事故を見落とします.
 
-            **用語:** **header field** は個別の header です. **request header 全体** は message に付く header 群全体です.
+            **header field** は個別の header です. **request header 全体** は message に付く header 群全体です.
 
-            **実務での機会:** cookie の肥大化, oversized auth token, `Forwarded` や `X-Forwarded-*` の伸びすぎ, proxy 制限などで頻出です.
+            cookie の肥大化, oversized auth token, `Forwarded` や `X-Forwarded-*` の伸びすぎ, proxy 制限などで頻出です.
 
-            **選択肢:**
-            - A (correct): 全体が大きすぎる場合にも使えます.
-            - B (incorrect): 文法 error だけの話ではなく, サイズ問題です.
-            - C (correct): 特定できるなら原因 field を伝えると debug しやすくなります.
-            - D (incorrect): body size の問題とは別です.
+            431 は app の bug だけでなく, middleware や proxy の積み重ねで起きることも多いです.
 
-            **関連:** 431 は app の bug だけでなく, middleware や proxy の積み重ねで起きることも多いです.
+            A: 全体が大きすぎる場合にも使えます.
+            B: 文法 error だけの話ではなく, サイズ問題です.
+            C: 特定できるなら原因 field を伝えると debug しやすくなります.
+            D: body size の問題とは別です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="このresponseを別requestや別tenantへ再利用すると, request固有のfailureを無関係なclientへ移してしまわないか考えてください.">
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="このresponseを別requestや別tenantへ再利用すると, request固有のfailureを無関係なclientへ移してしまわないか考えてください.">
         <header><h4>Q7: shared cache が, ある tenant の token に対する 429 を見た. RFC 6585 に一番合う扱いはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -289,45 +284,43 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** RFC 6585 の重要な点のひとつが cache です. これらの response を共有事実のように再利用すると, かなり危険です.
+            RFC 6585 Section 4は429 responseをcacheへ保存してはならないと定めます.
 
-            **用語:** **shared cache** は複数 client のあいだで response を再利用します. **request 固有の条件** には precondition, quota 状態, header size, captive portal 状態などがあります.
+            **shared cache** は複数 client のあいだで response を再利用します. **request 固有の条件** には precondition, quota 状態, header size, captive portal 状態などがあります.
 
-            **実務での機会:** CDN, reverse proxy, API gateway で, tenant をまたいだ誤配信や謎の 429 を防ぐのに重要です.
+            CDN, reverse proxy, API gateway で, tenant をまたいだ誤配信や謎の 429 を防ぐのに重要です.
 
-            **選択肢:**
-            - A (incorrect): 他の client にまで 429 を広げるのは危険です.
-            - B (correct): RFC 6585 はこれらを cache してはいけないとしています.
-            - C (incorrect): 200 に潰すと protocol semantics が壊れます.
+            status code は UI 向けメッセージだけではなく, intermediary の挙動も制御します.
 
-            **関連:** status code は UI 向けメッセージだけではなく, intermediary の挙動も制御します.
+            A: 他の client にまで 429 を広げるのは危険です.
+            B: RFC 6585 はこれらを cache してはいけないとしています.
+            C: 200 に潰すと protocol semantics が壊れます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="attack中は, 詳細なresponseを返す価値と, 生成に必要なserver resourceを比較してください.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="attack中は, 詳細なresponseを返す価値と, 生成に必要なserver resourceを比較してください.">
         <header><h4>Q8: request flood や header-bomb attack の最中に, RFC 6585 的に一番自然な運用判断はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q8" value="a"> A. どんな負荷でも, 429 や 431 を全 request に丁寧に返す義務がある</label>
             <label class="choice"><input type="radio" name="Q8" value="b"> B. 原因に関係なく, 必ず全部 503 に置き換えるべきである</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. 詳細 response を返すより, connection を落とすなどの防御を選んだ方がよい場合がある</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. 詳細responseが資源を消費するなら, connectionを落とすこともできる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 正確な status code を返すことと, attack 中に生き残ることは別問題です. RFC 6585 もその現実を認めています.
+            RFC 6585 Section 7は,attack中のserverにこれらのstatus codeを返す義務はなく,connection dropなど別のactionも選べるとします.このallowanceはconnection dropを許しますが,常に要求するものではありません.
 
-            **用語:** **request flood** や **header-bomb attack** は server 資源を食い潰す攻撃です. **防御** には connection drop のような, 応答コストを抑える手段も含まれます.
+            **request flood** や **header-bomb attack** は server 資源を食い潰す攻撃です. **防御** には connection drop のような, 応答コストを抑える手段も含まれます.
 
-            **実務での機会:** DDoS, bot 対策, edge proxy の incident で, 正確さより survivability を優先する判断が必要になります.
+            DDoS, bot 対策, edge proxy の incident で, 正確さより survivability を優先する判断が必要になります.
 
-            **選択肢:**
-            - A (incorrect): attack 中に毎回丁寧な response を返す必要はありません.
-            - B (incorrect): 503 一択でもありません.
-            - C (correct): これが RFC の security note に近い考え方です.
+            semantics は大事ですが, response 自体が attack cost になるなら先に守るべきです.
 
-            **関連:** semantics は大事ですが, response 自体が attack cost になるなら先に守るべきです.
+            A: attack 中に毎回丁寧な response を返す必要はありません.
+            B: 503 一択でもありません.
+            C: これが RFC の security note に近い考え方です.
           </div>
         </div>
       </article>
@@ -343,23 +336,22 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 511 は「auth が必要」という文字面で誤用されやすいです. でも普通の origin login failure には向きません.
+            511 は「auth が必要」という文字面で誤用されやすいです. でも普通の origin login failure には向きません.
 
-            **用語:** **intercepting proxy** や **captive portal** は network path 上で access を止める存在です. **origin API** は本来の application server です.
+            **intercepting proxy** や **captive portal** は network path 上で access を止める存在です. **origin API** は本来の application server です.
 
-            **実務での機会:** hotel Wi-Fi, guest network, enterprise onboarding, OS の captive portal 検出で重要です.
+            hotel Wi-Fi, guest network, enterprise onboarding, OS の captive portal 検出で重要です.
 
-            **選択肢:**
-            - A (incorrect): app の session 切れは 511 の主戦場ではありません.
-            - B (correct): これが RFC 6585 の想定に近いです.
-            - C (incorrect): cache の鮮度問題ではありません.
+            511 を app login に流用すると, layer の意味が崩れて client 側の理解もずれます.
 
-            **関連:** 511 を app login に流用すると, layer の意味が崩れて client 側の理解もずれます.
+            A: app の session 切れは 511 の主戦場ではありません.
+            B: これが RFC 6585 の想定に近いです.
+            C: cache の鮮度問題ではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="431 responseが特定したfieldを手掛かりに, 同等のrequestを成功させるにはretry前に何を変える必要があるか考えてください.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="431 responseが特定したfieldを手掛かりに, 同等のrequestを成功させるにはretry前に何を変える必要があるか考えてください.">
         <header><h4>Q10: clientが431 Request Header Fields Too Largeを受け取り, responseにはCookie fieldが大きすぎると示されていた. RFC 6585に最も直接従うretryはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -372,12 +364,11 @@
 
             RFC 6585 Section 5によると, `431 Request Header Fields Too Large`はrequest header fieldが大きすぎるためserverが処理しないことを示します. field sizeを減らせば再送でき, 1つのfieldが原因ならresponseはそのfieldを示すべきです.
 
-            **選択肢:**
-            - A (correct): responseが特定した条件を修正してからretryしています.
-            - B (incorrect): `If-Match`はpreconditionとlost updateへ対処しますが, 大きすぎるheader fieldは小さくしません.
-            - C (incorrect): 待機はrate limitingには役立ちますが, 変更しないCookie fieldは時間が経っても小さくなりません.
+            431 responseはcacheへ保存してはならないため, 修正後のrequestはそのerror responseではなく改めて評価されます.
 
-            **関連:** 431 responseはcacheへ保存してはならないため, 修正後のrequestはそのerror responseではなく改めて評価されます.
+            A: responseが特定した条件を修正してからretryしています.
+            B: `If-Match`はpreconditionとlost updateへ対処しますが, 大きすぎるheader fieldは小さくしません.
+            C: 待機はrate limitingには役立ちますが, 変更しないCookie fieldは時間が経っても小さくなりません.
           </div>
         </div>
       </article>

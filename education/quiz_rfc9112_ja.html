@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9112",
       SKILL_SUBTITLE: "HTTP/1.1",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -117,25 +118,25 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** header section, empty line, CRLF. HTTP/1.1では, headerの終端とbodyの開始は空行で区切られる.
+            header section, empty line, CRLF. HTTP/1.1では, headerの終端とbodyの開始は空行で区切られる.
 
-            **Framing上の意味:** header sectionの終端が曖昧だと, 同じbyte列をproxyとoriginが異なるmessageとして解釈し, request smugglingにつながり得ます.
+            header sectionの終端が曖昧だと, 同じbyte列をproxyとoriginが異なるmessageとして解釈し, request smugglingにつながり得ます.
 
-            **Correct (C):** 最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了します. ここを基準に body の開始位置が決まるので, line ending の扱いは単なる書式ではなく framing そのものです.
+            最後のheader fieldの後に, CRLFだけの空行が来ることでheader sectionが終了します. ここを基準に body の開始位置が決まるので, line ending の扱いは単なる書式ではなく framing そのものです.
 
-            **Options:**
+
 
             - A (incorrect): Content-Lengthはbodyの長さのヒントで, header sectionの終端ではない.
 
             - B (incorrect): そのCRLFは1本のfield lineを終えるだけです. sectionの終端には空行を表すもう1つのCRLFが必要です.
 
             - C (correct): 空行が区切りになる.
-            **Related:** 終端解釈のズレはrequest smugglingの原因になり得ます. だから RFC 9112 は, 些細に見える改行規則をかなり丁寧に定義しています.
+            終端解釈のズレはrequest smugglingの原因になり得ます. だから RFC 9112 は, 些細に見える改行規則をかなり丁寧に定義しています.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="bodyを持てるresponseにchunked codingも明示的なlengthもない場合を, message body lengthの優先規則へ当てはめてください.">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="bodyを持てるresponseにchunked codingも明示的なlengthもない場合を, message body lengthの優先規則へ当てはめてください.">
         <header><h4>Q2: serverがGETに対してTransfer-EncodingもContent-Lengthもない200 responseを返し, bodyのoctetを送信してからconnectionを閉じた. message body長はどう決まるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -146,16 +147,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** close-delimited responseとは, 宣言した長さやchunked terminatorではなく, serverのconnection closeでbody末尾を示すresponseです.
+            close-delimited responseとは, 宣言した長さやchunked terminatorではなく, serverのconnection closeでbody末尾を示すresponseです.
 
-            **Correct (C):** この200 responseは先行するbody-length規則のどれにも該当しないため, serverがconnectionを閉じる前に受信した全octetがbody長になります.
+            この200 responseは先行するbody-length規則のどれにも該当しないため, serverがconnectionを閉じる前に受信した全octetがbody長になります.
 
-            **Options:**
+
 
             - A (incorrect): 他のframing規則が該当しないときにbody長0となるのはrequestであり, この200 responseではありません.
             - B (incorrect): CRLFはbody content中にも現れ得るため, close-delimited responseの区切りにはなりません.
             - C (correct): connection closeがdelimiterとなるので, それより前のbody octetをすべて数えます.
-            **Related:** close-delimited responseでは正常完了とnetwork interruptionを区別できないため, RFC 9112は可能なら明示的なlengthまたはtransfer codingを使うよう勧めています.
+            close-delimited responseでは正常完了とnetwork interruptionを区別できないため, RFC 9112は可能なら明示的なlengthまたはtransfer codingを使うよう勧めています.
           </div>
         </div>
       </article>
@@ -171,14 +172,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** chunked coding, terminator. chunked transfer codingはchunkの連続でbodyを表現する.
-            **Correct (B):** サイズ0のlast chunkでcontent chunkの終了を示し, optional trailer sectionの後に最後の空行でchunked codingを終えます.
-            **Options:**
+            chunked coding, terminator. chunked transfer codingはchunkの連続でbodyを表現する.
+            サイズ0のlast chunkでcontent chunkの終了を示し, optional trailer sectionの後に最後の空行でchunked codingを終えます.
+
 
             - A (incorrect): closeはchunkedの通常の終端ではない.
             - B (correct): サイズ0のchunkがcontent chunkの終了を示し, trailer fieldと最後の空行がcoding全体を完結させます.
             - C (incorrect): Content-Lengthをtrailerとして使って終端する仕組みではない.
-            **Related:** trailer fieldはサイズ0のlast chunkの後, 最後の空行の前に現れます.
+            trailer fieldはサイズ0のlast chunkの後, 最後の空行の前に現れます.
           </div>
         </div>
       </article>
@@ -197,9 +198,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** request-target, origin-form, absolute-form, authority-form, asterisk-form. 接続先がoriginかproxyか, CONNECTかOPTIONSかで使う形が変わる.
-            **Correct (A,B,C,D):** 4つ全てが定義されており, それぞれ用途がある.
-            **Options:**
+            request-target, origin-form, absolute-form, authority-form, asterisk-form. 接続先がoriginかproxyか, CONNECTかOPTIONSかで使う形が変わる.
+            4つ全てが定義されており, それぞれ用途がある.
+
 
             - A (correct): 通常のorigin向けは/path?query.
             - B (correct): proxy向けに完全URIを書くことがある.
@@ -207,45 +208,49 @@
             - D (correct): OPTIONS * でサーバ全体のoptionsを問う.
             - E (incorrect): HTTP/1.1にはHost fieldがありますが, host-formというrequest-target formは定義されていません.
             - F (incorrect): URI schemeはabsolute-form内に現れますが, scheme-formという独立したrequest-target formはありません.
-            **Related:** proxyはrequest-targetの取り扱いを誤ると, 意図しない宛先へ転送してしまう.
+            proxyはrequest-targetの取り扱いを誤ると, 意図しない宛先へ転送してしまう.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Connection: closeのsignalがないときにHTTP/1.1が前提とするconnection挙動を思い出してください.">
-        <header><h4>Q5: HTTP/1.1のconnection挙動のデフォルトとして正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="persistent connectionには, そのconnectionを閉じることに依存しないmessage lengthが必要です.">
+        <header><h4>Q5: serverはこのconnectionを次のresponseへ再利用できる?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">serverはGETへの200 responseにTransfer-EncodingもContent-Lengthも付けず, 最後のoctet後にconnectionを閉じてbodyを区切ります. しかしconnection poolは同じconnectionで次のresponseを送ろうとしています.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. 全ての応答後に必ずconnectionを閉じる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. requestごとに必ず新しいconnectionを作る</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 明示的に閉じない限りpersistent</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 可能. HTTP/1.1 persistenceならclose-delimited bodyの後に次のresponseを置ける</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 不可. closureがこのbody lengthを定めるため, 再利用にはself-defined lengthが必要</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 可能. 次のresponseをCRLFから始めればclientがboundaryを見つけられる</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 不可. HTTP/1.1は全GET responseでpersistent connectionを禁止する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** persistent connection, Connection: close. HTTP/1.1は効率のためにTCP connectionの再利用を基本とする.
-            **Correct (C):** デフォルトはpersistentで, どちらかがcloseを示すまで継続する.
-            **Options:**
-
-            - A (incorrect): それは非効率で, HTTP/1.0的な挙動.
-            - B (incorrect): 再利用がコア機能.
-            - C (correct): これが標準のデフォルト.
-            **Related:** persistentにするにはframingが正しくなければならない. 境界が曖昧だと再利用が危険になる.
+            A: close-delimited responseはconnection終了でだけ終わるため, closed connectionに後続responseをframingできません.
+            B: RFC 9112 Section 6.3はbodyをserver closure前の全octetと定めます. Section 9.3はpersistenceにvalid Content-Lengthや適用可能なfinal chunked codingなどself-defined lengthを要求します.
+            C: 任意response body内のCRLFはdataであり, 次messageの信頼できるboundaryではありません.
+            D: framingとconnection optionが許せばpersistent connectionがHTTP/1.1のdefaultです.
+            判定基準: persistenceだけでは不十分で, reusable connection上の各messageはconnection closureから独立したlengthを必要とします.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1" data-hint="start-lineとfield lineを終える2文字のsequenceをHTTP/1.1 grammarで確認してください.">
-        <header><h4>Q6: HTTP/1.1のstart-lineとheader fieldはどの行終端を使う</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="2つのrecipientが異なるbody boundaryを選ばないよう, forward時のintermediary requirementを確認してください.">
+        <header><h4>Q6: ambiguousなrequestを転送しないgateway actionはどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
+          <p class="question-premise">HTTP/1.1 gatewayは<code>Transfer-Encoding: chunked</code>と, それに矛盾する<code>Content-Length</code>の両方を持つrequestを受信しました. downstream serverは過去にContent-Lengthを先にparseしていました. gatewayは転送可否と方法を決めます.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 各hopが好みのframing ruleを選べるため両fieldをそのまま転送する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Transfer-Encodingを削除し, 元のContent-Lengthを転送する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. rejectし, 転送する場合はTransfer-Encodingを処理してContent-Lengthを削除する</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. decode後のbody lengthがContent-Lengthと一致した場合だけ両方を転送する</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** CRLF. HTTP/1.1の行終端はCRLFとして定義される.
-            **Correct:** CRLF.
-            **Why others are wrong:** LF-onlyはテキストファイルでは一般的でも, HTTP/1.1の定義上の区切りではない.
-            **Related:** 実装は寛容に受理することがあっても, 送信は正しいCRLFで出すのが相互運用性に有利.
+            A: hop間で異なるframing decisionをすること自体がrequest smuggling条件であり, extensibilityではありません.
+            B: RFC 9112 Section 6.3はTransfer-Encodingを優先します. 矛盾するContent-Lengthへ置換するとmessage boundaryが変わり得ます.
+            C: Section 6.3は組合せがrequest smugglingを示し得るためerror扱いが望ましいとします. 転送を選ぶintermediaryはContent-Lengthを削除し, 先にTransfer-Encodingを処理しなければなりません.
+            D: parsing後の一致確認では両field転送は安全になりません. downstreamが比較前に別boundaryを選ぶ可能性があります.
+            判定基準: forward前にreceiving hopで1つのcanonical message boundaryを確立し, 競合するlength signalをtrust boundary越しに残しません.
           </div>
         </div>
       </article>

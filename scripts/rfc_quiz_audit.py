@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Audit structure and bilingual parity across the RFC quiz corpus."""
+"""Audit quiz structure, known boilerplate, and bilingual parity.
+
+This is a deterministic lint, not a semantic review of RFC correctness.
+"""
 
 from __future__ import annotations
 
@@ -13,12 +16,21 @@ from pathlib import Path
 
 
 RFC_FILE_RE = re.compile(r"quiz_rfc(?P<rfc>\d+)(?P<ja>_ja)?\.html$")
+PROGRESS_VERSION_RE = re.compile(
+    r'["\']?PROGRESS_VERSION["\']?\s*:\s*(?P<version>\d+)'
+)
 ARTICLE_RE = re.compile(
     r'<article\b(?P<attrs>[^>]*)>(?P<body>[\s\S]*?)</article>', re.IGNORECASE
 )
 CHOICE_RE = re.compile(
     r'<label\b[^>]*class="[^"]*\bchoice\b[^"]*"[^>]*>\s*'
     r'<input\b(?=[^>]*\bvalue="(?P<value>[a-z])")[^>]*>', re.IGNORECASE
+)
+CHOICE_TEXT_RE = re.compile(
+    r'<label\b[^>]*class="[^"]*\bchoice\b[^"]*"[^>]*>\s*'
+    r'<input\b(?=[^>]*\bvalue="(?P<value>[a-z])")[^>]*>'
+    r'(?P<text>[\s\S]*?)</label>',
+    re.IGNORECASE,
 )
 ALLOWED_LEVELS = {"L1", "L2", "L3", "L4"}
 ALLOWED_TYPES = {"mc", "ms", "text"}
@@ -27,6 +39,29 @@ FORMULAIC_STEMS = (
     "設計reviewでRFC",
     "Which implementation behavior creates the clearest interoperability risk",
     "Which relationship to nearby specifications is the most accurate",
+)
+LEGACY_TEMPLATE_PHRASES = (
+    "Does RFC 5056 make channel binding sufficient for A2A authorization?",
+    "だけでA2A authorizationまで確定できるか",
+    "Observed production behavior:",
+    "productionで観測した動作:",
+    "Correct the observed defect using the profile construction and RFC-specific check",
+    "profile constructionとRFC固有のcheckで観測した欠陥を直し",
+    "The relationship identifies the layers.",
+    "記載された関係はlayerを識別する.",
+    "Judgment point:",
+    "判定ポイント:",
+    "Related keywords:",
+    "関連キーワード:",
+)
+LEGACY_META_HEADING_RE = re.compile(
+    r"\*\*(?:"
+    r"Why (?:it|this) matters|Terms|Related|Options|Real-world usage|"
+    r"Correct(?:\s*\([^)]*\))?|Why others are wrong|"
+    r"判断のポイント|用語|関連|選択肢|実務での機会|各選択肢|"
+    r"正解(?:\s*\([^)]*\))?"
+    r")\s*:\*\*",
+    re.IGNORECASE,
 )
 
 
@@ -39,6 +74,7 @@ class Question:
     choices: tuple[str, ...]
     stem: str
     has_premise: bool
+    has_section_reference: bool
 
 
 def attr(attrs: str, name: str) -> str:
@@ -67,6 +103,15 @@ def parse_questions(path: Path) -> tuple[list[Question], list[str]]:
     for phrase in FORMULAIC_STEMS:
         if phrase in text:
             errors.append(f"legacy formulaic stem remains: {phrase!r}")
+    for phrase in LEGACY_TEMPLATE_PHRASES:
+        if phrase in text:
+            errors.append(f"legacy content template remains: {phrase!r}")
+    legacy_headings = sorted(set(LEGACY_META_HEADING_RE.findall(text)))
+    if legacy_headings:
+        errors.append(
+            "legacy explanation meta headings remain: "
+            + ", ".join(repr(value) for value in legacy_headings[:4])
+        )
 
     for match in ARTICLE_RE.finditer(text):
         attrs = match.group("attrs")
@@ -77,16 +122,72 @@ def parse_questions(path: Path) -> tuple[list[Question], list[str]]:
         answers = tuple(
             sorted(value.strip().lower() for value in attr(attrs, "data-answer").split(",") if value.strip())
         )
+        qtype = attr(attrs, "data-type").lower()
+        difficulty = attr(attrs, "data-difficulty").upper()
+        body_text = plain(body)
+        marked_answers: set[str] = set()
+        for group in re.findall(
+            r"(?:Correct|正解)\s*\(([A-Z](?:\s*,\s*[A-Z])*)\)",
+            body_text,
+            re.IGNORECASE,
+        ):
+            marked_answers.update(value.strip().lower() for value in group.split(","))
+        marked_answers.update(
+            value.lower()
+            for value in re.findall(
+                r"\b([A-Z])\s*\((?:correct|正解)\)", body_text, re.IGNORECASE
+            )
+        )
+        if marked_answers and tuple(sorted(marked_answers)) != answers:
+            label = attr(attrs, "data-id") or "?"
+            errors.append(
+                f"{label}: data-answer {answers} disagrees with explanation markers "
+                f"{tuple(sorted(marked_answers))}"
+            )
+        choice_lengths = {
+            choice.group("value").lower(): len(plain(choice.group("text")))
+            for choice in CHOICE_TEXT_RE.finditer(body)
+        }
+        if qtype == "mc" and len(answers) == 1:
+            correct_length = choice_lengths.get(answers[0], 0)
+            longest_distractor = max(
+                (
+                    length
+                    for value, length in choice_lengths.items()
+                    if value != answers[0]
+                ),
+                default=0,
+            )
+            advanced = difficulty in {"L3", "L4"}
+            ratio_limit = 1.25 if advanced else 1.35
+            delta_limit = 12 if advanced else 15
+            if (
+                longest_distractor
+                and correct_length >= longest_distractor * ratio_limit
+                and correct_length - longest_distractor >= delta_limit
+            ):
+                label = attr(attrs, "data-id") or "?"
+                errors.append(
+                    f"{label}: correct choice is an answer-length clue "
+                    f"({correct_length} vs {longest_distractor} characters)"
+                )
         questions.append(
             Question(
                 qid=attr(attrs, "data-id"),
-                qtype=attr(attrs, "data-type").lower(),
+                qtype=qtype,
                 answers=answers,
-                difficulty=attr(attrs, "data-difficulty").upper(),
+                difficulty=difficulty,
                 choices=tuple(m.group("value").lower() for m in CHOICE_RE.finditer(body)),
                 stem=plain(heading.group(1)) if heading else "",
                 has_premise=bool(
                     re.search(r'class="[^"]*\bquestion-premise\b', body, re.IGNORECASE)
+                ),
+                has_section_reference=bool(
+                    re.search(
+                        r"(?:RFC\s*\d+\s*)?(?:Sections?|§)\s*\d",
+                        plain(body),
+                        re.IGNORECASE,
+                    )
                 ),
             )
         )
@@ -122,14 +223,26 @@ def parse_questions(path: Path) -> tuple[list[Question], list[str]]:
                 errors.append(f"{label}: Multi-Select needs at least two answers")
         if question.qtype in {"mc", "ms"} and not set(question.answers) <= set(question.choices):
             errors.append(f"{label}: answer refers to a missing choice")
-        if question.difficulty == "L4" and not question.has_premise:
-            errors.append(f"{label}: L4 composition question needs an explicit premise")
+        if question.difficulty in {"L3", "L4"} and not question.has_premise:
+            errors.append(
+                f"{label}: {question.difficulty} review question needs an explicit premise"
+            )
+        if question.difficulty in {"L3", "L4"} and not question.has_section_reference:
+            errors.append(
+                f"{label}: {question.difficulty} explanation needs an RFC section reference"
+            )
 
     return questions, errors
 
 
+def parse_progress_version(path: Path) -> int | None:
+    match = PROGRESS_VERSION_RE.search(path.read_text(encoding="utf-8"))
+    return int(match.group("version")) if match else None
+
+
 def audit(root: Path) -> tuple[list[str], int, int]:
     pages: dict[tuple[int, bool], tuple[Path, list[Question]]] = {}
+    progress_versions: dict[tuple[int, bool], int] = {}
     errors: list[str] = []
     stems: dict[tuple[bool, str], list[tuple[int, Path, str, str]]] = defaultdict(list)
 
@@ -140,6 +253,11 @@ def audit(root: Path) -> tuple[list[str], int, int]:
         key = (int(match.group("rfc")), bool(match.group("ja")))
         questions, page_errors = parse_questions(path)
         pages[key] = (path, questions)
+        progress_version = parse_progress_version(path)
+        if progress_version is None:
+            page_errors.append("missing PROGRESS_VERSION for saved-answer invalidation")
+        else:
+            progress_versions[key] = progress_version
         errors.extend(f"{path.name}: {message}" for message in page_errors)
         for question in questions:
             stems[(key[1], normalized_stem(question.stem))].append(
@@ -155,6 +273,12 @@ def audit(root: Path) -> tuple[list[str], int, int]:
             continue
         en_path, en_questions = en
         ja_path, ja_questions = ja
+        if progress_versions.get((rfc, False)) != progress_versions.get((rfc, True)):
+            errors.append(
+                f"RFC {rfc}: EN/JA PROGRESS_VERSION differs "
+                f"({progress_versions.get((rfc, False))} vs "
+                f"{progress_versions.get((rfc, True))})"
+            )
         if len(en_questions) != len(ja_questions):
             errors.append(
                 f"RFC {rfc}: EN/JA question counts differ "
@@ -217,8 +341,9 @@ def main(argv: list[str]) -> int:
         )
         return 1
     print(
-        f"RFC quiz audit passed: {rfc_count} RFCs, "
-        f"{question_pair_count} EN/JA question pairs, parity confirmed."
+        f"RFC quiz structural audit passed: {rfc_count} RFCs, "
+        f"{question_pair_count} EN/JA question pairs, parity confirmed. "
+        "Semantic RFC correctness requires separate review."
     )
     return 0
 

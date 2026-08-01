@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 2818",
       SKILL_SUBTITLE: "HTTP Over TLS (HTTPS)",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,10 +103,9 @@
 
             RFC 2818 defines HTTPS as HTTP carried over TLS. When the server hostname is known from the URI, the client generally checks it against the identity presented in the server certificate.
 
-            **Options:**
-            - A (incorrect): The scheme describes this resource access; it does not permanently prohibit the same host from serving HTTP.
-            - B (correct): It combines HTTP over TLS with the endpoint-identification expectations specified for HTTPS.
-            - C (incorrect): Base64 is an encoding and provides neither TLS encryption nor server authentication.
+            A: The scheme describes this resource access; it does not permanently prohibit the same host from serving HTTP.
+            B: It combines HTTP over TLS with the endpoint-identification expectations specified for HTTPS.
+            C: Base64 is an encoding and provides neither TLS encryption nor server authentication.
           </div>
         </div>
       </article>
@@ -123,10 +123,9 @@
 
             RFC 2818 records **443** as the default TCP port for HTTP over TLS. A URL can still contain another explicit port; default does not mean mandatory for every deployment.
 
-            **Options:**
-            - A (correct): `443` is the registered default for an HTTPS URL with no explicit port.
-            - B (incorrect): `80` is the conventional default for plain HTTP.
-            - C (incorrect): `22` is commonly associated with SSH, not HTTPS.
+            A: `443` is the registered default for an HTTPS URL with no explicit port.
+            B: `80` is the conventional default for plain HTTP.
+            C: `22` is commonly associated with SSH, not HTTPS.
           </div>
         </div>
       </article>
@@ -145,16 +144,15 @@
 
             TLS gives HTTP a protected channel and supports endpoint authentication. It does not determine application identities, roles, or permissions after that channel has been established.
 
-            **Options:**
-            - A (correct): Encryption protects message confidentiality against passive network observation.
-            - B (correct): TLS record protection detects unauthorized modification in transit.
-            - C (correct): Certificate validation and hostname checking support server authentication.
-            - D (incorrect): Application authorization remains a responsibility of the service using HTTPS.
+            A: Encryption protects message confidentiality against passive network observation.
+            B: TLS record protection detects unauthorized modification in transit.
+            C: Certificate validation and hostname checking support server authentication.
+            D: Application authorization remains a responsibility of the service using HTTPS.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify which input changes the security boundary before the request carries credentials.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Identify which input changes the security boundary before the request carries credentials.">
         <header><h4>Q4: Your app builds a destination URL from user input and may attach an access token. Which validation policy best prevents an HTTP downgrade?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -165,12 +163,11 @@
           <div class="explain">
             **Explanation:**
 
-            Scheme validation must happen before a sensitive request is sent. A trusted host alone is insufficient because an `http` URL would place the first request, including any attached token, outside TLS protection.
+            RFC 2818 Section 2.3 defines `https` as the URI scheme for HTTP over TLS and distinguishes it from `http`. Scheme validation must happen before a sensitive request is sent: an `http` URL would place the first request, including any attached token, outside TLS protection.
 
-            **Options:**
-            - A (incorrect): A redirect occurs only after the initial insecure request has already left the client.
-            - B (incorrect): Host validation limits destinations but does not prevent plaintext transport to an allowed host.
-            - C (correct): Checking both destination and scheme before adding the token closes the downgrade path in the scenario.
+            A: A redirect occurs only after the initial insecure request has already left the client.
+            B: Host validation limits destinations but does not prevent plaintext transport to an allowed host.
+            C: Checking both destination and scheme before adding the token closes the downgrade path in the scenario.
           </div>
         </div>
       </article>
@@ -188,10 +185,9 @@
 
             RFC 2818 distinguishes HTTP over TLS by using the `https` protocol identifier in place of `http`. The scheme carries transport and default-port meaning; it does not select an HTTP authentication scheme or impose a universal redirect policy.
 
-            **Options:**
-            - A (correct): `https` and `http` are distinct URI schemes with different access semantics.
-            - B (incorrect): Basic authentication is an independent HTTP authentication mechanism and is not required by HTTPS.
-            - C (incorrect): Redirect handling is not categorically prohibited by the `https` scheme.
+            A: `https` and `http` are distinct URI schemes with different access semantics.
+            B: Basic authentication is an independent HTTP authentication mechanism and is not required by HTTPS.
+            C: Redirect handling is not categorically prohibited by the `https` scheme.
           </div>
         </div>
       </article>
@@ -203,9 +199,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **iPAddress**.
 
-            RFC 2818 requires an `iPAddress` subjectAltName when the URI identifies the server by an IP address, and that value must exactly match the URI's address. A `dNSName` entry is used for DNS hostnames instead.
+            RFC 2818 Section 3.1 states that an `iPAddress` subjectAltName is present when the URI identifies the server by an IP address and that it exactly matches the URI's address. A `dNSName` entry is used for DNS hostnames instead. RFC 2818 is Informational, so this describes that document's endpoint-identification procedure rather than treating its status as an independent Internet Standards conformance level.
           </div>
         </div>
       </article>

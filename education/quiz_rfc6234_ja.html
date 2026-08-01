@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 6234","SKILL_SUBTITLE":"US Secure Hash Algorithms","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 6234","SKILL_SUBTITLE":"US Secure Hash Algorithms","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="SHA/HMAC/HKDF algorithmsが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 6234のSHA/HMAC/HKDF algorithmsだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="この文書自身が規定するalgorithmと, 他RFCを参照するだけのalgorithmを確認します. ">
+        <header><h4>Q1: RFC 6234自身が規定する内容はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 6234を参照し,SHA/HMAC/HKDF algorithmsを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A draftが, SHA-256, HMAC-SHA-256, HKDF-SHA-256の完全なnormative definitionとしてRFC 6234だけを参照しています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 相互運用実装とtest vector向けにSHA, HMAC, HKDFの正確な計算を選ぶこと.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 相互運用実装とtest vector向けにSHA, HMAC, HKDFの正確な計算を選ぶこと.ただし現在受理するalgorithmと, 弱い選択からの移行方法はprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS, JWS, COSE, attestation profileはhash algorithmを参照するが, protocol checkは別に定義する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 6234を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. HMACのkey processingとHKDFのextract-and-expand ruleを含む三つのalgorithmすべて</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. SHA-256とHMAC-SHA-256. HKDFはappendixで完全に定義する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. SHA-224/256/384/512とsample code. HMACとHKDFはRFC 2104とRFC 5869を参照する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. test vectorだけであり, algorithm processingはすべてimplementation-definedである</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 4-7はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 4-7がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 6234はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: RFC 6234はHMACやHKDFの完全なspecificationを再掲していません.
+B: Section 7.1はHMACのcontextとreferenceを示しますが, 完全なHMAC specificationではありません. HKDFも外部仕様です.
+C: RFC 6234 Sections 1 and 4-6がscope内のSHA familyを規定し, Section 7.1がHMACのRFC 2104, Section 7.2がHKDFのRFC 5869を参照し, Section 8がsample codeを含みます.
+D: SHA processingは規定されており, 各implementationへ任されていません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがSHA/HMAC/HKDF algorithmsについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="SHA functionが受け取るのはbit stringです. protocolはstructured valueを表すbitsと, 使うoutput bitsを別に決める必要があります. ">
+        <header><h4>Q2: structured valueをhashする前にA2A profileが定義すべきものは何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 6234を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">二つのconforming SHA-256 libraryが同じlogical task objectを受け取ります. 一方はUTF-8 JSON, 他方はplatform object serializationをhashします. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 現在受理するalgorithmと, 弱い選択からの移行方法だけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: TLS, JWS, COSE, attestation profileはhash algorithmを参照するが, protocol checkは別に定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. domain separation, input encoding, hash agility, MACまたはKDFの必要性を指定する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. SHA-256が等価なapplication objectを処理前にnormalizeするため, 何も定義しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. character encodingやnumeric representationはdigestへ影響しないため, 人が読むfield orderだけ</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 正確なalgorithm, canonical input bytesまたはbits, output-lengthまたはtruncation rule</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 256-bit implementationはすべてstructured valueを同じようにhashするため, digestの表示方法だけ</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Section 7に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: RFC 6234は与えられたbit stringをhashし, application-level equivalenceは認識しません.
+B: character encoding, field encoding, numeric representationはすべてinput bitsを変えます.
+C: RFC 6234 Sections 1, 2, and 4はalgorithm-level inputとprocessingを定義します. canonicalizationとtruncationは, interoperableなprotocol useのためprofileが固定する選択です.
+D: display encodingはdigestの後段であり, 異なるhash inputを一致させません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このSHA/HMAC/HKDF algorithmsのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="hashの一致はsemantic equalityではなくbyte equalityに従います. 一つの表現をauthoritativeにするboundaryを決めます. ">
+        <header><h4>Q3: digest verification前のcanonicalizationをどこで行うべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: 二つのimplementationが異なるbyte encodingをhashするか,異なる長さへoutputをtruncateすること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">clientがJSONとSHA-256 digestを送ります. gatewayはJSONをparseして書き換えてからforwardします. backendは書き換え後のbytesをhashしますが, clientは元bytesをhashしました. 設計意図はclientの正確なrequest representationをdigestでauthenticateすることです. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,digest outputをどう比較, 保存, version管理するかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. algorithm名, input byte, output length, truncation rule, test-vector behaviorを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: TLS, JWS, COSE, attestation profileはhash algorithmを参照するが, protocol checkは別に定義する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 6234対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 両byte representationを保持し, parse後のJSON objectが等しければどちらのdigestもacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. rewrite前のauthoritative bytesをverifyするか, signerとverifierにcanonical representationを必須にする</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. SHA-256はsemantic contentを識別するため, gatewayがrewrite後にclient digestを再計算する</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両versionをhashしてdigestを連結し, どちらのrepresentationでもclient intentを証明できるようにする</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 9に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: parsed-object equalityはclientのexact representationをauthenticateするclaimとは異なります.
+B: RFC 6234 Sections 1 and 4はspecific bit stringを処理します. A2A profileはsecurity meaningを持つbytesを定義し, verifierでそのまま保つかcanonically reproduceする必要があります.
+C: gatewayでの再計算はdigest claimを支えるpartyとbytesを変えます.
+D: 連結してもclientがauthenticateしたbytesを確立できず, 未定義のconstructionを追加します. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: SHA/HMAC/HKDF algorithmsを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="acceptance criterionが指定するのはkeyed constructionであり, secretを含むだけのdigestではありません. 実装とnamed profileを比較します. ">
+        <header><h4>Q4: secret-prefixed SHA-256 constructionはHMAC profileを満たすか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 6234を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">A2A profileはrequest authenticationにHMAC-SHA-256を求めます. あるimplementationは代わりにSHA-256(secret || request-bytes)を計算し, 自作test vectorには成功します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 現在受理するalgorithmと, 弱い選択からの移行方法</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. algorithm名, input byte, output length, truncation rule, test-vector behaviorを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. digest outputをどう比較, 保存, version管理するか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 相互運用実装とtest vector向けにSHA, HMAC, HKDFの正確な計算を選ぶこと</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. secretを含むSHA-256 inputはすべてHMAC constructionなので満たす</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. local test vectorに成功し, secretが256 bits以上なら満たす</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 両outputを同じlengthへtruncateするかだけで決まる</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 満たさない. referenced HMAC constructionとshared test vectorを実装する</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 4-7は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: HMACにはdefined inner/outer keyed constructionがあり, secret concatenationはそのconstructionではありません.
+B: self-generated vectorは自己一貫性を示すだけで, HMAC conformanceを示しません.
+C: output lengthが等しくてもalgorithmは同値になりません.
+D: RFC 6234 Section 7.1はHMACについてRFC 2104を参照します. このreview conclusionはprofileの明示的なHMAC要件から導かれます. RFC 6234だけで全raw-hash constructionのsecurityを一般判定するものではありません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでSHA/HMAC/HKDF algorithmsを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="hash primitiveとkey-derivation profileは別の問いへ答えます. extract, expand, purpose-separation inputを確認します. ">
+        <header><h4>Q5: raw SHA-256はHKDF-based key scheduleを満たすか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: 仕様が実装間で再現可能なdigest, MAC, KDF behaviorを必要とする場面.観測した欠陥: keyed MACやKDFが必要な場面でraw hashを使うこと.</p>
+          <p class="question-premise">A2A設計はshared input keying materialからrequest-proof keyとaudit keyを別々に導出する必要があります. profileはHKDF-SHA-256を指定しますが, implementationはSHA-256(input-keying-material)を一度だけ計算して両purposeへ使います. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（相互運用実装とtest vector向けにSHA, HMAC, HKDFの正確な計算を選ぶこと）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（domain separation, input encoding, hash agility, MACまたはKDFの必要性を指定する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（TLS, JWS, COSE, attestation profileはhash algorithmを参照するが, protocol checkは別に定義する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. SHA-256を使えばすべてのSHA-256-based KDFと同じsecurity semanticsになるため満たす</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. shared digestの計算後に各consumerがresultへlabelを付ければ満たす</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 満たさない. HKDF extract-and-expandとdistinct purpose inputを使う</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. RFC 6234はkey-derivation function内のSHA-256利用を禁止するため満たさない</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 9に沿って欠陥を解消してからresultを使います.profile rule: domain separation, input encoding, hash agility, MACまたはKDFの必要性を指定する.check: algorithm名, input byte, output length, truncation rule, test-vector behaviorを確認する.local policy: 現在受理するalgorithmと, 弱い選択からの移行方法.</div>
+A: hash primitiveが共通でも, 異なるconstructionがsemanticに同じにはなりません.
+B: 一つのshared keyを得た後のlabelでは, KDFへ異なるderivation inputを与えられません.
+C: RFC 6234 Section 7.2はHKDFについてRFC 5869を参照します. profileはpurpose separationを含むHKDF inputを定義し, constructionのtestを行う必要があります.
+D: SHA-256はHKDFで一般的に使うhashです. 問題はnamed KDFをraw digestで置き換えたことです. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: SHA/HMAC/HKDF algorithmsとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="exact bytes, それをauthenticateするparty, trust transitionを別々に追跡します. 正しいdigest計算だけでは欠けたauthentication semanticsを補えません. ">
+        <header><h4>Q6: clientのA2A proofを維持するdigest pipelineはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはSHA/HMAC/HKDF algorithmsを別protocol layerと組み合わせます.design noteには「TLS, JWS, COSE, attestation profileはhash algorithmを参照するが, protocol checkは別に定義する」とあります.</p>
+          <p class="question-premise">clientがrequest digestへ署名します. gatewayはrequestをparse, normalizeし, normalized bytes, original digest, client verification成功を示すunsigned headerをbackendへ送ります. backendはnormalized operationをauthorizeします. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,現在受理するalgorithmと, 弱い選択からの移行方法は不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（algorithm名, input byte, output length, truncation rule, test-vector behaviorを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（現在受理するalgorithmと, 弱い選択からの移行方法）を定義し,必要なcheck（algorithm名, input byte, output length, truncation rule, test-vector behaviorを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 正しいSHA-256 implementationはsemantic equivalenceを保つため, normalized bytesに対してoriginal digestをacceptする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. backendでcanonical bytesのclient proofをverifyするか, originalとnormalized requestを結ぶprotected gateway assertionを信頼する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. gatewayでunsigned digestを再計算し, output lengthの一致をclient signatureのcontinuityとして扱う</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. unsigned success headerを維持し, backendが受信bytesへRFC 6234 sample codeを実行する</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 4-7とSection 9がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: SHA-256はexact input bitsを処理し, encoding間のapplication-semantic equivalenceを保ちません.
+B: authenticated representationとverifierを明示します. RFC 6234 Sections 1 and 4はdigest processingを提供し, signature verification, assertion protection, request mapping, authorizationはcomposition profileが提供します.
+C: output lengthではnormalized bytesを誰がauthenticateしたか分かりません.
+D: sample codeの正しいoutputでもunsigned success claimをauthenticateできず, authoritative request semanticsも選べません. </div>
         </div>
       </article>
     </section>

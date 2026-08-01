@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6066",
       SKILL_SUBTITLE: "TLS Extensions",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,10 +103,9 @@
 
             RFC 6066 uses the TLS extension framework to add capabilities such as server-name indication, fragment-length negotiation, and certificate-status requests. These extensions are designed so supporting endpoints can still communicate with peers that do not support them.
 
-            **Options:**
-            - A (incorrect): Some extensions influence certificate handling, but the framework does not move validation into the application protocol.
-            - B (correct): Backward-compatible capability negotiation is the shared design purpose.
-            - C (incorrect): Optional extensions are designed to coexist with peers that do not support every new capability.
+            A: Some extensions influence certificate handling, but the framework does not move validation into the application protocol.
+            B: Backward-compatible capability negotiation is the shared design purpose.
+            C: Optional extensions are designed to coexist with peers that do not support every new capability.
           </div>
         </div>
       </article>
@@ -123,31 +123,29 @@
 
             The `status_request` extension negotiates delivery of server-certificate status information in the TLS handshake. RFC 6066 defines the corresponding `CertificateStatus` handshake message and an OCSP response form.
 
-            **Options:**
-            - A (incorrect): `trusted_ca_keys` indicates CA root keys possessed by the client.
-            - B (correct): `status_request` is the extension for requesting certificate-status information.
-            - C (incorrect): `client_certificate_url` lets a client offer URLs in place of sending its certificate chain directly.
+            A: `trusted_ca_keys` indicates CA root keys possessed by the client.
+            B: `status_request` is the extension for requesting certificate-status information.
+            C: `client_certificate_url` lets a client offer URLs in place of sending its certificate chain directly.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Check the allowed name type and its on-wire representation; IP literals and trailing dots have explicit rules.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Check the allowed name type and its on-wire representation; IP literals and trailing dots have explicit rules.">
         <header><h4>Q3: Which value follows RFC 6066's encoding rules for server_name HostName?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. A literal IPv6 address encoded as text</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. A literal IPv6 address encoded as ASCII text without a trailing dot</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. A fully qualified DNS hostname encoded in ASCII without a trailing dot</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. A UTF-8 DNS hostname ending in a trailing dot</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. A fully qualified DNS hostname encoded as raw UTF-8 with a trailing dot</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 6066 defines `HostName` as the fully qualified DNS hostname understood by the client, encoded as an ASCII byte string without a trailing dot. Internationalized names use A-labels, and literal IPv4 and IPv6 addresses are not permitted in this field.
+            RFC 6066 Section 3 defines `HostName` as the fully qualified DNS hostname understood by the client, encoded as an ASCII byte string without a trailing dot. Internationalized names use A-labels, and literal IPv4 and IPv6 addresses are not permitted in this field.
 
-            **Options:**
-            - A (incorrect): Literal IP addresses are expressly excluded from `HostName`.
-            - B (correct): It satisfies both the DNS-name and encoding constraints.
-            - C (incorrect): The field is ASCII without a trailing dot, not a raw UTF-8 name ending in one.
+            A: Literal IP addresses are expressly excluded from `HostName`.
+            B: It satisfies both the DNS-name and encoding constraints.
+            C: The field is ASCII without a trailing dot, not a raw UTF-8 name ending in one.
           </div>
         </div>
       </article>
@@ -166,11 +164,10 @@
 
             Extension design needs explicit compatibility and failure semantics. RFC 6066 demonstrates backward-compatible optional features and provides feature-specific security considerations; it does not justify assuming every new extension is harmless.
 
-            **Options:**
-            - A (correct): Defined handling of unsupported extensions preserves communication with older peers where the extension is optional.
-            - B (correct): Peers need to know whether lack of support permits fallback or requires handshake failure.
-            - C (correct): New inputs and behavior create security properties and failure modes that must be analyzed.
-            - D (incorrect): An extension can add attack surface, privacy exposure, or downgrade risk.
+            A: Defined handling of unsupported extensions preserves communication with older peers where the extension is optional.
+            B: Peers need to know whether lack of support permits fallback or requires handshake failure.
+            C: New inputs and behavior create security properties and failure modes that must be analyzed.
+            D: An extension can add attack surface, privacy exposure, or downgrade risk.
           </div>
         </div>
       </article>
@@ -186,16 +183,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** SNI carries the requested DNS hostname in the ClientHello **server_name** extension, before the server sends its certificate.
+            SNI carries the requested DNS hostname in the ClientHello **server_name** extension, before the server sends its certificate.
 
-            **Correct (B):** RFC 6066 allows a server to use the server_name information to guide selection of the certificate returned to the client.
+            RFC 6066 allows a server to use the server_name information to guide selection of the certificate returned to the client.
 
-            **Options:**
-            - A (incorrect): ALPN identifies the application protocol, such as HTTP/2, rather than the requested hostname.
-            - B (correct): The SNI server_name distinguishes the virtual host early enough for certificate selection.
-            - C (incorrect): A session ticket carries resumption state; it is not the hostname selector for a new virtual-host connection.
+            This is why name-based HTTPS virtual hosting can serve different certificates from one IP address.
 
-            **Related:** This is why name-based HTTPS virtual hosting can serve different certificates from one IP address.
+            A: ALPN identifies the application protocol, such as HTTP/2, rather than the requested hostname.
+            B: The SNI server_name distinguishes the virtual host early enough for certificate selection.
+            C: A session ticket carries resumption state; it is not the hostname selector for a new virtual-host connection.
           </div>
         </div>
       </article>
@@ -207,9 +203,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **max_fragment_length**.
 
-            Constrained clients can offer this extension with one of the sizes defined by RFC 6066. A server accepts by echoing the same requested value; a different or unsupported value causes an `illegal_parameter` failure under the specified rules.
+            `max_fragment_length` lets constrained clients offer one of the fragment sizes defined by RFC 6066. A server accepts by echoing the same requested value; a different or unsupported value causes an `illegal_parameter` failure under the specified rules.
           </div>
         </div>
       </article>

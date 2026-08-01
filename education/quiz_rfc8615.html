@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8615", "SKILL_SUBTITLE": "Well-Known URIs", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8615", "SKILL_SUBTITLE": "Well-Known URIs", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -105,7 +105,7 @@ C: The example hostname is illustrative and not a deployment requirement.</div><
       <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A predictable location is not the same as authenticity or authorization.">
         <header><h4>Q5: What does retrieving a document from a well-known URI establish by itself?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. Only that a resource was obtained from that URI under the transport and origin checks used</label>
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. Retrieval from that URI under the client's chosen origin and transport checks</label>
           <label class="choice"><input type="radio" name="Q5" value="b"> B. That every claim in the document is globally trusted</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. That the resource owner authorized every advertised operation</label>
         </fieldset><div class="explain">**Explanation:**
@@ -138,7 +138,7 @@ A: RFC 8615 does not generally prohibit caching.
 B: A co-located tenant with write access could affect discovery for the whole origin.
 C: The media type and processing model are defined by the application.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Browsers and origin-wide mechanisms are shared with other applications.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Browsers and origin-wide mechanisms are shared with other applications.">
         <header><h4>Q8: An application shares an HTTPS origin with unrelated web content. Which assumption is unsafe?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. Only the discovery application can interact with cookies and storage on that origin</label>
@@ -150,29 +150,33 @@ A: Other content on the origin can share browser security mechanisms and may iss
 B: RFC 8615 calls out sensitive-data exposure as a deployment concern.
 C: Flexible identifier names can reduce origin-wide collisions.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The registry aims to avoid collisions, not reward generic-name capture.">
-        <header><h4>Q9: A protocol chooses the generic registered name &quot;metadata&quot; only to reserve it before others. How does RFC 8615 view this?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. It is required for permanent registrations</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. It is safe if the resource returns JSON</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. It is discouraged as squatting and the name should be application-specific</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A well-known path is a discovery convention, not a separate browser security boundary.">
+        <header><h4>Q9: Which review finding best addresses the confidentiality requirement?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An origin publishes an Agent Card at <code>/.well-known/agent-card</code>. The card contains a public endpoint and a reusable bootstrap bearer token. An unrelated web application on the same origin can run browser script, while the token must remain confidential.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Keep the token in the card but rename the suffix to an unguessable value</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Keep the design because <code>/.well-known/</code> is isolated from other same-origin content</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Publish only public discovery data; deliver credentials through a protected flow</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. Put the token in a query parameter so it is no longer part of the representation</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Permanent status does not require a generic name.
-B: Media type does not justify occupying an imprecise suffix.
-C: RFC 8615 recommends precise names rather than generic terms.</div></div>
+RFC 8615 Section 4.2 warns that well-known resources remain accessible to browsers and interact with other content on the same origin. The prefix does not create a confidential compartment. C meets the stated public-discovery and token-confidentiality requirements. A only hides a location, B assumes isolation that the RFC does not provide, and D still exposes the credential through a URL.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="List the application decisions that RFC 8615 deliberately leaves open.">
-        <header><h4>Q10: What should an A2A profile define in addition to choosing a well-known suffix?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. Only the visual filename and display label shown to users</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. Hostname selection, metadata scope, representation, and validation rules</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. A rule that every possible web origin must publish the same resource</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Separate successful HTTPS retrieval from the authority and scope rules that the application must define.">
+        <header><h4>Q10: May the client apply the discovered policy to both sibling hosts?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A user selects <code>billing.example</code>. The client successfully retrieves an HTTPS document from <code>billing.example/.well-known/a2a</code>. It declares its scope to be <code>*.example</code> and names <code>admin.example</code> as an endpoint. The certificate and document signature both validate, but the A2A profile defines no hostname-selection or cross-origin scope rule.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. Yes; a valid document signature makes its declared wildcard scope authoritative</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. Yes; all hosts sharing a registrable domain are one RFC 8615 security scope</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. No; the profile must define trusted host selection, metadata scope, and endpoint validation</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. No; RFC 8615 prohibits a well-known document from naming any other endpoint</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: A filename does not define authority, representation, or validation behavior.
-B: These decisions turn the generic location convention into an interoperable discovery profile.
-C: RFC 8615 does not force an application resource to exist on every origin.</div></div>
+RFC 8615 Section 3 leaves hostname determination and metadata scope to the application. Section 4.3 warns that applying one origin's metadata to another host assumes an administrative relationship that might not exist. HTTPS and a valid document signature authenticate their respective channel and signer; neither supplies the missing A2A authority rule. C identifies the profile work required. D overstates the RFC: cross-host references are not categorically forbidden.</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

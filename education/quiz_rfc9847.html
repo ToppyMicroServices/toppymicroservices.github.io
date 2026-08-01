@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9847","SKILL_SUBTITLE":"IANA Registry Updates for TLS and DTLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9847","SKILL_SUBTITLE":"IANA Registry Updates for TLS and DTLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what TLS registry update provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 9847 make TLS registry update sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Read N as a statement about IETF evaluation, not as a direct security grade.">
+        <header><h4>Q1: What does an N entry establish for this TLS mechanism?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 9847 and claims that using TLS registry update automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">A team rejects an exporter-related mechanism solely because its IANA Recommended column is N, calling that value proof that the mechanism is cryptographically flawed.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. updating TLS and DTLS IANA registry metadata, including discouraged markings and comment columns; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. updating TLS and DTLS IANA registry metadata, including discouraged markings and comment columns, while which registry entries are allowed by the product, compliance profile, or security baseline remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9847 updates registry handling established around TLS registries rather than changing the TLS 1.3 protocol itself; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9847 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. N means the IETF evaluated the mechanism and reached consensus that implementations should not use it.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. N means the IETF has made no suitability statement; review the mechanism's references and applicability before deciding.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. N means the mechanism is safe for private deployments but prohibited on the public Internet.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. N means the registry entry is unassigned and cannot be implemented until its value changes to Y.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-16 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 3-16 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 9847 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: RFC 9847 Section 3 uses D for a discouraged item. N does not encode consensus that a mechanism should not be used.
+B: Section 3 defines N as not evaluated by the IETF with no suitability statement and warns that it does not necessarily indicate a flaw.
+C: The registry value does not create a private-versus-public deployment rule. Applicability comes from the mechanism's documentation and local profile.
+D: Assigned entries can have N. Section 3 says any item not otherwise set to Y or D receives N.
+Decision rule: Use N to trigger evidence gathering from references and the deployment profile, not as shorthand for either approved or insecure.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for TLS registry update. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate fitness for the mechanism&#x27;s defined purpose from fitness for every possible protocol use.">
+        <header><h4>Q2: What may a profile infer from a Y entry?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 9847 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A profile selects a TLS mechanism marked Y and claims the registry status proves it is appropriate for every agent operation without reading its applicability statement.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which registry entries are allowed by the product, compliance profile, or security baseline and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 9847 updates registry handling established around TLS registries rather than changing the TLS 1.3 protocol itself</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Prepare registration requests with clear specifications and understand when expert review or standards action is required</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. The claim is correct because Y is a universal security approval across protocols, endpoints, and threat models.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. The claim is correct only when the mechanism was registered by an IETF working group rather than another standards body.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Y records IETF consensus that the item fits its defined purpose; the profile must still check applicability and constraints.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Y says only that the code point is syntactically valid and carries no statement about fitness for any purpose.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3 and 14-16 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: RFC 9847 Section 3 expressly limits Y to fitness for the defined purpose and requires careful reading of applicability.
+B: The meaning of Y is IETF consensus and defined-purpose fitness, not the organizational origin of the initial registration request.
+C: Section 3 supports this bounded inference. A mechanism can be Y while having limited applicability described in its specification.
+D: N is the value that carries no IETF suitability statement. Y conveys more than code-point assignment, though less than universal approval.
+Decision rule: Registry recommendation is one input to design review; the use case must remain inside the mechanism's documented purpose and constraints.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this TLS registry update review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Consult the entry&#x27;s Reference and Comment to find whether the relevant condition is SHOULD NOT or MUST NOT.">
+        <header><h4>Q3: How should this D-marked mechanism be reviewed?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: using a TLS registry entry because it exists while ignoring its recommendation state and comment. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">An internal A2A deployment proposes a TLS mechanism marked D. The reviewer rejects it solely from the letter, while the implementer accepts it solely because the network is isolated; neither reads the linked material.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how exceptions to discouraged mechanisms are justified and retired as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Read Y, N, and D together with references and comments before deciding whether a mechanism is usable</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 9847 updates registry handling established around TLS registries rather than changing the TLS 1.3 protocol itself</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 9847 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Neither conclusion follows yet: D is discouraged, and its references define why and when use is SHOULD NOT or MUST NOT.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. The reviewer is always correct because every D entry is an unconditional protocol-level MUST NOT in every deployment.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. The implementer is always correct because D applies only to Internet-facing services and has no effect on isolated networks.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Both positions are equally conforming, because D is only editorial metadata with no design-review significance.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 17 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: RFC 9847 Sections 3 and 3.1 say D marks a discouraged item and direct users to references for the applicable SHOULD NOT or MUST NOT condition.
+B: Some referenced conditions are absolute for a stated security goal, but the D column alone does not express one universal MUST NOT for every context.
+C: Isolation is relevant context only if the linked rationale makes it relevant. It cannot be assumed to waive the documented weakness or constraint.
+D: D reflects an IETF-reviewed discouragement and has practical review meaning. It is not a neutral placeholder like an unassigned entry.
+Decision rule: A D value starts a conditional review: identify the documented failure mode, then apply its normative condition to the actual deployment goal.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing TLS registry update, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Distinguish registration hygiene and expert review from endorsement of the application&#x27;s exporter construction.">
+        <header><h4>Q4: What does approval of this TLS exporter label prove?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 9847 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">The label EXPORTER-A2A-session-proof passes Expert Review and IANA confirms that it is printable ASCII and not a prefix of another label. The application then treats registration as a security review of its proof protocol.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which registry entries are allowed by the product, compliance profile, or security baseline</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Read Y, N, and D together with references and comments before deciding whether a mechanism is usable</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How exceptions to discouraged mechanisms are justified and retired</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Updating TLS and DTLS IANA registry metadata, including discouraged markings and comment columns</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. It proves the proof protocol is secure because Expert Review replaces application-level cryptographic analysis.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. It proves every use of the label is Recommended=Y, even if the registry retains N for the entry.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. It proves the exporter value identifies an end user rather than a TLS session, because all registered labels have that meaning.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. It proves the registration checks passed, not endorsement of the proof design; context binding, endpoints, and acceptance rules still need review.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-16 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: RFC 9847 Section 7 permits deeper review but explicitly says expert approval should not be taken as endorsement of the exporter label.
+B: Section 7 keeps existing Y and N values and applies a separate process to changing recommendation status. Expert registration does not imply Y.
+C: A label namespaces an exporter use but does not supply an application identity meaning. The protocol must define its inputs and interpretation.
+D: Section 7 identifies the syntactic and prefix checks and limits what approval establishes. The consuming security construction remains the application's responsibility.
+Decision rule: Registration prevents label collisions and improves reviewability; it does not certify the semantics or security of the protocol using the exporter.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when a TLS registry update is applied at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Apply the exact definitions of Y and N before converting registry metadata into local allow or require policy.">
+        <header><h4>Q5: What is wrong with this automated TLS policy?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a TLS profile, exporter label, cipher suite, or extension registration must be reviewed for safe use. Observed defect: treating N as safe approval or ignoring D markings on weak or problematic mechanisms.</p>
+          <p class="question-premise">A deployment tool makes every Y item mandatory and automatically allows every N item. It blocks D items without exposing their Reference or Comment to reviewers.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (updating TLS and DTLS IANA registry metadata, including discouraged markings and comment columns), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (prepare registration requests with clear specifications and understand when expert review or standards action is required) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9847 updates registry handling established around TLS registries rather than changing the TLS 1.3 protocol itself), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Only the D handling is wrong; Y is always mandatory and N is always safe to enable under RFC 9847.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only the N handling is wrong; every Y item must be enabled even when its documented purpose is irrelevant.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. All three mappings are defective: Y is purpose-bounded, N has no suitability statement, and D requires its documented condition to be understood.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. None is wrong, because the Recommended column is designed to replace mechanism specifications and local security profiles.</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 17 supports resolving the defect before relying on the result. The profile rule is: prepare registration requests with clear specifications and understand when expert review or standards action is required. The check is: read Y, N, and D together with references and comments before deciding whether a mechanism is usable. The local policy is: which registry entries are allowed by the product, compliance profile, or security baseline.</div>
+A: RFC 9847 Section 3 does not make Y universally mandatory or N affirmatively safe, and Section 3.1 requires context for D.
+B: The N mapping is unsafe, but Y still needs applicability review and is not a requirement to activate every mechanism.
+C: Sections 3 and 3.1 define these three distinct meanings. A useful tool can surface them, but cannot collapse them into require, allow, and block without context.
+D: The column summarizes consensus status. RFC 9847 repeatedly directs readers to mechanism documentation, references, comments, and applicability.
+Decision rule: Registry metadata can prioritize review, but final policy must combine status, referenced constraints, protocol needs, and local risk acceptance.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should TLS registry update be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Assign separate evidence to TLS configuration, registry status, exporter construction, proof verification, and authorization.">
+        <header><h4>Q6: Which review conclusion fits this session-bound A2A profile?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines TLS registry update with another protocol layer. Its design note says: RFC 9847 updates registry handling established around TLS registries rather than changing the TLS 1.3 protocol itself.</p>
+          <p class="question-premise">The profile follows RFC 9325 for TLS versions and ciphers, uses an exporter label registered with N, derives a session proof at the gateway, and authorizes at a backend. The label's specification does not define forwarding across TLS termination.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which registry entries are allowed by the product, compliance profile, or security baseline unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (read Y, N, and D together with references and comments before deciding whether a mechanism is usable) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which registry entries are allowed by the product, compliance profile, or security baseline), perform the required check (read Y, N, and D together with references and comments before deciding whether a mechanism is usable), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The TLS floor may be sound, but the profile must review the N entry, bind the exporter to identified TLS endpoints, and protect the assertion sent to the backend.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Reject the profile solely because N proves the exporter label is insecure, even if its specification fits the use case.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Accept the profile solely because RFC 9325 is followed; BCP compliance converts any registered exporter value into backend-verifiable identity.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Accept the forwarded proof if the exporter label passed Expert Review, because registration endorses proof transfer between distinct TLS sessions.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 3-16 and Section 17 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 9847 Sections 3 and 7 bound what N and registration mean. RFC 9325 covers TLS deployment, while application and gateway trust rules must define the rest of the composition.
+B: N carries no IETF suitability statement and is not proof of a flaw. Its specification and the deployment's use are necessary evidence.
+C: A TLS configuration BCP does not define application proof semantics or make a backend endpoint part of the client-gateway TLS session.
+D: Section 7 says expert approval is not endorsement. It cannot authorize forwarding an exporter-derived assertion across a different channel.
+Decision rule: No single registry letter or TLS checklist supplies the composed guarantee; trace the exporter to its channel instance and protect every trust-boundary transition.</div>
         </div>
       </article>
     </section>

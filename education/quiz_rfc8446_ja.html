@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 8446",
       SKILL_SUBTITLE: "TLS 1.3",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,14 +101,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** forward secrecy, ephemeral key exchange. 後から長期鍵が漏れても, 過去通信が復号されにくい性質.
-            **Correct (C):** TLS 1.3はstatic RSAとstatic Diffie-Hellman key exchangeを廃止しました. public-key-based key exchangeではephemeral (EC)DHEを使うため, 後から長期authentication keyが漏れても, 過去connectionのshared secretは得られません.
-            **Options:**
+            RFC 8446 Section 1.2はstatic RSAとstatic Diffie-Hellman key exchangeを廃止しています. public-key-based exchangeはfreshな(EC)DHE shareを使うため, 後から長期authentication keyが漏れても, それだけで過去connectionのshared secretは得られません.
 
-            - A (incorrect): static RSA key transportはTLS 1.3で廃止されています.
-            - B (incorrect): static Diffie-Hellmanは廃止され, 1つのstatic shareの再利用では意図したforward secrecyを得られません.
-            - C (correct): freshなephemeral Diffie-Hellman shareにより, public-key-based key exchangeでforward secrecyを得ます.
-            **Related:** PSK-only exchangeはapplication dataにforward secrecyを提供しません. PSKと(EC)DHEを組み合わせれば提供できるため, 選択されたPSK key-exchange modeが重要です.
+            forward secrecyはTLS 1.3の全modeで自動的に得られるわけではありません. PSK-only exchangeはapplication dataにこの性質を提供せず, PSKと(EC)DHEを組み合わせた場合は提供できます. reviewerはTLS versionだけでなく, negotiated key-exchange modeを確認する必要があります.
           </div>
         </div>
       </article>
@@ -123,19 +119,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** 0-RTT, early data, replay. handshake完了前にdataを送れるが, threat modelが変わる.
-            **Correct (A):** early dataは状況によってreplayされ得るため, アプリ側で対処が必要.
-            **Options:**
+            RFC 8446 Section 8は, TLSが0-RTT dataへinherentなreplay protectionを提供しないと説明します. attackerは同じearly-data byteを複数回処理させ得ます. certificate expirationはこの性質を分ける論点ではありません.
 
-            - A (correct): replayが中核リスク.
-            - B (incorrect): 0-RTTとは無関係.
-            - C (incorrect): 逆. replay観点で弱くなる.
-            **Related:** repeated executionが許容できない作用を生まない場合に限ってearly dataを受理し, deploymentに合うreplay defenseを適用します. idempotenceは判断材料ですが, それだけであらゆるreplayが安全だとは証明できません.
+            applicationはrepeated executionが許容できない作用を生まない場合に限ってearly dataを受理し, deploymentに合うreplay defenseを適用する必要があります. idempotenceは判断材料ですが, authorization, rate-limit, backend boundaryをまたぐ全replayが安全だとは証明しません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="handshakeの段階と通信方向ごとに異なるsecretが必要になる流れを追います.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="handshakeの段階と通信方向ごとに異なるsecretが必要になる流れを追います.">
         <header><h4>Q3: TLS 1.3のkey scheduleは一般に何に基づく</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -146,24 +137,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** key schedule, HKDF. handshake進行に応じて複数secretを派生させる設計.
-            **Correct (B):** TLS 1.3はHKDFで段階ごとのsecretを導出し, 方向別のtraffic keyを持つ.
-            **Options:**
+            RFC 8446 Section 7はHKDF-based key scheduleを定義します. `HKDF-Extract`が各stageのinput keying materialを組み合わせ, `HKDF-Expand-Label`が用途別のsecretとkeyを導出します. handshakeとapplication, client方向とserver方向のtraffic secretも分離されます.
 
-            - A (incorrect): Base64はエンコードでKDFではない.
-            - B (correct): HKDFがKDF.
-            - C (incorrect): secretは段階で更新され, 方向別に分かれる.
-            **Related:** handshake secretとapplication secretを分離すると, 漏えい時の影響範囲を抑えられる.
+            Base64は表現を変えるだけで, key derivationやdomain separationを提供しません. 1つのtraffic keyを全stageで再利用する設計も, TLS 1.3 key scheduleの分離を失います.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="残りのhandshakeを保護できるだけのkey-schedule stateが揃う境界を確認します.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="残りのhandshakeを保護できるだけのkey-schedule stateが揃う境界を確認します.">
         <header><h4>Q4: ServerHelloより後に送るTLS 1.3 handshake messageはどう保護される</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. middlebox互換のため平文のまま</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. 圧縮されるが暗号化されない</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. middlebox互換を保つため,ServerHello後のhandshake messageも平文で送る</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 圧縮だけを適用し,handshake traffic keyでは暗号化しない</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. handshake traffic keyで暗号化される</label>
           </fieldset>
           <figure class="flow-diagram answer-figure" aria-labelledby="rfc8446-ja-q4-caption">
@@ -192,14 +178,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** handshake traffic keys, encryption. TLS 1.3は以前より多くのhandshakeを暗号化する.
-            **Correct (C):** ServerHelloの後にhandshake traffic secretを導出し, 以降のhandshake messageを対応するtraffic keyで暗号化します.
-            **Options:**
+            ServerHello後は, peerがhandshake traffic secretの導出に必要なinputを得ています. RFC 8446は以降のhandshake messageを対応するhandshake traffic keyで保護したrecordとして送ります. compressionが保護機構なのではありません.
 
-            - A (incorrect): TLS 1.3は平文露出を減らす.
-            - B (incorrect): 圧縮が主役ではない.
-            - C (correct): handshake traffic keyが後続のhandshake recordを保護します.
-            **Related:** handshake暗号化はprivacy改善とossification抑制に効く.
+            これにより, earlier handshakeよりcertificateやextension informationの平文露出が減ります. ClientHelloとServerHelloは, secretを導出するparameterの確立に必要なので見えるままです.
           </div>
         </div>
       </article>
@@ -215,14 +196,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** confidentiality, integrity, replay. TLSは盗聴と改ざんを防ぐ.
-            **Correct (A):** encryptionと認証で, 秘密性と完全性を提供.
-            **Options:**
+            TLS record protectionはauthenticated encryptionにより, in-transit dataのconfidentialityとintegrityを提供します. これらのchannel propertyは, どのapplication principalにoperationを許すかを決めません. authorizationはapplication policyの責務です.
 
-            - A (correct): record protectionにより, 通信内容の盗聴と検出されない改ざんを防ぎます.
-            - B (incorrect): TLSはchannelを保護しますが, どのuserにどのoperationを許すかはapplicationが決めます.
-            - C (incorrect): 0-RTT early dataにはreplay riskがあり, applicationとdeployment側の対策が必要です.
-            **Related:** server認証はcertificateで行われることが多いが, trust判断はポリシー次第.
+            TLSは全modeでreplay preventionを保証するものでもありません. 特に0-RTTにはRFC 8446 Section 8のreplay considerationがあります. peer authenticationとcertificate validationを使う場合も, negotiated authentication modeとrelying partyのtrust policyに依存します.
           </div>
         </div>
       </article>
@@ -234,10 +210,28 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** DHE, ECDHE, forward secrecy. Diffie-Hellman系のephemeral key exchange.
-            **Correct:** DHEまたはECDHE.
-            **Why others are wrong:** static RSA key exchangeはTLS 1.3で廃止. PSKは再開に使えるが, forward secrecyは追加要素に依存する.
-            **Related:** key exchangeの選択は性能と暗号俊敏性に影響する.
+            DHEとECDHEはfreshなephemeral Diffie-Hellman shareからconnectionごとのsecretを確立します. TLS 1.3はstatic RSA key transportとstatic Diffie-Hellmanを廃止しており, (EC)DHEがpublic-key exchangeでforward secrecyを提供するfamilyです.
+
+            PSKはresumptionに使えますが, PSK-only modeはapplication dataにforward secrecyを提供しません. `psk_dhe_ke` modeはephemeral Diffie-Hellmanを追加するため, この性質が変わります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="channel authenticationと, 1回だけoperationを実行するapplication上の保証を分けます.">
+        <header><h4>Q7: RFC 8446から正当化できる実行判断はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A2A clientが資金移動POSTをTLS 1.3の0-RTT dataで送ります. replay cacheはedge zoneごとに独立し, early dataが拒否されると別zoneへ1-RTTで再送します. serviceはTLS authenticationの成功がat-most-once実行を証明すると主張しています.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. できる. PSK authenticationが各requestを一意のTLS connectionと実行へ結び付ける</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. できる. zoneごとのreplay cacheと1-RTT再送により重複実行は起こらない</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. できない. 再実行を安全にするapplication profileがなければ0-RTTから除外する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            設計判断として妥当なのはCです. RFC 8446 Sections 2.3と8は, 0-RTTのsecurity propertyが弱く, connectionをまたぐreplayへのinherentな保護がないと説明します. したがってTLS authenticationの成功からat-most-once実行は導けません. replay stateがzoneごとに分かれ, 別zoneへの再送経路もあれば, applicationが同じoperationを複数回受ける可能性があります.
+
+            Appendix E.5に従い, 0-RTTを使うapplication profileは安全なmessageとその扱いを定義する必要があります. 資金移動には1-RTTを使うか, 全実行経路で検証できる保護済みoperation IDとdeduplicationなどのapplication semanticsを設けられます. RFC 8446はその特定設計を一律に要求せず, anti-replay mechanismがあってもTLS authentication自体が一般的なtransaction保証になるわけではありません.
           </div>
         </div>
       </article>

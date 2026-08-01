@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,272 +57,118 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="A thumbprint identifies a key representation under exact input rules.">
-        <header><h4>Q1: What problem does RFC 7638 primarily solve</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Focus on the deterministic result, not on the policy that later consumes it.">
+        <header><h4>Q1: What is a JWK Thumbprint?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. deciding which user is authorized to use a resource</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. deriving a deterministic digest from selected public members of a JWK</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. creating a certificate fingerprint for every JOSE object</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The RFC defines a stable way to compute a key identifier from a JWK. It does not decide who may use the key.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Authorization is outside the thumbprint calculation and still belongs to token or application policy.
-- B: The deterministic digest over selected public JWK members is the core purpose of this RFC.
-- C: A JWK thumbprint is computed from a JWK representation, not from an X.509 certificate object.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. A certificate-path decision encoded as a JSON string.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. An authorization grant derived from a public key.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. A digest computed from a defined JWK representation of a key.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. A signature proving that the key owner approved a request.</label>
+          </fieldset><div class="explain">RFC 7638 Sections 2 and 3 define a JWK Thumbprint as the digest of a precisely constructed JWK representation. That calculation identifies key material; it neither validates a certificate path nor proves possession, owner approval, or authorization. The protocol that consumes the identifier must define those later meanings.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Find the members that should affect the stable key identity.">
-        <header><h4>Q2: Which inputs belong in a JWK thumbprint calculation. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Build the hash input before considering how its digest is encoded or used.">
+        <header><h4>Q2: Which steps belong to the RFC 7638 thumbprint calculation? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. the required public key members for the JWK key type</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. private key material and deployment-only metadata</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. a canonical JSON object containing only the selected members</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. the kid, use, and alg members whenever they are present</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A thumbprint must be stable across metadata changes, so only the required public members for the key type are included.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Required public members define the key material being identified.
-- B: Private material and deployment metadata would make the identifier unsafe or unstable.
-- C: Canonical JSON is needed so different serializers hash the same byte sequence.
-- D: kid, use, and alg are metadata and are intentionally not part of the thumbprint input.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Include every optional JWK member so no metadata is lost.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Use required members in lexicographic order with no whitespace.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Normalize all Unicode strings to NFC before serialization.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Hash the resulting UTF-8 octets with the selected function.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3 constructs a JSON object from the required members only, orders their names lexicographically, emits no whitespace, encodes the result as UTF-8, and hashes those octets. Section 3.2.2 deliberately excludes optional members, while Sections 3.3 and 4 do not add Unicode normalization. Interoperability therefore depends on matching the specified members, characters, order, and octets before hashing.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Different JSON serializations must hash to the same result.">
-        <header><h4>Q3: Why does canonical JSON matter for RFC 7638</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Use only the members required to represent this key type, in lexicographic order.">
+        <header><h4>Q3: Which members form the hash input for an RSA public JWK?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. it lets implementations include whitespace to show human intent</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. it allows optional metadata order to change the key identity</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. it fixes member selection and ordering before hashing</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Without canonicalization, two equivalent JWKs could produce different hash inputs. The RFC avoids that interop failure.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Human formatting is not a stable cryptographic input.
-- B: Optional metadata should not change the thumbprint for the same key.
-- C: Fixed selection and ordering make the hash input deterministic across implementations.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. e, kty, and n.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. alg, e, kid, kty, and n.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. kty, n, use, and x5c.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Every member present in the received JWK.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.2 specifies `e`, `kty`, and `n`, in that lexicographic order, for an RSA public-key thumbprint. Values such as `alg`, `kid`, `use`, and `x5c` are optional metadata and Section 3.2.2 intentionally excludes them. The hash input comes from the key type's required representation, not from every member that happened to arrive.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Compare what object is hashed.">
-        <header><h4>Q4: How is a JWK thumbprint different from a certificate fingerprint</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="Ask whether the changed fields describe the key value or optional context around it.">
+        <header><h4>Q4: A JWK's kid, use, and alg change while its required key members remain identical. What happens to its thumbprint?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. it hashes a canonical JWK representation of a key, not a DER-encoded certificate</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. it validates the certificate path and revocation status</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. it proves the key owner is authorized for the requested resource</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The thumbprint identifies key material in JWK form. Certificate trust and authorization remain separate decisions.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: This distinction is essential because the object being hashed is the JWK representation.
-- B: Certificate path validation is not performed by the JWK thumbprint algorithm.
-- C: A digest can identify a key, but it does not authorize a request by itself.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. It changes because kid is always part of the hash input.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. It changes because every semantic restriction is hashed.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. It becomes undefined until all optional fields are removed.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. It remains the same because optional members are excluded.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.2.2 excludes optional members so equivalent representations of the same key produce the same thumbprint. Fields such as `kid`, `use`, and `alg` may remain in the JWK but are not copied into the hash input. The resulting stability is useful for key identification, but it also means the thumbprint does not bind those metadata values to the key.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="In DPoP, compare the declared key identity with the proof key.">
-        <header><h4>Q5: Which validation flow best uses a JWK thumbprint in a token-binding design</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Determine whether private parameters must enter an identifier that both holders can reproduce.">
+        <header><h4>Q5: Which calculation gives public- and private-key holders the same identifier for one key pair?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. accept the token if its thumbprint-shaped string is syntactically valid</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. compute the thumbprint of the presented public JWK and compare it to the expected confirmation value</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. skip proof verification once a jkt value exists in a token</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc7638-en-q5-caption">
-            <figcaption id="rfc7638-en-q5-caption">Thumbprint comparison inside a proof flow.</figcaption>
-            <svg viewBox="0 0 772 158" role="img" aria-label="Thumbprint comparison inside a proof flow.">
-              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="95" y="69">Presented</text>
-              <text class="flow-label" x="95" y="90">public JWK</text>
-              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
-              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
-              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="289" y="69">Canonicalize</text>
-              <text class="flow-label" x="289" y="90">selected members</text>
-              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
-              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
-              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="483" y="69">Hash to</text>
-              <text class="flow-label" x="483" y="90">thumbprint</text>
-              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
-              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
-              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="677" y="69">Compare with</text>
-              <text class="flow-label" x="677" y="90">confirmation</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** Thumbprint comparison is one step inside a larger proof and token validation flow.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Syntax alone does not prove possession of the corresponding private key.
-- B: This compares the expected key identity with the key actually presented in the proof path.
-- C: A confirmation value must be matched to a valid proof, not treated as proof by itself.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Hash all private parameters so only the private-key holder can identify it.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Compute the thumbprint of the corresponding public-key JWK representation.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Hash the encrypted private JWK including its encryption metadata.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. RFC 7638 does not define thumbprints for private-key JWKs.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.2.1 defines a private key's thumbprint as the thumbprint of its corresponding public key. This lets holders of either half refer to the same pair without hashing private parameters or unrelated encryption metadata. The identifier therefore names the pair through its public representation; application context must still distinguish public from private use.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="An identifier is not the same thing as policy approval.">
-        <header><h4>Q6: Which statements about JWK thumbprints are accurate. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Separate a producer-chosen opaque identifier from a value independently recomputed by multiple parties.">
+        <header><h4>Q6: Which statements about the thumbprint hash function are correct? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. a matching thumbprint automatically grants access to the protected resource</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. the hash algorithm and encoding rules must be fixed by the profile using the thumbprint</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. changing kid should always change the thumbprint</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. a thumbprint can bind references to a key, but trust still depends on surrounding validation</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Thumbprints are useful identifiers. They become security-relevant only when a profile defines how to compute, compare, and validate them.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Access control still requires token validation and application policy.
-- B: Profiles need exact comparison rules so producer and verifier compute the same value.
-- C: kid is not included in the thumbprint input, so changing it should not change the thumbprint.
-- D: The thumbprint can bind a reference to a key while leaving trust and authorization to other checks.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. The application selects the hash function, and recomputing parties must agree on it.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. RFC 7638 fixes SHA-256 for every application for all time.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. A consumer may treat a thumbprint used as kid as an opaque selector.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. Verifiers can always infer the hash algorithm from the encoded length.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.4 assigns hash selection to the application and requires parties that reproduce a thumbprint to agree on that choice. It presents SHA-256 as a good default at publication time, not an eternal mandate, and defines no length-based algorithm inference. A consumer using a thumbprint-valued `kid` only as an opaque lookup value need not recompute it; a profile that compares calculations must identify the algorithm.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Metadata changes should not create a new key identity.">
-        <header><h4>Q7: A JWK keeps the same public key but changes kid and use. What should happen to its RFC 7638 thumbprint</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Compare the exact hash inputs, not whether both inputs are valid JSON.">
+        <header><h4>Q7: Which implementation produces the interoperable thumbprint?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Library A hashes JSON.stringify(receivedJwk), preserving input order and alg. Library B constructs a new object containing only required members, sorts member names by Unicode code point, emits no whitespace, and hashes its UTF-8 bytes.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. it must change because every JWK member is hashed</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. it becomes invalid because optional metadata changed</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. it remains the same because those metadata members are not included</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The thumbprint is intended to represent the key, not every local metadata label attached to the key.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: The RFC does not hash every JWK member.
-- B: Changing optional metadata is not a reason for the key thumbprint itself to become invalid.
-- C: Because kid and use are outside the selected input, the thumbprint remains stable for the same public key.
-          </div>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Library A, because preserving the sender's original JSON is always canonical.</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Library A, because alg must be bound into every key identifier.</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Both, because semantically equivalent JSON always hashes to the same bytes.</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Library B, because RFC 7638 defines a new deterministic hash input.</label>
+          </fieldset><div class="explain">RFC 7638 Sections 3 and 3.3 require the implementation to select only required members, sort their names lexicographically, remove whitespace, and hash the UTF-8 octets. Section 3.2.2 excludes optional `alg`, and Section 4 warns that a generic `JSON.stringify` call does not guarantee the sorting step. Semantically equivalent JSON can differ byte-for-byte, so the constructed octets must be checked before comparing digests.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="A digest identifier has cryptographic assumptions but not policy meaning.">
-        <header><h4>Q8: Which security assumption is most relevant when relying on thumbprint equality</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify what equality says about key material and what still requires protocol policy.">
+        <header><h4>Q8: What may the relying party conclude from this thumbprint match?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An Agent Card records thumbprint T for a public key. A later JWK independently computes to T under the profile's agreed SHA-256 rule, but the card itself came from an untrusted directory.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. the chosen hash function should make practical collisions infeasible for the use case</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. the thumbprint should replace issuer and audience checks</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. the thumbprint string should be treated as a shared secret</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Equality of thumbprints relies on collision resistance for the selected hash. It still does not replace token context checks.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Collision resistance is the relevant cryptographic property for a digest-based identifier.
-- B: Issuer and audience checks protect a different boundary and must remain.
-- C: A thumbprint normally identifies public key material and should not be handled as a secret.
-          </div>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. The directory is trusted because a cryptographic digest matched.</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. The JWK identifies the key, but card trust and authorization remain unresolved.</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. The holder has proved possession of the private key for the current request.</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Every optional JWK attribute in the card is cryptographically bound by T.</label>
+          </fieldset><div class="explain">RFC 7638 Sections 3 and 3.2.2 make the thumbprint an identifier for the required key material while excluding associated attributes. Equality can therefore show that two representations name the same key under the calculation, but it cannot authenticate the source, excluded metadata, fresh possession, or authorization. Those properties require separate provenance and protocol checks.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="Interop depends on producing identical bytes before hashing.">
-        <header><h4>Q9: Which implementation details protect interoperability. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="c,d" data-difficulty="L3" data-hint="Review both disclosure of symmetric material and uniqueness assumptions about accepted representations.">
+        <header><h4>Q9: Which two findings should block this thumbprint deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A service publishes SHA-256 thumbprints of low-entropy symmetric keys in logs. It also accepts non-canonical RSA encodings and uses thumbprint inequality as a blacklist for banned keys.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. all implementations select the same required public members for the key type</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. hash the original source text exactly as received</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. include extension members to preserve local deployment intent</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. use the same JSON serialization and byte conversion rules before hashing</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The point of the RFC is that independent implementations compute the same identifier for the same key.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: Using the same selected public members is required for a shared result.
-- B: Original source text may contain different whitespace or ordering, so hashing it breaks interoperability.
-- C: Extension members would make the identifier deployment-dependent and unstable.
-- D: The same serialization and byte rules make the hash input identical.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Publishing symmetric-key thumbprints is always harmless because a digest is one-way.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Thumbprint inequality reliably proves that a transformed key is unrelated to every banned key.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Symmetric-key thumbprints should be concealed unless the hash and key entropy sufficiently resist disclosure.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Accepted key representations must be validated before thumbprint uniqueness is relied upon.</label>
+          </fieldset><div class="explain">RFC 7638 Section 7 warns that exposing a symmetric-key thumbprint can reveal information about the secret and recommends concealment unless the application can justify sufficient protection. It also shows that alternate representations can defeat a simple thumbprint blacklist and conditions uniqueness on one validated, unambiguous JWK representation. A design using the digest as a security boundary must document both the input entropy and the accepted representation.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Do not recover by weakening the binding.">
-        <header><h4>Q10: If no presented key matches the expected thumbprint, what should the verifier do</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Track which step identifies a key, which demonstrates possession, and which authorizes a resource action.">
+        <header><h4>Q10: Which assessment correctly composes the thumbprint, proof, and backend decision?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An OAuth token names JWK Thumbprint T. An A2A gateway verifies a fresh proof made with a JWK that computes to T, then forwards only X-Key-Thumbprint: T to a backend that owns authorization. The header is not integrity-protected from other internal callers.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. try a nearby key with the same kid value</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. treat the key-binding check as failed for this decision</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. accept the request if the token payload looks reasonable</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** No matching thumbprint means the key identity check did not succeed. Falling back to weaker identifiers defeats the binding.
-
-**Related keywords:**
-- **thumbprint** : Stable digest of selected public JWK members
-- **canonical form** : Exact JSON form used before hashing
-- **jkt** : DPoP confirmation value based on a JWK thumbprint
-
-**Options:**
-- A: kid is weaker and unrelated to the thumbprint comparison boundary.
-- B: Failing the decision preserves the binding semantics.
-- C: A plausible payload cannot replace the cryptographic key identity check.
-          </div>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. The gateway can prove key match and possession; the backend still needs a protected assertion and authorization rule.</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. T itself carries the fresh proof, so any caller that repeats the header inherits the verified session.</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. RFC 7638 makes the backend trust every OAuth claim associated with the matching key.</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. The backend must recompute T from the header string, which recreates the original proof of possession.</label>
+          </fieldset><div class="explain">RFC 7638 Sections 3 and 3.2.2 provide stable key identification, subject to the representation limits in Section 7. A thumbprint contains no nonce, request, or channel binding, so it cannot stand in for fresh possession; re-hashing it cannot recreate a signature. OAuth claim trust, integrity of a derived assertion across hops, and the backend's final authorization decision remain separate guarantees with separate verifiers.</div>
         </div>
       </article>
     </section>

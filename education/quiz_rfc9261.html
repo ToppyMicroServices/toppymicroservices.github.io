@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9261",
       SKILL_SUBTITLE: "Exported Authenticators in TLS",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,15 +103,13 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** RFC 9261 provides a connection-bound cryptographic building block; tenant identity, attestation meaning, and authorization remain application concerns.
+            RFC 9261 provides a connection-bound cryptographic building block; tenant identity, attestation meaning, and authorization remain application concerns.
 
-            **Terms:** An **Exported Authenticator** proves possession of the private key corresponding to a certificate identity. **Post-handshake** means after the TLS or DTLS connection has already been established.
+            An **Exported Authenticator** proves possession of the private key corresponding to a certificate identity. **Post-handshake** means after the TLS or DTLS connection has already been established.
 
-            **Options:**
-            - A (incorrect): RFC 9261 uses identities such as X.509 certificates; it does not replace the certificate format.
-            - B (correct): CertificateVerify proves private-key possession, and the authenticator is bound to the existing connection and authenticator transcript.
-            - C (incorrect): Larger frameworks must be defined by the application protocol, verifier policy, or deployment.
-
+            A: RFC 9261 uses identities such as X.509 certificates; it does not replace the certificate format.
+            B: CertificateVerify proves private-key possession, and the authenticator is bound to the existing connection and authenticator transcript.
+            C: Larger frameworks must be defined by the application protocol, verifier policy, or deployment.
           </div>
         </div>
       </article>
@@ -127,16 +126,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The RFC defines connection-bound authenticator construction and validation, but it neither assigns application meaning nor changes the underlying TLS connection state.
+            The RFC defines connection-bound authenticator construction and validation, but it neither assigns application meaning nor changes the underlying TLS connection state.
 
-            **Terms:** **Verifier policy** decides what identity or attestation is acceptable. **Application-level meaning** is the tenant, service, task, or authorization decision attached to the proof.
+            **Verifier policy** decides what identity or attestation is acceptable. **Application-level meaning** is the tenant, service, task, or authorization decision attached to the proof.
 
-            **Options:**
-            - A (correct): RFC 9261 does not know the intended tenant, workload, or policy.
-            - B (incorrect): The RFC does define connection-derived authentication material.
-            - C (correct): These are supplied outside the RFC mechanism.
-            - D (correct): Authenticators are independent and unidirectional; creating or validating one does not explicitly change TLS state.
-
+            A: RFC 9261 does not know the intended tenant, workload, or policy.
+            B: The RFC does define connection-derived authentication material.
+            C: These are supplied outside the RFC mechanism.
+            D: Authenticators are independent and unidirectional; creating or validating one does not explicitly change TLS state.
           </div>
         </div>
       </article>
@@ -153,16 +150,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Uniqueness and unpredictability make certificate_request_context a replay- and context-confusion control, not merely descriptive metadata.
+            Uniqueness and unpredictability make certificate_request_context a replay- and context-confusion control, not merely descriptive metadata.
 
-            **Terms:** **certificate_request_context** is an opaque value attached to the request and echoed in the authenticator. **Opaque** means the protocol treats it as bytes, not as a human-readable name.
+            **certificate_request_context** is an opaque value attached to the request and echoed in the authenticator. **Opaque** means the protocol treats it as bytes, not as a human-readable name.
 
-            **Options:**
-            - A (correct): It connects the request to the response.
-            - B (incorrect): Reuse can create replay or context-confusion risk.
-            - C (correct): Uniqueness is required inside the connection scope.
-            - D (correct): Unpredictability helps against precomputation when a temporary private key is exposed.
-
+            A: It connects the request to the response.
+            B: Reuse can create replay or context-confusion risk.
+            C: Uniqueness is required inside the connection scope.
+            D: Unpredictability helps against precomputation when a temporary private key is exposed.
           </div>
         </div>
       </article>
@@ -172,7 +167,7 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. Only the certificate chain, because the signature is ordinary TLS metadata</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Certificate, CertificateVerify, and Finished, using connection-derived and transcript-derived values</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. All three messages with their connection- and transcript-derived inputs</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Only the DNS name in the certificate, because the TLS connection already succeeded</label>
           </fieldset>
           <figure class="flow-diagram answer-figure" aria-labelledby="rfc9261-q4-caption">
@@ -196,20 +191,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** A non-empty authenticator combines certificate validation, proof of private-key possession, and a Finished value bound to the connection and transcript.
+            A non-empty authenticator combines certificate validation, proof of private-key possession, and a Finished value bound to the connection and transcript.
 
-            **Terms:** **CertificateVerify** proves possession of the private key over an authenticator transcript. **Finished** checks a MAC derived from the TLS connection and authenticator transcript.
+            **CertificateVerify** proves possession of the private key over an authenticator transcript. **Finished** checks a MAC derived from the TLS connection and authenticator transcript.
 
-            **Options:**
-            - A (incorrect): This omits the proof and transcript checks.
-            - B (correct): RFC 9261 validation depends on the connection, the request, and the authenticator transcript.
-            - C (incorrect): Certificate name checks are not enough.
-
+            A: This omits the proof and transcript checks.
+            B: RFC 9261 validation depends on the connection, the request, and the authenticator transcript.
+            C: Certificate name checks are not enough.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify which validation input is derived from the current connection and therefore changes across connections.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Identify which validation input is derived from the current connection and therefore changes across connections.">
         <header><h4>Q5: How should cross-connection reuse be judged</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -239,15 +232,13 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Cross-connection validation uses connection-derived Handshake Context, so a reduced model that omits transcript checks cannot establish failure of the full mechanism.
+            RFC 9261 Section 5.2.2 states that generation and validation on different connections produce different Handshake Context values and fail CertificateVerify validation.
 
-            **Terms:** **Handshake Context** is derived from the connection and authenticator data. **Channel binding** means the proof is tied to one specific TLS or DTLS connection.
+            **Handshake Context** is derived from the connection and authenticator data. **Channel binding** means the proof is tied to one specific TLS or DTLS connection.
 
-            **Options:**
-            - A (incorrect): Same certificate is not enough.
-            - B (incorrect): Omitting the full validation path leaves a proof obligation, not a complete RFC break.
-            - C (correct): RFC 9261 says validation fails when generation and validation use different connections.
-
+            A: Same certificate is not enough.
+            B: Omitting the full validation path leaves a proof obligation, not a complete RFC break.
+            C: RFC 9261 says validation fails when generation and validation use different connections.
           </div>
         </div>
       </article>
@@ -263,20 +254,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** An empty authenticator is a protocol-defined authenticated refusal; the validation API reports a well-formed empty authenticator as invalid rather than returning an additional identity.
+            An empty authenticator is a protocol-defined authenticated refusal; the validation API reports a well-formed empty authenticator as invalid rather than returning an additional identity.
 
-            **Terms:** **Empty authenticator** contains a Finished message without Certificate or CertificateVerify. **Authenticated refusal** means the refusal has integrity, but it does not prove an identity.
+            **Empty authenticator** contains a Finished message without Certificate or CertificateVerify. **Authenticated refusal** means the refusal has integrity, but it does not prove an identity.
 
-            **Options:**
-            - A (correct): RFC 9261 treats a well-formed empty authenticator as a refusal; validation APIs return it as invalid for identity validation.
-            - B (incorrect): No attestation or identity is authenticated.
-            - C (incorrect): It is unrelated to version upgrade signaling.
-
+            A: RFC 9261 treats a well-formed empty authenticator as a refusal; validation APIs return it as invalid for identity validation.
+            B: No attestation or identity is authenticated.
+            C: It is unrelated to version upgrade signaling.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="ms" data-answer="a,b,d" data-difficulty="L3" data-hint="Keep protocol processing success, presence of an attestation identity, and satisfaction of application policy as separate result states.">
+      <article class="q card" data-id="Q7" data-type="ms" data-answer="a,b,d" data-difficulty="L2" data-hint="Keep protocol processing success, presence of an attestation identity, and satisfaction of application policy as separate result states.">
         <header><h4>Q7: For an aTLS deployment, which policy checks follow from empty-authenticator handling. Select all</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -288,16 +277,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Applications that require attestation must distinguish successful authenticator processing from successful attestation verification.
+            RFC 9261 Section 6 defines an empty authenticator as an authenticated refusal, and Section 7.4 says a well-formed empty authenticator is returned as invalid.
 
-            **Terms:** **Attestation required** is a policy decision by the application. **No attestation identity** means the protocol object did not return an identity that the policy can approve.
+            **Attestation required** is a policy decision by the application. **No attestation identity** means the protocol object did not return an identity that the policy can approve.
 
-            **Options:**
-            - A (correct): Required attestation cannot be successful if no identity is returned.
-            - B (correct): Processing a valid EA object and verifying attestation are different outcomes.
-            - C (incorrect): Empty authenticators are valid refusals, not attestation success.
-            - D (correct): A caller needs an unambiguous result to enforce policy.
-
+            A: Required attestation cannot be successful if no identity is returned.
+            B: Processing a valid EA object and verifying attestation are different outcomes.
+            C: Empty authenticators are valid refusals, not attestation success.
+            D: A caller needs an unambiguous result to enforce policy.
           </div>
         </div>
       </article>
@@ -308,21 +295,19 @@
           <p class="question-premise">A same-endpoint formal analysis uses a reduced model that omits parts of RFC 9261 validation, including the full CertificateVerify and Finished transcript checks.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q8" value="a"> A. As proof that RFC 9261 Exported Authenticators generally fail under key leakage</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. As reduced-model evidence for a proof obligation, because parts of RFC 9261 validation are abstracted away</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. As reduced-model evidence that leaves a proof obligation for omitted RFC 9261 validation steps</label>
             <label class="choice"><input type="radio" name="Q8" value="c"> C. As evidence that CertificateVerify and Finished are optional in the RFC</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** A reduced model can expose a proof obligation, but omitted RFC validation steps limit the strength of the full-system claim.
+            RFC 9261 Sections 5.2.2 through 5.2.4 define CertificateVerify, Finished, and full authenticator validation. A reduced model that omits those steps can expose a proof obligation, but it cannot support the same full-system claim.
 
-            **Terms:** **Reduced model** means a simpler model that leaves out some details. **Proof obligation** means something that still needs to be shown in the full system.
+            **Reduced model** means a simpler model that leaves out some details. **Proof obligation** means something that still needs to be shown in the full system.
 
-            **Options:**
-            - A (incorrect): That is stronger than the model supports.
-            - B (correct): The model omits the full CertificateVerify and Finished transcript checks.
-            - C (incorrect): Those checks are central to non-empty authenticator validation.
-
+            A: That is stronger than the model supports.
+            B: The model omits the full CertificateVerify and Finished transcript checks.
+            C: Those checks are central to non-empty authenticator validation.
           </div>
         </div>
       </article>
@@ -334,20 +319,18 @@
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q9" value="a"> A. It proves that RFC 9261 registered exporter labels are wrong</label>
             <label class="choice"><input type="radio" name="Q9" value="b"> B. It means exporter labels are never part of verifier policy</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. It concerns deployment-specific attestation-binder parameters and verifier policy</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. It is limited to the deployment's binder parameters and verifier policy</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Deployment-specific binder parameters and RFC-registered exporter labels are separate namespaces and support different claims.
+            RFC 9261 Section 5.1 fixes the Exported Authenticator exporter labels, and Section 8.2 registers them. A deployment-specific binder parameter is outside those registered labels and supports a different claim.
 
-            **Terms:** **Exporter label** names a TLS exporter use. **Attestation binder** is a deployment-specific value that links attestation evidence to the protocol context.
+            **Exporter label** names a TLS exporter use. **Attestation binder** is a deployment-specific value that links attestation evidence to the protocol context.
 
-            **Options:**
-            - A (incorrect): The finding is not a claim that RFC 9261's registered labels are incorrect.
-            - B (incorrect): Labels and binder parameters can matter to policy design.
-            - C (correct): The scope is deployment-specific parameters and verifier policy.
-
+            A: The finding is not a claim that RFC 9261's registered labels are incorrect.
+            B: Labels and binder parameters can matter to policy design.
+            C: The scope is deployment-specific parameters and verifier policy.
           </div>
         </div>
       </article>
@@ -357,22 +340,20 @@
         <div class="body">
           <p class="question-premise">The deployment receives a well-formed empty authenticator, which represents an authenticated refusal. Its application policy requires an attestation identity before reporting attestation success.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. As an application policy question about distinguishing no attestation from verified attestation</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. As application policy separating no attestation from verified attestation</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. As an RFC 9261 violation whenever an empty authenticator is sent</label>
             <label class="choice"><input type="radio" name="Q10" value="c"> C. As evidence that RFC 9261 forbids authenticated refusals</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** RFC 9261 allows an authenticated refusal; whether that result satisfies an attestation requirement is an application-policy decision.
+            RFC 9261 Section 6 defines the authenticated refusal, and Section 7.4 returns a well-formed empty authenticator as invalid. Whether that no-identity result satisfies an attestation requirement is an application-policy decision.
 
-            **Terms:** **Missing attestation** means no attestation identity was returned to satisfy policy. **Verified attestation** means the verifier accepted evidence under its policy.
+            **Missing attestation** means no attestation identity was returned to satisfy policy. **Verified attestation** means the verifier accepted evidence under its policy.
 
-            **Options:**
-            - A (correct): The application must not collapse no-attestation into attestation success.
-            - B (incorrect): RFC 9261 allows empty authenticators.
-            - C (incorrect): Authenticated refusals are part of the protocol.
-
+            A: The application must not collapse no-attestation into attestation success.
+            B: RFC 9261 allows empty authenticators.
+            C: Authenticated refusals are part of the protocol.
           </div>
         </div>
       </article>

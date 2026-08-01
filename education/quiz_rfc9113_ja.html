@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9113",
       SKILL_SUBTITLE: "HTTP/2",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -124,20 +125,20 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.
+            multiplexing, stream, connection. HTTP/2はbinary framing layerで, 独立streamを同一connection上に流せる.
 
-            **Protocol structure:** HTTP/2は複数のrequest/responseを1 connection上の独立したstreamへ割り当て, frame, flow control, stream stateでそれぞれを管理します.
+            HTTP/2は複数のrequest/responseを1 connection上の独立したstreamへ割り当て, frame, flow control, stream stateでそれぞれを管理します.
 
-            **Correct (B):** multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らします. 1 connection しかなくても, stream ごとに独立したやり取りを進められるのが大きな変化です.
+            multiplexingにより, HTTP/1.1のpipeliningに比べてHTTPレイヤのhead-of-lineを減らします. 1 connection しかなくても, stream ごとに独立したやり取りを進められるのが大きな変化です.
 
-            **Options:**
+
 
             - A (incorrect): HTTPのセマンティクス(=methodやstatus codeの意味づけ)はRFC 9110で定義され, HTTP/2で変わらない.
 
             - B (correct): これがtransport面での主要な変化.
             - C (incorrect): HTTP/2は通常TLS上で動くが, TLSを置き換えない.
 
-            **Related:** ただし TCP 上なので, transport レイヤの head-of-line は残ります. そこが HTTP/3 / QUIC へ話がつながるポイントです.
+            ただし TCP 上なので, transport レイヤの head-of-line は残ります. そこが HTTP/3 / QUIC へ話がつながるポイントです.
           </div>
         </div>
       </article>
@@ -153,15 +154,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** frame, binary framing layer. HTTP/2はframeの列として通信し, frame headerで種別や長さを表す.
+            frame, binary framing layer. HTTP/2はframeの列として通信し, frame headerで種別や長さを表す.
 
-            **Correct (C):** frameがheaders, data, settingsなどを運ぶ.
-            **Options:**
+            frameがheaders, data, settingsなどを運ぶ.
+
 
             - A (incorrect): それはHTTP/1.1.
             - B (incorrect): chunkedはHTTP/1.1の転送方式.
             - C (correct): HTTP/2はbinary frame.
-            **Related:** HTTPのセマンティクスは同じでも, framing layerが違うと実装の落とし穴が変わる.
+            HTTPのセマンティクスは同じでも, framing layerが違うと実装の落とし穴が変わる.
           </div>
         </div>
       </article>
@@ -177,79 +178,78 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** stream ID, initiator. stream IDは順序と開始者を示し, protocol error検出に役立つ.
+            stream ID, initiator. stream IDは順序と開始者を示し, protocol error検出に役立つ.
 
-            **Correct (A):** clientは奇数, serverは偶数を使う.
-            **Options:**
+            clientは奇数, serverは偶数を使う.
+
 
             - A (correct): clientが開始するstreamには奇数ID, serverが開始するstreamには偶数IDを割り当てます.
             - B (incorrect): initiatorと奇偶の対応が逆です. client側のstream ID namespaceは奇数から始まります.
             - C (incorrect): 最下位bitがinitiatorを表すため, 奇偶を無視するとpeerが開始したstreamを正しく判定できません.
-            **Related:** stream IDの単調増加も重要で, 再利用や不正frameを検出する.
+            stream IDの単調増加も重要で, 再利用や不正frameを検出する.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="どのframe payloadがflow-control windowを消費するか, windowのscopeはいくつあるか, 何で補充するかを確認してください.">
-        <header><h4>Q4: HTTP/2 flow controlについて正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="DATAは独立した2つのwindowに制約され, 一方だけ増やしても他方は解除されません.">
+        <header><h4>Q4: stream 5のDATA送信を再開させるupdateはどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">HTTP/2 senderはstream 5のflow-control windowとconnection windowの両方を使い切りました. receiverは十分なDATAを消費し, stream 5の送信を継続させたいとします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. in-flightなDATA量を制限する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. header frameにもDATAと同様に適用される</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. stream levelとconnection levelの両方がある</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. WINDOW_UPDATEでwindowを増やす</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. stream 5だけでWINDOW_UPDATEを送る</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. stream 0だけでWINDOW_UPDATEを送る</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. stream 5とconnectionの両windowを増やす</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. stream 5向けにSETTINGS_MAX_CONCURRENT_STREAMSを送る</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** flow control, window, DATA, WINDOW_UPDATE. flow controlは受信側が過負荷にならないよう, 送信をcreditで制限する仕組み.
-
-            **Correct (A,C,D):** DATA向けのwindowがあり, stream単位とconnection全体の両方で管理される. windowを増やすのがWINDOW_UPDATE.
-            **Options:**
-
-            - A (correct): windowがDATA送信量を制御する.
-            - B (incorrect): 主にDATAが対象で, headerは別の取り扱いになる.
-            - C (correct): 2種類のwindowがある.
-            - D (correct): WINDOW_UPDATEで増加.
-            **Related:** window設定ミスはstallに見え, ネットワーク障害と誤診しやすい.
+            A: connection windowが0の間はstream creditを利用できません.
+            B: connection creditだけではstream 5自身のzero windowを解除できません.
+            C: RFC 9113 Sections 5.2と6.9はDATAについてstreamとconnectionの独立windowを定義し, 枯渇した両方を増やす必要があります.
+            D: SETTINGS_MAX_CONCURRENT_STREAMSはstream作成数を制限し, DATA creditを補充しません.
+            判定基準: 枯渇したflow-control scopeをすべて特定します. senderはstreamとconnectionの両windowが許すときだけDATAを送れます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="peerのHTTP/2 trafficの送り方や解釈を変えるparameterを運ぶconnection-level control frameを探してください.">
-        <header><h4>Q5: SETTINGS frameの目的はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="compressed blockは元connectionだけに存在するdynamic-table stateを参照し得ます.">
+        <header><h4>Q5: gatewayはこのHTTP fieldをどう転送する?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">gatewayは1本のHTTP/2 connectionを終端し, backendへ別のHTTP/2 connectionを開きます. 効率化のためclientのraw HPACK field blockをbackend connectionのHEADERS frameへコピーする予定です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. application payloadを運ぶ</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. connectionの設定パラメータを伝える</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. DATA frameをackする</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 同じoriginへの全HTTP/2 connectionはHPACK stateを共有するためbyteをそのままコピーする</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. client connectionでdecodeし, 得たfieldをbackend connectionのHPACK contextでencodeする</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. frame headerのstream IDだけを置き換えてbyteをコピーする</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. コピー後にSETTINGS_HEADER_TABLE_SIZE=0を送りportableにする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** SETTINGS, connection parameters. frame sizeやconcurrent streamsなどの上限や好みを共有する.
-            **Correct (B):** SETTINGSはcontrolとしてconnectionを調整する.
-            **Options:**
-
-            - A (incorrect): application payloadはrequestやresponseに属するDATA frameで運び, SETTINGS frameのpayloadにはしません.
-            - B (correct): SETTINGS frameはmaximum frame sizeやconcurrent stream数など, peerの送信挙動に関わるconnection parameterを通知します.
-            - C (incorrect): SETTINGSにはSETTINGS ACKがありますが, 個々のDATA frameの受信確認を行うframeではありません.
-            **Related:** SETTINGSの未尊重はprotocol errorになり得る. 受信側はackする必要がある.
+            A: originが同じでもHPACK dynamic-table stateはconnection間で共有されません.
+            B: RFC 9113 Section 4.3.1はendpointごと, connectionごとのencoder/decoder contextを定義します. gateway越しではsemantic fieldをdecodeし, 次のcontextでre-encodeします.
+            C: stream-ID置換ではfirst connectionで作られたdynamic-table referenceを修復できません.
+            D: 後続SETTINGS valueは既にencodeしたfield blockを遡ってdecodableにはしません.
+            判定基準: compression byteはconnection-bound protocol stateです. reconstructed HTTP fieldだけがgateway boundaryを安全に越えられます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^goaway$" data-difficulty="L1" data-hint="senderが処理した可能性のある最後のstreamを示し, 新しいworkを前提にしないよう伝えるconnection-level frame名を答えてください.">
-        <header><h4>Q6: HTTP/2 connectionのgraceful shutdownを示すframe名はどれ</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Last-Stream-IDでdefinitely unprocessedなworkと, 既にeffectが生じたかもしれないworkを分けてください.">
+        <header><h4>Q6: このGOAWAYから導けるretry判断はどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the frame name" />
+          <p class="question-premise">clientはnon-idempotentなPOSTをstreams 5と9で送りました. どちらのresponseも届く前にserverがLast-Stream-ID 7のGOAWAYを送ります. application-level deduplication contractはありません.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. GOAWAYは全stream未処理を意味するため両POSTをretryする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. GOAWAYでは全streamのoutcomeが不明になるためどちらもretryしない</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. stream 9をretryし, stream 5はpossible effectを解決してから判断する</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. low-numbered streamはLast-Stream-IDから除外されるためstream 5だけretryする</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** GOAWAY. GOAWAYは新規streamを受け付けないことと, 処理済みのlast streamを通知する.
-            **Correct:** GOAWAY.
-            **Why others are wrong:** RST_STREAMは1つのstreamだけをresetする. SETTINGSは設定通知でshutdownではない.
-            **Related:** 未処理stream上のrequestは, methodのidempotencyを考慮してretry判断する.
+            A: RFC 9113 Section 6.8はLast-Stream-ID以下のstreamが処理済みかもしれないとします.
+            B: valueより大きいstreamは処理されず今後も処理されないため, stream 9にはdefiniteなtransport outcomeがあります.
+            C: Section 6.8によりstream 9は未作成同様に扱えます. stream 5はeffect済みかもしれず, RFC 9110 Section 9.2.2はnon-idempotent POSTのautomatic repeat前にapplication knowledgeを要求します.
+            D: 解釈が逆です. value以下は処理済みの可能性があり, それより大きいIDが除外されます.
+            判定基準: GOAWAYはprocessing boundaryを確立しますがuniversal retry safetyではありません. method effectとapplication deduplication保証を組み合わせます.
           </div>
         </div>
       </article>

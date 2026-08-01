@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8949","SKILL_SUBTITLE":"Concise Binary Object Representation (CBOR)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8949","SKILL_SUBTITLE":"Concise Binary Object Representation (CBOR)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="CBOR data modelが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 8949のCBOR data modelだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="CBOR syntax,generic-data-model validity,application expected inputは別のacceptance layerです.">
+        <header><h4>Q1: このCBOR itemはA2A operationに受理可能か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 8949を参照し,CBOR data modelを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">decoderはwell-formedかつvalidなCBOR text stringをacceptします.A2A operation schemaはinteger key 1と2を含むmapを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. structured dataをcompactなbinary representationでencodeし, data itemと拡張性を明確にすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. structured dataをcompactなbinary representationでencodeし, data itemと拡張性を明確にすること.ただしmap key, tag, allowed value typeへ意味を与えるschemaまたはprofileはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWTとCOSEはCBORに依存するが, security processingはそれぞれのprofileが定義する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8949を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-5はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-5がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 8949はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. generic decoderがvalid CBORと報告すれば,すべてのapplication schemaがresulting data itemをacceptするため受理可能である</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. このoperationには受理できない.itemはvalid CBORでもapplicationのexpected-input ruleを満たさない場合がある</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. text stringはCBOR generic data modelに含まれずwell-formedになれないため受理できない</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. textがUTF-8なら受理可能である.application-level map requirementはdeterministic encodingだけに適用される</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 5はvalid CBORと特定application protocolがexpectedするinputを区別します.
+B: 正解です.Sections 5 and 5.3はwell-formedness,validity,application expectationを連続するcheckとして扱います.
+C: Text stringはbasic CBOR data typeです.defectはCBOR syntaxではなくschema mismatchです.
+D: UTF-8 validityはtext stringをoperation-required mapへ変えません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがCBOR data modelについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="profileが用途にdeterministic ruleを選ばない限り,RFC 8949はrepresentation variationを認めます.">
+        <header><h4>Q2: RFC 8949はすべてのCBOR messageにcore deterministic encodingを要求するか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 8949を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A telemetry messageはdata-model valueへdecodeするだけで,encoded bytesのhash/signatureやbyte-for-byte comparisonをしません.profileはdeterministic encodingを選んでいません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. map key, tag, allowed value typeへ意味を与えるschemaまたはprofileだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: CWTとCOSEはCBORに依存するが, security processingはそれぞれのprofileが定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. byteを比較, 署名, hashする場面ではdeterministic encodingを選ぶ</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
-          </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 4-5に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 要求する.preferred serializationとsorted map keyはすべてのwell-formed CBOR itemでmandatoryである</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 要求する.同じdata-model valueの二つのencodingはbytesが同一でなければinvalidである</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 要求しない.messageをregistered CBOR tagでwrapしない限りdeterministic encodingは禁止される</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 要求しない.stable bytesが必要なapplicationでprofileが選ぶもので,Section 4.2がruleを定義する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 4.1はpreferred serializationが一般にrequiredではないとし,Section 4.2が必要なprotocol向けdeterministic variantを定義します.
+B: CBORは通常,一つのdata-model valueに複数のwell-formed encodingを許します.
+C: Deterministic encodingはitemがtagを持つかとは独立です.
+D: 正解です.profileはSection 4.2.1のcore requirementsやSection 4.2.3のspecified alternativeを選べます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このCBOR data modelのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="generic map APIにduplicate security-relevant keyの一方を黙って選ばせないでください.">
+        <header><h4>Q3: authorization parserはこのmapをどう扱うべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: duplicate map keyや深くnestedしたvalueを,profileのinterpretationとresource limitを適用せず受理すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">attackerはroleを二回含むCBOR mapを送り,role=readerの後にrole=adminを置きます.gateway libraryは最初を保持し,backend libraryは最後を保持します.profileはauthorizationに一つのunambiguous role valueを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,nesting depth, integer size, string size, duplicate map keyの制限だけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. well-formed CBORだけparseし, duplicate key, tag, resource limitにapplication profileを適用する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: CWTとCOSEはCBORに依存するが, security processingはそれぞれのprofileが定義する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 8949対応をadvertiseしたため,検証せずprocessingを続ける</label>
-          </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 10に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. streaming decoderがduplicateより先に見るため,両serviceで最初のvalueを使う</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 後のmap entryは前のentryに対するexplicit updateとして働くため,両serviceで最後のvalueを使う</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. profile-requiredなdecoderまたはapplication boundaryのduplicate detectionでauthorization前にrejectする</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 各serviceにnative map behaviorを使わせ,authorization差はdownstream logでreconcileする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 5.3.1はduplicate map keyをvalidity errorとし,decoder behaviorが異なることを説明します.
+B: CBOR mapはupdate logではなく,generic data modelはunique keyを持ちます.
+C: 正解です.Sections 5 and 5.3.1はCBOR-based protocolにhandlingを定義させ,このsecurity profileにはsingle interpretationが必要です.
+D: Divergent native behaviorはpremiseにあるcross-component security failureを作ります.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: CBOR data modelを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="coreとlength-first deterministic encodingはmap-key orderingが異なり,profileは一つのbyte representationを選ぶ必要があります.">
+        <header><h4>Q4: なぜimplementation間でsignature verificationが失敗するか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 8949を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">二つのA2A implementationは同じmapをlocalにre-encodeしてCBOR-encoded request bytesへsignします.一方はSection 4.2.1 core deterministic encoding,他方はSection 4.2.3 length-first map orderingを使います.profileはdeterministic CBORとだけ書き,identical signature inputを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. map key, tag, allowed value typeへ意味を与えるschemaまたはprofile</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. well-formed CBORだけparseし, duplicate key, tag, resource limitにapplication profileを適用する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. nesting depth, integer size, string size, duplicate map keyの制限</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. structured dataをcompactなbinary representationでencodeし, data itemと拡張性を明確にすること</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-5は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. profileがambiguousである.両byte orderをinterchangeableとせず,一つのdeterministic ruleとexact signing inputを選ぶ</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. deterministic encodingは同じdata-model valueに常にidentical bytesを作るため,両signatureはverifyできるはずである</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. profile変更なしにdeterministic-encoding conflictを解決できるため,先に生成されたsignatureを優先する</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. signature operationはbytesではなくabstract CBOR valueをauthenticateするため,verification前に両signatureをmapへdecodeする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 4.2.1 and 4.2.3は意図的に異なるmap orderingを定義します.byte-signing profileは一つを選びsigning inputを定義します.
+B: 各variantは自身のrule内でdeterministicですが,二variantが同じbytesを作るとは限りません.
+C: Message timingはどちらのdeterministic encodingにも含まれず,interoperability ruleを修復しません.
+D: Cryptographic signatureはdefined bytesを対象とし,signatureをdecodeしてもsigned inputは変わりません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでCBOR data modelを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="well-formed inputでもunbounded memory,stack depth,arithmetic effortを消費できます.">
+        <header><h4>Q5: parser-availability criterionを満たす設計はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: binary protocolやtoken profileがcompact, typed, extensibleなdataを必要とする場面.観測した欠陥: 同じabstract valueの異なるencodingでsignature, hash, cache keyを壊すこと.</p>
+          <p class="question-premise">unauthenticated A2A endpointがwell-formed CBORをacceptします.2 KBのinputが巨大lengthを宣言したり,decoderのmemory/stackが尽きるまでarrayを深くnestできます.requirementはauthentication前のbounded workです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（structured dataをcompactなbinary representationでencodeし, data itemと拡張性を明確にすること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（byteを比較, 署名, hashする場面ではdeterministic encodingを選ぶ）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（CWTとCOSEはCBORに依存するが, security processingはそれぞれのprofileが定義する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
-          </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 10に沿って欠陥を解消してからresultを使います.profile rule: byteを比較, 署名, hashする場面ではdeterministic encodingを選ぶ.check: well-formed CBORだけparseし, duplicate key, tag, resource limitにapplication profileを適用する.local policy: map key, tag, allowed value typeへ意味を与えるschemaまたはprofile.</div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. syntactically validなlength/nestingはresource exhaustionに使えないためwell-formedness checkへ依存する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. transport authenticationによりencoded length/nestingがtrustworthyになるためTLS上ではlimitなしでparseする</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. declared sizeを先にallocateし,complete application objectがschema checkに失敗したときだけrejectする</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. unbounded object構築前にsize,nesting,allocation,numeric processingへprofile/implementation limitを適用する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 10はlarge size/deep nestingでresourceをexhaustするhostile well-formed inputを説明します.
+B: Section 10はTLS,signing,その他trustedと想定するsourceの後でもinputをhostileとして扱うよう述べます.
+C: Early attacker-driven allocationはbounded-work criterionに反し,schema validation前にfailureします.
+D: Section 10はlarge data item,stack exhaustion,integer issue,superlinear workにappropriate resource managementを求めます.exact limitはprofile/implementation policyです.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: CBOR data modelとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="gatewayがrequestをre-encodeする前に,identityをtransmitted bytesとdefined data-model representationのどちらに置くか選んでください.">
+        <header><h4>Q6: A2A profileはidempotency keyをどう定義すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはCBOR data modelを別protocol layerと組み合わせます.design noteには「CWTとCOSEはCBORに依存するが, security processingはそれぞれのprofileが定義する」とあります.</p>
+          <p class="question-premise">agentはrequest_id=SHA-256(encoded CBOR)を計算します.gatewayは同じdata-model valueをdecodeし,別のvalid representationへre-encodeしてbackendへ送り,backendがrequest_idを再計算します.profileはこのgatewayを越えたsemantically identical requestに同じIDを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,map key, tag, allowed value typeへ意味を与えるschemaまたはprofileは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（well-formed CBORだけparseし, duplicate key, tag, resource limitにapplication profileを適用する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（map key, tag, allowed value typeへ意味を与えるschemaまたはprofile）を定義し,必要なcheck（well-formed CBORだけparseし, duplicate key, tag, resource limitにapplication profileを適用する）を行い,そのresultをoperationがどう使うか記載する</label>
-          </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-5とSection 10がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. CBOR data-model equalityはbyte-hash equalityを保証するため,各hopが受け取ったvalid encodingをhashする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. hash inputに一つのdeterministic encoding/data-model ruleを選ぶか,original IDをprotectして運びre-encodingが保持するとは主張しない</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. backendに両IDをacceptさせ,小さいhash valueをcanonical request identityとして選ぶ</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. tag 55799はtagged valueの全encodingをbyte-identicalにするため,hash前にself-described CBOR tagを追加する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 4.1 and 4.2はdata-model equalityとdeterministic byte representationを区別します.
+B: 指定cross-gateway identity criterionを満たします.Sections 4.2 and 5.6のencoding/map-key choiceをA2A profileで明示します.
+C: 事後に二IDを同一視するとreplay/authorization checkがambiguousになります.
+D: TagはCBORをidentifyしますが,content encodingをnormalizeしません.</div>
         </div>
       </article>
     </section>

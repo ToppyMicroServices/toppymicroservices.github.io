@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7638","SKILL_SUBTITLE":"JSON Web Key (JWK) Thumbprint","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,272 +57,118 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="thumbprintはexact input ruleの下でkey representationを識別します.">
-        <header><h4>Q1: RFC 7638が主に解く問題はどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="後で利用するpolicyではなく,決定的に得られる値へ注目してください.">
+        <header><h4>Q1: JWK Thumbprintとは何か？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. どのuserがresourceを使ってよいか決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. JWKの選ばれたpublic memberからdeterministicなdigestを作る</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. すべてのJOSE objectにcertificate fingerprintを作る</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** このRFCはJWKから安定したkey identifierを計算する方法を定義します. そのkeyを誰が使ってよいかは決めません.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: authorizationはthumbprint calculationの外側であり, token policyやapplication policyの仕事です.
-- B: 選ばれたpublic JWK memberに対するdeterministic digestがこのRFCの中心です.
-- C: JWK thumbprintはJWK representationから計算されます. X.509 certificate objectからではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. JSON stringにencodeされたcertificate-path判断.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. public keyから導出されるauthorization grant.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 定義済みJWK key表現から計算するdigest.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. key ownerがrequestを承認したことを示すsignature.</label>
+          </fieldset><div class="explain">RFC 7638 Section 2と3は,JWK Thumbprintを厳密に構成したJWK表現のdigestと定義します.この計算が識別するのはkey materialであり,certificate path,key possession,ownerの承認,authorizationを証明しません.identifierにそれらの意味を与えるのは,thumbprintを利用する後続protocolです.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="stable key identityに影響すべきmemberを探してください.">
-        <header><h4>Q2: JWK thumbprintの計算入力に含めるものはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="digestのencode方法や用途を考える前に,hash inputを構成してください.">
+        <header><h4>Q2: RFC 7638のthumbprint計算に含まれるstepはどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. JWK key typeで必要なpublic key member</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. private key materialとdeploymentだけのmetadata</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. 選ばれたmemberだけを含むcanonical JSON object</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. 存在するkid, use, alg memberすべて</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** thumbprintはmetadata変更で揺れない必要があります. そのためkey typeごとのrequired public memberだけを含めます.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: required public memberは識別したいkey materialを定義します.
-- B: private materialやdeployment metadataを入れると, identifierが危険または不安定になります.
-- C: canonical JSONにより, serializerが違っても同じbyte列をhashできます.
-- D: kid, use, algはmetadataであり, thumbprint inputには含めません.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. metadataを失わないよう,すべてのoptional JWK memberを含める.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. required memberだけを残し,nameを辞書順に並べ,whitespaceを除く.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. serialization前にすべてのUnicode stringをNFC normalizeする.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. 得られたJSON objectのUTF-8 octetを選択したhash functionでhashする.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3はrequired memberだけのJSON objectを構成し,nameを辞書順に並べ,whitespaceなしでUTF-8 encodeしたoctetをhashします.Section 3.2.2はoptional memberを意図的に除外し,Section 3.3と4もUnicode normalizationを追加しません.interoperabilityには,hash前のmember,character,順序,octetがすべて一致する必要があります.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="異なるJSON serializationでも同じresultになる必要があります.">
-        <header><h4>Q3: RFC 7638でcanonical JSONが重要な理由はどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="このkey typeを表すためのrequired memberだけを辞書順で選んでください.">
+        <header><h4>Q3: RSA public JWKのhash inputを構成するmemberはどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. human intentを示すためwhitespaceを含められる</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. optional metadataの順序でkey identityを変えられる</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. hash前のmember selectionとorderingを固定する</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** canonicalizationがないと, 同じJWKでもhash inputが実装ごとに変わり得ます. RFCはそのinterop failureを避けます.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: human formattingは安定したcryptographic inputではありません.
-- B: optional metadataで同じkeyのthumbprintが変わるべきではありません.
-- C: selectionとorderingを固定することで, 実装間でhash inputがdeterministicになります.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. e,kty,n.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. alg,e,kid,kty,n.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. kty,n,use,x5c.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 受信JWKに存在するすべてのmember.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.2は,RSA public-key thumbprintへ`e`,`kty`,`n`をこの辞書順で使います.`alg`,`kid`,`use`,`x5c`はoptional metadataであり,Section 3.2.2が意図的に除外します.hash inputは到着した全memberではなく,key typeに必要な表現から決めます.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="どのobjectをhashしているかを比べてください.">
-        <header><h4>Q4: JWK thumbprintとcertificate fingerprintの違いはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="変更fieldがkey valueを表すのか,その周囲のoptional contextなのかを確認してください.">
+        <header><h4>Q4: JWKのkid,use,algが変わり,required key memberは同一である.thumbprintはどうなるか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. DER encoded certificateではなく, keyのcanonical JWK representationをhashする</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. certificate pathとrevocation statusを検証する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. key ownerがrequested resourceへauthorize済みだと証明する</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** thumbprintはJWK形式のkey materialを識別します. certificate trustとauthorizationは別のdecisionです.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: hash対象がJWK representationであるという区別が重要です.
-- B: JWK thumbprint algorithmはcertificate path validationを行いません.
-- C: digestはkeyを識別できますが, requestを単独でauthorizeしません.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. kidは常にhash inputに入るため変化する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. すべてのsemantic restrictionをhashするため変化する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. optional fieldをすべて除去するまでundefinedになる.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. optional memberは除外されるため同じ値を保つ.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.2.2は,同じkeyの等価な表現から同じthumbprintを得るためoptional memberを除外します.`kid`,`use`,`alg`はJWKに残せますが,hash inputにはcopyされません.そのためthumbprintはmetadata変更に対して安定する一方,それらの値をkeyへbindしません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="DPoPではdeclared key identityとproof keyを比較します.">
-        <header><h4>Q5: token-binding designでJWK thumbprintを使う流れとして最も適切なのはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="両方のholderが再現するidentifierへprivate parameterが必要かを考えてください.">
+        <header><h4>Q5: public-key holderとprivate-key holderが同じkey-pair identifierを得る計算はどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. thumbprintらしい文字列のsyntaxがvalidならtokenを受け入れる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. 提示されたpublic JWKのthumbprintを計算し, expected confirmation valueと比較する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. tokenにjkt valueがあればproof verificationを省略する</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc7638-ja-q5-caption">
-            <figcaption id="rfc7638-ja-q5-caption">proof flow内のthumbprint comparison.</figcaption>
-            <svg viewBox="0 0 772 158" role="img" aria-label="proof flow内のthumbprint comparison.">
-              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="95" y="69">提示された</text>
-              <text class="flow-label" x="95" y="90">public JWK</text>
-              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
-              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
-              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="289" y="69">selected member</text>
-              <text class="flow-label" x="289" y="90">をcanonicalize</text>
-              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
-              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
-              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="483" y="69">hashして</text>
-              <text class="flow-label" x="483" y="90">thumbprint</text>
-              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
-              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
-              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="677" y="69">confirmation</text>
-              <text class="flow-label" x="677" y="90">と比較</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** thumbprint comparisonは大きなproof/token validation flowの一部です.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: syntaxだけでは対応するprivate keyのpossessionを証明しません.
-- B: expected key identityとproof pathで提示されたkeyを比較しています.
-- C: confirmation valueはvalid proofと対応させる必要があります. valueだけをproofとして扱いません.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. private parameterをすべてhashし,private-key holderだけが識別できるようにする.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 対応するpublic-key JWK表現のthumbprintを計算する.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. encryption metadataを含むencrypted private JWKをhashする.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. RFC 7638はprivate-key JWKのthumbprintを定義しない.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.2.1は,private keyのthumbprintを対応するpublic keyのthumbprintとして定義します.これにより,private parameterや無関係なencryption metadataをhashせず,双方のholderが同じkey pairを参照できます.identifierはpublic表現を通じてpairを指すため,publicかprivateかはapplication contextで区別します.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="identifierとpolicy approvalは同じではありません.">
-        <header><h4>Q6: JWK thumbprintについて正確な説明はどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="producerが作るopaque identifierと,複数partyが独立に再計算する値を分けてください.">
+        <header><h4>Q6: thumbprintのhash functionについて正しい記述はどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. thumbprintが一致すればprotected resourceへのaccessが自動で許可される</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. thumbprintを使うprofileはhash algorithmとencoding ruleを固定する必要がある</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. kidを変えたらthumbprintは必ず変わる</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. thumbprintはkeyへのreferenceをbindできるが, trustは周辺validationに依存する</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** thumbprintは有用なidentifierです. security-relevantにするには, compute, compare, validateのruleをprofileが定義します.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: access controlにはtoken validationとapplication policyが必要です.
-- B: producerとverifierが同じ値を計算するため, profileにはexact comparison ruleが必要です.
-- C: kidはthumbprint inputに含まれないため, kid変更だけではthumbprintは変わりません.
-- D: thumbprintはreferenceをkeyへbindできますが, trustとauthorizationは別checkです.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. applicationがhash functionを選び,再計算するpartyは同じものへ合意する.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. RFC 7638はすべてのapplicationへ永続的にSHA-256を固定する.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. thumbprintをkidとして受け取るconsumerはopaque selectorとして扱える.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. verifierはencode後の長さからhash algorithmを常に推定できる.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3.4はhash選択をapplicationへ任せ,thumbprintを再計算するparty間で同じfunctionを使うよう求めます.SHA-256は発行時点のよいdefaultであって永続的な一律要件ではなく,長さからalgorithmを推定する規則もありません.`kid`値をopaqueなlookupとして使うconsumerは再計算不要ですが,計算結果を比較するprofileはalgorithmを特定する必要があります.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="metadata変更で新しいkey identityを作らないようにします.">
-        <header><h4>Q7: public keyは同じままkidとuseだけ変わった場合, RFC 7638 thumbprintはどうなるべきですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="双方がvalid JSONかではなく,hashする正確なinputを比較してください.">
+        <header><h4>Q7: interoperableなthumbprintを生成する実装はどちらか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Library AはJSON.stringify(receivedJwk)をhashし,入力順序とalgを保持する.Library Bはrequired memberだけの新しいobjectを作り,member nameをUnicode code point順に並べ,whitespaceなしでUTF-8 byteをhashする.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. すべてのJWK memberをhashするため必ず変わる</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. optional metadataが変わったためinvalidになる</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. それらのmetadata memberは含めないため同じままになる</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** thumbprintはkeyそのものを表すためのもので, keyに付けたlocal metadata label全体を表すものではありません.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: RFCはすべてのJWK memberをhashしません.
-- B: optional metadata変更はkey thumbprint自体をinvalidにする理由ではありません.
-- C: kidとuseは選択されたinput外なので, 同じpublic keyならthumbprintは安定します.
-          </div>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. senderの元JSONを保持することが常にcanonicalなのでLibrary A.</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. algをすべてのkey identifierへbindする必要があるのでLibrary A.</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. semanticに等価なJSONは常に同じbyteへhashされるので両方.</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. RFC 7638が新しい決定的hash inputを定義するのでLibrary B.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3と3.3はrequired memberだけを選び,nameを辞書順にし,whitespaceなしのUTF-8 octetをhashするよう求めます.Section 3.2.2はoptionalな`alg`を除外し,Section 4はgenericなJSON.stringifyがsortを保証しないと警告します.semanticに等価なJSONでもbyte列は異なり得るため,digestより先に構成octetを確認します.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="digest identifierにはcryptographic assumptionがありますがpolicy meaningはありません.">
-        <header><h4>Q8: thumbprint equalityに依存するとき最も関係するsecurity assumptionはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="equalityがkey materialについて示すことと,protocol policyがまだ判断すべきことを分けてください.">
+        <header><h4>Q8: このthumbprint一致からrelying partyが結論できるのはどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">Agent Cardはpublic keyのthumbprint Tを記録する.後で得たJWKもprofile合意済みSHA-256規則によりTとなったが,card自体はuntrusted directoryから取得した.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. 選んだhash functionで実用的なcollisionを作れないこと</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. thumbprintでissuerとaudience checkを置き換えられること</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. thumbprint stringをshared secretとして扱うこと</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** thumbprint equalityは選んだhashのcollision resistanceに依存します. ただしtoken context checkは置き換えません.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: digest-based identifierではcollision resistanceが重要なcryptographic propertyです.
-- B: issuerとaudience checkは別の境界を守るため残す必要があります.
-- C: thumbprintは通常public key materialを識別する値であり, secretとして扱うものではありません.
-          </div>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. cryptographic digestが一致したためdirectoryはtrustedである.</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. JWKは識別対象key表現と一致するが,cardのtrustとauthorizationは未解決である.</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. holderは現在requestについてprivate key possessionを証明した.</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. card内のすべてのoptional JWK属性がTによって暗号的にbindされた.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3と3.2.2は,thumbprintをrequired key materialのidentifierとし,関連属性を除外します.一致から分かるのは,計算規則の下で2つの表現が同じkeyを指すことです.source provenance,除外metadata,fresh possession,authorizationは認証できないため,それぞれ別のprotocol checkが必要です.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="interopはhash前のbyte列が同じになるかに依存します.">
-        <header><h4>Q9: interoperabilityを守るimplementation detailはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="c,d" data-difficulty="L3" data-hint="symmetric materialの漏えいと,受理する表現のuniqueness assumptionを確認してください.">
+        <header><h4>Q9: このthumbprint運用を止めるべきfindingはどれか.2つ選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">serviceはlow-entropy symmetric keyのSHA-256 thumbprintをlogで公開する.さらにnon-canonicalなRSA encodingを受理し,thumbprint不一致をbanned keyのblacklistとして使う.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. 全実装がkey typeごとに同じrequired public memberを選ぶ</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. 受け取ったoriginal source textをそのままhashする</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. local deployment intentを保つためextension memberを含める</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. hash前に同じJSON serializationとbyte conversion ruleを使う</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** RFCの狙いは, independent implementationが同じkeyに同じidentifierを計算することです.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: 同じselected public memberを使うことがshared resultの前提です.
-- B: original source textにはwhitespaceやordering差があるため, そのままhashするとinteropを壊します.
-- C: extension memberを入れるとidentifierがdeployment-dependentで不安定になります.
-- D: 同じserializationとbyte ruleを使うことでhash inputが一致します.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. digestはone-wayなのでsymmetric-key thumbprintの公開は常に安全である.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. thumbprint不一致はtransformed keyが全banned keyと無関係だと確実に示す.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. hashとkey entropyが漏えいへ十分強いと確認できなければsymmetric-key thumbprintを隠す.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. thumbprintのuniquenessを利用する前に,受理するkey表現をvalidationする.</label>
+          </fieldset><div class="explain">RFC 7638 Section 7は,symmetric-key thumbprintの公開がsecretの情報を漏らし得るため,applicationが十分な保護を説明できない限り隠すよう勧めます.同Sectionは,alternate representationが単純なthumbprint blacklistを回避できる例も示し,uniquenessを1つの検証済みで曖昧でないJWK表現に依存させます.digestをsecurity boundaryにするなら,input entropyと受理するrepresentationの両方を定義する必要があります.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="bindingを弱めるfallbackをしないでください.">
-        <header><h4>Q10: expected thumbprintと一致する提示keyがない場合, verifierはどうするべきですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="keyを識別するstep,possessionを示すstep,resource actionをauthorizeするstepを追ってください.">
+        <header><h4>Q10: thumbprint,proof,backend判断を正しく合成した評価はどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">OAuth tokenはJWK Thumbprint Tを示す.A2A gatewayはTになるJWKで作られたfresh proofを検証し,X-Key-Thumbprint: Tだけをauthorization担当backendへ転送する.このheaderはほかのinternal callerから改変可能である.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. 同じkidを持つ近いkeyを試す</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. この判断ではkey-binding check failedとして扱う</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. token payloadがもっともらしければrequestを受け入れる</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** matching thumbprintがないならkey identity checkは成功していません. 弱いidentifierへfallbackするとbindingを壊します.
-
-**Related keywords:**
-- **thumbprint** : 選んだpublic JWK memberから作る安定したdigest
-- **canonical form** : hash前に使う決まったJSON表現
-- **jkt** : DPoPで使われるJWK thumbprint由来のconfirmation value
-
-**Options:**
-- A: kidはthumbprint comparison boundaryより弱く, 同じものではありません.
-- B: decisionを失敗させることでbinding semanticsを保てます.
-- C: もっともらしいpayloadはcryptographic key identity checkを置き換えません.
-          </div>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. gatewayはkey一致とpossessionを検証できる.backendには保護されたassertionとpolicyが必要である.</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. T自体がfresh proofを運ぶため,headerを再送するcallerも検証済みsessionを継承する.</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. RFC 7638によりbackendはmatching keyに関連する全OAuth claimを信頼できる.</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. backendがheader stringからTを再hashすれば元のproof of possessionが再現される.</label>
+          </fieldset><div class="explain">RFC 7638 Section 3と3.2.2が与えるのは,Section 7のrepresentation limitを伴うstableなkey識別です.thumbprintにはnonce,request,channel bindingがないためfresh possessionを代替できず,再hashしてもsignatureは再現しません.OAuth claim trust,hop間で派生assertionを守るintegrity,backendの最終authorizationは,別々のverifierを持つ独立した保証です.</div>
         </div>
       </article>
     </section>

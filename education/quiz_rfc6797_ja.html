@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6797",
       SKILL_SUBTITLE: "HSTS",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,10 +103,9 @@
 
             conformingなuser agentは, underlying security errorのないsecure transportで受け取った`Strict-Transport-Security` response fieldだけを処理します. このfieldは必須の`max-age`と, 任意の`includeSubDomains`を運びます.
 
-            **選択肢:**
-            - A (incorrect): `Transport-Security` は標準 header 名ではありません.
-            - B (correct): `Strict-Transport-Security` がHSTS policyを伝えるfieldです.
-            - C (incorrect): `Secure-Only` はHSTS response fieldの名前ではありません.
+            A: `Transport-Security` は標準 header 名ではありません.
+            B: `Strict-Transport-Security` がHSTS policyを伝えるfieldです.
+            C: `Secure-Only` はHSTS response fieldの名前ではありません.
           </div>
         </div>
       </article>
@@ -124,16 +124,15 @@
 
             RFC 6797は必須directiveの`max-age`と, 任意directiveの`includeSubDomains`を定義しています. user agentは, fieldの他の部分が有効なら未知のdirectiveを無視して認識済みdirectiveを処理します.
 
-            **選択肢:**
-            - A (correct): `max-age` はpolicy lifetimeを秒で指定し, field grammar上必須です.
-            - B (correct): `includeSubDomains` はpolicyをsubdomainへ任意に広げます.
-            - C (incorrect): `preload` はRFC 6797が定義するdirectiveではなく, browserのpreload登録は別の運用mechanismです.
-            - D (incorrect): `allowInsecure` はRFC 6797のdirectiveではなく, HSTSの目的にも反します.
+            A: `max-age` はpolicy lifetimeを秒で指定し, field grammar上必須です.
+            B: `includeSubDomains` はpolicyをsubdomainへ任意に広げます.
+            C: `preload` はRFC 6797が定義するdirectiveではなく, browserのpreload登録は別の運用mechanismです.
+            D: `allowInsecure` はRFC 6797のdirectiveではなく, HSTSの目的にも反します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="user agentがhostのpolicyをまだ学習していない段階を考えてください.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="user agentがhostのpolicyをまだ学習していない段階を考えてください.">
         <header><h4>Q3: HSTSだけでは完全に守れない状況として典型なのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -146,12 +145,11 @@
 
             secure transport上のHTTP responseから学習するHSTS policyは, それより前のinsecureなfirst contactを保護できません. user agentがhostをKnown HSTS Hostとして記録する前なら, active attackerが通信へ介入できます.
 
-            **選択肢:**
-            - A (incorrect): unexpiredなpolicyがcache済みなら, user agentはそのhostへsecure transportを強制します.
-            - B (incorrect): 学習済みpolicyの`includeSubDomains`は, matchingするsubdomainへenforcementを広げます.
-            - C (correct): prior policyのないbootstrap requestには弱さが残ります.
+            RFC 6797 Section 14.6がこのbootstrap vulnerabilityを説明しています.preloaded Known HSTS Host listはgapを緩和できますが, RFC 6797は`preload` header directiveを定義していません.
 
-            preloaded Known HSTS Host listはこのbootstrap gapを緩和できますが, RFC 6797は`preload` header directiveを定義していません.
+            A: unexpiredなpolicyがcache済みなら, user agentはそのhostへsecure transportを強制します.
+            B: 学習済みpolicyの`includeSubDomains`は, matchingするsubdomainへenforcementを広げます.
+            C: prior policyのないbootstrap requestには弱さが残ります.
           </div>
         </div>
       </article>
@@ -169,10 +167,9 @@
 
             `max-age`は`delta-seconds` grammarを使い, fieldを受信してからの秒数を1桁以上のdecimal digitで表します. 後で有効なfieldを受け取ると, policy expiryはその受信時刻を基準に更新されます.
 
-            **選択肢:**
-            - A (correct): RFC 6797 の `max-age` は秒単位です.
-            - B (incorrect): minutesで考えたdurationも秒へ変換して指定します.
-            - C (incorrect): daysで考えたdurationも秒へ変換して指定します.
+            A: RFC 6797 の `max-age` は秒単位です.
+            B: minutesで考えたdurationも秒へ変換して指定します.
+            C: daysで考えたdurationも秒へ変換して指定します.
           </div>
         </div>
       </article>
@@ -184,14 +181,13 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **includeSubDomains**.
 
-            この任意かつvaluelessなdirectiveは, 発行hostからsubdomainへHSTS policyを広げます. assertする前に, insecure HTTP serviceへ依存するsubdomainを確認しないと, conformingなuser agentからそのserviceへ到達できなくなる可能性があります.
+            `includeSubDomains`は任意かつvaluelessなdirectiveで,発行hostからsubdomainへHSTS policyを広げます.assertする前に,insecure HTTP serviceへ依存するsubdomainを確認しないと,conformingなuser agentからそのserviceへ到達できなくなる可能性があります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="user agentがpolicyを記憶するため, 失敗時の影響期間が短く観測可能な変更から始めてください.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="user agentがpolicyを記憶するため, 失敗時の影響期間が短く観測可能な変更から始めてください.">
         <header><h4>Q6: HSTSを安全に導入する時, 典型の第一歩として近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -202,12 +198,11 @@
           <div class="explain">
             **Explanation:**
 
-            user agentはHSTS policyを`max-age` expiryまでcacheし, 後で有効なfieldを受け取るとexpiryを更新します. そのため短いlifetimeから始めてdeploymentを観測するのは保守的なrollout practiceです. RFC 6797がこの順序をnormative requirementとして定めているわけではありません.
+            RFC 6797 Section 6.1.1が`max-age`を定義し, Section 8.1がpolicy processingを説明します.短いlifetimeから始めてdeploymentを観測するのは保守的なrollout practiceであり,RFC 6797がこの順序をnormative requirementとして定めているわけではありません.
 
-            **選択肢:**
-            - A (incorrect): 最初から巨大 `max-age` と `includeSubDomains` を入れると, 未準備 subdomain を巻き込んで破壊的になり得ます.
-            - B (correct): 短い初期lifetimeならpersistenceを抑えつつ, certificate, redirect, subdomainの問題をmonitorできます.
-            - C (incorrect): conformingなuser agentはinsecure transportで受け取ったSTS fieldを無視します.
+            A: 最初から巨大 `max-age` と `includeSubDomains` を入れると, 未準備 subdomain を巻き込んで破壊的になり得ます.
+            B: 短い初期lifetimeならpersistenceを抑えつつ, certificate, redirect, subdomainの問題をmonitorできます.
+            C: conformingなuser agentはinsecure transportで受け取ったSTS fieldを無視します.
           </div>
         </div>
       </article>

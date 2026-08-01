@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7541",
       SKILL_SUBTITLE: "HPACK",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -94,23 +95,22 @@
         <header><h4>Q1: What is the main purpose of HPACK in HTTP/2</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Encrypt headers end to end</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Encrypt HTTP/2 headers end to end without a transport security protocol</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. Reduce header size using compression with indexed representations</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Guarantee server authenticity without TLS</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Authenticate the HTTP/2 server and replace certificate or peer identity validation</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** HPACK represents HTTP/2 header fields as indexed references or literals. Its static table is fixed by the specification; its dynamic table is synchronized for a connection.
+            HPACK represents HTTP/2 header fields as indexed references or literals. Its static table is fixed by the specification; its dynamic table is synchronized for a connection.
 
-            **Correct (B):** Reusing table entries and compact literal encodings reduces repeated header bytes, which is HPACK's purpose.
+            Reusing table entries and compact literal encodings reduces repeated header bytes, which is HPACK's purpose.
 
-            **Options:**
-            - A (incorrect): HPACK can reduce the encoded size of a header block, but it does not encrypt header fields; transport confidentiality is a separate concern.
-            - B (correct): Indexed and literal representations remove redundancy while allowing the decoder to reconstruct the same ordered header list.
-            - C (incorrect): HPACK does not authenticate the server or replace certificate validation.
+            HPACK can reduce the encoded size of a header block, but it does not encrypt header fields; transport confidentiality is a separate concern.
+            Indexed and literal representations remove redundancy while allowing the decoder to reconstruct the same ordered header list.
+            HPACK does not authenticate the server or replace certificate validation.
 
-            **Related:** HTTP/3 uses QPACK, whose table synchronization is adapted to QUIC's stream delivery model.
+            HTTP/3 uses QPACK, whose table synchronization is adapted to QUIC's stream delivery model.
           </div>
         </div>
       </article>
@@ -126,21 +126,20 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** The static and dynamic tables share one index address space, but only the dynamic table is updated by encoder instructions.
+            The static and dynamic tables share one index address space, but only the dynamic table is updated by encoder instructions.
 
-            **Correct (C):** Entries are inserted into and evicted from the dynamic table as header blocks are encoded and decoded.
+            Entries are inserted into and evicted from the dynamic table as header blocks are encoded and decoded.
 
-            **Options:**
-            - A (incorrect): The static table's entries and indices are fixed by RFC 7541 and do not evolve with traffic.
-            - B (incorrect): A DNS cache is not part of HPACK's encoding or decoding context.
-            - C (correct): The encoder and decoder maintain matching connection-specific dynamic-table state.
+            The static table's entries and indices are fixed by RFC 7541 and do not evolve with traffic.
+            A DNS cache is not part of HPACK's encoding or decoding context.
+            The encoder and decoder maintain matching connection-specific dynamic-table state.
 
-            **Related:** If their dynamic-table state diverges, indexed references can decode to the wrong field or produce a compression error.
+            If their dynamic-table state diverges, indexed references can decode to the wrong field or produce a compression error.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Classify the values by whether they contain reusable credentials or session identifiers, not merely by their field names.">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Classify the values by whether they contain reusable credentials or session identifiers, not merely by their field names.">
         <header><h4>Q3: Which example values contain reusable credential or session material and therefore warrant a never-indexed representation (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -152,17 +151,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A literal header field marked **never indexed** is intended for values that should not be inserted into a compression table. RFC 7541 uses credentials and cookies as examples of sensitive fields.
+            A literal header field marked **never indexed** is intended for values that should not be inserted into a compression table. RFC 7541 uses credentials and cookies as examples of sensitive fields.
 
-            **Correct (A,C,D):** These example values carry bearer or session material that can be reused if exposed.
+            These example values carry bearer or session material that can be reused if exposed.
 
-            **Options:**
-            - A (correct): A bearer token is a reusable credential, so retaining it in compression state increases exposure.
-            - B (incorrect): This media-type preference is not a credential or session identifier in the stated example.
-            - C (correct): A session cookie can authorize later requests and should be treated as secret material.
-            - D (correct): A response that sets a session identifier carries the same kind of reusable secret.
+            A bearer token is a reusable credential, so retaining it in compression state increases exposure.
+            This media-type preference is not a credential or session identifier in the stated example.
+            A session cookie can authorize later requests and should be treated as secret material.
+            A response that sets a session identifier carries the same kind of reusable secret.
 
-            **Related:** Sensitivity is a property of the value and threat model. A field name alone is not a universal rule for every deployment.
+            Sensitivity is a property of the value and threat model. A field name alone is not a universal rule for every deployment.
           </div>
         </div>
       </article>
@@ -172,22 +170,21 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. The decoder's SETTINGS_HEADER_TABLE_SIZE limit</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. The number of entries defined in the static table</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. The maximum size of one HTTP/2 frame fragment</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. The static table entry count combined with the HPACK index address space</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. The payload-size limit of one HTTP/2 frame carrying a header-block fragment</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** In HTTP/2, the decoder advertises a maximum with **SETTINGS_HEADER_TABLE_SIZE**. The encoder can choose a smaller current size but cannot exceed that bound.
+            In HTTP/2, the decoder advertises a maximum with **SETTINGS_HEADER_TABLE_SIZE**. The encoder can choose a smaller current size but cannot exceed that bound.
 
-            **Correct (A):** The acknowledged setting is the protocol-defined maximum for the encoder's dynamic table.
+            The acknowledged setting is the protocol-defined maximum for the encoder's dynamic table.
 
-            **Options:**
-            - A (correct): It lets the decoder bound persistent compression state and therefore its memory commitment.
-            - B (incorrect): The static table is a separate fixed table; its entry count does not bound the dynamic table.
-            - C (incorrect): A header block can span frames, and frame payload size is not the dynamic-table capacity limit.
+            It lets the decoder bound persistent compression state and therefore its memory commitment.
+            The static table is a separate fixed table; its entry count does not bound the dynamic table.
+            A header block can span frames, and frame payload size is not the dynamic-table capacity limit.
 
-            **Related:** The encoder signals a chosen lower size with a dynamic table size update at the start of a header block.
+            The encoder signals a chosen lower size with a dynamic table size update at the start of a header block.
           </div>
         </div>
       </article>
@@ -199,18 +196,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A string literal carries a flag indicating whether its octets use HPACK's fixed **Huffman** code.
+            A string literal carries a flag indicating whether its octets use HPACK's fixed **Huffman** code.
 
-            **Correct:** **Huffman**.
 
-            **Why this matters:** RFC 7541 defines one static table in Appendix B, so the code is not learned or negotiated per connection. The decoder must also validate padding and the end-of-string rules.
+            RFC 7541 defines one static table in Appendix B, so the code is not learned or negotiated per connection. The decoder must also validate padding and the end-of-string rules.
 
-            **Related:** Huffman coding of a literal is separate from whether the resulting header field is indexed in the dynamic table.
+            Huffman coding of a literal is separate from whether the resulting header field is indexed in the dynamic table.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Imagine an attacker varying guesses and observing only the encoded length of each result.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Imagine an attacker varying guesses and observing only the encoded length of each result.">
         <header><h4>Q6: A classic risk when compressing secrets together with attacker influenced data is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -221,17 +217,36 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A **compression oracle** exists when an attacker can influence part of the input and observe how encoded length changes relative to a secret in the same compression context.
+            A **compression oracle** exists when an attacker can influence part of the input and observe how encoded length changes relative to a secret in the same compression context.
 
-            **Correct (C):** Repeated length observations can reveal whether an attacker-controlled guess shares structure with the secret.
+            Repeated length observations can reveal whether an attacker-controlled guess shares structure with the secret.
 
-            **Options:**
-            - A (incorrect): The side channel leaks information through size behavior; HPACK does not place TLS traffic keys into header blocks.
-            - B (incorrect): TLS can still authenticate the encrypted record; authenticated transport does not remove information exposed through a length oracle.
-            - C (correct): This is the probing risk described in RFC 7541's security considerations.
+            The side channel leaks information through size behavior; HPACK does not place TLS traffic keys into header blocks.
+            TLS can still authenticate the encrypted record; authenticated transport does not remove information exposed through a length oracle.
+            This is the probing risk described in RFC 7541's security considerations.
 
-            **Related:** Never-indexed representations and separating compression contexts reduce some risks, but the design still needs an explicit attacker-influence analysis.
+            Never-indexed representations and separating compression contexts reduce some risks, but the design still needs an explicit attacker-influence analysis.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Check whether mutually distrustful senders share one dynamic table, can influence values, and can observe encoded lengths.">
+        <header><h4>Q7: Which mitigation review best matches RFC 7541?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A proxy multiplexes mutually distrustful agents onto one HTTP/2 connection. An agent can inject chosen request headers and observe encoded block lengths. Victim requests carry a low-entropy session cookie; only `Authorization` is marked never indexed.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Keep indexing the cookie because TLS hides header values and therefore also prevents an authenticated peer from observing compressed lengths</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Increase the dynamic table size so attacker guesses are mixed with more entries, while preserving one compression context for all agents</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Treat the cookie as sensitive, avoid indexing it on every HPACK hop, and segregate compression access where the implementation can do so</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+RFC 7541 Sections 7.1 and 7.1.1 describe this attacker model directly: mutually distrustful entities share a compression context, one can influence encoded fields, and it can observe lengths. TLS protects content but exposes enough length information for dynamic-table probing, especially when a secret has low entropy.
+
+Sections 7.1.2 and 7.1.3 recommend constraining compression, ideally segregating dynamic-table access by the entity that constructs fields. Cookie and Authorization are examples of sensitive values that an encoder might send as never-indexed literals. Section 6.2.3 requires an intermediary to preserve the never-indexed representation when it re-encodes with HPACK.
+
+Never-indexing does not hide the literal's length or solve every side channel. It prevents insertion and reuse through the dynamic table, so the remaining length exposure and any hop that terminates or recreates compression still require threat analysis.</div>
         </div>
       </article>
     </section>

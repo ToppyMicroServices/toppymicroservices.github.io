@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 6749",
       SKILL_SUBTITLE: "OAuth 2.0 Authorization Framework",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -88,7 +89,7 @@ E: OAuth does not require a network broker role.</div></div>
         <header><h4>Q2: A client receives an OAuth access token for a photo API. What can be concluded from RFC 6749 alone?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q2" value="a"> A. The client has obtained a standardized end-user identity assertion for login</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. The client has a credential representing authorization to access protected resources within its granted scope</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. The token represents scoped authorization to protected resources</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. Every resource server must interpret the token as the user's password</label>
         </fieldset><div class="explain">**Explanation:**
 A:  OAuth 2.0 is an authorization framework; an authentication layer such as OpenID Connect adds standardized login identity semantics.
@@ -100,7 +101,7 @@ C:  the abstraction replaces direct password sharing, and token format may be op
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q3" value="a"> A. They are two names for the same credential at every protocol step</label>
           <label class="choice"><input type="radio" name="Q3" value="b"> B. The access token is used to obtain the grant from the resource server</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. The grant represents authorization used to obtain an access token; the access token is used at protected resources</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. The grant obtains a token; the token accesses protected resources</label>
         </fieldset><div class="explain">**Explanation:**
 A:  they serve different protocol boundaries.
 B:  the direction is reversed and the resource server does not issue the grant in the abstract flow.
@@ -128,7 +129,7 @@ A:  obfuscation or minification does not preserve credential confidentiality.
 B:  browser-based and native applications generally cannot keep a shared secret, so the authorization server must not rely on it to identify a public client.
 C:  client credentials and resource-owner credentials are distinct.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Protect both the destination of the redirect and the binding between the browser transaction and its callback.">
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Protect both the destination of the redirect and the binding between the browser transaction and its callback.">
         <header><h4>Q6: Which controls protect an authorization-code redirect flow? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="checkbox" name="Q6" value="a"> A. Match the redirect URI against a pre-registered URI; current RFC 9700 guidance requires exact string matching except its stated native-app exception</label>
@@ -140,14 +141,14 @@ C:  client credentials and resource-owner credentials are distinct.</div></div>
 A: Exact matching against registered redirect URIs prevents an attacker from selecting a credential-receiving endpoint.
 B: A syntactically valid attacker URI can still exfiltrate a code.
 C: Binding the callback to the initiating user-agent transaction detects forged or displaced callbacks.
-D: PKCE makes the code redeemable only with the verifier held by the initiating client instance. RFC 6749 describes `state`-based CSRF protection; RFC 9700 also defines when supported PKCE or OpenID Connect `nonce` can provide that protection.</div></div>
+D: PKCE makes the code redeemable only with the verifier held by the initiating client instance. RFC 6749 Sections 3.1.2.3 and 10.12 cover redirect matching and CSRF protection; RFC 9700 Sections 2.1 and 2.1.1 give the current exact-matching and PKCE guidance.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate the abstract token credential from a particular HTTP presentation method.">
         <header><h4>Q7: Which statement about access tokens is accurate?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. RFC 6749 requires every access token to be a JWT understood by the client</label>
           <label class="choice"><input type="radio" name="Q7" value="b"> B. Every access token is sender-constrained by RFC 6749 itself</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. The token may be opaque or self-contained and represents particular scope and duration; presentation methods are defined separately</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. It may be opaque or self-contained and represents a specific scope and duration</label>
         </fieldset><div class="explain">**Explanation:**
 A:  the token is usually opaque to the client and need not be a JWT.
 B:  RFC 6749 does not automatically bind every token to a sender; bearer use is specified by RFC 6750 and sender constraining needs additional mechanisms.
@@ -164,7 +165,7 @@ A:  refresh tokens are credentials for obtaining access tokens and are intended 
 B:  RFC 6749 says they are never sent to resource servers.
 C:  exposing a refresh token in a redirect creates credential leakage; renewal happens at the token endpoint.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="RFC 6749 records historical grant types; RFC 9700 supplies current deployment security guidance.">
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="RFC 6749 records historical grant types; RFC 9700 supplies current deployment security guidance.">
         <header><h4>Q9: Which statements reflect current OAuth 2.0 security guidance in RFC 9700? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="checkbox" name="Q9" value="a"> A. The resource owner password credentials grant MUST NOT be used</label>
@@ -176,19 +177,19 @@ C:  exposing a refresh token in a redirect creates credential leakage; renewal h
 A: The password grant exposes resource-owner credentials to the client and is prohibited by RFC 9700.
 B: Returning an access token in the authorization response introduces leakage and replay risks rather than removing them.
 C: RFC 9700 says clients should not use implicit unless its stated injection and leakage risks are prevented.
-D: PKCE is mandatory for public code-flow clients and recommended for confidential clients. RFC 6749 remains the framework baseline, but its historical grant descriptions are not all current deployment recommendations.</div></div>
+D: PKCE is mandatory for public code-flow clients and recommended for confidential clients. RFC 9700 Sections 2.1.1, 2.1.2, and 2.4 provide the cited deployment guidance.</div></div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A token can authorize a resource operation without proving every claim about a runtime, delegation chain, or task context.">
         <header><h4>Q10: Agent B receives an OAuth access token from Agent A and needs to decide whether to execute a high-impact task. What is the sound conclusion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">The token is valid for B's resource API. The design also needs to know which runtime may present it, which task was approved, and whether onward delegation is allowed.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Token validity alone proves every agent identity, runtime property, task parameter, and delegation hop</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Enforce the token's issuer, audience, scope, and lifetime, then use separate profiled claims, sender constraining, and local policy for the additional decisions</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Ignore token scope because TLS has already authorized the task</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Treat validity at B's API as proof of every agent identity, runtime property, task parameter, and delegation hop, without any additional profile or local policy</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Apply the authorization server and resource profile's validation and scope rules, then use separate profiled evidence, sender constraining, and local policy for the additional decisions</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Treat TLS channel authentication as authorization for the entire task and disregard the token's scope, resource restrictions, and delegation constraints</label>
           </fieldset><div class="explain">**Explanation:**
 A:  OAuth token validity does not automatically prove task semantics, runtime attestation, or a complete delegation chain.
-B:  OAuth supplies an authorization-token framework; an A2A profile must define the additional claims and acceptance policy, and mechanisms such as mTLS or DPoP can sender-constrain tokens.
+B:  RFC 6749 Sections 1.4 and 7 leave token format, token attributes, and the resource-server presentation method to companion specifications or a profile. RFC 6749 does not itself require every token to contain issuer and audience fields. An A2A profile must define the applicable validation rules, additional evidence, and acceptance policy; mechanisms such as mTLS or DPoP can sender-constrain tokens.
 C:  TLS protects a channel but does not replace resource authorization or scope enforcement.</div>
         </div>
       </article>

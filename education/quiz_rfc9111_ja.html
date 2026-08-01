@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9111",
       SKILL_SUBTITLE: "HTTP Caching",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** cache は速くする道具として語られがちですが, 実際には「保存してよいか」の判断が先に来る場面が多いです.
+            cache は速くする道具として語られがちですが, 実際には「保存してよいか」の判断が先に来る場面が多いです.
 
-            **用語:** **no-store** は conforming な private cache と shared cache に response を保存しないよう指示します. **private** は shared cache での保存を禁止しますが, browser などの private cache での保存は許します.
+            **no-store** は conforming な private cache と shared cache に response を保存しないよう指示します. **private** は shared cache での保存を禁止しますが, browser などの private cache での保存は許します.
 
-            **実務での機会:** 口座情報, 管理画面, 医療情報, 社内ポータルのレビューで, 「shared cache だけ防げば十分か」が論点になります.
+            口座情報, 管理画面, 医療情報, 社内ポータルのレビューで, 「shared cache だけ防げば十分か」が論点になります.
 
-            **選択肢:**
+
             - A (incorrect): **public** は shared cache での再利用を許すので, 個人データには不適切です.
             - B (incorrect): **private** は shared cache での保存を禁止しますが, browser の private cache には保存できるため, この要件を満たしません.
             - C (correct): **no-store** は conforming な private cache と shared cache に response を保存しないよう指示するため, この要件に合います.
 
-            **関連:** cache 設計は性能だけでなく data handling の判断でもあります. RFC 9111 は, malicious または compromised な cache や network eavesdropping に対し, **no-store** だけでは信頼できる十分な privacy mechanism にならないと注意しています.
+            cache 設計は性能だけでなく data handling の判断でもあります. RFC 9111 は, malicious または compromised な cache や network eavesdropping に対し, **no-store** だけでは信頼できる十分な privacy mechanism にならないと注意しています.
           </div>
         </div>
       </article>
@@ -129,18 +130,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** **no-cache** と **no-store** の取り違えは, 現場で一番起きやすい cache 設計ミスのひとつです.
+            **no-cache** と **no-store** の取り違えは, 現場で一番起きやすい cache 設計ミスのひとつです.
 
-            **用語:** **no-cache** は「cache するな」ではなく, 「再利用するなら origin に確認しろ」という意味です. その確認には **ETag** や **Last-Modified** が使われます.
+            **no-cache** は「cache するな」ではなく, 「再利用するなら origin に確認しろ」という意味です. その確認には **ETag** や **Last-Modified** が使われます.
 
-            **実務での機会:** 管理画面やダッシュボードで, 帯域は節約したいが stale のまま出したくない, という場面でよく出ます.
+            管理画面やダッシュボードで, 帯域は節約したいが stale のまま出したくない, という場面でよく出ます.
 
-            **選択肢:**
+
             - A (incorrect): **no-store** は response の保存を禁止しますが, **no-cache** は保存自体を禁止する directive ではありません.
             - B (correct): cache は response を保存できますが, 再利用前に request を origin へ転送して validation を行い, validation に成功した response を受ける必要があります.
             - C (incorrect): 引数なしの **no-cache** は private cache と shared cache の両方の再利用を制約し, private cache 専用にはしません.
 
-            **関連:** cache を完全停止するより, conditional request に寄せた方が良いケースは多いです.
+            cache を完全停止するより, conditional request に寄せた方が良いケースは多いです.
           </div>
         </div>
       </article>
@@ -156,18 +157,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** browser と CDN を同じ寿命で扱ってしまい, どちらか一方の都合に引っ張られる設計はよくあります.
+            browser と CDN を同じ寿命で扱ってしまい, どちらか一方の都合に引っ張られる設計はよくあります.
 
-            **用語:** **max-age** は一般的な freshness 指示です. **s-maxage** は **shared cache** 向けの寿命を別に切るためのものです.
+            **max-age** は一般的な freshness 指示です. **s-maxage** は **shared cache** 向けの寿命を別に切るためのものです.
 
-            **実務での機会:** storefront, catalog API, public landing data では, edge で負荷を吸いたい一方, browser ではもう少し細かく更新を見たいことがあります.
+            storefront, catalog API, public landing data では, edge で負荷を吸いたい一方, browser ではもう少し細かく更新を見たいことがあります.
 
-            **選択肢:**
+
             - A (incorrect): browser と shared cache の双方で, response が 10 分間 fresh と扱われます.
             - B (correct): browser には **max-age=60** が適用され, shared cache では **s-maxage=600** がその値を上書きします.
             - C (incorrect): **private** を付けると CDN での再利用ができません.
 
-            **関連:** cache policy は 1 つの TTL を雑に置くのではなく, 利用層ごとに分けて考えると設計が安定します.
+            cache policy は 1 つの TTL を雑に置くのではなく, 利用層ごとに分けて考えると設計が安定します.
           </div>
         </div>
       </article>
@@ -183,18 +184,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 古い middleware や framework が **Expires** を足してくるせいで, 実際の優先順位を曖昧に理解したまま運用されがちです.
+            古い middleware や framework が **Expires** を足してくるせいで, 実際の優先順位を曖昧に理解したまま運用されがちです.
 
-            **用語:** **Cache-Control** は現代的な cache 制御の中心です. **Expires** は絶対時刻ベースの古い仕組みです.
+            **Cache-Control** は現代的な cache 制御の中心です. **Expires** は絶対時刻ベースの古い仕組みです.
 
-            **実務での機会:** CDN や backend framework の default header を見直すときに, どの指示が効いているかを判断する必要があります.
+            CDN や backend framework の default header を見直すときに, どの指示が効いているかを判断する必要があります.
 
-            **選択肢:**
+
             - A (correct): freshness lifetime の計算では **max-age** が **Expires** より先に評価されます.
             - B (incorrect): response に **Cache-Control: max-age** があれば, recipient は **Expires** を無視しなければなりません.
             - C (incorrect): freshness は定められた優先順位で決まり, 長い寿命になる値を cache が選ぶ仕組みではありません.
 
-            **関連:** 明示的な相対寿命を置ける **Cache-Control** を中心に設計する方が事故が少ないです.
+            明示的な相対寿命を置ける **Cache-Control** を中心に設計する方が事故が少ないです.
           </div>
         </div>
       </article>
@@ -211,19 +212,19 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** cache 周りでは, freshness, variant 選択, validation を一緒くたにしてしまうことが多いです.
+            cache 周りでは, freshness, variant 選択, validation を一緒くたにしてしまうことが多いです.
 
-            **用語:** **validator** は「手元の表現がまだ同じか」を確かめるための手掛かりです. 代表例は **ETag** と **Last-Modified** です.
+            **validator** は「手元の表現がまだ同じか」を確かめるための手掛かりです. 代表例は **ETag** と **Last-Modified** です.
 
-            **実務での機会:** 304 が多い, origin に無駄に取りに行く, 逆に stale を出す, といった障害の切り分けで重要です.
+            304 が多い, origin に無駄に取りに行く, 逆に stale を出す, といった障害の切り分けで重要です.
 
-            **選択肢:**
+
             - A (correct): **ETag** は conditional request で representation を照合する validator です.
             - B (incorrect): **Age** は origin での生成または正常な validation からの経過時間を見積もる field で, validator ではありません.
             - C (correct): **Last-Modified** は modification date に基づく conditional validation に使えます.
             - D (incorrect): **Vary** は stored response の選択時に照合する request field を指定し, origin の現在状態との比較には使いません.
 
-            **関連:** 「どの entry を選ぶか」と「その entry を今も使えるか」は別の判断です.
+            「どの entry を選ぶか」と「その entry を今も使えるか」は別の判断です.
           </div>
         </div>
       </article>
@@ -261,18 +262,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 304はbodyを返すsuccess responseではなく, stored responseの再利用可否を判断するvalidation resultです.
+            304はbodyを返すsuccess responseではなく, stored responseの再利用可否を判断するvalidation resultです.
 
-            **用語:** **304 Not Modified** は validation の結果です. 既に持っている representation body をそのまま使ってよい, という意味です.
+            **304 Not Modified** は validation の結果です. 既に持っている representation body をそのまま使ってよい, という意味です.
 
-            **実務での機会:** browser devtools の見方, reverse proxy の実装, origin の条件付き GET 最適化で頻繁に出ます.
+            browser devtools の見方, reverse proxy の実装, origin の条件付き GET 最適化で頻繁に出ます.
 
-            **選択肢:**
+
             - A (incorrect): 304 は validation metadata を提供する response であり, 空の replacement representation ではありません. cache は選択済みの stored body を維持します.
             - B (correct): cache は既存の representation body を再利用し, validation response の metadata で更新対象の stored header field を更新します.
             - C (incorrect): cache は, 304 から受けた applicable な field を使って, 対象となる stored response の header field を更新する必要があります.
 
-            **関連:** conditional request の価値は, 正しさを保ったまま転送コストを減らせる点にあります.
+            conditional request の価値は, 正しさを保ったまま転送コストを減らせる点にあります.
           </div>
         </div>
       </article>
@@ -288,23 +289,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 多言語配信の事故は freshness の問題ではなく, そもそも別 variant を同じ entry と見なしていることが原因な場合が多いです.
+            多言語配信の事故は freshness の問題ではなく, そもそも別 variant を同じ entry と見なしていることが原因な場合が多いです.
 
-            **用語:** **Vary** は, request header の何が representation 選択に効くかを cache に伝えます. **Accept-Language** はその典型です.
+            **Vary** は, request header の何が representation 選択に効くかを cache に伝えます. **Accept-Language** はその典型です.
 
-            **実務での機会:** 多言語サイト, device 別配信, 圧縮形式違いの配信で, 「別の人向けの内容が出る」事故を防ぎます.
+            多言語サイト, device 別配信, 圧縮形式違いの配信で, 「別の人向けの内容が出る」事故を防ぎます.
 
-            **選択肢:**
+
             - A (correct): **Vary: Accept-Language** は, language negotiation に使った request field を stored-response matching に含めます.
             - B (incorrect): **Age** は variant の識別には使いません.
             - C (incorrect): **Last-Modified** は freshness 確認寄りで, variant 分離そのものはしません.
 
-            **関連:** **Vary** は「どれを選ぶか」の話で, validator は「選んだものが今も使えるか」の話です.
+            **Vary** は「どれを選ぶか」の話で, validator は「選んだものが今も使えるか」の話です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Authorization 付き request に対する shared-cache permission を明示的に変える response directive を探してください.">
+      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Authorization 付き request に対する shared-cache permission を明示的に変える response directive を探してください.">
         <header><h4>Q8: Authorization header 付き request への response を shared cache に保存できるようにする response directive はどれか. RFC 9111 Section 3.5 に基づき複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -317,20 +318,20 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 「認証付きだから全部 no-cache」と「重いから CDN で全部 cache」の両極端がよく起きます.
+            「認証付きだから全部 no-cache」と「重いから CDN で全部 cache」の両極端がよく起きます.
 
-            **用語:** **shared cache** は複数 client で再利用される cache です. RFC 9111 は Authorization 付き request に対し, **must-revalidate**, **public**, **s-maxage** を shared caching を許す response directive として挙げています.
+            **shared cache** は複数 client で再利用される cache です. RFC 9111 は Authorization 付き request に対し, **must-revalidate**, **public**, **s-maxage** を shared caching を許す response directive として挙げています.
 
-            **実務での機会:** token 付き API の CDN 利用, service mesh の cache, edge 認証後の public data 配信で出てきます.
+            token 付き API の CDN 利用, service mesh の cache, edge 認証後の public data 配信で出てきます.
 
-            **選択肢:**
+
             - A (correct): **public** は response を明示的に cacheable とし, 認証付き request に対する response の shared caching を許します.
             - B (incorrect): **private** は shared cache の保存を禁止し, 認証付き response の例外を与えません.
             - C (correct): **s-maxage** は shared-cache maximum age を定め, stale 後の origin validation を条件に shared caching を許します.
             - D (correct): **must-revalidate** は shared caching を許す一方, stale 後は origin validation 成功まで再利用を禁止します.
             - E (incorrect): **no-store** は private cache と shared cache の双方に保存を禁止します.
 
-            **関連:** 認証の有無より, 実際に user ごとに違う内容なのか, 共有して安全なのかを headers で明示することが大切です.
+            認証の有無より, 実際に user ごとに違う内容なのか, 共有して安全なのかを headers で明示することが大切です.
           </div>
         </div>
       </article>
@@ -346,18 +347,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** **private** を「機密情報なので保存禁止」と読み違えるケースが多いです.
+            **private** を「機密情報なので保存禁止」と読み違えるケースが多いです.
 
-            **用語:** 引数なしの **private** response directive は, shared cache が response を保存してはならないことを示します. private cache は通常の cache 条件に従って保存できます.
+            引数なしの **private** response directive は, shared cache が response を保存してはならないことを示します. private cache は通常の cache 条件に従って保存できます.
 
-            **実務での機会:** user 向け dashboard, personalized top page, BFF endpoint の policy を決めるときによく使います.
+            user 向け dashboard, personalized top page, BFF endpoint の policy を決めるときによく使います.
 
-            **選択肢:**
+
             - A (incorrect): **ETag** は後の validation に使えますが, **private** の保存制限は validator の有無に依存しません.
             - B (correct): 引数なしの **private** は shared cache の保存を禁止し, 通常の制約に従う private cache の保存は許します.
             - C (incorrect): 毎回の再利用前に validation を要求するのは引数なしの **no-cache** であり, **private** は保存範囲を制御します.
 
-            **関連:** conforming な private cache での保存も許容できないなら, **no-store** がより強い指示です. どちらの directive も message confidentiality は保証しません.
+            conforming な private cache での保存も許容できないなら, **no-store** がより強い指示です. どちらの directive も message confidentiality は保証しません.
           </div>
         </div>
       </article>
@@ -373,18 +374,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** shared cache に向くものを, content-type や実装言語ではなく, 再利用可能性で見分けられる必要があります.
+            shared cache に向くものを, content-type や実装言語ではなく, 再利用可能性で見分けられる必要があります.
 
-            **用語:** **public** は shared cache での保存を許す指示です. user 非依存で, 内容が安定している資産に向きます.
+            **public** は shared cache での保存を許す指示です. user 非依存で, 内容が安定している資産に向きます.
 
-            **実務での機会:** CDN で負荷を吸う対象を選ぶとき, image, script, doc, catalog のどれを edge に乗せるかで判断します.
+            CDN で負荷を吸う対象を選ぶとき, image, script, doc, catalog のどれを edge に乗せるかで判断します.
 
-            **選択肢:**
+
             - A (correct): 全 user に同じ version 付き static asset は, shared cache で安全に再利用しやすい候補です.
             - B (incorrect): user 固有の profile page を shared cache で再利用すると, 別 user の内容を返す危険があります.
             - C (incorrect): security-sensitive な one-time result を shared cache に保存・再利用させる policy は適切ではありません.
 
-            **関連:** 「誰に返しても同じか」と「しばらく stale でも許せるか」をまず確認すると判断しやすいです.
+            「誰に返しても同じか」と「しばらく stale でも許せるか」をまず確認すると判断しやすいです.
           </div>
         </div>
       </article>
@@ -400,23 +401,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** stale の許容度は endpoint ごとに違います. 在庫, quota, 権限のようなデータは stale の一発が大きいです.
+            stale の許容度は endpoint ごとに違います. 在庫, quota, 権限のようなデータは stale の一発が大きいです.
 
-            **用語:** **must-revalidate** は, stale になった後の再利用を validation 成功に縛る指示です.
+            **must-revalidate** は, stale になった後の再利用を validation 成功に縛る指示です.
 
-            **実務での機会:** inventory, entitlement, seat availability, 金融枠のように, stale をそのまま出すと誤処理に直結する場面で重要です.
+            inventory, entitlement, seat availability, 金融枠のように, stale をそのまま出すと誤処理に直結する場面で重要です.
 
-            **選択肢:**
+
             - A (incorrect): **no-store** は保存を禁止するため, 設問が意図する fresh な間の再利用まで失わせます.
             - B (incorrect): **public** は cacheability を変えますが, stale 後に origin validation を必須にする directive ではありません.
             - C (correct): **must-revalidate** は保存や fresh な間の再利用を禁止しませんが, stale 後は origin validation が成功するまで再利用を禁止します.
 
-            **関連:** freshness を決める指示と, stale 後の扱いを決める指示は分けて考えると整理しやすいです.
+            freshness を決める指示と, stale 後の扱いを決める指示は分けて考えると整理しやすいです.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="まず保存可能かを確認し, origin が示す expiration と cache が割り当てる expiration を分けてください.">
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="まず保存可能かを確認し, origin が示す expiration と cache が割り当てる expiration を分けてください.">
         <header><h4>Q12: heuristic caching が関係するのはどの状況か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -427,18 +428,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** freshness header が無いと「じゃあ cache されない」と思い込むと, 実際の platform 挙動を読み違えます.
+            freshness header が無いと「じゃあ cache されない」と思い込むと, 実際の platform 挙動を読み違えます.
 
-            **用語:** **heuristic caching** は, 明示的な寿命指定がないときに, cache が一定のルールで freshness を推定する考え方です.
+            **heuristic caching** は, 明示的な寿命指定がないときに, cache が一定のルールで freshness を推定する考え方です.
 
-            **実務での機会:** 古い service の前に CDN を置くときや, default 動作で意図せず cache されるかをレビューするときに出ます.
+            古い service の前に CDN を置くときや, default 動作で意図せず cache されるかをレビューするときに出ます.
 
-            **選択肢:**
+
             - A (incorrect): stale になったこと自体は新しい heuristic lifetime の根拠になりません. 元の freshness lifetime が明示的に定められている場合もあります.
             - B (correct): 明示的 expiration がなく, response が heuristically cacheable なら, cache は heuristic freshness lifetime を割り当てられます.
             - C (incorrect): validator は revalidation に使いますが heuristic freshness の開始条件ではなく, 明示的 lifetime があればそちらを使います.
 
-            **関連:** heuristic は便利ですが, 大事な endpoint では推測任せにせず explicit に書く方が安全です.
+            heuristic は便利ですが, 大事な endpoint では推測任せにせず explicit に書く方が安全です.
           </div>
         </div>
       </article>
@@ -454,18 +455,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** request 側の cache directive は知名度が低く, 読み飛ばされがちです.
+            request 側の cache directive は知名度が低く, 読み飛ばされがちです.
 
-            **用語:** **min-fresh** は client 側の希望で, 受け取る response が今すぐ stale になるようなものを避けたい, という意味です.
+            **min-fresh** は client 側の希望で, 受け取る response が今すぐ stale になるようなものを避けたい, という意味です.
 
-            **実務での機会:** prefetch, offline-aware client, 次の操作まで短時間だが fresh さを保ちたい workflow で役立ちます.
+            prefetch, offline-aware client, 次の操作まで短時間だが fresh さを保ちたい workflow で役立ちます.
 
-            **選択肢:**
+
             - A (correct): **min-fresh=N** は, freshness lifetime が current age より少なくとも N 秒長い response を望むことを表します.
             - B (incorrect): 許容する staleness は **max-stale** で表し, **min-fresh** ではありません.
             - C (incorrect): **min-fresh** は希望する残り freshness を示すもので, validation の開始を遅らせたり禁止したりはしません.
 
-            **関連:** cache は origin の一方的命令だけでなく, client の許容度も含めて読むと理解が深まります.
+            cache は origin の一方的命令だけでなく, client の許容度も含めて読むと理解が深まります.
           </div>
         </div>
       </article>
@@ -481,23 +482,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** client 側の許容度を知らないまま cache を語ると, 可用性重視と整合性重視の違いを説明できません.
+            client 側の許容度を知らないまま cache を語ると, 可用性重視と整合性重視の違いを説明できません.
 
-            **用語:** **max-stale** は stale を一定範囲で受け入れてよい, という request 側の意思表示です.
+            **max-stale** は stale を一定範囲で受け入れてよい, という request 側の意思表示です.
 
-            **実務での機会:** degraded mode, offline 寄りの UX, stale でもまず返したい検索や一覧で考え方が出てきます.
+            degraded mode, offline 寄りの UX, stale でもまず返したい検索や一覧で考え方が出てきます.
 
-            **選択肢:**
+
             - A (incorrect): response age の上限は request の **max-age** が制約し, stale の許容を表すものではありません.
             - B (correct): 値付きの **max-stale** は freshness 超過の許容秒数を定め, 値なしなら任意の age の stale response を許容します.
             - C (incorrect): 希望する最小の残り freshness は **min-fresh** で表し, **max-stale** ではありません.
 
-            **関連:** origin の厳しさと client の許容度の両方を見ると, cache policy を会話しやすくなります.
+            origin の厳しさと client の許容度の両方を見ると, cache policy を会話しやすくなります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q15" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="state-changing request の成功後, 経路上の cache が持つ stored response をそのまま信頼できるか考えてください.">
+      <article class="q card" data-id="Q15" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="state-changing request の成功後, 経路上の cache が持つ stored response をそのまま信頼できるか考えてください.">
         <header><h4>Q15: PUT などの unsafe request に対して non-error response を受けた cache は, target URI の stored response をどう扱わなければならないか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -508,18 +509,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** write 系 endpoint を通した後に stale read が続く事故は, cache の存在を忘れた設計で起きやすいです.
+            write 系 endpoint を通した後に stale read が続く事故は, cache の存在を忘れた設計で起きやすいです.
 
-            **用語:** **unsafe method** は state 変更を起こし得る method です. **invalidation** は, その変更で怪しくなった stored response を使わないようにすることです.
+            **unsafe method** は state 変更を起こし得る method です. **invalidation** は, その変更で怪しくなった stored response を使わないようにすることです.
 
-            **実務での機会:** CMS, 管理画面, 商品編集, 設定変更 API の直後に「更新したのに画面が変わらない」問題として現れます.
+            CMS, 管理画面, 商品編集, 設定変更 API の直後に「更新したのに画面が変わらない」問題として現れます.
 
-            **選択肢:**
+
             - A (incorrect): unsafe request の成功で, まだ fresh な stored response も不正確になり得るため, 元の lifetime では再利用を正当化できません.
             - B (incorrect): RFC 9111 が target URI に要求するのは invalidation であり, 古い response を短時間 valid のまま残すことではありません.
             - C (correct): invalidation では, matching stored response を削除するか invalid として扱い, 再利用前の validation を必須にします.
 
-            **関連:** cache invalidation が難しいのは, 更新対象 URI だけでなく関連一覧まで影響が広がることがあるからです.
+            cache invalidation が難しいのは, 更新対象 URI だけでなく関連一覧まで影響が広がることがあるからです.
           </div>
         </div>
       </article>
@@ -535,23 +536,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** **Age** は見慣れないため, 単なる proxy のおまけ情報として見落とされがちです.
+            **Age** は見慣れないため, 単なる proxy のおまけ情報として見落とされがちです.
 
-            **用語:** **Age** は freshness 計算に使う指標で, origin 生成または成功 validation からの経過時間を見積もる助けになります.
+            **Age** は freshness 計算に使う指標で, origin 生成または成功 validation からの経過時間を見積もる助けになります.
 
-            **実務での機会:** CDN debug, browser での残り freshness の読み取り, stale に近い response の説明で役立ちます.
+            CDN debug, browser での残り freshness の読み取り, stale に近い response の説明で役立ちます.
 
-            **選択肢:**
+
             - A (correct): **Age** は, response が origin で生成または正常に validation されてからの推定秒数を伝えます.
             - B (incorrect): **Age** は現在の cache が受信する前の時間も含み, この cache だけの滞留時間ではありません.
             - C (incorrect): 残り freshness は freshness lifetime と current age から計算します. **Age** field が伝えるのは current age です.
 
-            **関連:** **Age** は freshness 計算を助けますが, それ単独で reuse 可否を決めるわけではありません.
+            **Age** は freshness 計算を助けますが, それ単独で reuse 可否を決めるわけではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q17" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="representation content と metadata を分け, metadata だけが返ったとき stored GET response がどう扱われるか考えてください.">
+      <article class="q card" data-id="Q17" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="representation content と metadata を分け, metadata だけが返ったとき stored GET response がどう扱われるか考えてください.">
         <header><h4>Q17: 200 HEAD response は, 同じ target URI の stored GET response にどう影響するか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -562,23 +563,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** HEAD responseのmetadataは, representation bodyを転送せずにstored GET responseの状態を更新する手掛かりになります.
+            HEAD responseのmetadataは, representation bodyを転送せずにstored GET responseの状態を更新する手掛かりになります.
 
-            **用語:** **HEAD** は, equivalent な GET で返る header field を content なしで返します. 200 HEAD response を受けた cache は, 選択可能な stored GET response について validator と Content-Length が一致すれば update し, 一致しなければ stale とみなせます.
+            **HEAD** は, equivalent な GET で返る header field を content なしで返します. 200 HEAD response を受けた cache は, 選択可能な stored GET response について validator と Content-Length が一致すれば update し, 一致しなければ stale とみなせます.
 
-            **実務での機会:** 大きな object の存在確認, metadata refresh, monitoring で, 本体転送なしに状態を見たいときに使われます.
+            大きな object の存在確認, metadata refresh, monitoring で, 本体転送なしに状態を見たいときに使われます.
 
-            **選択肢:**
+
             - A (incorrect): 対象は HEAD request で選択可能な stored GET response に限られ, validator と Content-Length の条件も残ります.
             - B (correct): RFC 9111 は, HEAD request で選択可能だった stored GET response に対する条件付きの update または invalidation を定めています.
             - C (incorrect): HEAD response は replacement representation body を持たず, 一致する metadata で stored GET response を更新しても既存 body は消しません.
 
-            **関連:** すべての stored GET response を無条件に metadata refresh する機能ではありません. selection, validator, Content-Length の条件によって update するか stale とみなすかが決まります.
+            すべての stored GET response を無条件に metadata refresh する機能ではありません. selection, validator, Content-Length の条件によって update するか stale とみなすかが決まります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q18" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="partial transfer が, 意味の近い別表現ではなく同じ representation に属すると確認できる必要があります.">
+      <article class="q card" data-id="Q18" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="partial transfer が, 意味の近い別表現ではなく同じ representation に属すると確認できる必要があります.">
         <header><h4>Q18: cache が download の再開で得た byte range を結合するとき, 同じ representation の識別に適する validator はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -589,18 +590,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** validator の強さを理解しないと, semantic には同じでも byte 列としては別物, という差を扱えません.
+            validator の強さを理解しないと, semantic には同じでも byte 列としては別物, という差を扱えません.
 
-            **用語:** **strong validator** は representation の厳密な同一性を扱うのに向きます. **weak validator** は意味的に同じならよい場面向けです.
+            **strong validator** は representation の厳密な同一性を扱うのに向きます. **weak validator** は意味的に同じならよい場面向けです.
 
-            **実務での機会:** artifact 配信, range request, resume download, 大きな binary の配布で重要です.
+            artifact 配信, range request, resume download, 大きな binary の配布で重要です.
 
-            **選択肢:**
+
             - A (incorrect): weak ETag は意味的に同等な representation を識別できますが, range 結合に必要な strong identity は示しません.
             - B (incorrect): **Last-Modified** は自動的に strong validator になりません. strong-validation 条件を満たす根拠がなければ不十分です.
             - C (correct): strong ETag は strong validator であり, RFC 9111 は cache が結合する全 range に同じ strong validator を要求します.
 
-            **関連:** 「同じとみなせればよい」のか, 「完全に同じでないと困る」のかで validator の選び方が変わります.
+            「同じとみなせればよい」のか, 「完全に同じでないと困る」のかで validator の選び方が変わります.
           </div>
         </div>
       </article>
@@ -616,18 +617,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** protocol directive を, logging, telemetry, analytics, app-level retention まで含めた万能保証だと誤解するのは危険です.
+            protocol directive を, logging, telemetry, analytics, app-level retention まで含めた万能保証だと誤解するのは危険です.
 
-            **用語:** **no-store** は cache に保存させないための指示です. それは強いですが, システム全体の痕跡ゼロ保証とは別です.
+            **no-store** は cache に保存させないための指示です. それは強いですが, システム全体の痕跡ゼロ保証とは別です.
 
-            **実務での機会:** security review, privacy 表現の確認, 法務や platform team との会話で, 過剰な保証文言を避けるために重要です.
+            security review, privacy 表現の確認, 法務や platform team との会話で, 過剰な保証文言を避けるために重要です.
 
-            **選択肢:**
+
             - A (incorrect): **no-store** が制約するのは conforming cache であり, application log・history・telemetry・非準拠 component の copy までは消去しません.
             - B (correct): **no-store** は cache 保存を強く制限しますが, RFC 9111 はそれだけで信頼できる十分な privacy mechanism にはならないと明記しています.
             - C (incorrect): **no-store** は private cache と shared cache の双方に適用され, conforming な intermediary cache も対象です.
 
-            **関連:** privacy 設計は HTTP header だけで完結せず, log と保存ポリシーまで含めて詰める必要があります.
+            privacy 設計は HTTP header だけで完結せず, log と保存ポリシーまで含めて詰める必要があります.
           </div>
         </div>
       </article>
@@ -643,18 +644,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** cache 事故の切り分けで, entry 選択ミスと stale 利用ミスを分けて考えられないと原因を外しやすいです.
+            cache 事故の切り分けで, entry 選択ミスと stale 利用ミスを分けて考えられないと原因を外しやすいです.
 
-            **用語:** **Vary** は variant 選択, **ETag** は validation です. 判断フェーズがそもそも違います.
+            **Vary** は variant 選択, **ETag** は validation です. 判断フェーズがそもそも違います.
 
-            **実務での機会:** 「別言語が出た」「正しい言語だけど古い内容だった」を切り分けるときに役立ちます.
+            「別言語が出た」「正しい言語だけど古い内容だった」を切り分けるときに役立ちます.
 
-            **選択肢:**
+
             - A (correct): **Vary** は request field を stored-response matching に加え, **ETag** は選択後に origin state と条件付き比較するために使います.
             - B (incorrect): **ETag** は cache key を決めませんし, **Age** は validator でもありません.
             - C (incorrect): **private** は reuse 制限であって validation ではありません.
 
-            **関連:** cache は 1 回の判断ではなく, 「選ぶ」「freshness を見る」「必要なら validation する」という段階的な仕組みです.
+            cache は 1 回の判断ではなく, 「選ぶ」「freshness を見る」「必要なら validation する」という段階的な仕組みです.
           </div>
         </div>
       </article>
@@ -671,19 +672,19 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** cache policyはstorage permission, freshness, validation, audienceをendpointの性質に合わせて組み合わせる必要があります.
+            cache policyはstorage permission, freshness, validation, audienceをendpointの性質に合わせて組み合わせる必要があります.
 
-            **用語:** **public** は response を明示的に cacheable としますが, 通常の規則ですでに cacheable なら必須ではありません. **max-age=120** は freshness window を定めます. **no-store** と **private** は設問の shared-cache policy と衝突します.
+            **public** は response を明示的に cacheable としますが, 通常の規則ですでに cacheable なら必須ではありません. **max-age=120** は freshness window を定めます. **no-store** と **private** は設問の shared-cache policy と衝突します.
 
-            **実務での機会:** catalog, public listing, anonymous search API で, edge cache を使って負荷を落とすときの基本です.
+            catalog, public listing, anonymous search API で, edge cache を使って負荷を落とすときの基本です.
 
-            **選択肢:**
+
             - A (correct): **public** は response を明示的に cacheable とし, 他の制約に従う shared cache での保存も許します.
             - B (incorrect): **no-store** は private cache と shared cache の双方で保存を禁止するため, 再利用の要件と衝突します.
             - C (correct): **max-age=120** は response の age が 120 秒を超えた後に stale とし, 求める freshness window を明示します.
             - D (incorrect): **private** は shared cache の保存を禁止するため, 設問の policy と衝突します.
 
-            **関連:** content が JSON か HTML かではなく, audience と mutation rate と stale 許容度で policy を決めるのが本筋です.
+            content が JSON か HTML かではなく, audience と mutation rate と stale 許容度で policy を決めるのが本筋です.
           </div>
         </div>
       </article>
@@ -700,18 +701,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** heuristic freshnessを計算できるというprotocol上の許可と, 推定lifetimeがapplicationのvalidationなし再利用の上限を満たすかは別の問題です. 30秒という上限には明示的なresponse metadataが必要です.
+            heuristic freshnessを計算できるというprotocol上の許可と, 推定lifetimeがapplicationのvalidationなし再利用の上限を満たすかは別の問題です. 30秒という上限には明示的なresponse metadataが必要です.
 
-            **用語:** 明示的な expiration がない場合, cache は許可された条件下で **heuristic expiration time** を割り当てられます. ここでの 10% は cache の local policy であり, RFC 9111 が要求する計算法ではありません. 明示的な **max-age** は heuristic freshness より優先され, validator は response が stale になった後の conditional revalidation に使えます.
+            明示的な expiration がない場合, cache は許可された条件下で **heuristic expiration time** を割り当てられます. ここでの 10% は cache の local policy であり, RFC 9111 が要求する計算法ではありません. 明示的な **max-age** は heuristic freshness より優先され, validator は response が stale になった後の conditional revalidation に使えます.
 
-            **実務での機会:** legacy な在庫 service が freshness metadata を省略し, CDN が default の heuristic を補う構成で起こります. その default が service の上限を超えて validation なしの再利用を許すなら, application owner は明示的な policy に置き換える必要があります.
+            legacy な在庫 service が freshness metadata を省略し, CDN が default の heuristic を補う構成で起こります. その default が service の上限を超えて validation なしの再利用を許すなら, application owner は明示的な policy に置き換える必要があります.
 
-            **選択肢:**
+
             - A (incorrect): RFC 9111 Section 4.2.2 が heuristic freshness を許す場合でも, local policy が算出した約 1 日という lifetime は application の 30 秒制限に違反します.
             - B (correct): `Cache-Control: max-age=30` は明示的に 30 秒の freshness lifetime を設定します. `Last-Modified` を維持すれば, stale になった後に conditional revalidation できます.
             - C (incorrect): `public` は response を cacheable にできますが, 30 秒の freshness lifetime は設定しません. 明示的な expiration がないため, local policy による約 1 日の heuristic が残り得ます.
 
-            **関連:** application が validation なしで再利用できる時間の上限を定めている場合, heuristic algorithm は明示的な freshness lifetime の代わりにはなりません.
+            application が validation なしで再利用できる時間の上限を定めている場合, heuristic algorithm は明示的な freshness lifetime の代わりにはなりません.
           </div>
         </div>
       </article>
@@ -728,19 +729,19 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** cache 候補の選定を, 「静的か動的か」だけで雑に分けると失敗しやすいです.
+            cache 候補の選定を, 「静的か動的か」だけで雑に分けると失敗しやすいです.
 
-            **用語:** **shared cache** は, 多くの client が同じ representation を安全に使い回せるほど価値が高いです.
+            **shared cache** は, 多くの client が同じ representation を安全に使い回せるほど価値が高いです.
 
-            **実務での機会:** CDN の導入範囲を決めるときに, どこへ effort を払うべきかを判断する基本になります.
+            CDN の導入範囲を決めるときに, どこへ effort を払うべきかを判断する基本になります.
 
-            **選択肢:**
+
             - A (correct): version 付き asset は shared cache の定番です.
             - B (incorrect): session 依存 page は user 横断で再利用できません.
             - C (correct): 公開 documentation page は user 間で同じ content を返しやすく, shared caching に適しています.
             - D (correct): anonymous な商品一覧 response も, user 固有 data を含まなければ shared caching に適しています.
 
-            **関連:** shared cache 向きかどうかは, audience, 個人差分, 更新頻度, stale 許容度で見ると整理しやすいです.
+            shared cache 向きかどうかは, audience, 個人差分, 更新頻度, stale 許容度で見ると整理しやすいです.
           </div>
         </div>
       </article>
@@ -756,45 +757,41 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 304を受けたcacheはstored responseを捨てるのではなく, selected fieldを更新して再利用します.
+            304を受けたcacheはstored responseを捨てるのではなく, selected fieldを更新して再利用します.
 
-            **用語:** **304 Not Modified** は, 条件付き request の結果として「持っている body をそのまま使ってよい」と伝える応答です.
+            **304 Not Modified** は, 条件付き request の結果として「持っている body をそのまま使ってよい」と伝える応答です.
 
-            **実務での機会:** browser の waterfall, reverse proxy の挙動確認, origin 負荷削減の検証で頻出です.
+            browser の waterfall, reverse proxy の挙動確認, origin 負荷削減の検証で頻出です.
 
-            **選択肢:**
+
             - A (incorrect): 304 は body 置き換えのための full response ではありません.
             - B (correct): 304 は selected stored response を返された metadata で更新し, 既存の representation body とともに再利用できることを示します.
             - C (incorrect): 304 は response を永久に fresh にせず, 以後の validation や reuse の要件も取り除きません.
 
-            **関連:** conditional request の要点は, 正確さを落とさずに body 転送を減らすことです.
+            conditional request の要点は, 正確さを落とさずに body 転送を減らすことです.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q25" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="cacheability を一つの header で決めず, 複数の独立した設計軸として扱っているかを確認してください.">
-        <header><h4>Q25: RFC 9111 を踏まえた review comment として最も妥当なのはどれか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q25" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="shared storage, request headerによる選択, どのcacheにも保存させないresponseの規則を分けて適用してください.">
+        <header><h4>Q25: 二つのresponse要件を満たすgateway policyはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">公開Agent Cardはshared cacheへ10分保存でき, Accept-Languageによって内容が変わります.Authorizationがある場合, 同じoriginはprivate endpointを含む個人向けCardを返します. この個人向けresponseは, conformingなbrowser cacheにもshared cacheにも保存させない要件です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q25" value="a"> A. endpoint ごとに storage scope・freshness lifetime・validation behavior を独立に指定しましょう</label>
-            <label class="choice"><input type="radio" name="Q25" value="b"> B. update frequency から freshness を決め, storage scope と validation は cache default に任せましょう</label>
-            <label class="choice"><input type="radio" name="Q25" value="c"> C. audience から storage scope を決めれば, freshness と validation もその directive から決まります</label>
+            <label class="choice"><input type="radio" name="Q25" value="a"> A. 両方にpublic, max-age=600とVary: Accept-Languageを使う.Authorizationがcross-user reuseを防ぐ</label>
+            <label class="choice"><input type="radio" name="Q25" value="b"> B. 個人向けresponseにno-cacheを使う.再利用前のvalidationは初回保存も防ぐ</label>
+            <label class="choice"><input type="radio" name="Q25" value="c"> C. 公開variantを言語別shared cachingへ分離し, 個人向けresponseにはno-storeを使う</label>
+            <label class="choice"><input type="radio" name="Q25" value="d"> D. 個人向けresponseにprivate, max-age=600を使う.privateはbrowserとgatewayの保存を防ぐ</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** soundなcache policyは, sensitivity, audience, freshness tolerance, validation costを具体的なresponse metadataへ結びつけます.
+            A: RFC 9111 Section 3.5は, 許可directiveがある一部のauthenticated responseをshared cacheで再利用可能にします.Authorization自体は自動的なpartition keyではないため, このpolicyは個人向けrepresentationを露出させ得ます.
+            B: Section 5.2.2.4のno-cacheは再利用条件であり, 保存禁止ではありません.
+            C: 公開responseにはpublic, max-age=600, Vary: Accept-Languageとvalidatorを使えます. 個人向けresponseのno-storeは, Section 5.2.2.5によりconformingなprivate cacheとshared cacheへ保存しないよう指示します. representationまたはrouteを分け, 公開用policyを個人向けresponseへ適用させない設計が必要です.
+            D: Section 5.2.2.7のprivateはshared cacheによる保存を防ぎますが, qualifierなしのprivate responseをbrowserのprivate cacheが保存することは許容します. 保存禁止要件を満たしません.
 
-            **用語:** 良い cache review は, **保存範囲**, **freshness**, **validation** の 3 軸で整理します. これが endpoint ごとの差分を最も説明しやすい枠組みです.
-
-            **実務での機会:** API review, CDN policy review, security sign-off で, 何を明示すべきかを短く正確に言う場面で役立ちます.
-
-            **選択肢:**
-            - A (correct): content type や platform default に頼らず, cacheability・freshness lifetime・validation behavior を明示するよう求めています.
-            - B (incorrect): update frequency は freshness の参考になりますが, 保存主体や stale 後の動作までは決めません.
-            - C (incorrect): storage scope を決めても freshness lifetime や validation requirement は自動的に決まりません.
-
-            **関連:** policyを決める前に, wrong-user reuse, excessive staleness, unnecessary origin loadなどendpoint固有のfailure modeを洗い出します.
+            判定条件: まずrepresentation境界を定義し, その単位でstorage permission, cache key selection (Section 4.1), freshness, validationを決めます.
           </div>
         </div>
       </article>

@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 3439",
       SKILL_SUBTITLE: "大規模Internet設計とSimplicity Principle",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -75,20 +76,20 @@
         </fieldset><div class="explain">**Explanation:**
 
 RFC 3439はcomplexityを効率的なscalingの主要な妨げであり,CAPEXとOPEXの増加要因と捉えます.
-A:  speculativeなfeature追加はinteractionを増やします.
-B:  要件を満たす最も単純な解へ寄せます.
-C:  local optimizationはcomplexityとcouplingを増やし得ます.</div></div>
+speculativeなfeature追加はinteractionを増やします.
+要件を満たす最も単純な解へ寄せます.
+local optimizationはcomplexityとcouplingを増やし得ます.</div></div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="routeの存在ではなく,endpoint communication stateとcore stateの相互作用に注目してください.">
         <header><h4>Q2: end-to-end argumentから,Internet coreのstateについて言えることはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. coreはどの種類のstateも一切持ってはならない</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. 各endpoint sessionをrouting systemへ複製すべきである</label>
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. coreは全layerと全functionで完全にstatelessでなければならない</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. 全endpoint sessionをroutingとforwarding stateへ複製すべきである</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. 粗粒度のcore stateは存在し得るが,endpoint stateとの相互作用を最小化する</label>
         </fieldset><div class="explain">**Explanation:**
-A:  coreはrouteなどの粗粒度stateを保持します.
-B:  各sessionとroutingを結び付けるとsimplicityとfate sharingを損ないます.
-C:  core stateとendpointのcommunication stateをほぼ直交させ,相互作用を減らすことが重要です.</div></div>
+coreはrouteなどの粗粒度stateを保持します.
+各sessionとroutingを結び付けるとsimplicityとfate sharingを損ないます.
+core stateとendpointのcommunication stateをほぼ直交させ,相互作用を減らすことが重要です.</div></div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="一つのtenantのeventがlocalに留まるか,無関係なparticipantまで反応させるかを見ます.">
         <header><h4>Q3: 一つのtenantの設定変更が全gatewayでglobal recomputationを起こす.問題を捉える原則はどれか</h4><span class="type">Multiple Choice</span></header>
@@ -97,20 +98,20 @@ C:  core stateとendpointのcommunication stateをほぼ直交させ,相互作�
           <label class="choice"><input type="radio" name="Q3" value="b"> B. universal interworking functionを必須にする原則</label>
           <label class="choice"><input type="radio" name="Q3" value="c"> C. 全layerでerror recoveryを繰り返す原則</label>
         </fieldset><div class="explain">**Explanation:**
-A:  大規模系では小さな変化が巨大なeventになり得るため,local changeをlocal effectに留める設計が重要です.
-B:  RFCはuniversal interworkingを避ける方向です.
-C:  layer間の機能重複は避けるべきcomplexityの例であり,要件ではありません.</div></div>
+大規模系では小さな変化が巨大なeventになり得るため,local changeをlocal effectに留める設計が重要です.
+RFCはuniversal interworkingを避ける方向です.
+layer間の機能重複は避けるべきcomplexityの例であり,要件ではありません.</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="interdependenceと,同時eventが相互作用する組合せの増加に注目してください.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="interdependenceと,同時eventが相互作用する組合せの増加に注目してください.">
         <header><h4>Q4: 単独では安全な二つのrecovery mechanismが互いを繰り返し起動し,cascading outageになった.最も合う分析はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. componentを増やすほどreliabilityが必ず上がる証拠</label>
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. componentとrecovery mechanismを増やすほど相互作用なくreliabilityが上がる証拠</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. tight couplingがunforeseen feature interactionを生んだ</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. payloadを変更せず運んだことがfailureの原因</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. payloadを変更せず透過的に運んだことだけがcascading failureの原因</label>
         </fieldset><div class="explain">**Explanation:**
-A:  component数とinteractionの増加はstabilityを下げ得ます.
-B:  Coupling Principleは,systemが大きくなるほどinterdependenceと予期しないinteractionが増えると説明します.
-C:  payloadを保つことはMinimum Interventionの指針であり,相互起動loopの説明ではありません.</div></div>
+component数とinteractionの増加はstabilityを下げ得ます.
+Coupling Principleは,systemが大きくなるほどinterdependenceと予期しないinteractionが増えると説明します.
+payloadを保つことはMinimum Interventionの指針であり,相互起動loopの説明ではありません.</div></div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="consenting endpointへapplicationを配る場合と,全intermediaryを更新する場合を比べてください.">
         <header><h4>Q5: smart edgeとsimple coreの構成が,新service追加のcostを下げやすい理由はどれか</h4><span class="type">Multiple Choice</span></header>
@@ -119,20 +120,20 @@ C:  payloadを保つことはMinimum Interventionの指針であり,相互起動
           <label class="choice"><input type="radio" name="Q5" value="b"> B. networkから全control planeとforwarding stateをなくすから</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. 参加するendpointだけが採用でき,core全体のupgradeを要しないから</label>
         </fieldset><div class="explain">**Explanation:**
-A:  RFCが高costだと対比するsmart-core modelです.
-B:  simple coreにもroutingとforwardingは必要です.
-C:  希望するendpointへsoftwareを配ればよく,network-wideなcore updateを避けられます.</div></div>
+RFCが高costだと対比するsmart-core modelです.
+simple coreにもroutingとforwardingは必要です.
+希望するendpointへsoftwareを配ればよく,network-wideなcore updateを避けられます.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="批判の対象はmodularity自体ではなく,rigid ordering,機能重複,情報隠蔽です.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="批判の対象はmodularity自体ではなく,rigid ordering,機能重複,情報隠蔽です.">
         <header><h4>Q6: RFC 3439の「Layering Considered Harmful」をどう読むべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. layeringには構造化の利点があるが,過剰でrigidなlayerは処理重複やglobal optimization阻害を招く</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. application,transport,linkの機能を必ず一つのcomponentへ統合する</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. vertical layerを増やすほど,全decisionが分離されOPEXは必ず下がる</label>
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. layeringは有用だが,rigidな多層化は処理重複とglobal optimization阻害を招く</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. application,transport,linkの責務を必ず一つのcomponentへ統合して境界をなくす</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. vertical layerを増やせばcross-layer interactionが消え,OPEXも必ず下がる</label>
         </fieldset><div class="explain">**Explanation:**
-A:  RFCはlayeringの概念的利点を認めつつ,ordering constraint,情報隠蔽,機能重複を問題にします.
-B:  modular boundaryそのものを禁止していません.
-C:  extra layeringはcomplexityとOPEXを増やすことが多い,という観察です.</div></div>
+RFCはlayeringの概念的利点を認めつつ,ordering constraint,情報隠蔽,機能重複を問題にします.
+modular boundaryそのものを禁止していません.
+extra layeringはcomplexityとOPEXを増やすことが多い,という観察です.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="intermediaryが意味を理解して書き換える必要があるか,そのまま運べるかを考えてください.">
         <header><h4>Q7: gatewayはpayloadを変更せずencapsulateすることも,全fieldを共通schemaへ変換することもできる.Minimum Interventionに合うdefaultはどれか</h4><span class="type">Multiple Choice</span></header>
@@ -141,44 +142,44 @@ C:  extra layeringはcomplexityとOPEXを増やすことが多い,という観�
           <label class="choice"><input type="radio" name="Q7" value="b"> B. 変更が不要なら,受け取ったpayloadをそのまま運ぶ</label>
           <label class="choice"><input type="radio" name="Q7" value="c"> C. encapsulationは必ずend-to-end設計に反するので拒否する</label>
         </fieldset><div class="explain">**Explanation:**
-A:  universal translationはintermediaryのscopeとcouplingを増やします.
-B:  可能な場合はpayloadを変更せず運ぶことを推奨します.
-C:  RFCはdata-plane interworkingとencapsulationを,特にedgeで行うことを認めています.</div></div>
+universal translationはintermediaryのscopeとcouplingを増やします.
+可能な場合はpayloadを変更せず運ぶことを推奨します.
+RFCはdata-plane interworkingとencapsulationを,特にedgeで行うことを認めています.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="system間でdataを運ぶことと,分散control logicを相互変換することを分けてください.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="system間でdataを運ぶことと,分散control logicを相互変換することを分けてください.">
         <header><h4>Q8: 性質の異なる二つのnetworkをinterworkさせる.RFC 3439が選ぶ境界はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. 両control planeをcore上の単一universal state machineへ統合する</label>
           <label class="choice"><input type="radio" name="Q8" value="b"> B. 全application policyを全transit nodeへ複製する</label>
           <label class="choice"><input type="radio" name="Q8" value="c"> C. interworkingを主にedgeでのdata-plane encapsulationへ限定する</label>
         </fieldset><div class="explain">**Explanation:**
-A:  control-plane translationはfailureの機会を増やします.
-B:  transit infrastructureとapplication stateを強くcoupleさせます.
-C:  edgeでdata-plane interworkingを行い,control-plane interworkingを最小化する方向です.</div></div>
+control-plane translationはfailureの機会を増やします.
+transit infrastructureとapplication stateを強くcoupleさせます.
+edgeでdata-plane interworkingを行い,control-plane interworkingを最小化する方向です.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="system availabilityと,各component個別のavailability targetは同じ問いではありません.">
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="system availabilityと,各component個別のavailability targetは同じ問いではありません.">
         <header><h4>Q9: RFC 3439の「myth of five nines」と整合するreliability戦略はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. 全complex componentが個別にfive ninesを達成すると仮定せず,system全体のreliabilityを設計する</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. 全componentがperfect availabilityを主張するまでmechanismを追加する</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. packet networkは自動的にreliableなのでcomponent failureを無視する</label>
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. 各complex componentへfive ninesを要求せず,system全体のreliabilityを設計する</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. 各componentが独立にperfect availabilityを主張するまでmechanismを追加し続ける</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. packet networkingならcomponent failureはend-to-end reliabilityに影響しないと仮定する</label>
         </fieldset><div class="explain">**Explanation:**
-A:  system-level resilienceは比較的unreliableなcomponentからも構成でき,各componentの完全化は人・processのcomplexityを増やし得ます.
-B:  robustness/complexity spiralを招きます.
-C:  failureを無視する議論ではなく,reliabilityの構成方法を問う議論です.</div></div>
+system-level resilienceは比較的unreliableなcomponentからも構成でき,各componentの完全化は人・processのcomplexityを増やし得ます.
+robustness/complexity spiralを招きます.
+failureを無視する議論ではなく,reliabilityの構成方法を問う議論です.</div></div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="一つのrequest path上で,独立に配備・運用・failureするelementを数えてください.">
         <header><h4>Q10: Agent-to-Agent requestが,必須のbroker,translator,policy engineを7個通る.RFC 3439に基づくreview questionとして最も重要なのはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">小規模testでは動作しています.問題は,必須pathが大規模環境でも安定して運用できるかです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. 各intermediaryにさらにoptional featureを追加できるか</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. 各intermediaryの実装とinterfaceを独立にscaleできるか</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. 必要な動作を失わず,どのcomponentを削除またはoptionalにできるか</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. 全intermediaryで,より大きなcontrol-plane databaseを共有できるか</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. shared control planeでintermediaryを調整し,failureを隠せるか</label>
           </fieldset><div class="explain">**Explanation:**
-A:  feature数はdeployabilityの証拠ではありません.
-B:  Architectural Component Proportionality Lawはcomplexityとcomponent数を関連付け,service-delivery path上のcomponentを最小化するよう求めます.
-C:  shared control planeはcouplingとfailure scopeを増やす可能性があります.</div>
+feature数はdeployabilityの証拠ではありません.
+RFC 3439 Sections 8 and 8.1はarchitectural complexityとcomponent数を関連付け,service-delivery path上のcomponentを最小化することを設計指針として示します.
+shared control planeはcouplingとfailure scopeを増やす可能性があります.</div>
         </div>
       </article>
     </section>

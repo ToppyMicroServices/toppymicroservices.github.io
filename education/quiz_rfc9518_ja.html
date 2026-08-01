@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9518","SKILL_SUBTITLE":"Centralization, Decentralization, and Internet Standards","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9518","SKILL_SUBTITLE":"Centralization, Decentralization, and Internet Standards","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="centralization reviewが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9518のcentralization reviewだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="machine-level redundancyと,誰がfunctionを排他的にobserveまたはcontrolできるかを区別します.">
+        <header><h4>Q1: この冗長化directoryでcentralization concernは解消するか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9518を参照し,centralization reviewを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">1社が10地域でfailover可能なA2A directoryを運営します.agentの登録,全queryの観測,ranking policyの変更を行えるのはその会社だけです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Internet standardとdeploymentが作るcentralization/decentralization effectを分析すること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Internet standardとdeploymentが作るcentralization/decentralization effectを分析すること.ただし受理するcentral serviceと, exit, federation, portability pathはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9518はreview guidanceなので, security, privacy, end-user considerationを置き換えず補完する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9518を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 解消する.technical single point of failureを除けば,directory functionのcontrolも分散される.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 解消しない.redundancyはtechnical availabilityを改善するが,登録,観測,policy controlの排他性はRFC 9518の意味で集中したままである.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 各regionが異なるdatabaseを使えば解消する.implementation diversityだけがcentralizationの評価軸である.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. 解消しない.globally reachableなdirectoryは役割に関係なく必ず有害なので削除すべきである.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-4はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-4がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9518はanalysis guidanceを提供します.citationだけでreview criteriaと設計上の帰結を記載しなければ,analysisを行ったことにはなりません.</div>
+A: RFC 9518 Section 2はtechnical distributionとcontrolを分けます.複数componentがあっても,1 entityがfunctionへの排他的powerを持つ場合があります.
+B: Section 2は,排他的なobservation,capture,control,rent extractionでcentralizationを定義します.地域冗長化後もscenarioにはそのpowerが残ります.
+C: 異なるdatabaseはmonoculture riskを下げ得ますが,登録やgovernance authorityをそれだけで分散しません.
+D: Sections 2.1と2.2はcentralizationとharmの一律な同一視を避けます.functionとtrade-offをcontextに即して評価する必要があります.
+判断軸: 対象functionと集中するpowerを特定します.server数だけではcontrolの問いに答えられません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="誰が参加と変更をcontrolするかを比較し,exit,portability,independent implementationの選択肢を記載してください.">
-        <header><h4>Q2: 二つのreview teamがcentralizationについて両立しない結論を出す.profileは何を記載すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="central componentが必要な理由,それを制約するcheck,別providerへのsubstitutionを確認します.">
+        <header><h4>Q2: central rendezvous serviceをどう評価すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9518を参照するだけで,review criteriaと設計へ反映する条件を定義していません.</p>
+          <p class="question-premise">独立agentが短命endpointを見つけるにはglobally consistentな場所が必要です.central serviceはそのrendezvousを提供し,audit logと互換代替先へのexportを用意します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. deployed endpoint数だけを数え,誰がparticipantを排除し,条件を変え,exitを高コストにできるかは記載しない</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. data planeがfederatedなら,identityとdiscoveryが単一operatorでもdecentralizedと判断する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. control point,exitとportability path,independent implementationを保つ代替設計を記載する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 現在のmarket leaderへ判断を委ね,deployment shareを客観的基準として使う</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. RFC 9518はすべてのcentral componentをprotocol設計失敗とするためrejectする.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. global viewが有用ならaccountabilityとswitchingはcentralization分析に不要なのでacceptする.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. distributed consensusへ置換する.operation,governance,implementationのすべてが分散される.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. global functionが集中を正当化するか,governanceがaccountableか,実用的なswitchingがpowerを制限するかを評価する.</label>
           </fieldset><div class="explain">**解説:**
-A: deployment数では,admission,change,observation,switching costをcontrolするactorを特定できません.
-B: RFC 9518は複数のcontrol pointを見るため,distributed data pathでもidentityやdiscoveryがcentralizedな場合があります.
-C: Sections 3-4に沿ってcontrol modelと実行可能な代替を明示すれば,review teamが同じboundaryを評価できます.
-D: 現在のmarket shareはdeploymentを表すだけで,concentration riskを受理できるかは決めません.</div>
+A: RFC 9518 Section 2.2はcentralized functionがtechnicalに有用または必要な場合を認めます.一律禁止ではありません.
+B: 有用なglobal functionは集中を正当化し得ますが,Section 2.2はaccountabilityとswitch可能性も重要な制約として扱います.
+C: Section 3.1.2はdistributed consensusがoperationを分散しても,governance,implementation,他functionは集中し得ると説明します.
+D: Sections 2.2と4.4はこのfunction-specific reviewを支えます.necessity,powerへのcheck,alternative,substitution costで結論が変わります.
+判断軸: centralizationは有益な場合があります.reviewではbenefit,accountability,switchabilityが特定のpower集中を正当化するかを問います.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="参加,条件変更,観測,exitを誰がcontrolするか追跡してください.deployment convenienceはconcentration riskがない証拠ではありません.">
-        <header><h4>Q3: このcentralization analysisの欠陥を直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="wire protocolが許すかではなく,userが実際にfederationを利用できるかを確認します.">
+        <header><h4>Q3: このfederated Agent Card設計について断定できる最も強い指摘はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: deployment convenienceをconcentration riskが無害である証拠として扱うこと.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">protocolは任意providerによるAgent Card hostingを許します.実際にはdefault clientが1 providerのindex,identity rule,proprietary reputation extensionを信頼し,reputation exportはありません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 同じprovider内のredundant server数を数え,infrastructure redundancyをindependent governanceとして扱う</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. 誰がparticipantを排除し, 条件を変え, behaviorを観測し, switchingを高コストにできるか確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. federated protocolという名称だけで,identity,discovery,policy controlもdecentralizedと判断する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 現在のadoptionを,future exclusion,capture,switching costが無害である証拠にする</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. federationは独立hostingを可能にするが,discovery,identity,reputationは別の集中点としてswitching reviewが必要である.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. base protocolがfederation可能なら,functionがcaptureされない証拠なのでdecentralizedである.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. dominant providerのextensionはすべてstandardで禁止すべきなので,RFC 9518違反である.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Agent Card host数だけが重要で,default,identity rule,portable reputationは分析対象外である.</label>
           </fieldset><div class="explain">**解説:**
-A: infrastructure redundancyはavailabilityを改善しても,controlを一組織へ残し得ます.
-B: Sections 2-4は,排除,観測,条件変更,switching妨害を行えるactorとconcentration effectを分析対象にします.
-C: protocol topologyとoperational controlは別です.一つのlayerのfederationだけでは他のcontrol pointを説明できません.
-D: adoptionはfuture captureやlock-inを防ぐ保証ではなく,将来のfailure modeもreviewへ残す必要があります.</div>
+A: RFC 9518 Sections 3.1.1と4.4は,federationがdecentralizationの条件を作っても結果を保証しないとします.defaultとportabilityは実際のsubstitutionに影響します.
+B: Section 3.1.1はnon-technical pressureがfederated functionを集中させ得ると明示します.protocol capabilityはdeployment evidenceではありません.
+C: RFC 9518はproprietary extensionを自動的に禁止する規範ではなく,analysisとdesign guidanceです.Section 4.7はそのeffectの検討を促します.
+D: Section 2はfunctionへのcontrolを分析し,Section 4.4はsubstitution costを扱います.hosting endpointが多くてもdiscoveryやreputationは重要です.
+判断軸: decentralizationはfunctionごとに評価し,default,不足するportability,provider変更の実costを含めます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC 9518のanalysisと,analysis後にdeploymentが選ぶ判断を分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: centralization analysisを行った後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="primary partyがintermediaryを選んだか,可視範囲が委任taskに限定されるかを確認します.">
+        <header><h4>Q4: このoptional A2A brokerを適切に制約するrevisionはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9518を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">userはnetwork addressを隠し,offline中にtaskをqueueするbrokerを明示的に選びます.brokerはtask全文も受け取り,無関係なanalyticsへ再利用できます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するcentral serviceと, exit, federation, portability path</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. 誰がparticipantを排除し, 条件を変え, behaviorを観測し, switchingを高コストにできるか確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. governance, transparency, competition concernをどう扱うか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Internet standardとdeploymentが作るcentralization/decentralization effectを分析すること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. RFC 9518ではintermediaryがprivacyやoperational efficiencyを改善できないため,brokerをすべて削除する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. userによる選択は全communicationへの無制限controlを許すため,analytics利用を維持する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 明示的選択は維持するが,brokerのobservationとcontrolをqueueとaddress hidingに必要な範囲へ限定し,別目的には別consentを求める.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. userの依存を防ぐため,network layerでbrokerを自動挿入して存在を見えなくする.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-4は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,analysis frameworkを越えた結果の扱いを定義します.
-D: これはRFCのanalysis scopeであり,local acceptance choiceではありません.</div>
+A: RFC 9518 Section 4.5はthird partyがspecialization,simplicity,privacyを提供できるとします.intermediary roleを禁止していません.
+B: userのpositive actionは選択したfunctionへのinterpositionを根拠付けますが,無制限なsecondary useまでは許しません.delegated powerにはboundaryが必要です.
+C: Section 4.5の2基準を満たします.primary partyがinterpositionを選び,observationとcontrolをintended functionに必要な範囲へ限定します.
+D: 自動かつ不透明なinterpositionはpositive-action基準を満たさず,sticky dependencyとunaccountable observationを増やし得ます.
+判断軸: delegation自体は有害とは限りません.informed choice,minimum necessary power,revokeまたはreplace可能性を評価します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでcentralization reviewを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="system functionを個別に列挙してから,system全体へ1個のdecentralization labelを付けられるか考えます.">
+        <header><h4>Q5: このA2A networkでdistributed consensusが立証する範囲はどこか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: discovery, identity, registry, marketplace, relay設計がcontrolを集中させ得る場面.観測した欠陥: single provider, registry, brokerへ依存し, failure, capture, abuse scenarioを書かないこと.</p>
+          <p class="question-premise">task receiptは多様なvalidator setでcommitされます.1 vendorがprotocol repository,release signing,client implementation,emergency upgrade processをcontrolします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（Internet standardとdeploymentが作るcentralization/decentralization effectを分析すること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（interoperability, portability, multiple independent implementationを保つdesign alternativeを文書化する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 9518はreview guidanceなので, security, privacy, end-user considerationを置き換えず補完する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. controlとcapture riskを特定し,dependency受理前にexit,federation,portabilityのmitigationを明示する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. data-plane ledgerに複数validatorがいるため,A2A system全体がdecentralizedだと立証する.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. receipt orderingを分散し得るが,governanceとimplementation controlは集中したままで別の分析が必要である.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. central governanceは必ず全data-plane decisionを支配するため,vendorがvalidator consensusもcontrolすると立証する.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. cryptographic consensusだけがRFC 9518のInternet functionなので,governanceは評価に無関係である.</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Sections 2-4に沿って欠陥を解消してからresultを使います.profile rule: interoperability, portability, multiple independent implementationを保つdesign alternativeを文書化する.check: 誰がparticipantを排除し, 条件を変え, behaviorを観測し, switchingを高コストにできるか確認する.local policy: 受理するcentral serviceと, exit, federation, portability path.</div>
+A: RFC 9518 Section 3.1.2は,distributed operationがgovernance,shared implementation,documentationまで自動的に分散しないと警告します.
+B: Section 3.1.2がこの限定的結論を支えます.evidenceは1 functionに関するもので,他functionには別のpower集中が残ります.
+C: central governanceはriskですが,それだけで全validator decisionへのcontrolは立証できません.observed mechanismを越えた推論は避けます.
+D: RFC 9518はprotocolとapplicationを複数functionのcompositionとして扱い,governanceとimplementationも明示的な分析対象です.
+判断軸: decentralization mechanismは変更したfunctionのevidenceです.その結論を隣接functionへ自動転送しません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="centralization,security,privacy,end-user reviewは別の問いを扱います.各結論とownerを明示してください.">
-        <header><h4>Q6: centralization reviewとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="functionごとにcontrol,failure impact,accountability,implementation diversity,実際のmigration costを比較します.">
+        <header><h4>Q6: このcomposed A2A architectureから導ける結論はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはcentralization reviewを別protocol layerと組み合わせます.design noteには「RFC 9518はreview guidanceなので, security, privacy, end-user considerationを置き換えず補完する」とあります.</p>
+          <p class="question-premise">central directoryは迅速なabuse responseとglobally consistentなnameを提供します.agent messagingには2個の独立implementationがあり,directory recordはexport可能ですが,全default clientが同じdirectoryを選びます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. security reviewに合格すれば,両reviewがtrustを扱うためcentralization analysisは不要である</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. 一providerに複数endpointがあればdecentralized controlなので,governanceとexitのownerは不要である</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. portabilityを記載すれば,RFC 9518がprivacyとend-user reviewも置き換える</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. RFC 9518をsecurity,privacy,end-user reviewと並行適用し,control,exit,federation,portabilityの結論をapproved designへどう反映するか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. central operationはabuse responseを改善するため,default concentrationとmigration evidenceをreviewせずacceptできる.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. nameがcentralizedなのでrejectすべきで,RFC 9518はすべてのfunctionへdistributed consensusを要求する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. messagingに2 implementationがあれば,userがexportを使わなくてもdiscovery,governance,defaultの分散も立証される.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. directoryにはbenefitとriskがある.default,outage,accountability,switchingをreviewし,RFC 9518をconformance verdictにしない.</label>
           </fieldset><div class="explain">**解説:**
-A: security reviewはthreatとcontrolを評価しますが,operational powerやgovernance powerの集中を単独では特定しません.
-B: endpoint数とindependent controlは別であり,単一ownerは条件変更やexit妨害を行えます.
-C: RFC 9518はsecurity,privacy,end-user considerationを補完し,置き換えません.
-D: Sections 2-4に沿うcentralization analysisを別に行い,他reviewとの結論を明示的に組み合わせます.</div>
+A: Section 2.2はspecialized securityやglobal functionをbenefitとして認めますが,benefitは集中したcontrolやfailure impactを消しません.
+B: RFC 9518は特定のdecentralization technologyを要求しません.Sections 2.2と4.2はcontextに即したfunction-specific evaluationを求めます.
+C: implementation diversityはmessagingに有益ですが,Section 4.4はuserがdeploymentを実際にsubstituteできるかを問います.discovery diversityは自動的に立証されません.
+D: Sections 2.1,2.2,4.2,4.4がこのbalanced reviewを支えます.Status of This MemoとSection 1はRFC 9518をInformationalかつauthorのanalysisとし,一律compliance testにはしていません.
+判断軸: RFC 9518はreview lensとして使います.何が改善し,powerがどこに残り,何をswitchでき,evidenceだけでは何を決められないかを示します.</div>
         </div>
       </article>
     </section>

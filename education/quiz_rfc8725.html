@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8725","SKILL_SUBTITLE":"JSON Web Token Best Current Practices","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8725","SKILL_SUBTITLE":"JSON Web Token Best Current Practices","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what JWT BCP provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 8725 make JWT BCP sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The token's alg value is an input to check against policy, not authority to expand the accepted algorithm set.">
+        <header><h4>Q1: Which algorithm-selection behavior follows RFC 8725?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 8725 and claims that using JWT BCP automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An A2A verifier supports RS256 and ES256 in its library. This token profile permits only ES256, but an incoming token declares alg=RS256 and has a valid RS256 signature.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. reviewing JWT acceptance rules against known classes of JWT implementation and deployment failures; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. reviewing JWT acceptance rules against known classes of JWT implementation and deployment failures, while the profile that says which token kind and claims are acceptable at this endpoint remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 7519 defines JWT, while RFC 8725 explains safer ways to use JWTs in modern deployments; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 8725 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Accept because a valid signature with any algorithm implemented by the library satisfies algorithm verification</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Reject because the caller selects an allowed set and the cryptographic operation must use the algorithm allowed for this profile and key</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Accept after recording the algorithm difference, since signature validity takes precedence over a profile allowlist</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Retry verification with ES256 while retaining the RS256 signature bytes, so the local profile controls the algorithm name</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-3 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-3 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 8725 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Section 3.1 requires libraries to let callers specify the supported set and forbids using other algorithms for the operation.
+B: Correct. Section 3.1 also requires the header algorithm, the operation performed, and the algorithm associated with the key to agree.
+C: A successful operation outside the selected profile is not a successful validation for that profile.
+D: Verification must use the algorithm that actually produced the signature; relabeling inputs cannot repair a profile mismatch.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for JWT BCP. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="Different JWT kinds need validation rules that make substitution fail, not just prose describing their intended use.">
+        <header><h4>Q2: Which profile change addresses cross-JWT confusion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 8725 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">One issuer signs both A2A access tokens and Agent Card attestations with the same key. Both currently use the same audience and optional claims, so either token passes the other's validator.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only the profile that says which token kind and claims are acceptable at this endpoint and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 7519 defines JWT, while RFC 8725 explains safer ways to use JWTs in modern deployments</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Use explicit typing, separate token kinds, short lifetimes, and unambiguous issuer and audience values</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Keep one validation rule and ask callers to remember whether they fetched the JWT from the token or Agent Card endpoint</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Add a human-readable purpose claim but leave it optional and continue accepting a token when that claim is absent</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Use the same typ value for both classes and rely on different documentation to distinguish their authorization effects</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Define mutually exclusive validation rules, using distinct typing, claims, audiences, keys, or issuers so a token of the other class is rejected</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3.1-3.12 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Endpoint provenance can be lost or confused and does not make the token classes cryptographically or semantically exclusive.
+B: An optional discriminator does not force the wrong validator to reject the token.
+C: Section 3.11 recommends explicit typing for new JWT uses, and reusing a type defeats that discriminator.
+D: Section 3.12 requires mutually exclusive validation rules when different JWT kinds could be confused; it lists these separation strategies.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this JWT BCP review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Evaluate the token under the rules for the operation being authorized, not merely under a generic issuer signature rule.">
+        <header><h4>Q3: Should the gateway accept the Agent Card attestation as an access token?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: allowing a token from one issuer or token class to be accepted in another context. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">The attestation is correctly signed by trusted issuer I, has aud=gateway, and is unexpired. The access-token endpoint also trusts I. The access-token profile requires typ=a2a-access+jwt and scope=task.write; the attestation has typ=a2a-card+jwt and no scope. Authorization requires the access-token profile.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how keys are rotated and scoped to issuers as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Pin acceptable algorithms and keys to the issuer and token kind before processing claims</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 7519 defines JWT, while RFC 8725 explains safer ways to use JWTs in modern deployments</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 8725 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept because issuer, audience, lifetime, and signature are valid, which are sufficient shared properties for both token classes</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept after adding scope=task.write to the decoded claims because the trusted issuer could have issued that value</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Reject under the access-token rules; valid protection for one JWT kind does not satisfy the mutually exclusive type and claim rules of another</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Reject all JWTs from issuer I because one issuer cannot safely issue more than one kind of JWT under RFC 8725</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 2 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: Sections 2.8 and 3.12 address exactly this substitution risk; shared valid properties do not erase class-specific rules.
+B: A verifier cannot invent an authorization claim after signature verification and attribute it to the issuer.
+C: Correct. Sections 3.11 and 3.12 support explicit typing and mutually exclusive rules; the stated access-token profile supplies the decision criterion.
+D: Section 3.12 permits one issuer to issue different kinds when validation rules reliably segregate them.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing JWT BCP, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="A correctly signed URL can still be an attacker-controlled input to a server-side lookup.">
+        <header><h4>Q4: Is signature verification enough before dereferencing the jku URL?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 8725 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">A multi-issuer A2A gateway reads jku from a signed JWT and fetches that URL to obtain verification keys. Trusted issuers are configured, but the gateway permits any HTTPS host in jku. The security requirement forbids attacker-directed requests to internal services.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. The profile that says which token kind and claims are acceptable at this endpoint</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Pin acceptable algorithms and keys to the issuer and token kind before processing claims</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How keys are rotated and scoped to issuers</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Reviewing JWT acceptance rules against known classes of JWT implementation and deployment failures</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. No; bind acceptable key locations to the validated issuer or an allowlist and validate lookup inputs before any network access</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Yes; once a JWT carries a signature value, every Header Parameter used to find its verification key is already trustworthy</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes if the URL uses HTTPS, because WebPKI prevents a JWT author from choosing an internal or unintended destination</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Fetch the URL first and validate issuer after key retrieval, because issuer-key binding can only be evaluated after the request</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-3 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Section 3.10 requires validation or sanitization of claims and headers used for lookups and gives allowlisting as a mitigation for injection and SSRF.
+B: The key lookup occurs before signature authenticity has been established; attacker-controlled lookup inputs cannot inherit trust from an unverified signature.
+C: HTTPS authenticates the selected server but does not establish that the selected destination is allowed by this application.
+D: A configured issuer-to-key-location binding can be checked before an attacker-controlled network request.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when JWT BCP is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Bind each key to its intended algorithm; do not let a token reinterpret public key bytes as a symmetric secret.">
+        <header><h4>Q5: How should the verifier handle this HS256 token?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when an API gateway, authorization server, or service validates JWTs from more than one source. Observed defect: algorithm confusion, cross-JWT confusion, weak keys, and accepting tokens for the wrong audience.</p>
+          <p class="question-premise">An A2A profile accepts only RS256 with issuer I's RSA public key. A library also implements HS256. An attacker submits alg=HS256 and computes an HMAC using the published RSA public-key bytes as the HMAC secret. The verifier's criterion is the profile's RS256 issuer authentication.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (reviewing JWT acceptance rules against known classes of JWT implementation and deployment failures), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (use explicit typing, separate token kinds, short lifetimes, and unambiguous issuer and audience values) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 7519 defines JWT, while RFC 8725 explains safer ways to use JWTs in modern deployments), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Verify HS256 with the supplied RSA bytes because the same key material is already trusted for issuer I</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Reject before that reinterpretation; restrict algorithms to RS256 and ensure the configured RSA key is used only with its assigned algorithm</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Verify both HS256 and RS256 and accept whichever operation succeeds, preserving compatibility with library capabilities</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Accept if iss=I and aud matches, since claim validation can compensate for a different signature algorithm</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 2 supports resolving the defect before relying on the result. The profile rule is: use explicit typing, separate token kinds, short lifetimes, and unambiguous issuer and audience values. The check is: pin acceptable algorithms and keys to the issuer and token kind before processing claims. The local policy is: the profile that says which token kind and claims are acceptable at this endpoint.</div>
+A: Section 2.1 describes this algorithm confusion class; a public key must not be reinterpreted as an attacker-usable symmetric secret.
+B: Section 3.1 requires a caller-selected algorithm set and exactly one algorithm per key, checked during the cryptographic operation.
+C: Trying every library algorithm lets the token choose a validation mode outside the profile.
+D: Claim validation is necessary but cannot replace successful issuer authentication under the selected algorithm and key.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should JWT BCP be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="Preserve token kind, issuer, audience, and validation context across the gateway boundary; signature success is only one fact.">
+        <header><h4>Q6: Which gateway-to-backend design meets the stated authorization criterion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines JWT BCP with another protocol layer. Its design note says: RFC 7519 defines JWT, while RFC 8725 explains safer ways to use JWTs in modern deployments.</p>
+          <p class="question-premise">A gateway accepts access JWTs and session-binding JWTs from the same issuer. It verifies signatures with one generic rule and forwards only sub in X-Agent. The backend authorizes task.write from that header. Backend policy requires an access token for itself and an independently valid session-binding proof for this request.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes the profile that says which token kind and claims are acceptable at this endpoint unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (pin acceptable algorithms and keys to the issuer and token kind before processing claims) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (the profile that says which token kind and claims are acceptable at this endpoint), perform the required check (pin acceptable algorithms and keys to the issuer and token kind before processing claims), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Keep X-Agent because a shared issuer and valid signature allow the backend to infer both token kinds from one subject value</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Add both original typ strings to X-Agent without protecting the header, since explicit typing alone transfers the gateway result</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Validate either JWT kind and let the backend choose which guarantee it represents, because local authorization can repair generic validation</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Use mutually exclusive validators, enforce issuer and audience per kind, and convey both results in a protected assertion or let the backend validate the original proofs</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 2-3 and Section 2 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: A subject value does not carry token class, audience, scope, or session-binding evidence.
+B: Section 3.11 typing helps prevent confusion at validation; an unprotected downstream header does not preserve the validated result.
+C: Section 3.12 requires wrong-kind JWTs to be rejected by mutually exclusive rules before authorization policy consumes them.
+D: Sections 3.8, 3.9, 3.11, and 3.12 supply the JWT checks. The protected downstream assertion and final authorization rule are A2A trust-boundary choices, not guarantees created by RFC 8725.</div>
         </div>
       </article>
     </section>

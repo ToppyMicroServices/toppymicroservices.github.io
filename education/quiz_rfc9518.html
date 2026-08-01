@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9518","SKILL_SUBTITLE":"Centralization, Decentralization, and Internet Standards","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9518","SKILL_SUBTITLE":"Centralization, Decentralization, and Internet Standards","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what centralization review provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 9518 make centralization review sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Distinguish machine-level redundancy from who can exclusively observe or control the function.">
+        <header><h4>Q1: Does this redundant directory remove the centralization concern?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 9518 and claims that using centralization review automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">One company operates an A2A directory on ten regions with independent failover. Only that company can admit agents, inspect all queries, and change ranking policy.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. analyzing centralization and decentralization effects created by Internet standards and deployments; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. analyzing centralization and decentralization effects created by Internet standards and deployments, while which central services are acceptable and what exit, federation, or portability paths exist remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9518 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Yes, because eliminating a technical single point of failure also distributes control of the directory function.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. No; redundancy improves technical availability, but exclusive admission, observation, and policy control remain centralized in the RFC 9518 sense.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Yes, if each region uses a different database, because implementation diversity is the only relevant centralization measure.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. No, because any globally reachable directory is necessarily harmful and should be removed regardless of its role.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-4 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-4 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 9518 supplies analysis guidance. A citation without documented criteria and design consequences is not the analysis.</div>
+A: RFC 9518 Section 2 separates technical distribution from control. Multiple components can still leave one entity with exclusive power over a function.
+B: Section 2 defines centralization by exclusive observation, capture, control, or rent extraction. The scenario retains those powers despite regional redundancy.
+C: Different databases can reduce monoculture risk, but they do not by themselves distribute admission or governance authority.
+D: Sections 2.1 and 2.2 reject a blanket equation between centralization and harm. The function and trade-offs still need contextual analysis.
+Decision rule: Name the function and the power being concentrated; server count alone cannot answer the control question.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare who controls participation and change, then document the exit, portability, and independent-implementation alternatives.">
-        <header><h4>Q2: Two review teams reach incompatible centralization conclusions. What must the profile document?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="Assess why the central component exists, what checks constrain it, and whether users can substitute another provider.">
+        <header><h4>Q2: How should a central rendezvous service be evaluated?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 9518 but leaves the review criteria and their design consequences undefined.</p>
+          <p class="question-premise">Independent agents need a globally consistent place to find short-lived endpoints. A central service provides that rendezvous, publishes an audit log, and supports export to compatible alternatives.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Count deployed endpoints but omit who can exclude participants, change terms, or make exit costly</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Call a design decentralized whenever its data plane is federated, even if identity and discovery use one operator</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Document control points, exit and portability paths, and alternatives that preserve independent implementations</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Delegate the conclusion to the current market leader because deployment share is an objective criterion</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Reject it because RFC 9518 treats every central component as a protocol-design failure.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Accept it because a global view makes accountability and switching irrelevant to centralization analysis.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Replace it with distributed consensus, which guarantees that operation, governance, and implementations are all decentralized.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Evaluate whether the global function justifies concentration, whether governance is accountable, and whether users can practically switch providers.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Deployment count does not reveal the actor that controls admission, change, observation, or switching cost.
-B: RFC 9518 asks reviewers to examine several control points; a distributed data path can still depend on centralized identity or discovery.
-C: Sections 3-4 support making the control model and credible alternatives explicit, so review teams evaluate the same design boundary.
-D: Present market share describes current deployment; it does not decide whether concentration risk is acceptable.</div>
+A: RFC 9518 Section 2.2 recognizes that centralized functions can be technically helpful or necessary. The document does not impose a universal prohibition.
+B: A useful global function can justify concentration, but Section 2.2 still points to accountability and the ability to switch as important constraints.
+C: Section 3.1.2 explains that distributed consensus can decentralize operation while governance, implementation, or other functions remain centralized.
+D: Sections 2.2 and 4.4 support this function-specific review. The conclusion depends on necessity, checks on power, available alternatives, and substitution cost.
+Decision rule: Centralization can be beneficial; the review asks whether its benefit, accountability, and switchability justify the particular concentration of power.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Trace who controls participation, terms, observation, and exit. Deployment convenience is not evidence that concentration risk is absent.">
-        <header><h4>Q3: Which correction addresses this centralization-analysis defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Test whether users can exercise the federation in practice, not merely whether the wire protocol permits it.">
+        <header><h4>Q3: What is the strongest justified finding about this federated Agent Card design?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: treating deployment convenience as proof that concentration risk is harmless. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">The protocol allows any provider to host Agent Cards. In practice, the default client trusts one provider's index, identity rules, and proprietary reputation extension; exporting reputation is unsupported.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Count redundant servers at the same provider and treat infrastructure redundancy as independent governance</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Identify who can exclude participants, change terms, observe behavior, or make switching costly</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat a federated protocol name as proof that identity, discovery, and policy control are also decentralized</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Use current adoption as proof that future exclusion, capture, or switching costs are harmless</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Federation enables independent hosting, but discovery, identity policy, and reputation remain concentration points requiring separate switching review.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. The design is decentralized because federation in the base protocol is sufficient evidence that no function can be captured.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. The design violates RFC 9518 because every extension used by a dominant provider must be prohibited by a standard.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Only the number of Agent Card hosts matters; defaults, identity rules, and portable reputation are outside centralization analysis.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Redundant infrastructure can improve availability while leaving control with one organization.
-B: Sections 2-4 direct the review toward control and concentration effects, including the ability to exclude, observe, change conditions, or impede switching.
-C: Protocol topology and operational control are different questions; federation at one layer does not answer the others.
-D: Adoption is not a guarantee against later capture or lock-in, so the review must preserve plausible future failure modes.</div>
+A: RFC 9518 Sections 3.1.1 and 4.4 say federation creates conditions for decentralization but does not guarantee the outcome. Defaults and portability affect practical substitution.
+B: Section 3.1.1 explicitly warns that non-technical pressure can concentrate a federated function. Protocol capability is not deployment evidence.
+C: RFC 9518 is an analysis and design-guidance document, not a rule that automatically bans proprietary extensions. Section 4.7 instead asks designers to examine their effects.
+D: Section 2 analyzes control over functions, and Section 4.4 includes substitution cost. Discovery and reputation can matter even with many hosting endpoints.
+Decision rule: Evaluate decentralization function by function and include defaults, missing portability, and the real cost of changing providers.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC 9518 analysis from the deployment decisions made after the analysis; neither category replaces the other.">
-        <header><h4>Q4: After performing the centralization analysis, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Check whether a primary party chose the intermediary and whether its visibility is limited to the delegated task.">
+        <header><h4>Q4: Which revision best constrains this optional A2A broker?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 9518 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">A user explicitly selects a broker to hide its network address and queue tasks while offline. The broker also receives complete task bodies and may reuse them for unrelated analytics.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which central services are acceptable and what exit, federation, or portability paths exist</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Identify who can exclude participants, change terms, observe behavior, or make switching costly</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How governance, transparency, and competition concerns are handled</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Analyzing centralization and decentralization effects created by Internet standards and deployments</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Remove all brokers, because an intermediary cannot improve privacy or operational efficiency under RFC 9518.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Keep the analytics use because user selection grants the broker unrestricted control over all observed communication.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Keep explicit selection, but limit broker observation and control to what queuing and address hiding require, with separate consent for another purpose.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Insert the broker automatically at the network layer, because invisibility prevents the user from becoming dependent on it.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-4 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the analysis framework itself.
-D: This describes the RFC's analysis scope, not a local acceptance choice.</div>
+A: RFC 9518 Section 4.5 notes that third parties can provide useful specialization, simplicity, or privacy. The document does not ban the intermediary role.
+B: Positive user action justifies interposition for the chosen function, not unlimited secondary use. Delegated power still needs boundaries.
+C: Section 4.5 gives both criteria: a primary party positively chooses interposition, and observation or control is limited to what the intended function needs.
+D: Automatic opaque interposition fails the positive-action criterion and can increase sticky dependence and unaccountable observation.
+Decision rule: Delegation is not inherently harmful; evaluate informed choice, minimum necessary power, and the ability to revoke or replace the intermediary.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when centralization review is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="List the system functions separately before assigning one decentralization label to the entire deployment.">
+        <header><h4>Q5: What does distributed consensus establish in this A2A network?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a discovery, identity, registry, marketplace, or relay design could concentrate control. Observed defect: depending on a single provider, registry, or broker without documenting failure, capture, or abuse scenarios.</p>
+          <p class="question-premise">Task receipts are committed by a diverse validator set. One vendor controls the protocol repository, release signing, client implementation, and emergency upgrade process.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (analyzing centralization and decentralization effects created by Internet standards and deployments), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (document design alternatives that preserve interoperability, portability, and multiple independent implementations) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Identify the control and capture risks, then require explicit exit, federation, or portability mitigations before accepting the dependency</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. It establishes that the whole A2A system is decentralized because the data-plane ledger has multiple validators.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. It may decentralize receipt ordering while governance and implementation control remain concentrated and require separate analysis.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. It proves the vendor controls validator consensus, because any central governance necessarily controls every data-plane decision.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. It makes governance irrelevant, because cryptographic consensus is the only Internet function considered by RFC 9518.</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Sections 2-4 supports resolving the defect before relying on the result. The profile rule is: document design alternatives that preserve interoperability, portability, and multiple independent implementations. The check is: identify who can exclude participants, change terms, observe behavior, or make switching costly. The local policy is: which central services are acceptable and what exit, federation, or portability paths exist.</div>
+A: RFC 9518 Section 3.1.2 warns that distributed operation does not automatically decentralize governance, shared implementations, or documentation.
+B: Section 3.1.2 supports this bounded conclusion. The evidence concerns one function, while other functions retain a distinct concentration of power.
+C: Central governance is a risk but does not by itself prove control over every validator decision. The analysis should not infer more than the observed mechanism.
+D: RFC 9518 treats protocols and applications as compositions of many functions. Governance and implementation are explicit parts of its analysis.
+Decision rule: A decentralization mechanism supplies evidence about the function it changes; it does not transfer that conclusion to every adjacent function.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Centralization, security, privacy, and end-user reviews ask different questions. Keep their conclusions and owners explicit.">
-        <header><h4>Q6: How should centralization review be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="Compare control, failure impact, accountability, implementation diversity, and actual migration cost for each function.">
+        <header><h4>Q6: Which conclusion follows from this composed A2A architecture?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines centralization review with another protocol layer. Its design note says: RFC 9518 is review guidance, so it complements security, privacy, and end-user considerations rather than replacing them.</p>
+          <p class="question-premise">A central directory gives fast abuse response and globally consistent names. Agent messaging is interoperable across two independent implementations, directory records are exportable, but all default clients still select the same directory.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. A passed security review makes centralization analysis unnecessary because both reviews evaluate trust</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. Multiple endpoints at one provider establish decentralized control, so governance and exit need no separate owner</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. RFC 9518 replaces privacy and end-user review whenever the profile documents portability</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. Apply RFC 9518 alongside security, privacy, and end-user review, then document which control, exit, federation, and portability conclusions affect the approved design</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The architecture is acceptable solely because central operation improves abuse response; default concentration and migration evidence need no review.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. The architecture is unacceptable solely because names are centralized; RFC 9518 requires every function to use distributed consensus.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Two messaging implementations prove decentralization of discovery, governance, and defaults even if users never exercise export.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. The directory has benefits and concentration risks; review defaults, outage impact, accountability, and practical switching without treating RFC 9518 as a conformance verdict.</label>
           </fieldset><div class="explain">**Explanation:**
-A: A security review evaluates threats and controls; it does not by itself identify concentration of operational or governance power.
-B: Endpoint count is not the same as independent control, and a single owner can still change terms or block exit.
-C: RFC 9518 explicitly complements rather than replaces security, privacy, and end-user considerations.
-D: Sections 2-4 support a separate centralization analysis whose conclusions are combined explicitly with the other review results.</div>
+A: Section 2.2 recognizes specialized security and global functions as possible benefits, but those benefits do not erase concentrated control or failure impact.
+B: RFC 9518 does not require one decentralization technology. Sections 2.2 and 4.2 call for contextual, function-specific evaluation.
+C: Implementation diversity helps messaging, but Section 4.4 asks whether users can actually substitute deployments. It does not establish discovery diversity by implication.
+D: Sections 2.1, 2.2, 4.2, and 4.4 support this balanced review. The Status of This Memo and Section 1 identify RFC 9518 as Informational and as the author's analysis, not a universal compliance test.
+Decision rule: Use RFC 9518 as a review lens: state what improves, where power remains, what can be switched, and what the evidence cannot decide by itself.</div>
         </div>
       </article>
     </section>

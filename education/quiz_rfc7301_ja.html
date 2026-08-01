@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7301",
       SKILL_SUBTITLE: "ALPN",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** ALPNはHTTP/2専用ではなく, 同じsecure endpointで利用できる複数のapplication protocolから1つを交渉します.
+            ALPNはHTTP/2専用ではなく, 同じsecure endpointで利用できる複数のapplication protocolから1つを交渉します.
 
-            **用語:** **ALPN** は **Application-Layer Protocol Negotiation** です. TLS handshake の中で, 接続後に話す application protocol を決めます.
+            **ALPN** は **Application-Layer Protocol Negotiation** です. TLS handshake の中で, 接続後に話す application protocol を決めます.
 
-            **実務での機会:** 443 番 port で HTTP/1.1, HTTP/2, あるいは他の protocol を併用する server や proxy の review で頻出です.
+            443 番 port で HTTP/1.1, HTTP/2, あるいは他の protocol を併用する server や proxy の review で頻出です.
 
-            **選択肢:**
-            - A (incorrect): target hostnameを提示するのはSNIの役割であり, ALPNはapplication protocolを交渉します.
-            - B (correct): これが ALPN の中心的な役割です.
-            - C (incorrect): ALPNはTLSのhello exchange内で選択を完了し, handshake後の追加交渉を避けます.
+            RFC 7301 は HTTP/2 を後押しした文脈がありますが, 交渉対象は HTTP 系に限りません.
 
-            **関連:** RFC 7301 は HTTP/2 を後押しした文脈がありますが, 交渉対象は HTTP 系に限りません.
+            A: target hostnameを提示するのはSNIの役割であり, ALPNはapplication protocolを交渉します.
+            B: これが ALPN の中心的な役割です.
+            C: ALPNはTLSのhello exchange内で選択を完了し, handshake後の追加交渉を避けます.
           </div>
         </div>
       </article>
@@ -129,18 +129,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** clientがordered listを提示し, serverが自身も対応するprotocolから最終選択します.
+            clientがordered listを提示し, serverが自身も対応するprotocolから最終選択します.
 
-            **用語:** **ClientHello** で client は自分の候補を列挙します. 最終的にどれを使うかを選ぶのは server 側です.
+            **ClientHello** で client は自分の候補を列挙します. 最終的にどれを使うかを選ぶのは server 側です.
 
-            **実務での機会:** 「client は h2 を出しているのに, なぜ HTTP/1.1 になったのか」を調べるときに, まずここを押さえます.
+            「client は h2 を出しているのに, なぜ HTTP/1.1 になったのか」を調べるときに, まずここを押さえます.
 
-            **選択肢:**
-            - A (correct): 候補リストを出すのが client の役目です.
-            - B (incorrect): 1 個を強制する仕組みではありません.
-            - C (incorrect): certificate chain を ALPN 候補として送るわけではありません.
+            protocol 選択は client の希望と server の都合の両方を踏まえて決まります.
 
-            **関連:** protocol 選択は client の希望と server の都合の両方を踏まえて決まります.
+            A: 候補リストを出すのが client の役目です.
+            B: 1 個を強制する仕組みではありません.
+            C: certificate chain を ALPN 候補として送るわけではありません.
           </div>
         </div>
       </article>
@@ -176,18 +175,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** ALPNとSNIは同じhandshakeに現れ得ますが, hostname routingとapplication-protocol negotiationは別の判断です.
+            ALPNとSNIは同じhandshakeに現れ得ますが, hostname routingとapplication-protocol negotiationは別の判断です.
 
-            **用語:** **SNI** は server name を伝えます. **ALPN** は application protocol を交渉します. 問題の層が違います.
+            **SNI** は server name を伝えます. **ALPN** は application protocol を交渉します. 問題の層が違います.
 
-            **実務での機会:** ingress, TLS terminator, certificate 事故の切り分けで, 「名前の問題」なのか「話す protocol の問題」なのかを分けて考えるのに重要です.
+            ingress, TLS terminator, certificate 事故の切り分けで, 「名前の問題」なのか「話す protocol の問題」なのかを分けて考えるのに重要です.
 
-            **選択肢:**
-            - A (incorrect): 役割が逆です. SNIはserver nameを運び, ALPNはapplication protocolを交渉します.
-            - B (incorrect): SNIはapplication protocol preferenceを運ばず, target server nameを示します.
-            - C (correct): name-based virtual hostingとTLS connection上のapplication protocol選択を分離しています.
+            実運用では SNI, ALPN, certificate selection, backend routing が組み合わさるので, それぞれの責務を分けて把握する必要があります.
 
-            **関連:** 実運用では SNI, ALPN, certificate selection, backend routing が組み合わさるので, それぞれの責務を分けて把握する必要があります.
+            A: 役割が逆です. SNIはserver nameを運び, ALPNはapplication protocolを交渉します.
+            B: SNIはapplication protocol preferenceを運ばず, target server nameを示します.
+            C: name-based virtual hostingとTLS connection上のapplication protocol選択を分離しています.
           </div>
         </div>
       </article>
@@ -203,45 +201,43 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 共通protocolがない場合はsilent mismatchを残さず, `no_application_protocol`によってhandshakeを明示的に失敗させます.
+            共通protocolがない場合はsilent mismatchを残さず, `no_application_protocol`によってhandshakeを明示的に失敗させます.
 
-            **用語:** **no_application_protocol** は, 共通の application protocol が無いときの alert です.
+            **no_application_protocol** は, 共通の application protocol が無いときの alert です.
 
-            **実務での機会:** h2 だけを想定した client と, HTTP/1.1 しか出せない origin や proxy の間で failure を読むときに役立ちます.
+            h2 だけを想定した client と, HTTP/1.1 しか出せない origin や proxy の間で failure を読むときに役立ちます.
 
-            **選択肢:**
-            - A (incorrect): client が提示していない protocol を使うのは交渉として不正です.
-            - B (correct): これが RFC 上の正しい failure です.
-            - C (incorrect): plaintext への自動 downgrade は ALPN の fallback ではありません.
+            正しく失敗させることは, 曖昧な成功よりずっと debug しやすく安全です.
 
-            **関連:** 正しく失敗させることは, 曖昧な成功よりずっと debug しやすく安全です.
+            A: client が提示していない protocol を使うのは交渉として不正です.
+            B: これが RFC 上の正しい failure です.
+            C: plaintext への自動 downgrade は ALPN の fallback ではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="serverがhandshake中の早い段階で知り, certificateやbackend選択へ使える情報を考えます.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="serverがhandshake中の早い段階で知り, certificateやbackend選択へ使える情報を考えます.">
         <header><h4>Q5: RFC 7301 が certificate selection に触れている理由として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. 選ばれた application protocol に応じて, server が別の certificate や routing を選びたい場面があるから</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. serverがnegotiated protocolに応じてcertificateやroutingを選べるため</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. client が protocol ごとに新しい certificate を upload するから</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. ALPN が certificate validation を不要にするから</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** ALPNはprotocol互換性だけでなく, certificate selectionやbackend routingなどのdeployment判断にも利用できます.
+            RFC 7301 Section 4はALPNのdesign motivationとしてcertificate selectionとservice routingを挙げます.
 
-            **用語:** **certificate selection** や **routing** は, negotiate された protocol に応じて server 側の挙動を変える設計です.
+            **certificate selection** や **routing** は, negotiate された protocol に応じて server 側の挙動を変える設計です.
 
-            **実務での機会:** multi-tenant ingress, TLS offload, protocol ごとに backend を分ける構成で意味を持ちます.
+            multi-tenant ingress, TLS offload, protocol ごとに backend を分ける構成で意味を持ちます.
 
-            **選択肢:**
-            - A (correct): RFC の design discussion に沿った理解です.
-            - B (incorrect): client が certificate を差し替える機構ではありません.
-            - C (incorrect): certificate validation は依然として必要です.
+            hostname, protocol, certificate, backend の選択は別軸ですが, 現場では同じ handshake の中で絡み合います.
 
-            **関連:** hostname, protocol, certificate, backend の選択は別軸ですが, 現場では同じ handshake の中で絡み合います.
+            A: RFC の design discussion に沿った理解です.
+            B: client が certificate を差し替える機構ではありません.
+            C: certificate validation は依然として必要です.
           </div>
         </div>
       </article>
@@ -258,24 +254,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** negotiation fieldであっても, advertiseしたprotocolや選択結果がmetadataとして観測され得ます.
+            negotiation fieldであっても, advertiseしたprotocolや選択結果がmetadataとして観測され得ます.
 
-            **用語:** **externally visible marker** とは, application data 前の段階で on-path entity が connection の性質を推測できる手掛かりです.
+            **externally visible marker** とは, application data 前の段階で on-path entity が connection の性質を推測できる手掛かりです.
 
-            **実務での機会:** protocol 名そのものが profiling や policy decision に使われ得る環境では, ここを意識しないと設計が甘くなります.
+            protocol 名そのものが profiling や policy decision に使われ得る環境では, ここを意識しないと設計が甘くなります.
 
-            **選択肢:**
-            - A (correct): RFC は古い TLS version を含め, identifier の可視性に注意を促しています.
-            - B (incorrect): ALPN は protocol 秘匿の仕組みではありません.
-            - C (correct): これが設計上の見方のひとつです.
-            - D (incorrect): むしろ leakage に注意しろと書いています.
+            protocol 名自体が sensitive なら, 「ALPN で見える前提でよいか」を別途検討する必要があります.
 
-            **関連:** protocol 名自体が sensitive なら, 「ALPN で見える前提でよいか」を別途検討する必要があります.
+            A: RFC は古い TLS version を含め, identifier の可視性に注意を促しています.
+            B: ALPN は protocol 秘匿の仕組みではありません.
+            C: これが設計上の見方のひとつです.
+            D: むしろ leakage に注意しろと書いています.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="選択された値をadvisory hintではなく, connectionのcontractとして扱います.">
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="選択された値をadvisory hintではなく, connectionのcontractとして扱います.">
         <header><h4>Q7: ALPN で選ばれた protocol が connection に対して definitive というのはどういう意味か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -286,18 +281,17 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** serverが選択したprotocolはconnectionで使用するdefinitive valueであり, advisory hintではありません.
+            RFC 7301 Section 3.2はserverが選択したprotocolをそのconnectionのdefinitive valueとします.
 
-            **用語:** **definitive for the connection** は, その TLS connection 上で何を話すかを決める binding な結果だという意味です.
+            **definitive for the connection** は, その TLS connection 上で何を話すかを決める binding な結果だという意味です.
 
-            **実務での機会:** front proxy と backend の protocol mismatch や, observability 上は h2 なのに実際は HTTP/1.1 相当で応答している, という事故を防ぐ観点で重要です.
+            front proxy と backend の protocol mismatch や, observability 上は h2 なのに実際は HTTP/1.1 相当で応答している, という事故を防ぐ観点で重要です.
 
-            **選択肢:**
-            - A (incorrect): 暗黙の再選択を許すと, TLS handshake内でALPNが解消した曖昧性を再び持ち込みます.
-            - B (incorrect): ALPNはconnectionのapplication protocolを選び, TLS record layerだけのlabelではありません.
-            - C (correct): ServerHelloの結果が, そのconnectionで双方が話すprotocolを決めます.
+            protocol negotiation が役立つのは, 双方が「この接続では何を話すのか」を曖昧にしないからです.
 
-            **関連:** protocol negotiation が役立つのは, 双方が「この接続では何を話すのか」を曖昧にしないからです.
+            A: 暗黙の再選択を許すと, TLS handshake内でALPNが解消した曖昧性を再び持ち込みます.
+            B: ALPNはconnectionのapplication protocolを選び, TLS record layerだけのlabelではありません.
+            C: ServerHelloの結果が, そのconnectionで双方が話すprotocolを決めます.
           </div>
         </div>
       </article>
@@ -313,23 +307,22 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** ALPNはconnection propertyです. resumptionでもcurrent handshake messageで交渉し, 前回の選択をそのまま引き継ぎません.
+            ALPNはconnection propertyです. resumptionでもcurrent handshake messageで交渉し, 前回の選択をそのまま引き継ぎません.
 
-            **用語:** ALPN は **session property** ではなく **connection property** として扱われます. つまり, 今回の handshake で決まるということです.
+            ALPN は **session property** ではなく **connection property** として扱われます. つまり, 今回の handshake で決まるということです.
 
-            **実務での機会:** client 側の候補が変わった, server 側の設定が変わった, といった再接続シナリオで重要です.
+            client 側の候補が変わった, server 側の設定が変わった, といった再接続シナリオで重要です.
 
-            **選択肢:**
-            - A (correct): 新しい handshake の ALPN を見ます.
-            - B (incorrect): 前回の値に固定されるわけではありません.
-            - C (incorrect): 平文 side negotiation に戻るわけではありません.
+            TLS 周りの debugging では, 「session に紐づく情報か, 現 connection に紐づく情報か」を分ける癖が役立ちます.
 
-            **関連:** TLS 周りの debugging では, 「session に紐づく情報か, 現 connection に紐づく情報か」を分ける癖が役立ちます.
+            A: 新しい handshake の ALPN を見ます.
+            B: 前回の値に固定されるわけではありません.
+            C: 平文 side negotiation に戻るわけではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="提示された値の1つをserverが選んだ場合と, extension自体を処理しなかった場合を区別します.">
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="提示された値の1つをserverが選んだ場合と, extension自体を処理しなかった場合を区別します.">
         <header><h4>Q9: ClientHelloが`h2`と`http/1.1`を提示した. TLSは完了したが, clientはALPN値が交渉されなかったと報告している. 整合する説明はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -340,23 +333,22 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** TLS handshakeの完了だけではALPN成立を証明できません. ALPNをsupportまたは処理しないpeerは, ALPN selectionを返さずにTLSを完了できます.
+            RFC 7301 Section 3.2は,advertised protocolを1つ選ぶserverとALPNをnegotiateしないserverを区別します.TLS handshakeの完了だけではALPN成立を証明できません.
 
-            **用語:** ALPN extensionを返すserverは, clientのadvertised listからprotocolを1つ選びます. extensionを処理しないserverはALPN selectionを返しません.
+            ALPN extensionを返すserverは, clientのadvertised listからprotocolを1つ選びます. extensionを処理しないserverはALPN selectionを返しません.
 
-            **実務での機会:** ALPN selectionなしと明示的な`http/1.1` selectionは, application levelでは似た挙動に見える場合があるため, diagnostic toolで区別します.
+            ALPN selectionなしと明示的な`http/1.1` selectionは, application levelでは似た挙動に見える場合があるため, diagnostic toolで区別します.
 
-            **選択肢:**
-            - A (incorrect): SNIはintended server nameを運びます. `h2`を選択せず, ALPN resultも隠しません.
-            - B (correct): TLS extension compatibilityにより, ALPNを処理しないserverはresponse extensionを省略できます.
-            - C (incorrect): ALPN responseを返すserverは, clientが提示したlistからprotocolを1つ選ぶ必要があります.
+            ClientHelloのofferや結果のHTTP behaviorから推測せず, negotiated ALPN fieldを直接確認します.
 
-            **関連:** ClientHelloのofferや結果のHTTP behaviorから推測せず, negotiated ALPN fieldを直接確認します.
+            A: SNIはintended server nameを運びます. `h2`を選択せず, ALPN resultも隠しません.
+            B: TLS extension compatibilityにより, ALPNを処理しないserverはresponse extensionを省略できます.
+            C: ALPN responseを返すserverは, clientが提示したlistからprotocolを1つ選ぶ必要があります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="まず双方の共通protocolを求め, 次に選択を行うendpointのpreference順を適用します.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="まず双方の共通protocolを求め, 次に選択を行うendpointのpreference順を適用します.">
         <header><h4>Q10: ClientHelloがALPN protocolを`h2`, `http/1.1`の順に提示した. serverは両方をsupportし, `http/1.1`, `h2`の順に優先する. RFC 7301に従う選択はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -369,12 +361,11 @@
 
             RFC 7301 Section 3.2ではserverが自身のprotocol優先順を持ち, 双方がsupportするprotocolの中からserverにとって最も優先度の高いものを選ぶことを想定しています.
 
-            **選択肢:**
-            - A (incorrect): clientのlistはsupportするprotocolとclient側の優先順を示しますが, RFC 7301は最終選択をserverに委ねています.
-            - B (correct): 両方が双方のsupportするprotocolであり, serverの優先順では`http/1.1`が先です.
-            - C (incorrect): fatal alertは共通して提示されたprotocolが1つもない場合であり, 優先順が異なるだけでは該当しません.
+            選択後のServerHelloにあるALPN値はそのconnectionでdefinitiveであり, serverは後から別protocolでapplication dataを交換してはなりません.
 
-            **関連:** 選択後のServerHelloにあるALPN値はそのconnectionでdefinitiveであり, serverは後から別protocolでapplication dataを交換してはなりません.
+            A: clientのlistはsupportするprotocolとclient側の優先順を示しますが, RFC 7301は最終選択をserverに委ねています.
+            B: 両方が双方のsupportするprotocolであり, serverの優先順では`http/1.1`が先です.
+            C: fatal alertは共通して提示されたprotocolが1つもない場合であり, 優先順が異なるだけでは該当しません.
           </div>
         </div>
       </article>

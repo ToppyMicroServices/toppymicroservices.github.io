@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9114",
       SKILL_SUBTITLE: "HTTP/3",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -101,14 +102,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** HTTP/3, QUIC. HTTP/3 is the mapping of HTTP semantics onto QUIC streams.
-            **Correct (A):** RFC 9114 defines HTTP/3 as running on QUIC.
-            **Options:**
+            HTTP/3, QUIC. HTTP/3 is the mapping of HTTP semantics onto QUIC streams.
+            RFC 9114 defines HTTP/3 as running on QUIC.
+
 
             - A (correct): QUIC provides streams, encryption integration, and connection migration.
             - B (incorrect): TCP is used by HTTP/1.1 and usually HTTP/2, not HTTP/3.
             - C (incorrect): SCTP is not the basis of HTTP/3.
-            **Related:** QUIC itself commonly uses UDP as its substrate.
+            QUIC itself commonly uses UDP as its substrate.
           </div>
         </div>
       </article>
@@ -147,14 +148,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** head-of-line blocking, TCP, QUIC streams. TCP loss recovery can stall delivery for all multiplexed streams. QUIC avoids this by handling loss and streams differently.
-            **Correct (C):** HTTP/3 aims to avoid the cross-stream stall that occurs when HTTP/2 multiplexes over one TCP byte stream.
-            **Options:**
+            head-of-line blocking, TCP, QUIC streams. TCP loss recovery can stall delivery for all multiplexed streams. QUIC avoids this by handling loss and streams differently.
+            HTTP/3 aims to avoid the cross-stream stall that occurs when HTTP/2 multiplexes over one TCP byte stream.
+
 
             - A (incorrect): DNS is separate from HTTP version.
             - B (incorrect): HTTP/3 still uses TLS 1.3 semantics integrated with QUIC.
             - C (correct): This is a primary motivation for moving to QUIC.
-            **Related:** Application-level head-of-line can still happen due to server-side scheduling, but transport behavior is improved.
+            Application-level head-of-line can still happen due to server-side scheduling, but transport behavior is improved.
           </div>
         </div>
       </article>
@@ -170,77 +171,77 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** header compression, QPACK, QUIC. HTTP uses many header fields, so compression reduces overhead, but it must not reintroduce head-of-line blocking.
-            **Correct (B):** QPACK is the header compression mechanism used with HTTP/3.
-            **Options:**
+            header compression, QPACK, QUIC. HTTP uses many header fields, so compression reduces overhead, but it must not reintroduce head-of-line blocking.
+            QPACK is the header compression mechanism used with HTTP/3.
+
 
             - A (incorrect): Authentication is not the role of header compression.
             - B (correct): It compresses headers while working with QUIC stream delivery characteristics.
             - C (incorrect): Congestion control is a transport function, primarily in QUIC.
-            **Related:** HTTP/2 uses HPACK. HTTP/3 uses QPACK to avoid coupling header decoding to ordered delivery.
+            HTTP/2 uses HPACK. HTTP/3 uses QPACK to avoid coupling header decoding to ordered delivery.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Look for the term describing one logical connection continuing while its peer address or network path changes.">
-        <header><h4>Q4: QUIC allows a connection to survive changes in the network path. What is this called</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The control stream is unique and carries connection-wide state; it is not a replaceable request stream.">
+        <header><h4>Q4: How must the peer handle the closed control stream?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An HTTP/3 endpoint sends its SETTINGS frame, then cleanly closes its control stream and opens a second control stream to continue sending connection-level frames.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. Connection migration</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. TLS renegotiation</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. HTTP pipelining</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Accept the replacement if its first frame repeats the same SETTINGS values</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Ignore the closed stream and process connection-level frames on request streams</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Treat closure as H3_CLOSED_CRITICAL_STREAM; a second control stream is not a recovery path</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Reset only the request stream active when the control stream closed</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** connection migration, path, connection ID. QUIC identifies connections independently of the 5-tuple (IP and port), enabling mobility.
-            **Correct (A):** Connection migration is the ability to continue a connection across a path change.
-            **Options:**
-
-            - A (correct): This is a key QUIC feature.
-            - B (incorrect): TLS 1.3 removed renegotiation and QUIC integrates TLS differently.
-            - C (incorrect): Pipelining is an HTTP/1.1 concept.
-            **Related:** Migration helps mobile clients switching networks without restarting all requests.
+            A: RFC 9114 Section 6.2.1 allows exactly one control stream per peer and forbids closing it. Repeating settings cannot restore the lost connection state.
+            B: SETTINGS, GOAWAY, and other connection-level frames have defined stream locations; moving them to request streams is invalid.
+            C: Section 6.2.1 requires H3_CLOSED_CRITICAL_STREAM when either control stream closes. A second control stream would independently cause H3_STREAM_CREATION_ERROR.
+            D: The control stream governs the HTTP/3 connection, so its loss is not scoped to one request.
+            Decision rule: Critical-stream continuity is a connection invariant; do not design replacement streams as application-level failover.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Judge early requests under replay: ask whether processing the same request more than once preserves the application's intended effect.">
-        <header><h4>Q5: Which statements about 0-RTT data are generally true (select all)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="An IP endpoint can host several origins; authority must be established for the new URI origin itself.">
+        <header><h4>Q5: May the client reuse this HTTP/3 connection?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client has an HTTP/3 connection to <code>https://a.example</code>. DNS maps <code>b.example</code> to the same IP and UDP port, but the server certificate is acceptable only for <code>a.example</code>. The client wants to send a request for <code>https://b.example</code> on the existing connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. It can be replayed by an attacker in some cases</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. It is always safe for non-idempotent requests</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. It should be limited to requests that are safe to repeat</label>
-            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. It requires HTTP semantics to change the meaning of GET</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; matching IP and port are sufficient authority for every origin at that endpoint</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. No; the certificate must also be acceptable for b.example before reusing the connection</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes; successful QPACK decoding proves the server is authoritative for b.example</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; HTTP/3 never permits one connection to carry requests for multiple origins</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** 0-RTT, early data, replay. Early data can reduce latency but has replay risks depending on application context.
-            **Correct (A,C):** Replay is the main security tradeoff. Applications should restrict early data to operations that are safe under replay.
-            **Options:**
-
-            - A (correct): An attacker may replay early data, so servers must account for it.
-            - B (incorrect): Non-idempotent requests like money transfer are not safe under replay.
-            - C (correct): Use early data for idempotent or otherwise replay-safe operations.
-            - D (incorrect): HTTP semantics do not change. The transport security property changes the risk profile.
-            **Related:** HTTP/3 inherits this consideration from TLS 1.3 early data used in QUIC.
+            A: Network location does not establish HTTP authority for every name hosted at that endpoint.
+            B: RFC 9114 Section 3.3 requires certificate validation for each new origin before connection reuse. Because this certificate is unacceptable for b.example, the connection must not be reused for it.
+            C: QPACK verifies compression state, not origin authority or certificate identity.
+            D: Section 3.3 permits cross-origin connection reuse when the server certificate is acceptable for the additional origin.
+            Decision rule: Coalescing is conditional on authority for each origin, not merely endpoint equality or an already authenticated different origin.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^quic$" data-difficulty="L1" data-hint="Separate the HTTP version name from the transport protocol named by the HTTP/3 mapping.">
-        <header><h4>Q6: The transport protocol used by HTTP/3 is called</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Canonicalization cannot safely choose between two conflicting authorities that the protocol requires to match.">
+        <header><h4>Q6: How should the gateway handle the authority conflict?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <p class="question-premise">An HTTP/3 gateway receives an HTTPS request with <code>:authority = agent-a.example</code> and <code>Host: agent-b.example</code>. Its routing and authorization policies would select different tenants for those values. It plans to translate the request to HTTP/1.1.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Prefer Host because HTTP/1.1 ultimately uses a Host field</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Prefer :authority because pseudo-header fields always override regular fields</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Treat the HTTP/3 request as malformed and do not route it by either conflicting value</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Route by :authority but authorize by Host so both values remain observable</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** QUIC. HTTP/3 uses QUIC streams rather than TCP.
-            **Correct:** QUIC.
-            **Why others are wrong:** TCP is used for HTTP/2 in common deployments, but HTTP/3 specifically targets QUIC.
-            **Related:** QUIC integrates security and transport features, which is why HTTP/3 differs operationally under loss.
+            A: Choosing Host silently changes the target authority asserted in :authority and can cross a tenant boundary.
+            B: RFC 9114 does not define an override rule for this conflict; Section 4.3.1 requires the two values to be identical when both are present.
+            C: The request violates Section 4.3.1 and is malformed. Section 4.1.2 requires a malformed request to be rejected rather than repaired into a different target.
+            D: Routing and authorization on different authorities creates the very interpretation split that canonical input validation must prevent.
+            Decision rule: Validate the HTTP/3 control data before protocol translation. Canonicalization may normalize equivalent syntax, but it must not invent precedence for contradictory authorities.
           </div>
         </div>
       </article>

@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 5077",
       SKILL_SUBTITLE: "TLS Session Resumption via Session Tickets",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -93,8 +94,8 @@
         <header><h4>Q1: A TLS session ticket is primarily used to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Replace certificate validation</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Enable plaintext HTTP</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Replace certificate validation while preserving authenticated server identity</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Allow application data over plaintext HTTP after the first TLS handshake</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. Resume a prior session without server side session state</label>
           </fieldset>
           <div class="explain">
@@ -102,10 +103,9 @@
 
             A server places the state needed for resumption, including the master secret and negotiated parameters, in a ticket that it encrypts and integrity-protects. The client stores the opaque ticket and presents it in a later ClientHello.
 
-            **Options:**
-            - A (incorrect): A ticket does not replace certificate or endpoint validation in the handshake that establishes the session.
-            - B (incorrect): Session tickets operate inside TLS and do not enable plaintext HTTP.
-            - C (correct): Returning protected state to the client lets the server resume without retaining a per-client session-cache entry.
+            A ticket does not replace certificate or endpoint validation in the handshake that establishes the session.
+            Session tickets operate inside TLS and do not enable plaintext HTTP.
+            Returning protected state to the client lets the server resume without retaining a per-client session-cache entry.
           </div>
         </div>
       </article>
@@ -114,24 +114,23 @@
         <header><h4>Q2: Who protects the confidentiality and integrity of the ticket contents</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. The client encrypts the ticket with its private key</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. The client encrypts and authenticates the ticket with a key from its certificate</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. The server encrypts and authenticates the ticket with a ticket key</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. DNSSEC signs the ticket</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. DNSSEC signs the ticket and binds it to the server's DNS name</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             The ticket is opaque to the client. The server creates it with confidentiality and integrity protection under secret ticket-protection keys, and later decrypts and validates it before using the recovered state.
 
-            **Options:**
-            - A (incorrect): The client stores and returns the ticket; it does not encrypt the server's session state with a client private key.
-            - B (correct): Ticket construction, protection, validation, and key management are server responsibilities.
-            - C (incorrect): DNSSEC protects DNS data and has no role in signing a TLS session ticket.
+            The client stores and returns the ticket; it does not encrypt the server's session state with a client private key.
+            Ticket construction, protection, validation, and key management are server responsibilities.
+            DNSSEC protects DNS data and has no role in signing a TLS session ticket.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Trace what an attacker could recover from recorded traffic after obtaining the protection key.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Trace what an attacker could recover from recorded traffic after obtaining the protection key.">
         <header><h4>Q3: A major operational risk of long lived ticket keys is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -144,21 +143,20 @@
 
             A ticket can contain the TLS master secret. As an operational inference, compromise of a long-lived ticket-protection key can expose state in captured tickets and, for affected TLS versions and configurations, enable decryption of associated recorded resumed traffic. This is why RFC 5077 recommends changing ticket keys regularly.
 
-            **Options:**
-            - A (correct): It captures the possible backward-looking impact while correctly making it conditional on the TLS construction.
-            - B (incorrect): Previously issued tickets protected by the compromised key can also be affected.
-            - C (incorrect): Ticket-protection keys are separate from the certificate, and RFC 5077 recommends changing them regularly.
+            It captures the possible backward-looking impact while correctly making it conditional on the TLS construction.
+            Previously issued tickets protected by the compromised key can also be affected.
+            Ticket-protection keys are separate from the certificate, and RFC 5077 recommends changing them regularly.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="Consider the confidentiality window, key distribution across nodes, and how long old resumption state stays usable.">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Consider the confidentiality window, key distribution across nodes, and how long old resumption state stays usable.">
         <header><h4>Q4: Good hygiene for session tickets includes (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Rotate ticket protection keys</label>
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Set a ticket lifetime appropriate to the deployment's security and operational needs</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Ensure all relevant servers share keys if resumption across nodes is needed</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Scope protected key access to the nodes that must resume tickets across nodes</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Store ticket keys in client side localStorage</label>
           </fieldset>
           <div class="explain">
@@ -166,11 +164,10 @@
 
             Stateless resumption replaces per-session server storage with protected client-held state and server-side key management. A cluster must make an explicit choice about the lifetime and the nodes that can decrypt a ticket.
 
-            **Options:**
-            - A (correct): RFC 5077 recommends changing ticket-protection keys regularly and when the format or algorithms change.
-            - B (correct): The server controls acceptable lifetime based on the deployment's operational and security requirements.
-            - C (correct): Cross-node acceptance requires the relevant servers to have access to compatible protection keys, with the resulting sharing risk managed.
-            - D (incorrect): Ticket keys are server secrets; exposing them to client storage would destroy the protection boundary.
+            RFC 5077 recommends changing ticket-protection keys regularly and when the format or algorithms change.
+            The server controls acceptable lifetime based on the deployment's operational and security requirements.
+            Cross-node acceptance requires the relevant servers to have access to compatible protection keys, with the resulting sharing risk managed.
+            Ticket keys are server secrets; exposing them to client storage would destroy the protection boundary.
           </div>
         </div>
       </article>
@@ -188,10 +185,9 @@
 
             A stateful session cache retains an entry for each resumable session. A ticket moves that state into a client-held opaque value, while the server retains the smaller set of keys needed to protect and recover ticket contents.
 
-            **Options:**
-            - A (incorrect): The state placement is reversed: a cache stores per-session server entries, while a ticket moves that state to the client.
-            - B (correct): It states the storage-versus-key-management tradeoff that distinguishes stateless tickets.
-            - C (incorrect): The server still needs a key to protect the confidentiality and integrity of ticket contents.
+            The state placement is reversed: a cache stores per-session server entries, while a ticket moves that state to the client.
+            It states the storage-versus-key-management tradeoff that distinguishes stateless tickets.
+            The server still needs a key to protect the confidentiality and integrity of ticket contents.
           </div>
         </div>
       </article>
@@ -203,9 +199,28 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **ticket** or **session ticket**.
-
             RFC 5077 defines the ticket as an opaque structure that carries session-specific state. The client must not inspect it under an assumed internal format; it stores the value and presents it in the `SessionTicket` extension when requesting resumption.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Treat every server that can decrypt or authenticate the same ticket as part of one protection-key trust boundary.">
+        <header><h4>Q7: Which response best follows RFC 5077's ticket-security analysis?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A TLS 1.2 A2A fleet accepts RFC 5077 tickets for 30 days. Forty gateways share one ticket-protection key, including a low-trust regional node that has been compromised. Operators argue that stateless tickets isolate the incident because clients store the session state.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Continue accepting every ticket until day 30 because stateless resumption leaves no reusable secret or trust boundary on servers</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Rotate only an unrelated local TLS certificate because confidentiality of the ticket prevents a holder of its protection key from forging it</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Treat the shared key as a fleet trust boundary, rotate and scope it after compromise, and reassess the server-selected ticket lifetime</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 5077 Section 5.3 explains that a forged ticket can extend a session, impersonate a user, or gain privileges if integrity protection fails. A node holding the shared protection key is therefore inside the trust boundary for every gateway that accepts tickets under that key; moving per-session state to the client does not remove this server secret.
+
+            Section 5.5 recommends that ticket-protection keys be dedicated to this purpose and changed regularly. Section 5.6 leaves the acceptable lifetime to the server's operational and security requirements. Those sections support containment, rotation, and a lifetime review after compromise, but they do not prescribe one universal fleet topology or shortest lifetime.
+
+            RFC 8446 later obsoletes RFC 5077 for TLS 1.3. The premise deliberately concerns a TLS 1.2 deployment using the RFC 5077 mechanism.
           </div>
         </div>
       </article>

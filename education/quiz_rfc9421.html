@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9421", "SKILL_SUBTITLE": "HTTP Message Signatures", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9421", "SKILL_SUBTITLE": "HTTP Message Signatures", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,7 +57,7 @@
       <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Separate signature metadata from the cryptographic output bytes.">
         <header><h4>Q1: What does Signature-Input describe?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. The ordered covered components and signature parameters</label>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. Covered components and signature parameters</label>
           <label class="choice"><input type="radio" name="Q1" value="b"> B. Only the binary signature value</label>
           <label class="choice"><input type="radio" name="Q1" value="c"> C. A complete copy of the HTTP body</label>
         </fieldset><div class="explain">**Explanation:**
@@ -81,19 +81,19 @@ C: A body digest is not a substitute for the missing signature metadata.</div></
       <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Coverage is explicit and content usually needs a digest component.">
         <header><h4>Q3: Does an HTTP message signature automatically cover the request body?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. Yes, every signature implicitly includes all message bytes</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes, when @method is covered</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. No, the profile must include a content digest or another defined content component</label>
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Yes, because every signature covers all message bytes</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes, if the signature covers @method and @target-uri</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. No, the profile must explicitly cover a digest or equivalent</label>
         </fieldset><div class="explain">**Explanation:**
 
 A: RFC 9421 signs a constructed base of selected components rather than the raw whole message.
-B: @method covers the method only and says nothing about content.
+B: @method and @target-uri cover request metadata, not the content.
 C: Signing Content-Digest binds the digest field, with digest validation linking it to the body.</div></div>
       </article>
       <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The same content can have different meaning at another operation or destination.">
         <header><h4>Q4: Why might a request profile cover @method and @target-uri?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. To bind the signature to the intended operation and target</label>
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. To bind the operation to its intended target</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. To encrypt the URI from intermediaries</label>
           <label class="choice"><input type="radio" name="Q4" value="c"> C. To select the TLS cipher suite</label>
         </fieldset><div class="explain">**Explanation:**
@@ -150,29 +150,33 @@ A: RFC 9421 defines dictionaries that can carry multiple labeled values.
 B: Matching unique labels associate each Signature value with its Signature-Input.
 C: Multiple signatures may use different signers, keys, algorithms, or coverage.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Reconstruction at the verifier uses the received component values.">
-        <header><h4>Q9: An intermediary changes a covered component in transit. What is the expected result?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. The signature automatically adapts to the new value</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. The change is ignored because intermediaries may modify HTTP</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. Verification fails unless a valid new signature covers the transformed message</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Ask which message context supplies each covered component at the backend.">
+        <header><h4>Q9: Which repair has a defensible signature context?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client signs <code>@method</code>, <code>@target-uri</code>, and <code>content-digest</code> for <code>https://api.example/pay</code>. A gateway rewrites the request to <code>http://payments.internal/v2/pay</code>. Backend verification fails because it reconstructs <code>@target-uri</code> from the internal request. The gateway also adds an unsigned <code>X-Original-URI</code> field.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Substitute any received <code>X-Original-URI</code> value without authenticating its source</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Drop <code>@target-uri</code> from verification while still claiming the destination is protected</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Define the proxy trust boundary and an authenticated source for the original target context</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. Canonicalize the public and internal URIs as equal because they reach the same application</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Only the signer with the key can create a signature over the altered base.
-B: Permitted HTTP transformation still breaks a signature if the transformed component is covered.
-C: The covered value no longer matches the original signature base.</div></div>
+RFC 9421 Section 7.4.3 requires a verifier to obtain component values from the correct signature context, and Appendix B.3 illustrates TLS-terminating proxy considerations. C makes the source and trust of the public target explicit. A lets an attacker choose the value used for verification, B abandons a stated coverage guarantee, and D invents an equivalence that the <code>@target-uri</code> derivation does not provide.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The base specification deliberately leaves use-case acceptance choices open.">
-        <header><h4>Q10: What must an A2A HTTP-signature profile specify beyond using RFC 9421?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. Only the field label spelling and the display order of signature values</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. Required components, key trust, algorithms, freshness, replay, and authorization binding</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. A rule that every valid signature covers the entire HTTP exchange</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Identify who reconstructed and verified which signature base after the gateway transformed the request.">
+        <header><h4>Q10: What may the backend claim and rely on in this architecture?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client signs the method, target URI, Authorization field, Content-Digest, creation time, and nonce. A gateway verifies the signature, consumes the nonce, transforms the request, and sends the backend an unsigned <code>X-Verified-Signer</code> field over a separate TLS connection. The backend cannot reconstruct the client's signature base.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. It directly verified the client signature because the gateway accepted it earlier</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. It may trust the header without protecting its source because TLS was used somewhere</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. It may rely on a gateway assertion only under an explicit, integrity-protected trust contract</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. It must reject every proxied request because RFC 9421 forbids verifier delegation</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: A label does not define security coverage, trust, or replay policy.
-B: These rules determine what a valid signature actually means for an A2A request.
-C: Coverage remains the explicit selected component set, not an implicit entire exchange.</div></div>
+RFC 9421 Sections 1.4 and 3.2.1 require an application profile and verifier to define and enforce coverage, key, algorithm, freshness, and other acceptance requirements. The backend did not itself verify the client's target message after transformation. C can be a valid local trust design only if the gateway's identity, assertion integrity, request binding, and authorization meaning are specified and protected; it must be described as reliance on the gateway, not end-to-end backend verification. RFC 9421 does not categorically forbid that architecture, so D is too broad.</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

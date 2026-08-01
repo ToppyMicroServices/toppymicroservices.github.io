@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6265",
       SKILL_SUBTITLE: "Cookies",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,10 +103,9 @@
 
             `Set-Cookie` は, cookieを保存または更新するようuser agentへ指示するresponse headerです. `Cookie` は反対向きで, 保存済みcookieのうちrequestに適用できるものをuser agentがserverへ返すときに使います.
 
-            **Options:**
-            - A (incorrect): `Cookie` は保存済みcookieをserverへ返すrequest headerです.
-            - B (correct): `Set-Cookie` はcookie stateの作成または更新に使うresponse headerです.
-            - C (incorrect): `Accept-Cookie` はRFC 6265で定義されたheaderではありません.
+            A: `Cookie` は保存済みcookieをserverへ返すrequest headerです.
+            B: `Set-Cookie` はcookie stateの作成または更新に使うresponse headerです.
+            C: `Accept-Cookie` はRFC 6265で定義されたheaderではありません.
           </div>
         </div>
       </article>
@@ -125,12 +125,11 @@
 
             RFC 6265は, cookieのtransport, APIへの露出, path scope, lifetimeを制御するattributeを定義しています. HTTP cache directiveは別のheader fieldに属し, `Set-Cookie`内のcookie attributeにはなりません.
 
-            **Options:**
-            - A (correct): `Secure` はuser agentがsecureと判断するprotocolに送信を制限します.
-            - B (correct): `HttpOnly` は通常のscript accessなど, non-HTTP APIからcookieを除外します.
-            - C (correct): `Path` はcookieを適用できるrequest pathを制限します.
-            - D (correct): `Max-Age` はcookieのlifetimeを秒で指定し, `Expires`より優先されます.
-            - E (incorrect): `Cache-Control` はHTTP cachingを制御するheaderで, `Set-Cookie` attributeではありません.
+            A: `Secure` はuser agentがsecureと判断するprotocolに送信を制限します.
+            B: `HttpOnly` は通常のscript accessなど, non-HTTP APIからcookieを除外します.
+            C: `Path` はcookieを適用できるrequest pathを制限します.
+            D: `Max-Age` はcookieのlifetimeを秒で指定し, `Expires`より優先されます.
+            E: `Cache-Control` はHTTP cachingを制御するheaderで, `Set-Cookie` attributeではありません.
           </div>
         </div>
       </article>
@@ -148,10 +147,9 @@
 
             `HttpOnly` はcookieのhttp-only flagを設定します. conformingなuser agentはnon-HTTP API用のcookie stringを作るときにそのcookieを除外するため, 通常のclient-side scriptからのaccessを減らせます. valueを暗号化したり, script injection自体を解消したりする機能ではありません.
 
-            **Options:**
-            - A (correct): non-HTTP APIからcookieを隠すことがhttp-only flagの役割です.
-            - B (incorrect): `HttpOnly` は保存時にも送信時にもcookieを暗号化しません.
-            - C (incorrect): request pathのscopeは`Path` attributeが制御します.
+            A: non-HTTP APIからcookieを隠すことがhttp-only flagの役割です.
+            B: `HttpOnly` は保存時にも送信時にもcookieを暗号化しません.
+            C: request pathのscopeは`Path` attributeが制御します.
           </div>
         </div>
       </article>
@@ -169,33 +167,31 @@
 
             `Secure` はcookieのsecure-only flagを設定します. user agentはrequest URIがsecureと判断するprotocol, 通常はHTTPSを使う場合にだけそのcookieを送ります. valueへの署名, 変更不能化, expiryの指定ではありません.
 
-            **選択肢:**
-            - A (incorrect): RFC 6265は`Secure` cookieをbrowserが署名する処理を定義していません.
-            - B (incorrect): 削除とexpiryはcookieの置換, `Max-Age`, `Expires`, storage ruleが制御します.
-            - C (correct): secure protocolへの送信制限がsecure-only flagの役割です.
-
             `Secure`の保護範囲には限界があります. RFC 6265は, active network attackerがinsecure channelからSecure cookieを上書きできる点も述べています.
+
+            A: RFC 6265は`Secure` cookieをbrowserが署名する処理を定義していません.
+            B: 削除とexpiryはcookieの置換, `Max-Age`, `Expires`, storage ruleが制御します.
+            C: secure protocolへの送信制限がsecure-only flagの役割です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Domain attributeを省いたcookieと, domainを明示したcookieを比べてください.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Domain attributeを省いたcookieと, domainを明示したcookieを比べてください.">
         <header><h4>Q5: serverがDomain attributeなしでcookieを設定した. RFC 6265ではどのscopeになる?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. 現在のhostの全subdomainへ送られる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. host-onlyとなり, origin serverにだけ返される</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. host-onlyとなり, 同じhostにだけ返される</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. 同じpathを使う任意のhostへ送られる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            `Domain`がない場合, RFC 6265はhost-only flagを設定し, canonicalizeしたrequest hostをcookieのdomainにします. 後続requestのhostがそのdomainと同一の場合だけcookieを返します.
+            RFC 6265 Section 5.3 step 6は`Domain`がない場合にhost-only flagを設定し, canonicalizeしたrequest hostをcookieのdomainにします. Section 5.4は後続requestのhostがそのdomainと同一の場合だけcookieを返します. 固定されたscope ruleの適用問題なのでL2であり, L3の設計reviewではありません.
 
-            **Options:**
-            - A (incorrect): subdomainへのdomain-matchは, 有効な`Domain` attributeがあるcookieに関係します.
-            - B (correct): attributeの省略によってorigin serverのhostに結び付くhost-only cookieになります.
-            - C (incorrect): `Path` matchは追加条件であり, 無関係なhostへcookieを許可しません.
+            A: subdomainへのdomain-matchは, 有効な`Domain` attributeがあるcookieに関係します.
+            B: attributeの省略によってorigin serverのhostに結び付くhost-only cookieになります.
+            C: `Path` matchは追加条件であり, 無関係なhostへcookieを許可しません.
           </div>
         </div>
       </article>
@@ -207,7 +203,6 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **Cookie**.
 
             user agentはdomain, path, secure-only, http-onlyなどの条件がrequest contextに合う保存済みcookieから, `Cookie` request headerを組み立てます. `Set-Cookie`はresponse側のfieldなので, この問いの名前ではありません.
           </div>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9728","SKILL_SUBTITLE":"OAuth 2.0 Protected Resource Metadata","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9728","SKILL_SUBTITLE":"OAuth 2.0 Protected Resource Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,272 +57,118 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="このmetadataはauthorization server自体ではなくprotected resourceについてのものです.">
-        <header><h4>Q1: RFC 9728は主に何に使いますか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="resource設定と,1つのrequestに対するauthorization判断を分けてください.">
+        <header><h4>Q1: OAuth protected resource metadataは何を記述するか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. authorization server metadataとtoken endpoint discoveryを置き換える</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. protected resourceとOAuth関連requirementのmetadataを公開する</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. authorization serverなしでclientにaccess tokenをgrantする</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** protected resource metadataはOAuth deploymentのresource server側を説明します. authorization server metadataを補完するものです.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: authorization server metadataは別subjectのdiscovery documentとして残ります.
-- B: protected resourceとOAuth関連signalがこのRFCの中心です.
-- C: このRFCはtokenを発行せず, authorization serverの必要性を消しません.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. clientへ列挙scopeすべてをauthorizeする完了済みgrant.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. protected resourceのidentifier,authorization server,capability情報.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 列挙authorization serverが全applicationでtrustedであることのproof.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. resource serverでのaccess-token validationの置換.</label>
+          </fieldset><div class="explain">RFC 9728 Section 1と2は,clientとauthorization serverがprotected resourceとinteractionするためのconfiguration情報を定義します.documentはrelationshipやcapabilityをadvertiseできますが,grantやtokenを発行せず,resourceによるcredential validationやpolicy判断も実行しません.内容はdiscoveryとapplication trust decisionへのinputであり,authorization結果ではありません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="clientが本当にアクセスしたかったresourceへmetadataをbindします.">
-        <header><h4>Q2: protected-resource metadata confusionを避けるcheckはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,d" data-difficulty="L2" data-hint="documentをanchorするidentifierと,server listがexhaustiveかを確認してください.">
+        <header><h4>Q2: resourceとauthorization_serversについて正しい記述はどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. resource identifierがintended protected resourceを表すか検証する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. error responseに含まれるmetadata URLをvalidationなしで信頼する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. trustworthy HTTPS pathでmetadataを取得し処理する</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. listed authorization serverは全clientでacceptableだと仮定する</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** clientやauthorization serverは, attacker-selected metadata documentにaccess targetを再定義させてはいけません.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: resource identity validationにより, あるresource用metadataを別resourceへ使う事故を防げます.
-- B: error responseがmetadataを示すことはありますが, document validationは必要です.
-- C: HTTPS retrievalがpolicy check前のmetadata pathを守ります.
-- D: listed authorization serverはpolicy inputであり, 全clientへのuniversal approvalではありません.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. resourceは必須のprotected-resource identifierである.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. authorization_serversは必須で,利用可能なserverをすべて列挙する.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. responseがsignedならresource identifierにHTTPを使える.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. authorization_serversはoptionalで,一部だけの列挙または省略があり得る.</label>
+          </fieldset><div class="explain">RFC 9728 Section 1.2と2はHTTPS `resource` identifierをrequiredとし,`authorization_servers`はoptionalかつ非exhaustiveになり得るとします.list省略は利用可能serverなしを意味せず,`scopes_supported`省略もempty scope setを意味しません.signed metadataもresource syntaxを変えないため,documentを1 resourceへanchorしながらoptional listをcompleteとは推定しません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="resource identifierがこのmetadataのanchorです.">
-        <header><h4>Q3: RFC 9728でresource identifierがsecurity-relevantな理由はどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="registered well-known componentをresource pathの前へ挿入してください.">
+        <header><h4>Q3: default suffixを使うresource https://api.example/a2a のmetadata取得先はどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. tokenを所有するhuman accountを名指す</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. user consent screenが魅力的か決める</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. metadata documentをアクセス対象のprotected resourceへbindする</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** resource identifierはclientとauthorization serverがwrong resourceへmetadataを適用することを防ぎます.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: human account identityはprotected resource metadata identifierの外側です.
-- B: consent screen designはresource identifierのsecurity roleではありません.
-- C: metadataをintended resourceへbindすることがidentifierのkey validation purposeです.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. https://api.example/a2a/.well-known/oauth-protected-resource</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. https://api.example/oauth-protected-resource/.well-known/a2a</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. https://api.example/.well-known/oauth-protected-resource/a2a</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. https://api.example/.well-known/a2a/oauth-protected-resource</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.1はauthorityとresource pathの間へ`/.well-known/oauth-protected-resource`を挿入するため,取得先は`https://api.example/.well-known/oauth-protected-resource/a2a`です.`/a2a`の後ろへsuffixを追加したり,pathをsuffixへ含めたりするとregistered constructionが変わります.同じhost上のresourceを区別するには,well-known componentの後ろへ正確なpathを保ちます.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="authorization serverのlistはdiscovery inputでありautomatic trustではありません.">
-        <header><h4>Q4: resource metadataのauthorization_serversはどう解釈するのが安全ですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="responseを,clientが接続しようとしたresourceへbindしたままにする必要があります.">
+        <header><h4>Q4: metadata documentのresource値がdiscoveryに使ったresourceと一致しない.clientはどうすべきか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. そのresourceで使える可能性があるissuer identifierであり, clientとpolicyのcheck対象である</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. listed serverは全resource requestで必ずacceptするべきという証明である</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. protected resource用のreplacement access tokenである</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** このfieldはresourceとauthorization server issuerを結び付けます. relying partyはtrustとpolicyを引き続き確認します.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: listをunconditional approvalではなくscoped discovery informationとして扱っています.
-- B: clientやdeploymentごとのtrust requirementとpolicy requirementは残ります.
-- C: issuer identifierはaccess tokenではなく, requestを単独でauthorizeできません.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. resource identifierは完全一致が必要なのでmetadataを使わない.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 返されたresourceを追跡し,一致するまでdiscoveryを繰り返す.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. resource memberだけを捨て,authorization_serversは保持する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 両resourceが同じTLS certificateを共有すれば受理する.</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.3は,返された`resource`とdiscoveryに使ったidentifierのexact equalityを要求し,不一致responseの使用を禁止します.document内のreplacementへ従えば,response自身にtrust targetをredirectさせ,bad memberだけを削除してもunboundなclaimが残ります.shared certificateはhost connectionを認証しても,異なるresource identifierを同じ意味にはしません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="resource discoveryをAS metadataとtoken利用の前に置きます.">
-        <header><h4>Q5: protected resource metadataの使い方として最も適切なflowはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="これはdiscovery flowを開始しますが,それ自体はcredentialではありません.">
+        <header><h4>Q5: WWW-Authenticateのresource_metadata parameterは何を提供するか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. 先にauthorization serverを選び, すべてのresourceがそのtokenを受け入れると仮定する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. protected resourceを識別し, resource metadataを取得して検証し, compatible authorization server情報をpolicy下で使う</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. resource metadata endpointに到達できたのでtoken validationを省略する</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9728-ja-q5-caption">
-            <figcaption id="rfc9728-ja-q5-caption">protected resource metadata discovery flow.</figcaption>
-            <svg viewBox="0 0 772 158" role="img" aria-label="protected resource metadata discovery flow.">
-              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="95" y="69">protected</text>
-              <text class="flow-label" x="95" y="90">resource</text>
-              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
-              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
-              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="289" y="69">resource</text>
-              <text class="flow-label" x="289" y="90">metadata</text>
-              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
-              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
-              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="483" y="69">resource ID</text>
-              <text class="flow-label" x="483" y="90">検証</text>
-              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
-              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
-              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="677" y="69">compatible</text>
-              <text class="flow-label" x="677" y="90">AS policy</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** protected resource metadataはclient, resource server, authorization serverの関係を合わせる助けになります. reachabilityはacceptanceではありません.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: 任意のauthorization serverから始めると, resourceが使わないserverを選ぶ可能性があります.
-- B: resource identity, metadata validation, authorization server compatibilityを分けています.
-- C: metadata endpointに到達できてもaccess token validationやrequest authorizationにはなりません.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. challenged resource用scopeを持つaccess token.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. inlineで格納した完全なauthorization-server metadata document.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. challenged clientがresourceに登録済みであることのproof.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. clientがprotected resource metadataを取得できるURL.</label>
+          </fieldset><div class="explain">RFC 9728 Section 5と5.1は,`resource_metadata` authentication parameterをprotected resource metadata documentへのURLと定義し,BearerやDPoPなどのschemeで利用可能とします.parameterへdocumentやaccess tokenが埋め込まれるわけではなく,client registrationも行いません.clientは参照documentを取得し,通常のmetadata validationとtrust checkを適用します.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="metadata fieldはpolicyを助けますがpermissionをgrantしません.">
-        <header><h4>Q6: resource metadataの慎重な解釈はどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,c" data-difficulty="L2" data-hint="advertised capability listは,その全項目を利用する指示ではありません.">
+        <header><h4>Q6: capability metadataの解釈として正しいものはどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. scopes_supportedにあるscopeはclientがすべてrequestし受け取れる</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. scope情報はrequest constructionを助けるが, final grantとacceptanceはpolicy decisionである</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. sender-constraining metadataがあればbearer tokenはproof checkなしで安全になる</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. DPoPやmTLSなどsupported proof methodはprofileに従いfull validationが必要である</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** metadataはsupportやexpectationをadvertiseできます. OAuth grant, token validation, proof validationは省略しません.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: supported scopeはclientへのautomatic grantではありません.
-- B: scope metadataはrequest constructionを導きますが, grantとacceptanceはpolicyに依存します.
-- C: sender constrainingにはactual proof validationが必要です. metadataだけでbearer tokenは安全になりません.
-- D: DPoPやmTLS supportは対応するproofとbinding checkにつなげる必要があります.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. interoperability最大化のためscopes_supportedの全valueをrequestする.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. bearer_methods_supported省略時にdefault methodはなく,supportなしとも断定できない.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. dpop_bound_access_tokens_required省略時は定義済みdefault falseになる.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. resource_signing_alg_values_supported省略時はnone algorithmを意味する.</label>
+          </fieldset><div class="explain">RFC 9728 Section 2は`scopes_supported`省略へdefaultやnegative implicationを与えませんが,`dpop_bound_access_tokens_required`省略時はfalseと定義します.default signing algorithmはなく,そのalgorithm listで`none`は禁止されます.Section 7.2は必要最小scopeだけをrequestするよう述べるため,advertised capabilityや省略defaultもleast privilegeとalgorithm policyを置き換えません.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="signed metadataにもtrusted validationとresource bindingが必要です.">
-        <header><h4>Q7: resourceがsigned metadataを公開している場合, verifierはどうするべきですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="validなresource documentにも,clientのoutbound-request policyで確認すべきnetwork targetが含まれ得ます.">
+        <header><h4>Q7: discoveryされたauthorization serverに対する適切なclient動作はどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">userが選んだA2A endpointは,resource値がそのendpointと完全一致するprotected resource metadataを返す.authorization_serversにはhttps://169.254.169.254/internal-issuerがあり,clientはそのissuerを設定もtrustもしていない.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. resource identifierを確認せず受け入れる</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. signatureをcomplete authorization decisionとして扱う</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. signature trust, resource identity, profile ruleを検証してから依存する</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** signatureはmetadata integrityを守れます. ただし誰のmetadataか, どのpolicyでacceptするかをverifierが知る必要があります.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: resource identity validationがないとwrong resourceへmetadataを適用してしまいます.
-- B: signatureはaccess-control grantではありません.
-- C: metadataに依存する前にsignature trust, resource identity, profile ruleが必要です.
-          </div>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. issuerのRFC 8414 metadata取得前にSSRF controlを適用し,resource validationをそのtargetの承認とみなさない.</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. resource値の一致がauthorization_servers内の全entryを認証するため,issuer metadataを取得する.</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. internal addressがdiscoveryをauthorizeできるよう,既存access tokenをlisted issuerへ送る.</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. authorization_serversにHTTPS URLがあるため,issuer metadata validationを省略する.</label>
+          </fieldset><div class="explain">RFC 9728 Section 7.7は,resource metadataに記載されたissuerからauthorization-server metadataを取得する処理をSSRF riskとし,internal IP rangeのblockなどを勧めます.Section 3.3のexact resource bindingが検証するのはdocumentのresource identityであり,埋め込まれた全network destinationの安全性やauthorityではありません.clientはRFC 8414 fetch前にoutbound-request controlを適用し,credentialを送らず,issuer metadataを検証した上で,Section 7.6のissuer-to-resource trustを別に確立します.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="metadata URLとTLS identityはresource trust boundaryに合っている必要があります.">
-        <header><h4>Q8: protected resource metadataをfetchするとき最も重要なtransport checkはどれですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="metadataはrelationshipを列挙できますが,全applicationのtrust decisionまでは定義しません.">
+        <header><h4>Q8: clientは列挙されたauthorization serverを自動的にtrustしてよいか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">validなprotected resource documentはauthorization_serversにhttps://as.partner.exampleを列挙する.clientにはissuerとresourceを結ぶout-of-band trust rule,federation policy,cross-checkがない.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. protected resource identifierとmetadata locationに合うHTTPS validationを使う</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. JSON fieldが正しそうならplain HTTPのmetadataも受け入れる</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. OAuth tokenはsignedなのでcertificate mismatchを無視する</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** metadataはtoken request先やresource addressingに影響するため, retrievalを保護する必要があります.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: HTTPS validationはmetadata retrieval boundaryとresource identityを守ります.
-- B: plain HTTPではattackerがpolicy-relevant discovery dataを書き換えられます.
-- C: signed tokenはtoken/resource decisionを導くmetadata documentを保護しません.
-          </div>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. authorization_serversへの掲載がuniversal trust anchorなのでよい.</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. serverのRFC 8414 documentへHTTPSで到達できればよい.</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. まだ不可.applicationがtrusted issuer-to-resource associationを決める.</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. RFC 9728はdynamically listed authorization serverを禁止するため不可.</label>
+          </fieldset><div class="explain">RFC 9728 Section 7.6は,適切なauthorization serverを安全に決める方法をscope外かつapplication dependentとします.advertised listはdynamic discoveryに使えますがuniversal trust-anchor setではなく,HTTPSとRFC 8414 validationもissuerのconfigurationを認証するだけで,このresourceへのauthorityは証明しません.両metadataを検証した後,authorization開始前に定義済みissuer-to-resource trust policyを適用します.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="metadata freshnessはauthorization serverとscope choiceに影響します.">
-        <header><h4>Q9: protected resource metadataの運用として安全なpracticeはどれですか. すべて選んでください</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="b,d" data-difficulty="L3" data-hint="conflict precedenceを適用する前に,誰がobjectへsignしたかを確認してください.">
+        <header><h4>Q9: このsigned metadataを処理するとき必要なactionはどれか.2つ選べ.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">clientはsigned_metadataへ対応する.plain JSONはAS1を,signed JWTはAS2を列挙する.JWT signatureはvalidだが,clientはそのissをresourceに対してtrustするか未決定である.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. advertised metadata locationとrefresh behaviorをvalidation付きで使う</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. resource policyは変わらないためmetadataを永久cacheする</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. unrelated resource identifierに同じresource metadata documentを再利用する</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. staleまたはinconsistent metadataはsecurity decisionに使えないものとして扱う</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** resource metadataはresource policy, authorization server, supported proof methodが変わると変わり得ます.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: validationを保つなら, advertised locationとrefresh behaviorは有用です.
-- B: resource policyやauthorization server relationshipは変わり得るため, forever cacheは危険です.
-- C: unrelated identifierへ同じdocumentを使うとresource bindingを壊します.
-- D: staleまたはinconsistent metadataでsecurity-sensitive choiceを進めるべきではありません.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. valid signatureだけでissuer trustが成立するため直ちにAS2を優先する.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. signature keyがissuerに属することを検証し,そのissuerをtrustするか判断する.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. 情報を失わないようvalidation前にAS1とAS2をmergeする.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. trusted validation成功後,対応するplain valueよりsigned claimを優先する.</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.3はsignature,issuer key,そのissuerへのtrustを検証するよう求め,数学的なsignature validityだけでは不十分です.validなsigned metadataへ対応する場合,Section 2.2はconflicting plain valueとのunvalidated unionではなくsigned claimのprecedenceを定義します.Section 7.9が説明する異なるtrust basisを踏まえ,signerのauthorityを確立してからprecedenceを適用します.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="missing fieldからcapabilityを作らないでください.">
-        <header><h4>Q10: resource metadataにprofile必須capabilityが出ていない場合, どう扱うべきですか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="discoveryはconfigurationを選び,credential validationと最終resource判断には独自のevidenceが必要です.">
+        <header><h4>Q10: resource discoveryとOAuth,A2A proofを正しく合成するend-to-end設計はどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A2A clientはresource_metadataを追跡してresource値を検証し,trustedな列挙issuerを選び,RFC 8414 metadataを検証してaudience-restricted DPoP-bound tokenを得る.gatewayはtokenとDPoP proofを検証し,policy担当backendへunsigned identity headerを送る.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. protected resourceが存在するためsupportされると仮定する</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. 別のtrusted ruleが定義しない限り, そのprofileではcapability unavailableとして扱う</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. unrelated OAuth flowへ自動downgradeする</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** missing metadataによってresourceがsupportすると仮定する範囲を黙って広げてはいけません.
-
-**Related keywords:**
-- **protected resource** : OAuth tokenでアクセスされるresource server
-- **resource metadata** : resource identityやpolicy signalを示すJSON document
-- **authorization_servers** : そのresourceで使うauthorization serverのissuer identifier
-
-**Options:**
-- A: resource existenceは全OAuth featureのsupportを意味しません.
-- B: guessを避け, profile behaviorをdeterministicに保てます.
-- C: automatic downgradeはintended resourceやproof requirementをbypassする可能性があります.
-          </div>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. discoveryとlisted issuerによりunsigned backend headerは元DPoP proofと等価になる.</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. 各metadata binding,audience/proof validationに加え,保護された転送とbackend authorizationが必要である.</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. clientが両metadata documentを取得できればRFC 9728がoperationをauthorizeする.</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. resource metadataが別resourceでのtoken利用を防ぐためaudience restrictionは不要である.</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.3と5はdiscoveryをintended resourceへbindし,Section 7.4はaudience-restricted tokenを勧め,Section 7.6はissuer trustを別の判断として残します.metadataはflowを設定するだけでaccessを発行・受理せず,新しく作ったunsigned headerもDPoP keyやrequestへbindされません.各associationとcredentialをintended endpointで検証し,derived assertionをbackendの最終authorizationまで保護する必要があります.</div>
         </div>
       </article>
     </section>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8705","SKILL_SUBTITLE":"OAuth 2.0 mTLS Client AuthenticationとCertificate-Bound Token","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8705","SKILL_SUBTITLE":"OAuth 2.0 mTLS Client AuthenticationとCertificate-Bound Token","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="OAuth mTLS bindingが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 8705のOAuth mTLS bindingだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="authorization serverでのclient authenticationと,access tokenのsender constrainingは別のmechanismです.">
+        <header><h4>Q1: このaccess tokenはcertificate-boundか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 8705を参照し,OAuth mTLS bindingを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">confidential A2A clientはPKI mutual-TLS methodでauthorization serverへauthenticateします.発行されたaccess tokenにはcertificate associationがなく,introspectionにもcertificate thumbprintがありません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. mutual TLSでOAuth clientをauthenticateし, access tokenをcertificate materialへbindすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. mutual TLSでOAuth clientをauthenticateし, access tokenをcertificate materialへbindすること.ただし受理するclient certificate authority, subject constraint, token audience policyはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 7800はconfirmation-key semanticsを定義し, RFC 8705はOAuth deploymentでcertificate bindingを適用する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8705を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-3はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-3がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 8705はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate-boundである.token endpointのmutual-TLS client authenticationは,そのconnectionで発行する全tokenを暗黙にsender-constrainする</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. certificate-boundである.PKI-validated client certificateがあればresource serverはclient_idから不足するtoken associationを再構成できる</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. bindingは示されていない.Section 2のclient authenticationとSection 3のcertificate-bound access tokenは補完関係だが別mechanismである</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8705はmutual TLSが利用可能ならcertificate bindingを要求するため,どのOAuth clientもこのtokenを使用できない</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 1はmutual-TLS client authenticationとcertificate-bound access tokenを別mechanismとし,必ずしも併用しないと説明します.
+B: Section 3はx5t#S256をtokenへ埋める,またはintrospection metadataで返すなど,protected resourceが参照できるassociationを必要とします.
+C: 正解です.Section 2はauthorization-server endpointに対するclient認証,Section 3はprotected resourceでのtoken使用制約です.
+D: RFC 8705は両mechanismを定義しますが,すべてのOAuth tokenにcertificate bindingをmandatoryにはしていません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがOAuth mTLS bindingについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="resource serverでは,certificateをPKI client identityではなくproof-of-possession keyとして使えます.">
+        <header><h4>Q2: resource serverはself-signed certificateであることだけを理由にこのpublic clientをrejectすべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 8705を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">public A2A clientがcertificate-bound access tokenを持ちます.resource serverへのmutual-TLS connectionで同じself-signed certificateを提示し,そのthumbprintはtokenと一致します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 受理するclient certificate authority, subject constraint, token audience policyだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 7800はconfirmation-key semanticsを定義し, RFC 8705はOAuth deploymentでcertificate bindingを適用する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. certificate confirmation data付きtokenを発行し, TLS client certificateをresource serverへどう渡すか定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
-          </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3 and 6に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. その理由だけではrejectしない.この用途ではclient certificateのPKI trust chainではなく,key possessionとtoken bindingを検証する</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. certificate-bound tokenはCA-issued certificateでauthenticateしたconfidential clientだけが利用できるためrejectする</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. self-signed certificateの一致だけでaccess tokenのactive stateとauthorizationも証明されるため,token validationなしでacceptする</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. token thumbprintを比較する前に,authorization serverにも同じcertificateをserver certificateとして使わせる</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 4 and 6.2はpublic clientのcertificate-bound tokenを説明し,このPoP用途ではresource serverがclient-certificate trust chainを検証する必要はないとします.
+B: Section 4はpublic clientがself-signed certificateでcertificate-bound tokenを使う構成を明示的に認めます.
+C: certificate possessionは一つの入力です.resource serverはaccess token自体もvalidateしauthorization policyを適用します.
+D: authorization serverのTLS server certificateはclientのproof-of-possession certificateとは無関係です.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このOAuth mTLS bindingのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="backendはcertificate metadataがこのconnectionのtrusted TLS terminatorから来たことを確認する必要があります.">
+        <header><h4>Q3: backendはforwardされたcertificate headerをRFC 8705 bindingに使えるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: tokenだけ確認し, 現在のTLS client certificateとtoken bindingを照合しないこと.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">reverse proxyがmutual TLSをterminateし,resource serverへの転送時にX-Client-Certをappendします.external clientもX-Client-Certを送信でき,proxyは既存値を削除しません.resource serverはtokenをこのconnectionでauthenticateされたcertificateへbindする必要があります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,revocationやcertificate rotationが既存tokenへどう影響するかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. 提示されたclient certificateがaccess token内のcertificate bindingと一致することを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 7800はconfirmation-key semanticsを定義し, RFC 8705はOAuth deploymentでcertificate bindingを適用する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 8705対応をadvertiseしたため,検証せずprocessingを続ける</label>
-          </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 7に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. proxyはclient-supplied valueの後ろへobserved certificateをappendするため,最初のheader valueを使う</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. tokenとthumbprintが一致する値ならどちらでも使う.matchによってcertificateをauthenticateしたhopも証明される</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. headerをadvisoryとして扱い,tokenまたはforwarded certificateのどちらか一方がvalidationを通ればauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. このchannelをrejectする.client値を除去しproxy-to-backend certificate metadataをauthenticateしてからtokenと比較する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: client-controlled valueをTLS certificateとして選択でき,proxy-authenticated connectionとのbindingを破ります.
+B: stolen bound tokenを持つattackerは期待されるthumbprintをinjectできますが,対応private keyのpossessionは証明しません.
+C: Section 3はtoken validationとTLS layerから得たcertificateとのmatchの両方を要求し,alternative checkにはしていません.
+D: Section 6.5はTLS terminationを認めますが,secureなcertificate-metadata伝達をscope外にしています.Section 3の比較を有効にするにはprofile側でそのhopを保護します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: OAuth mTLS bindingを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="binding対象は継続するaccountやsubject nameだけでなく,specific certificate encodingです.">
+        <header><h4>Q4: clientはcertificate rotation後も古いaccess tokenを再利用できるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 8705を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">A2A clientはcertificate C1からC2へrotateします.C2は同じsubject nameとpublic-key algorithmを持ちますが,DER bytesは異なります.access tokenのx5t#S256はC1を示します.resource serverはRFC 8705 certificate matchを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するclient certificate authority, subject constraint, token audience policy</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. 提示されたclient certificateがaccess token内のcertificate bindingと一致することを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. revocationやcertificate rotationが既存tokenへどう影響するか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. mutual TLSでOAuth clientをauthenticateし, access tokenをcertificate materialへbindすること</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-3は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. subject nameは同じOAuth clientを表しthumbprintよりstableなので,tokenを再利用する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. C2へbindされたtokenを取得し,presented certificateとtokenのassociated certificateを比較する</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. x5t#S256はalgorithm familyを識別するため,C1とC2が同じsignature algorithmならtokenを再利用する</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 両certificateのsubjectが同じことを確認後,resource serverがtokenのx5t#S256をrewriteする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.1のx5t#S256はcertificate subjectではなくDER encodingのSHA-256 hashです.
+B: Section 6.3はcertificate updateにより以前のcertificateへbindされたaccess tokenがinvalidになり,新token取得で扱えると説明します.
+C: confirmation valueはcertificate thumbprintを示し,algorithm familyを示しません.
+D: protected token claimの変更はprotectionを壊し,authorization serverのbinding decisionを置き換えます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでOAuth mTLS bindingを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="capability metadataとclient-intent metadataは,個別tokenがcertificate bindingを含むevidenceではありません.">
+        <header><h4>Q5: registration flagはこのtokenがsender-constrainedであると証明するか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: confidential OAuth clientやresource requestをclient certificateへ制約する場面.観測した欠陥: proxyでTLSを終端し, trustworthyなclient-certificate情報をresource serverへ保てないこと.</p>
+          <p class="question-premise">client metadataはtls_client_certificate_bound_access_tokens=trueです.clientはmutual TLSなしでtoken endpointを呼び,authorization serverはx5t#S256も同等のintrospection metadataもないaccess tokenを返します.resource policyはcertificate-bound tokenだけをacceptします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（mutual TLSでOAuth clientをauthenticateし, access tokenをcertificate materialへbindすること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（certificate confirmation data付きtokenを発行し, TLS client certificateをresource serverへどう渡すか定義する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 7800はconfirmation-key semanticsを定義し, RFC 8705はOAuth deploymentでcertificate bindingを適用する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
-          </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 7に沿って欠陥を解消してからresultを使います.profile rule: certificate confirmation data付きtokenを発行し, TLS client certificateをresource serverへどう渡すか定義する.check: 提示されたclient certificateがaccess token内のcertificate bindingと一致することを確認する.local policy: 受理するclient certificate authority, subject constraint, token audience policy.</div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 証明しない.issued tokenのbinding evidenceを調べ,certificate associationがなければ指定されたresource policyでrejectする</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 証明する.client metadata valueはnon-mutual-TLS requestでも後続tokenをすべてcertificate-boundへ変える</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 証明する.authorization-server capability metadataとclient-intent metadataが揃えばSection 3のcertificate comparisonを置き換える</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 証明しない.RFC 8705はこのclientからのnon-mutual-TLS requestをauthorization serverがすべてerrorにするよう要求する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 3.3 and 3.4はcapabilityとintent metadataを定義します.個別tokenのbindingはSection 3のassociationから得ます.
+B: Section 3.4はnon-mutual-TLS request後にerrorを返すかunbound tokenを発行するかをauthorization serverの裁量とします.
+C: Metadata negotiationはSection 3のprotected resourceによるcertificate-to-token comparisonを置き換えません.
+D: Section 3.4はこのauthorization-server choiceを意図的にopenにしています.resource serverは独自のbound-token policyを適用できます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: OAuth mTLS bindingとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="tokenが示すcertificateと各TLS hopのcertificateを比較し,どこで新しいassertionが必要かを特定してください.">
+        <header><h4>Q6: backendは意図したsender constraintをどう維持できるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはOAuth mTLS bindingを別protocol layerと組み合わせます.design noteには「RFC 7800はconfirmation-key semanticsを定義し, RFC 8705はOAuth deploymentでcertificate bindingを適用する」とあります.</p>
+          <p class="question-premise">A2A agentはcertificate C_agentへbindされたtokenをmutual TLSでgatewayへ提示します.gatewayはC_gatewayを使ってbackendへ別のmutual-TLS connectionを作り,元tokenを転送します.backend policyはこのbackend operationのcallerがC_agentのprivate keyを持つproofを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,受理するclient certificate authority, subject constraint, token audience policyは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（提示されたclient certificateがaccess token内のcertificate bindingと一致することを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（受理するclient certificate authority, subject constraint, token audience policy）を定義し,必要なcheck（提示されたclient certificateがaccess token内のcertificate bindingと一致することを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
-          </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-3とSection 7がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. gatewayはimmediate TLS clientなのでtoken thumbprintとC_gatewayを比較し,validなupstream certificate bindingがこのhopへtransferしたと扱う</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. gatewayの成功報告後はcertificate comparisonを省略しつつ,backendのcheckをC_agentからのdirect RFC 8705 proofと説明する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. trusted gatewayでRFC 8705 resource roleを終端してprotected downstream assertionを発行するか,明示したproxy profileでC_agent evidenceをsecureに伝える</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. C_agentをunprotected headerで転送しthumbprintを比較する.token内のsigned x5t#S256がheader sourceもauthenticateする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3はtokenをC_agentへbindします.C_gatewayは別TLS connectionの別certificateです.
+B: Gateway trustで新しいarchitectureを構成できますが,backendはgateway assertionを自身のTLS layerから得たdirect proofと誤表示してはいけません.
+C: Sections 3 and 6.5がRFC mechanismと未規定のproxy hopを分けます.どちらの設計もprofile化できますが,trust boundaryとprotected metadataを明示します.
+D: token内のsigned thumbprintは,unprotectedなforwarded certificate valueがTLS terminatorから来たことを証明しません.</div>
         </div>
       </article>
     </section>

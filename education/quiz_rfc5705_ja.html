@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"TLS Keying Material Exporters","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5705","SKILL_SUBTITLE":"TLS Keying Material Exporters","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="TLS exporterが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 5705のTLS exporterだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="この問題はRFC 5705が定義したTLS versionとexporter constructionに限定します. 後続のTLS 1.3 constructionとは分けてください. ">
+        <header><h4>Q1: RFC 5705のexported keying materialを決めるinputはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 5705を参照し,TLS exporterを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">二つのTLS 1.2 peerが, 確立済みTLS sessionから同じapplication固有の32-byte値を導出したいと考えています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 確立済みTLS connectionからapplication固有のkeying materialを導出すること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 確立済みTLS connectionからapplication固有のkeying materialを導出すること.ただしexported byteがapplication protocol内で何をauthorize, identify, bindするかはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 5705は古いTLS利用向けexporterを定義し, 後続のTLS 1.3 channel bindingはexporterの考え方に基づく.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 5705を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. negotiated cipher suiteと要求output lengthだけ</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. TLS session, label, optional contextとpresence flag, output length</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. peer certificate subject, HTTP authority, token audience</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. 双方がexporterと呼ぶ任意のshared application string</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-4はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 3-4がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 5705はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: cipher suiteはTLS sessionを通じて関与しますが, application purposeやcontextは識別しません.
+B: RFC 5705 Section 4は, TLS-session state, label, optional contextとそのpresence flag, 要求lengthからexporterを定義します. 同じoutputには双方で同じinputが必要です.
+C: applicationがcontextへ選択したsemanticsをencodeする場合はありますが, これらは暗黙のexporter inputではありません.
+D: specified exporter constructionで導出しないshared stringはexported keying materialではありません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがTLS exporterについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="TLS Finishedがauthenticateするのはhandshake transcriptであり, 後からexporter contextを選ぶすべてのapplication messageではありません. ">
+        <header><h4>Q2: applicationはexporterのpurposeとcontextをどう確立すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 5705を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A protocolがTLS handshake後にexporter利用をnegotiateします. そのcontextにはapplication messageで送るtask identifierが含まれます. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. exported byteがapplication protocol内で何をauthorize, identify, bindするかだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 5705は古いTLS利用向けexporterを定義し, 後続のTLS 1.3 channel bindingはexporterの考え方に基づく</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. application目的に対して衝突しにくいexporter labelとcontext stringを定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. contextだけで常にcross-protocol useを防げるため, 全featureでgeneric labelを再利用する</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS Finishedがpost-handshake application messageもすべてcoverするため, negotiationを省略する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 同じtaskを認識できるなら, task identifierのnormalizationは各peerへ任せる</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. application固有のlabelを割り当て, outputへ依存する前にexporter利用と正確なcontext encodingを安全に確立する</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Section 3に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: RFC 5705 Sections 3 and 5はpurpose separationへlabelを使います. generic labelはそのseparationを弱めます.
+B: Section 3は, context確立に使うupper-layer messageがTLS Finishedで自動的にcoverされないと説明します.
+C: semanticsが似ていてもbyteが異なるcontextは異なるoutputとなり, interpretation gapを生みます.
+D: Section 3はapplication contextを安全に確立し, exporter利用をsignalするよう求めます. labelがapplication purposeを識別します. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このTLS exporterのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="そのbytesを生成したsecret stateが属するTLS sessionと, 実際にそのstateを持つendpointを特定します. ">
+        <header><h4>Q3: backendはforwardされたexporter bytesを自身のchannel evidenceとして扱えるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: 異なるlabel, context, connectionで導出したexporter byteを比較すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">gatewayがclient TLS 1.2 sessionを終端してRFC 5705 outputを導出し, 別のTLS sessionでbackendへbytesをforwardします. backendは, clientがbackend connectionのkeying materialをshareするproofとして使おうとしています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,exporter outputをどうencodeしtransportするかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. derived byteを比較する前に, 両peerが同じlabel, context, length, connectionを使うことを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 5705は古いTLS利用向けexporterを定義し, 後続のTLS 1.3 channel bindingはexporterの考え方に基づく</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 5705対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 同じbytesを運ぶ後続TLS channelにもexporter outputが対応付くため扱える</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 独立sessionでgatewayとbackendが同じexporter labelを使えば扱える</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 扱えない. client-gateway sessionにscopeされ, backendはprotected assertionを別に信頼する</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. RFC 5705はapplicationがexporter outputをtransportすること自体を禁止するため扱えない</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 5に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: RFC 5705 Section 4はoutputを一つのTLS session, label, contextへ対応付けます. transportしてもoriginは変わりません.
+B: 異なるTLS stateのsessionでlabelが等しくても, 一つのshared channelのevidenceにはなりません.
+C: exporter scopeとgateway trust modelを分離しています. assertionのintegrity, authentication, semanticsはA2A profileが定義します.
+D: applicationはsecurity designに従ってderived valueを利用, transportできます. 問題はforward値へ付けるclaimです. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: TLS exporterを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="purpose separationはinput設計の性質です. 導出後にoutput lengthやoperation nameを比較しても, 共有namespaceは修復されません. ">
+        <header><h4>Q4: 二つのexporter purposeをどう分離すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 5705を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">同じTLS sessionから32-byteのrequest-proof keyと32-byteのaudit-chain keyを導出します. draftは両方に同じlabelとcontextを使い, 呼び出しfunctionだけで区別します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. exported byteがapplication protocol内で何をauthorize, identify, bindするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. derived byteを比較する前に, 両peerが同じlabel, context, length, connectionを使うことを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. exporter outputをどうencodeしtransportするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 確立済みTLS connectionからapplication固有のkeying materialを導出すること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 異なるcalling functionがderived keyをcryptographically independentにするためinputを維持する</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. application固有の異なるlabelを割り当て, protocolが追加のinstance separationを必要とする場合はcontextも個別に定義する</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. labelは一つのまま, 各keyを使った後にoperation nameを比較する</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 異なるoutput lengthを要求し, 両方を32 byteへtruncateする</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-4は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: 一つのsessionでexporter inputが同じなら, callerのfunction nameに関係なく同じmaterialが得られます.
+B: RFC 5705 Section 5は, 同じmaster_secretで同じlabelを異なるpurposeへ使わないよう求めます. 異なるlabelがpurposeを分離し, contextはSections 3 and 4で説明されるprofile-defined roleを持ちます.
+C: 導出後の比較ではkey reuseを取り消せません.
+D: lengthの操作はdisjoint purpose labelの代替にならず, materialがoverlapする可能性があります. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでTLS exporterを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="TLS traffic keyからのindependenceは, applicationがそのexporter値自体をdiscloseした後もsecretであるという意味ではありません. ">
+        <header><h4>Q5: exporter-derived MAC keyをlogへ記録してよいか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: application proofやkey confirmation valueをTLS sessionへ結び付ける場面.観測した欠陥: 異なるprotocol目的でgeneric labelを使い回すこと, separationが必要な場面でcontextを省くこと.</p>
+          <p class="question-premise">A2A serviceはexporter値を導出し, request proofのMAC keyとして直接使います. diagnosticsのためoperations teamが読めるlogへ値を記録します. teamはRFC 5705のexporter independenceにより安全だと主張しています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（確立済みTLS connectionからapplication固有のkeying materialを導出すること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（application目的に対して衝突しにくいexporter labelとcontext stringを定義する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 5705は古いTLS利用向けexporterを定義し, 後続のTLS 1.3 channel bindingはexporterの考え方に基づく）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. exporter independenceによりdiscloseされたoutputからapplication MACを計算できないため記録してよい</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. TLS traffic secretを同時にlogへ記録しなければよい</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. log entryからexporter labelとcontextを省略すればよい</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 記録してはいけない. exporterがTLS traffic keyを露出しないよう設計されていても, log値を得た者はこのpurposeのMAC keyを持つ</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 5に沿って欠陥を解消してからresultを使います.profile rule: application目的に対して衝突しにくいexporter labelとcontext stringを定義する.check: derived byteを比較する前に, 両peerが同じlabel, context, length, connectionを使うことを確認する.local policy: exported byteがapplication protocol内で何をauthorize, identify, bindするか.</div>
+A: independenceはexporter useとTLS内部のcompromise範囲を制限しますが, discloseしたkeyを無効にしません.
+B: traffic secretをprivateに保っても, logにあるapplication keyのconfidentialityは保てません.
+C: この設計ではkey自体がdirect MAC useに十分です.
+D: RFC 5705 Section 5はindependence propertyを説明します. そのpropertyはexporter outputをpublicにはしません. applicationは用途に応じてmaterialを保護する必要があります. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: TLS exporterとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="別TLS connectionでのretryは一部のapplication factを維持しますがexporter scopeを変えます. retry後にproofをverifyするcomponentを決めます. ">
+        <header><h4>Q6: gateway retryでexporter-bound proofをどう維持すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはTLS exporterを別protocol layerと組み合わせます.design noteには「RFC 5705は古いTLS利用向けexporterを定義し, 後続のTLS 1.3 channel bindingはexporterの考え方に基づく」とあります.</p>
+          <p class="question-premise">clientがvalidなgrantと, TLS session Aから導出したproofをgatewayへ送ります. gatewayはTLS session Bでbackendへrequestをretryします. resourceを所有するbackendは, proofがretry後のmethod, target, bodyをcoverしたか知る必要があります. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,exported byteがapplication protocol内で何をauthorize, identify, bindするかは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（derived byteを比較する前に, 両peerが同じlabel, context, length, connectionを使うことを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（exported byteがapplication protocol内で何をauthorize, identify, bindするか）を定義し,必要なcheck（derived byteを比較する前に, 両peerが同じlabel, context, length, connectionを使うことを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. request-bound assertionを保護するか, backend-verifiable end-to-end proofを使う. session AをBとして扱わない</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. validなgrantがTLS bindingを維持するため, session Aのexporter bytesをsession Bで再利用する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. labelとcontextを維持できるためsession Bで新しいoutputを導出し, clientのproofと呼ぶ</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. grant validityがexporter possessionとrequest integrityも意味するため, backendではgrantだけをverifyする</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 3-4とSection 5がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 5705 Section 4はoutputをTLS sessionとexporter inputへscopeします. 二つの案はverifierとtrust boundaryを正確に配置し, request contextを維持します. backend authorizationは別です.
+B: grant validityとTLS-session bindingは独立した保証です.
+C: session B outputはsession B endpointのknowledgeを示し, 元client endpointのknowledgeは示しません.
+D: grantだけではexporter possessionやretry requestのintegrityを証明しません. </div>
         </div>
       </article>
     </section>

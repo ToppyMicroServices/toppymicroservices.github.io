@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what X.509 certificate profile provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 5280 make X.509 certificate profile sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate the minimum conditions checked by the path algorithm from the application's selection of trust anchors, purposes, and permissions.">
+        <header><h4>Q1: What does successful certification-path validation establish?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 5280 and claims that using X.509 certificate profile automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An A2A verifier validates an agent certificate against its configured RFC 5280 inputs. The path succeeds, but the requested operation is restricted to a subset of agents.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. reviewing certificate contents, certification paths, revocation data, and Internet name forms; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. reviewing certificate contents, certification paths, revocation data, and Internet name forms, while which trust anchors, names, EKUs, and revocation freshness are acceptable for this application remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS uses certificates during authentication, but RFC 5280 defines the Internet certificate and CRL profile underneath; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 5280 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. The certificate holder is authorized for every operation accepted by the same trust anchor</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. The path meets validation inputs; trust anchor, identity, purpose, and operation remain application policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. The peer proved possession of the private key for the exact A2A request under review</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Revocation status is necessarily current for every certificate in the path</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 4-6 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 4-6 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 5280 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Path validation does not assign application permissions.
+B: RFC 5280 Sections 6.1 and 6.2 define minimum path-validation conditions and inputs. Trust-anchor selection is a matter of policy, and an application may impose additional purpose and authorization constraints.
+C: A certificate path binds a public key to a subject under the validation inputs; request-specific proof of possession requires the consuming protocol.
+D: Revocation processing depends on available and applicable status information; path success alone does not promise universally fresh status.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for X.509 certificate profile. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Criticality controls what happens when an implementation cannot recognize an extension; recognition also creates a processing obligation.">
+        <header><h4>Q2: How should an implementation handle certificate extensions?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 5280 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An agent certificate contains one unrecognized critical extension and one unrecognized non-critical extension. All signatures in the path verify.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which trust anchors, names, EKUs, and revocation freshness are acceptable for this application and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: TLS uses certificates during authentication, but RFC 5280 defines the Internet certificate and CRL profile underneath</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Put service identities in the correct name form and mark CA, key usage, and policy extensions consistently</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Ignore both extensions because signature verification succeeded</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Ignore the critical extension if local policy does not use it, but reject the non-critical extension</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Reject because the critical extension is unrecognized; an unrecognized non-critical extension may be ignored</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept if another implementation reports that it recognizes the critical extension</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 4.1-4.2 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: A valid signature does not override extension processing.
+B: This reverses RFC 5280 Section 4.2: an unrecognized critical extension prevents certificate use.
+C: Section 4.2 requires rejection for an unrecognized critical extension and permits an unrecognized non-critical extension to be ignored. A recognized extension must be processed according to its definition.
+D: Validation depends on the verifier's own correct processing, not another implementation's report.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this X.509 certificate profile review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A valid signature answers who issued a certificate. It does not make constraints carried by that issuer optional.">
+        <header><h4>Q3: Should this constrained certification path be accepted?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: checking only the signature chain while ignoring name constraints, key usage, or revocation policy. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A trusted root issued an intermediate CA whose name constraints permit only DNS names under agents.example. That intermediate issued a leaf for billing.other.example. The signatures, validity periods, and CA basic constraints are otherwise valid.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document what to do when revocation status is unavailable as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify chain building, trust anchor, validity time, name constraints, key usage, and revocation inputs as required by the relying context</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: TLS uses certificates during authentication, but RFC 5280 defines the Internet certificate and CRL profile underneath</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 5280 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept, because a trust anchor may delegate names without limiting the intermediate's issuance scope</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept, because name constraints affect only name display after signature validation</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Accept if local authorization maps billing.other.example to the same agent role</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Reject the path because the leaf name is outside the permitted subtree, before applying any A2A role authorization</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Sections 6 and 6.3 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: The intermediate's name constraints deliberately limit the namespace it may certify.
+B: Name constraints are path-validation inputs, not presentation hints.
+C: Local authorization cannot repair a certification path that fails its constraints.
+D: RFC 5280 Section 4.2.1.10 defines permitted subtrees, and Section 6.1 applies name constraints during path validation. Only after a valid path exists should the application evaluate its role mapping.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing X.509 certificate profile, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="When both extensions are present, purpose must satisfy both independently; application role mapping comes after that certificate-purpose check.">
+        <header><h4>Q4: Can this certificate be used for A2A client authentication?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 5280 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">A leaf certificate has Key Usage digitalSignature and Extended Key Usage serverAuth only. The A2A profile requires a certificate acceptable for TLS client authentication before mapping the identity to an agent role.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which trust anchors, names, EKUs, and revocation freshness are acceptable for this application</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify chain building, trust anchor, validity time, name constraints, key usage, and revocation inputs as required by the relying context</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. What to do when revocation status is unavailable</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Reviewing certificate contents, certification paths, revocation data, and Internet name forms</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. No; purpose must satisfy both extensions, and serverAuth does not permit client authentication</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Yes; digitalSignature alone authorizes every protocol use involving a signature</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes, if the local role mapping grants an A2A client role to the subject name</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. No, because any certificate with more than one usage-related extension is ambiguous</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 4-6 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: RFC 5280 Sections 4.2.1.3 and 4.2.1.12 require Key Usage and Extended Key Usage to be processed independently when both are present; the intended purpose must be consistent with both.
+B: digitalSignature constrains key operations but does not cancel a narrower Extended Key Usage.
+C: Authorization mapping cannot expand a certificate's permitted purpose.
+D: The two extensions are designed to be evaluated together; their coexistence is not itself an error.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when X.509 certificate profile is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Distinguish a positive non-revoked result from an inability to determine status, then identify who chooses the operational consequence.">
+        <header><h4>Q5: How should unavailable revocation information be represented?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a service certificate, client certificate, or verifier certificate must be accepted or rejected. Observed defect: accepting a certificate only because it parses or chains to some unrelated trust anchor.</p>
+          <p class="question-premise">A verifier can build an otherwise valid path, but it cannot obtain an applicable current CRL required by its A2A deployment policy. The implementation currently records the certificate as not revoked and continues.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (reviewing certificate contents, certification paths, revocation data, and Internet name forms), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (put service identities in the correct name form and mark CA, key usage, and policy extensions consistently) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (TLS uses certificates during authentication, but RFC 5280 defines the Internet certificate and CRL profile underneath), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Record not revoked because no signed CRL states that the certificate was revoked</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Record revoked because inability to obtain a CRL is cryptographic evidence of revocation</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Preserve unavailable status; deployment policy chooses rejection, retry, or another approved source</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Ignore revocation whenever signatures and validity times pass</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Sections 6 and 6.3 supports resolving the defect before relying on the result. The profile rule is: put service identities in the correct name form and mark CA, key usage, and policy extensions consistently. The check is: verify chain building, trust anchor, validity time, name constraints, key usage, and revocation inputs as required by the relying context. The local policy is: which trust anchors, names, EKUs, and revocation freshness are acceptable for this application.</div>
+A: Absence of evidence is not positive revocation-status evidence.
+B: Retrieval failure does not prove revocation either.
+C: RFC 5280 Section 6.3 defines CRL-based revocation processing; when required information cannot establish status, the validator must not misreport a positive result. Whether unavailable status is operationally acceptable belongs to the profile or deployment.
+D: This silently discards the deployment's stated revocation requirement.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should X.509 certificate profile be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Track four separate facts: path validity, private-key possession at the TLS endpoint, authenticity of forwarded identity, and permission at the resource owner.">
+        <header><h4>Q6: Which certificate result may a gateway safely delegate?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines X.509 certificate profile with another protocol layer. Its design note says: TLS uses certificates during authentication, but RFC 5280 defines the Internet certificate and CRL profile underneath.</p>
+          <p class="question-premise">A gateway terminates mutual TLS, validates the client certificate path, and forwards a subject-name header to a backend. The backend owns the resource and cannot inspect the TLS handshake or original certificate. It uses the header for final authorization.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which trust anchors, names, EKUs, and revocation freshness are acceptable for this application unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify chain building, trust anchor, validity time, name constraints, key usage, and revocation inputs as required by the relying context) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which trust anchors, names, EKUs, and revocation freshness are acceptable for this application), perform the required check (verify chain building, trust anchor, validity time, name constraints, key usage, and revocation inputs as required by the relying context), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The bare subject header is sufficient because a valid path proves possession and authorization on every downstream hop</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Trust the gateway through a protected assertion carrying validated identity and request context; the backend still authorizes the resource</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. The backend should repeat only signature-chain verification on the subject text, because names contain enough information to reconstruct the path</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. RFC 5280 prohibits delegation, so the backend must always terminate the original client TLS connection</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 4-6 and Sections 6 and 6.3 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 5280 path validation does not authenticate an ordinary forwarded header, bind it to the downstream request, or decide resource authorization.
+B: Sections 6.1 and 6.2 support the gateway's certificate-path result. The protected assertion, gateway trust, request context, and final authorization are separate protocol and deployment responsibilities.
+C: A subject string is neither the certificate nor a certification path and cannot reproduce the required validation.
+D: RFC 5280 specifies certificate and CRL processing; it does not mandate a network architecture.</div>
         </div>
       </article>
     </section>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="X.509 certificate profileが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 5280のX.509 certificate profileだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="path algorithmが検査するminimum conditionと, applicationが選ぶtrust anchor, purpose, permissionを分けます. ">
+        <header><h4>Q1: certification-path validationの成功は何を確立するか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 5280を参照し,X.509 certificate profileを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A verifierが, 設定されたRFC 5280 inputを用いてagent certificateをvalidateします. pathは成功しましたが, 要求されたoperationは一部のagentだけに制限されています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate内容, certification path, revocation data, Internet name formをレビューすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. certificate内容, certification path, revocation data, Internet name formをレビューすること.ただしこのapplicationで受理するtrust anchor, name, EKU, revocation freshnessはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSはauthenticationでcertificateを使うが, RFC 5280は下位のInternet certificateとCRL profileを定義する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 5280を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate holderが, 同じtrust anchorで受理されるすべてのoperationを実行できること</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. pathはinputを満たす. anchor, identity, purpose, operationはapplicationが受理判断する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. peerが, review対象のA2A requestに対するprivate key possessionを証明したこと</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. path内の全certificateについてrevocation statusが必ず最新であること</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 4-6はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 4-6がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 5280はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: path validationはapplication permissionを付与しません.
+B: RFC 5280 Sections 6.1 and 6.2は, path validationのminimum conditionとinputを定義します. trust anchorの選択はpolicy事項であり, applicationはpurposeやauthorizationへ追加constraintを課せます.
+C: certificate pathはvalidation inputの下でpublic keyとsubjectを結び付けます. request固有のproof of possessionには利用protocolが必要です.
+D: revocation processingは, 取得できた適用可能なstatus情報に依存します. path成功だけで常に最新のstatusを保証しません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがX.509 certificate profileについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="criticalityはimplementationがextensionを認識できない場合の処理を決めます. 認識した場合にもprocessing obligationがあります. ">
+        <header><h4>Q2: certificate extensionをどう処理すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 5280を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">agent certificateに, 認識できないcritical extensionと, 認識できないnon-critical extensionが一つずつあります. path内のsignatureはすべてverifyできます. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. このapplicationで受理するtrust anchor, name, EKU, revocation freshnessだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: TLSはauthenticationでcertificateを使うが, RFC 5280は下位のInternet certificateとCRL profileを定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. service identityを正しいname formへ入れ, CA, key usage, policy extensionを一貫して設定する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. signature verificationに成功したので両方をignoreする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. local policyで使わないcritical extensionはignoreし, non-critical extensionを理由にrejectする</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. critical extensionを認識できないためrejectする. 認識できないnon-critical extensionはignoreしてよい</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 別implementationがcritical extensionを認識できると報告すればacceptする</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 4.1-4.2に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: validなsignatureはextension processingを不要にしません.
+B: RFC 5280 Section 4.2とは逆です. 認識できないcritical extensionがあればcertificateを使用できません.
+C: Section 4.2は, 認識できないcritical extensionについてrejectを求め, 認識できないnon-critical extensionはignoreを許します. 認識したextensionは定義に従って処理します.
+D: verifier自身の正しいprocessingが必要であり, 別implementationの報告では代替できません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このX.509 certificate profileのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="validなsignatureが答えるのは誰がcertificateを発行したかです. issuerが設定したconstraintはoptionalにはなりません. ">
+        <header><h4>Q3: このconstraint付きcertification pathをacceptできるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: signature chainだけ確認し, name constraint, key usage, revocation policyを無視すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">trusted rootが, agents.example配下のDNS nameだけを許すname constraintsを持つintermediate CAを発行しました. このintermediateがbilling.other.example向けleafを発行しています. signature, validity period, CA basic constraintsはその他の点で有効です. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,revocation statusを取得できない時の扱いだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. relying contextに応じてchain, trust anchor, validity time, name constraint, key usage, revocation inputを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: TLSはauthenticationでcertificateを使うが, RFC 5280は下位のInternet certificateとCRL profileを定義する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 5280対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. trust anchorはintermediateのissuance scopeを制限せずnameをdelegateできるためacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. name constraintsはsignature validation後の表示だけに影響するためacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. local authorizationがbilling.other.exampleを同じagent roleへmapするならacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. leaf nameがpermitted subtree外なので, A2A role authorizationより先にpathをrejectする</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Sections 6 and 6.3に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: intermediateのname constraintsはcertifyできるnamespaceを意図的に制限します.
+B: name constraintsはpath-validation inputであり, 表示用hintではありません.
+C: local authorizationはconstraintに失敗するcertification pathを修復できません.
+D: RFC 5280 Section 4.2.1.10はpermitted subtreeを定義し, Section 6.1がpath validationでname constraintsを適用します. validなpathを得た後にapplicationのrole mappingを評価します. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: X.509 certificate profileを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="両extensionがある場合, purposeはそれぞれを独立に満たす必要があります. application role mappingはそのcertificate-purpose checkの後です. ">
+        <header><h4>Q4: このcertificateをA2A client authenticationへ使えるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 5280を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">leaf certificateのKey UsageはdigitalSignature, Extended Key UsageはserverAuthだけです. A2A profileは, identityをagent roleへmapする前に, TLS client authenticationへ適合するcertificateを求めています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. このapplicationで受理するtrust anchor, name, EKU, revocation freshness</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. relying contextに応じてchain, trust anchor, validity time, name constraint, key usage, revocation inputを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. revocation statusを取得できない時の扱い</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. certificate内容, certification path, revocation data, Internet name formをレビューすること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 使えない. 両usageを満たす必要があり, serverAuthはclient authenticationを許さない</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. digitalSignatureがあればsignatureを使うすべてのprotocol useを許すため使える</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. local role mappingがsubject nameへA2A client roleを与えれば使える</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. usage関連extensionが複数あるcertificateは常にambiguousなので使えない</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 4-6は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 5280 Sections 4.2.1.3 and 4.2.1.12は, 両方がある場合にKey UsageとExtended Key Usageを独立に処理し, intended purposeが双方に一致するよう求めます.
+B: digitalSignatureはkey operationを制約しますが, より狭いExtended Key Usageを取り消しません.
+C: authorization mappingでcertificateのpermitted purposeを拡張できません.
+D: 二つのextensionは併せて評価するためのものです. 共存自体はerrorではありません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでX.509 certificate profileを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="positiveなnot-revoked resultとstatusを決定できない場合を分け, そのoperational consequenceを誰が選ぶかを考えます. ">
+        <header><h4>Q5: revocation情報を取得できない状態をどう表すべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: service certificate, client certificate, verifier certificateを受理または拒否する場面.観測した欠陥: parseできることや無関係なtrust anchorへchainすることだけで受理すること.</p>
+          <p class="question-premise">verifierはその他の点でvalidなpathを構築できますが, A2A deployment policyが必要とする適用可能でcurrentなCRLを取得できません. 現在のimplementationはcertificateをnot revokedと記録して続行します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（certificate内容, certification path, revocation data, Internet name formをレビューすること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（service identityを正しいname formへ入れ, CA, key usage, policy extensionを一貫して設定する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（TLSはauthenticationでcertificateを使うが, RFC 5280は下位のInternet certificateとCRL profileを定義する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. revokedと記載するsigned CRLがないのでnot revokedと記録する</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. CRLを取得できないこと自体がrevocationのcryptographic evidenceなのでrevokedと記録する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. unavailableとして保持し, reject, retry, 別sourceの利用はdeployment policyで決める</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. signatureとvalidity timeに成功すればrevocationをignoreする</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Sections 6 and 6.3に沿って欠陥を解消してからresultを使います.profile rule: service identityを正しいname formへ入れ, CA, key usage, policy extensionを一貫して設定する.check: relying contextに応じてchain, trust anchor, validity time, name constraint, key usage, revocation inputを確認する.local policy: このapplicationで受理するtrust anchor, name, EKU, revocation freshness.</div>
+A: evidenceがないことはpositiveなrevocation-status evidenceではありません.
+B: retrieval failureはrevocationも証明しません.
+C: RFC 5280 Section 6.3はCRL-based revocation processingを定義します. 必要な情報からstatusを確立できない場合にpositive resultと誤記してはいけません. unavailable statusをoperationally受理するかはprofileまたはdeploymentが決めます.
+D: deploymentが明示したrevocation要件を黙って捨てています. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: X.509 certificate profileとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="path validity, TLS endpointでのprivate-key possession, forwarded identityのauthenticity, resource ownerでのpermissionを分けて追跡します. ">
+        <header><h4>Q6: gatewayはどのcertificate結果を安全にdelegateできるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはX.509 certificate profileを別protocol layerと組み合わせます.design noteには「TLSはauthenticationでcertificateを使うが, RFC 5280は下位のInternet certificateとCRL profileを定義する」とあります.</p>
+          <p class="question-premise">gatewayがmutual TLSを終端し, client certificate pathをvalidateして, subject-name headerをbackendへforwardします. resourceを所有するbackendはTLS handshakeや元certificateを確認できず, headerを最終authorizationへ使います. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,このapplicationで受理するtrust anchor, name, EKU, revocation freshnessは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（relying contextに応じてchain, trust anchor, validity time, name constraint, key usage, revocation inputを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（このapplicationで受理するtrust anchor, name, EKU, revocation freshness）を定義し,必要なcheck（relying contextに応じてchain, trust anchor, validity time, name constraint, key usage, revocation inputを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. validなpathは全downstream hopでpossessionとauthorizationを証明するため, 通常のsubject headerだけで十分である</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. validated identityとrequest contextを含むprotected assertionでgatewayを信頼し, backendが別にauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. nameからpathを再構成できるので, backendはsubject textに対してsignature-chain verificationだけを繰り返す</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. RFC 5280はdelegationを禁止するため, backendは常に元のclient TLS connectionを終端する</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 4-6とSections 6 and 6.3がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 5280 path validationは通常のforward headerをauthenticateせず, downstream requestへbindせず, resource authorizationも決めません.
+B: Sections 6.1 and 6.2はgatewayのcertificate-path resultを支えます. protected assertion, gateway trust, request context, 最終authorizationは別のprotocolおよびdeployment責務です.
+C: subject stringはcertificateでもcertification pathでもなく, 必要なvalidationを再現できません.
+D: RFC 5280はcertificateとCRLのprocessingを規定しますが, network architectureはmandateしません. </div>
         </div>
       </article>
     </section>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9651","SKILL_SUBTITLE":"Structured Field Values for HTTP","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9651","SKILL_SUBTITLE":"Structured Field Values for HTTP","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="HTTP Structured Fieldsが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9651のHTTP Structured FieldsだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="既存fieldへStructured Fields parserを選ぶ前に,field definitionを確認します.">
+        <header><h4>Q1: implementationだけでlegacy fieldをStructured Fieldとして再解釈できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9651を参照し,HTTP Structured Fieldsを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">X-Agent-Roleは独自comma-separated syntaxで以前に定義され,RFC 9651もRFC 8941も参照しません.新implementationはfield仕様を変えずDictionaryとしてparseしたいとします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 新しいHTTP fieldへ共通data typeとparse/serialization algorithmを与えること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 新しいHTTP fieldへ共通data typeとparse/serialization algorithmを与えること.ただしfield nameのsemanticsと各member/parameterの意味はprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9651はHTTP field authorを支え, RFC 9110はそれらfieldが属する広いHTTP semanticsを与える.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9651を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. できない.field definitionで明示的にopt inする必要があり,parserだけの変更は既存wire syntaxの再定義になる.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. できる.productionで観測した全valueがRFC 9651のDictionaryとしてparseできればよい.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. できる.RFC 9651はそれ以前にpublishされた全HTTP fieldのsyntaxを自動置換する.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. できない.まずfieldをtrailerへ変換する必要があり,Structured Fieldsはheaderに置けない.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-4はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-4がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9651はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: RFC 9651 Section 1は,明示的にopt inしたfieldだけへmechanismを適用し,既存fieldの再定義を目的にしないとします.
+B: 観測valueの偶然の互換性はnormative field definitionを変えず,全producerが新解釈を共有する保証にもなりません.
+C: Section 1は自動再定義を明確に否定します.RFC 9651はfield仕様が選択した場合に共通syntaxを提供します.
+D: Structured Headerは主要use caseです.不足する条件はheader placementではなく,明示的な仕様です.
+判断軸: parser選択はfieldを定義した仕様に従います.implementationだけで新しいprotocol contractを暗黙に作れません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがHTTP Structured Fieldsについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="新しいfieldを一貫してparse・適用するために,実装がまだ知る必要のある事項を考えます.">
+        <header><h4>Q2: この新field definitionに不足するものは何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9651を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">draftにはAgent-Limits is a Structured Field using RFC 9651 and may appear in requestsとしかありません.Item,List,Dictionaryのどれか,invalid limitをどう扱うかでimplementationが不一致です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. field nameのsemanticsと各member/parameterの意味だけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 9651はHTTP field authorを支え, RFC 9110はそれらfieldが属する広いHTTP semanticsを与える</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. top-level field typeを選び, structured field algorithmに従ってvalueをserializeする</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. example serializationだけが不足する.代表field valueからparserが全normative semanticsを推定できる.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. IANA registrationだけが不足する.registrationがtop-level typeとerror behaviorを自動選択する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. maximum byte sizeだけが不足する.それ以外の新fieldのapplication meaningはRFC 9651がすべて定義する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. headerまたはtrailerでの利用,top-level type,value semantics,constraint,違反時のconsequenceを定義する必要がある.</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 2 and 4に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: exampleは理解を助けますが,全validまたはinvalid valueのapplication semanticsとfailure consequenceを選べません.
+B: registry entryはfieldを識別しますが,RFC 9651 Section 2が求めるfield-specific contractを提供しません.
+C: operational size limitも重要ですが,Section 2はtype,meaning,constraint,violation handlingも要求します.
+D: RFC 9651 Section 2がこれらのdefinition dutyを列挙します.独立parserが同じabstract valueとapplication outcomeを得るために必要です.
+判断軸: Structured Fieldsは共通syntaxを標準化しますが,field仕様がcomplete application contractを所有します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このHTTP Structured Fieldsのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="localに便利なrepairではなく,定義済みparsing algorithmとbehaviorを比較します.">
+        <header><h4>Q3: gatewayはこのmalformed fieldをどう扱うべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: 同じsecurity-sensitive fieldのinvalid valueをparserごとに異なって受理すること.そのparse resultがA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">Agent-PolicyはDictionary Structured Headerとして定義されています.unterminated Stringがあり,一方のgatewayはclosing quoteを追加してadmin=trueを受理し,他方はparse failureでfieldを無視します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,fieldがheader, trailer, または両方のどれかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. tolerant repairを発明せず, structured algorithmに従ってparse failureにする</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 9651はHTTP field authorを支え, RFC 9110はそれらfieldが属する広いHTTP semanticsを与える</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9651対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP message signatureがvalidならrepaired valueを使う.signatureはtolerant parsingを認可する.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. parseを失敗させfield全体を無視する.推測repairの受理は異なる解釈とunsafeな結果を作る.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Dictionary memberはsyntax error後も独立なので,malformed memberだけdropしてadmin=trueを処理する.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. RFC 9651はparser error recoveryを意図的に未定義にするため,local policyでどちらか選ぶ.</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Sections 1.1 and 6に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: signatureは不足syntaxを定義せず,signed inputの変更はsignatureをinvalidにもできます.parser behaviorはfield definitionに従います.
+B: RFC 9651 Sections 1.1と2.2はstrict failureを意図的に定め,parsing failureならfield全体を無視します.
+C: parserは安全なmemberを選べるDictionaryを生成していません.partial recoveryは定義されたerror behaviorではありません.
+D: Section 1.2はalgorithm実行と区別できないparsing behaviorを要求します.local toleranceは許された別outcomeではありません.
+判断軸: canonical interoperabilityは,malformed senderの意図を各componentが推測することではなく,1個のstrict parse resultから得ます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: HTTP Structured Fieldsを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="unknown Dictionary keyのdefault ruleを適用し,field仕様が明示的にoverrideするか確認します.">
+        <header><h4>Q4: receiverはunknown Dictionary memberを理由にrejectできるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9651を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">Agent-CapabilitiesはDictionary Structured Headerです.仕様はrunとstream keyを定義しますが,unknown keyには触れません.receiverはaudit=?1を見るとrequest全体をrejectします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. field nameのsemanticsと各member/parameterの意味</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. tolerant repairを発明せず, structured algorithmに従ってparse failureにする</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. fieldがheader, trailer, または両方のどれか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 新しいHTTP fieldへ共通data typeとparse/serialization algorithmを与えること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. できる.security-sensitive fieldは仕様がsilentでも全extensionをrejectする必要がある.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. できる.unknown Dictionary keyは必ずStructured Field parsingを失敗させる.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 記載された定義ではできない.recipientはdefaultでunknown memberをignoreし,reject-on-unknown ruleは明示的に指定する必要がある.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. できず,receiverはunknown capabilityを実行する必要がある.memberのignoreはforward compatibilityを失う.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-4は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: security sensitivityはよりstrictなfield definitionを正当化し得ますが,既存仕様のprocessing ruleを暗黙に変更しません.
+B: syntactically validなunknown memberはparseできます.unknown application meaningとStructured Fields syntax errorは別です.
+C: RFC 9651 Sections 2.3と3.2は,field specificationが明示的にdisallowしない限りunknown Dictionary memberをignoreするとします.
+D: ignoreはmemberに基づいて動作しないことです.forward compatibilityは理解しないsemanticsの実行を認可しません.
+判断軸: extensibility policyはfield definitionの一部です.default-ignoreはevolutionを保ち,reject-on-unknownは明示的protocol choiceにします.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでHTTP Structured Fieldsを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="deploymentにある最新parserではなく,field definitionが指定するStructured Fields RFCを使います.">
+        <header><h4>Q5: このextensionは既存fieldへDate typeを追加できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: 新しいHTTP headerまたはtrailerがclient, server, intermediary間で相互運用parseを必要とする場面.観測した欠陥: 同じsecurity-sensitive fieldでparserごとに異なるinvalid valueを受理すること.</p>
+          <p class="question-premise">Agent-StateはRFC 8941をnormative referenceとするStructured Headerです.extensionは現行gatewayがparser upgrade済みとして,RFC 9651 Date typeのexpires parameterを追加します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（新しいHTTP fieldへ共通data typeとparse/serialization algorithmを与えること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（top-level field typeを選び, structured field algorithmに従ってvalueをserializeする）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 9651はHTTP field authorを支え, RFC 9110はそれらfieldが属する広いHTTP semanticsを与える）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. できない.extensionもfieldが参照するRFCのtypeに制限され,Date利用前にfield definitionをreviseまたはversioningする必要がある.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. できる.RFC 9651へのparser upgradeは,fieldがRFC 8941を参照していても処理する全field definitionを自動upgradeする.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. できる.expiresがoptionalなら,RFC 8941 implementationはunknown Date valueを保存し,upgrade後のapplication logicへ渡す.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. できない.Dateは全Structured Fieldのparameterで禁止され,RFC 9651でもtop-level Itemにしか使えない.</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Sections 1.1 and 6に沿って欠陥を解消してからresultを使います.profile rule: top-level field typeを選び, structured field algorithmに従ってvalueをserializeする.check: tolerant repairを発明せず, structured algorithmに従ってparse failureにする.local policy: field nameのsemanticsと各member/parameterの意味.</div>
+A: RFC 9651 Section 2.4はextensionもfieldが参照する特定Structured Fields RFCのtypeへ制限します.RFC 8941 recipientはDate syntaxをinvalidとして扱います.
+B: parser upgradeは以前invalidだったsyntaxをparse可能にし得ますが,Section 2.4はそれをriskとして指摘します.field contractの書換えではありません.
+C: RFC 8941 parserはDate syntaxを認識せず,application logicがoptional parameterを見る前にfield全体を失敗させ得ます.
+D: RFC 9651はDateをbare itemとして許し,RFC 9651に基づくfield definitionが許せばparameter valueにもできます.
+判断軸: syntax evolutionにはold recipientを考慮した明示的field-definition transitionが必要で,deployment-specific parser capabilityだけでは足りません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: HTTP Structured Fieldsとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="wire parsing,signature verification,authorizationを別々に指定された3判断として維持します.">
+        <header><h4>Q6: このsigned A2A fieldをinteroperableにするprofile ruleはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはHTTP Structured Fieldsを別protocol layerと組み合わせます.design noteには「RFC 9651はHTTP field authorを支え, RFC 9110はそれらfieldが属する広いHTTP semanticsを与える」とあります.</p>
+          <p class="question-premise">agentはcombining proxyを通して複数Agent-Context header lineを送ります.backendはparse後にpreferred serializationを再構築し,message signatureを検証し,roleとscope memberからauthorizeします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,field nameのsemanticsと各member/parameterの意味は不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（tolerant repairを発明せず, structured algorithmに従ってparse failureにする）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（field nameのsemanticsと各member/parameterの意味）を定義し,必要なcheck（tolerant repairを発明せず, structured algorithmに従ってparse failureにする）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. backendがserializeできるvalueは受理する.valid Structured Fields abstract valueはsender signatureとauthorization intentも立証する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. RFC 9651は各abstract valueへ1個のserializationだけを許すため,proxyにoriginal whitespaceの完全保存を要求する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. extensibility ruleはomitted memberを全signature schemeで無関係にするため,unknown memberをdropしてからsignatureを検証する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. fieldの参照RFC,placement,top-level type,constraint,error handlingを定義し,signature coverageとparsed memberのauthorization meaningを別途定義する.</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-4とSections 1.1 and 6がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 9651 parsingが立証するのはabstract valueであり,signer identityやpermissionではありません.syntactic successからauthorizationを推論できません.
+B: Section 1.2は正しくparseできる範囲でserializerの違いを許します.HTTPは適切なfield lineのcombineも許し,exact whitespaceは一般contractではありません.
+C: field semanticsでunknown memberをignoreすることは,cryptographic inputから除けるという意味ではありません.signature processingは固有のcovered-component ruleに従います.
+D: RFC 9651 Sections 2,2.4,4がsyntax contractとversion boundaryを定めます.signatureとauthorization layerはその結果の利用方法を指定する必要があります.
+判断軸: robust compositionは各layerが消費するbyteまたはabstract valueを特定し,successful parsingをcryptographic evidenceやauthorization evidenceとして扱いません.</div>
         </div>
       </article>
     </section>

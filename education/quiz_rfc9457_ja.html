@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9457", "SKILL_SUBTITLE": "Problem Details for HTTP APIs", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9457", "SKILL_SUBTITLE": "Problem Details for HTTP APIs", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -114,7 +114,7 @@ C: typeを省略するとabout:blankとみなされる. occurrence固有のhuman
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. origin由来なので常にbody memberを使う</label>
           <label class="choice"><input type="radio" name="Q5" value="b"> B. 2つを結合して新しいapplication statusを作る</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. 実際のHTTP response statusを使い, body memberはadvisoryと扱う</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. 実際のHTTP statusを使い, bodyのstatusはadvisoryと扱う</label>
         </fieldset><div class="explain">**解説:**
 
 A: status memberはadvisoryであり, intermediaryによる変更後は不一致になりうる. 2つ目のauthoritative status channelではない.
@@ -148,12 +148,12 @@ B: problem typeはstructured data用のextension memberを定義できる. unkno
 C: standard memberの再定義は規定された役割を壊す. statusはHTTP status codeであり, titleはproblem typeのsummaryである.</div></div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="複数failureが同じcategoryのoccurrenceか, 異なるcategoryかを先に判断する.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="複数failureが同じcategoryのoccurrenceか, 異なるcategoryかを先に判断する.">
         <header><h4>Q8: 1つのoperationで複数failureを検出した. RFC 9457のguidanceに合うresponse方針はどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. 異なるproblem typeを常にgeneric batch problemへまとめる</label>
           <label class="choice"><input type="radio" name="Q8" value="b"> B. 各failureへ別statusを与えるため複数HTTP status lineを返す</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. 同じtypeの反復はextensionで表し, typeが異なるなら最もrelevantなものを選ぶ</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. 同じtypeの反復にはextensionを使い、異なるtypeなら最も重要なものを返す</label>
         </fieldset><div class="explain">**解説:**
 
 A: unrelated problemをgeneric containerへ入れるとHTTP statusとの対応が悪く, client behaviorも曖昧になる. universalな推奨ではない.
@@ -161,32 +161,34 @@ B: 1つのHTTP responseが持つstatus lineは1つである. Problem Detailsは�
 C: 同じtypeの複数occurrenceはtype固有extensionで表現できる. typeが異なる場合は最もrelevantまたはurgentなproblemを返すことが推奨される.</div></div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="problem type definitionはpublicなinteroperability contractであり, internal diagnosticの置き場ではない.">
-        <header><h4>Q9: well-definedなProblem Details typeに必要な実務はどれ? 該当するものをすべて選ぶ.</h4><span class="type">複数選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="checkbox" name="Q9" value="a"> A. type URI, title, 想定するHTTP statusを文書化する</label>
-          <label class="choice"><input type="checkbox" name="Q9" value="b"> B. ordinaryな404 responseごとにnew typeを定義する</label>
-          <label class="choice"><input type="checkbox" name="Q9" value="c"> C. semanticsが合うregistered problem typeを再利用する</label>
-          <label class="choice"><input type="checkbox" name="Q9" value="d"> D. debuggingのためtype URIからstack traceを公開する</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="安定したmachine-readable semanticsを、occurrence textやinternal diagnosticから分ける。">
+        <header><h4>Q9: 安定したclient contractを作りつつinternal情報を漏らさない再設計はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">APIは<code>type: about:blank</code>、HTTP 400、<code>detail: &quot;account locked in AuthService.java:418&quot;</code>を返す。clientは英語のdetail textをmatchしてretryするか停止する。serverはlock reasonとunlock timeも伝えたい。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. <code>about:blank</code>を維持し、parser向けにJava stack-frameの文言を標準化する</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. lock reasonを<code>title</code>へ置き、localized titleをclientにparseさせる</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. 安定したproblem typeと型付きextensionを定義し、<code>detail</code>には機密情報を入れない</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. uniqueな<code>instance</code> URIをproblem typeとし、queryへdiagnosticを埋め込む</label>
         </fieldset><div class="explain">**解説:**
 
-A: new problem type definitionはtype URI, short title, 利用するHTTP status codeを文書化する必要がある.
-B: generic failureにはplainなHTTP statusだけで足りる場合が多い. clientがproblem固有の処理を必要とするときにnew typeが有効になる.
-C: RFC 9457はHTTP Problem Types registryを設けた. semanticsが一致する登録済みtypeの再利用は不要なvocabulary分裂を避ける.
-D: type URIはcategoryを識別しdocumentationを提供できるが, implementation detailやoccurrence固有secretを公開する場所ではない.</div></div>
+RFC 9457 Sections 3.1.1と3.1.4は<code>type</code>を主要なmachine identifierとし、<code>detail</code>のparseを避けるよう求める。Section 3.2は型付きextension memberを提供し、Sections 4と5はAPI problem semanticsをdebugging dataから分け、implementation internalの露出を警告する。Cならreasonとunlock timeを安定したfieldにできる。他の選択肢はhuman向けまたはoccurrence固有dataをprotocol contractにし、disclosure riskも残す。</div>
+        </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="一般HTTP APIのreview guidanceと, 個別application protocolが選んだwire formatを区別する.">
-        <header><h4>Q10: A2A bindingがgoogle.rpc.Status系のHTTP error bodyを規定済みである. RFC 9457はdesign reviewへ何を加える?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. bindingのerror bodyを暗黙にproblem+jsonへ置き換える</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. bindingのwire contractを変えずに一般的なreview modelを提供する</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. instanceがあればlogged stack traceを安全に公開できると保証する</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="translation、client decision、loggingを、明示的contractを持つ別boundaryとして考える。">
+        <header><h4>Q10: interoperabilityを保ちdisclosureを抑えるreview recommendationはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A bindingは<code>google.rpc.Status</code>系error bodyを規定する。browser-facing gatewayがそれを<code>application/problem+json</code>へ変換し、agentは<code>detail</code>をparseしてretryを判断し、central loggerは変換後object全体を保存する。<code>instance</code> URIのqueryにはbearer tokenがあり、<code>detail</code>にはinternal pathがある。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. RFC 9457は常に他formatより優先するため、A2A wire contractを暗黙に置き換える</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. <code>problem+json</code>は全memberをsanitizeするため、retry parseと全量loggingを維持する</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. adapter mappingを規定し、安定したmachine fieldを使い、response・logging前にredactする</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. HTTP statusを削除し、<code>detail</code>だけをauthoritativeなerror signalにする</label>
         </fieldset><div class="explain">**解説:**
 
-A: 一般HTTP RFCはapplication固有のwire representationを暗黙には変更しない. migrationには明示的なprotocol判断が必要である.
-B: stableなerror identifier, status整合, extensibility, disclosure制限は, 別のerror envelopeを使うbindingでも有効なreview criteriaになる.
-C: instanceはoccurrence identifierであり他memberをsanitizeしない. stack trace, token, internal path, log dataはsensitive informationを漏らしうる.</div></div>
+RFC 9457は他protocolが選んだerror envelopeを上書きしない。adapterで使うなら明示的mappingが必要である。Sections 3.1.1、3.1.4、3.2は<code>detail</code>のparseではなく、安定したtype・extension semanticsを使えるようにする。Section 5は生成情報の慎重なreviewを求め、Problem Details自体がsecretやimplementation dataをsanitizeするわけではない。Cはwire、decision、response、loggingの各boundaryを扱う。generic HTTP softwareにとってHTTP statusは引き続きauthoritativeである。</div>
+        </div>
       </article>
     </section>
 

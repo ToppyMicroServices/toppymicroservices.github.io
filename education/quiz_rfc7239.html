@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7239",
       SKILL_SUBTITLE: "Forwarded",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,15 +103,11 @@
 
             `Forwarded` records information that may otherwise be changed or lost as an HTTP request passes through proxies. It does not secure the connection or authenticate the recorded values.
 
-            **Options:**
-
-            - A: This describes the field's purpose: conveying information about the request and the forwarding proxies.
-
-            - B: TLS provides transport security; `Forwarded` is an HTTP metadata field and does not replace it.
-
-            - C: A sender can supply false field values, so authenticity depends on a defined proxy trust boundary.
-
             A deployment should define which intermediaries may add or replace this field before using it for security-sensitive decisions.
+
+            A: This describes the field's purpose: conveying information about the request and the forwarding proxies.
+            B: TLS provides transport security; `Forwarded` is an HTTP metadata field and does not replace it.
+            C: A sender can supply false field values, so authenticity depends on a defined proxy trust boundary.
           </div>
         </div>
       </article>
@@ -131,19 +128,12 @@
 
             RFC 7239 initially registers four parameters. Extensions can define additional parameters, but `path` and `port` are not among these four.
 
-            **Options:**
-
-            - A: `for` identifies the node that made the request to the proxy.
-
-            - B: `by` identifies the proxy's interface that received the request.
-
-            - C: `proto` records the protocol used for the request received by the proxy.
-
-            - D: `host` records the original Host request-header value received by the proxy.
-
-            - E: `path` is not an RFC 7239 parameter; the request path is outside the initial parameter set.
-
-            - F: `port` is not a separate RFC 7239 parameter; a node identifier can include a port where the syntax permits it.
+            A: `for` identifies the node that made the request to the proxy.
+            B: `by` identifies the proxy's interface that received the request.
+            C: `proto` records the protocol used for the request received by the proxy.
+            D: `host` records the original Host request-header value received by the proxy.
+            E: `path` is not an RFC 7239 parameter; the request path is outside the initial parameter set.
+            F: `port` is not a separate RFC 7239 parameter; a node identifier can include a port where the syntax permits it.
           </div>
         </div>
       </article>
@@ -161,41 +151,33 @@
 
             A forwarded-element contains the information added by one proxy. Multiple elements form an HTTP list in the order in which the field was generated.
 
-            **Options:**
-
-            - A: Separate field lines are allowed to be combined, but commas remain the list delimiter and are not forbidden.
-
-            - B: Commas separate forwarded-elements; semicolons separate parameters within one element.
-
-            - C: RFC 7239 defines HTTP field-value grammar, not a JSON representation.
-
             A parser also has to handle quoted strings and optional whitespace according to the field grammar.
+
+            A: Separate field lines are allowed to be combined, but commas remain the list delimiter and are not forbidden.
+            B: Commas separate forwarded-elements; semicolons separate parameters within one element.
+            C: RFC 7239 defines HTTP field-value grammar, not a JSON representation.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Ask who can supply the field before the trusted edge sanitizes it.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Ask who can supply the field before the trusted edge sanitizes it.">
         <header><h4>Q4: A key operational risk with Forwarded is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. It forces HTTP/2 downgrade</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. It disables HSTS automatically</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Spoofing if you trust it from untrusted sources</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Spoofing from an untrusted source</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            `Forwarded` is not intrinsically trustworthy. A client can send its own field before the request reaches the deployment's first trusted proxy.
-
-            **Options:**
-
-            - A: The field does not negotiate an HTTP version and therefore does not force an HTTP/2 downgrade.
-
-            - B: The field does not alter an HSTS policy or disable HTTPS upgrading.
-
-            - C: Trusting an untrusted sender's value can let that sender spoof client or proxy metadata.
+            RFC 7239 Section 8.1 states that `Forwarded` cannot be relied upon to be correct because any node, including the client, can modify it.
 
             A common boundary design is to remove untrusted forwarding fields at the edge and generate values from observations made by trusted proxies.
+
+            A: The field does not negotiate an HTTP version and therefore does not force an HTTP/2 downgrade.
+            B: The field does not alter an HSTS policy or disable HTTPS upgrading.
+            C: Trusting an untrusted sender's value can let that sender spoof client or proxy metadata.
           </div>
         </div>
       </article>
@@ -227,15 +209,11 @@
 
             RFC 7239 permits an obfuscated node identifier when the real identifier should not be disclosed. Such an identifier begins with an underscore and ought to be randomly generated per request unless correlation is intentionally required.
 
-            **Options:**
-
-            - A: Obfuscation can limit disclosure while retaining only the correlation a deployment deliberately needs.
-
-            - B: Obfuscation does not authenticate any proxy or prove the provenance of the field.
-
-            - C: The mechanism is defined for identifier disclosure and correlation policy, not as header compression.
-
             The literal `unknown` has a different meaning: it is used when the identity of the preceding node is not known.
+
+            A: Obfuscation can limit disclosure while retaining only the correlation a deployment deliberately needs.
+            B: Obfuscation does not authenticate any proxy or prove the provenance of the field.
+            C: The mechanism is defined for identifier disclosure and correlation policy, not as header compression.
           </div>
         </div>
       </article>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9449", "SKILL_SUBTITLE": "OAuth 2.0 DPoP", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9449", "SKILL_SUBTITLE": "OAuth 2.0 DPoP", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -81,7 +81,7 @@ C: 追加のOAuthとapplication checkがclient identityとpermitted actionを確
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="proofはasymmetric private keyのpossessionをdemonstrateする必要がある.">
         <header><h4>Q3: DPoP proofでacceptableなJOSE algorithmはどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. local policyでacceptedなregistered asymmetric signature algorithm</label>
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. 許可済みのregistered asymmetric algorithm</label>
           <label class="choice"><input type="radio" name="Q3" value="b"> B. HTTPSがproofをauthenticateするためnone</label>
           <label class="choice"><input type="radio" name="Q3" value="c"> C. secretをjwkへ置いたshared-secret MAC</label>
         </fieldset><div class="explain">**解説:**
@@ -114,17 +114,17 @@ A: athはsigned proof内のhash bindingでtoken encryptionではない.
 B: TLS server identity selectionはath claimの外である.
 C: token hashによりcaptured proofへ別tokenをsubstituteするのを防ぐ.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="request binding, freshness, token binding, key bindingをvalidateする.">
-        <header><h4>Q6: resource serverはDPoP proof validationで何を比較すべき?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="proof-level check後に,proofをこのHTTP requestとこのaccess tokenの両方へbindしてください.">
+        <header><h4>Q6: JWT structure,signature,required claim,replay,freshness,nonceのcheckは成功した.このprotected-resource requestとtokenへproofをbindする残りの比較はどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. htm, htu, proof time, ath, tokenのbound public key</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. 全HTTP requestをglobalにidentifyするためjtiだけ</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. 全claimはadvisoryなのでJWT signatureだけ</label>
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. htmとhtuを比較し,athをtoken valueと照合し,proof keyをtoken bindingと一致させる</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. jtiがrequest,token,resource serverをglobalにidentifyするため,jtiだけを比較する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. requestとtokenのclaimはadvisory metadataなので,JWT signatureだけを比較する</label>
         </fieldset><div class="explain">**解説:**
 
-A: これらのcheckでsigned JWTをcurrent requestとaccess tokenへbindする.
-B: jti uniquenessだけではmethod, URI, token, time, keyへbindできない.
-C: DPoPのrequired claimにはmandatoryなvalidation semanticsがある.</div></div>
+A: RFC 9449 Section 4.3はresource serverに`htm`と`htu`の一致,提示tokenに対する`ath` validation,proof keyとtoken confirmation bindingの一致を要求します.stemではSection 4.3のほかのcheckが成功済みです.
+B: `jti`だけではmethod,URI,access-token value,confirmation keyへbindできません.
+C: valid signatureは必要ですが,signed claimのvalidationを置き換えません.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="nonceによりserverがunpredictableなfreshnessを加える.">
         <header><h4>Q7: serverがDPoP-Nonce valueを送った. 次のapplicable proofはどうする?</h4><span class="type">単一選択</span></header>
@@ -162,16 +162,16 @@ A: DPoP対応serverはbound tokenをBearerとして受理しkey proofをbypass�
 B: lifetime validityだけではtokenのsender constraintを満たさない.
 C: resource serverはauthorization serverのtoken bindingを書換えられない.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="legitimate application context内で動くscriptはavailable capabilityを使える.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="legitimate application context内で動くscriptはavailable capabilityを使える.">
         <header><h4>Q10: browser clientがDPoPをadoptした後も残るresidual riskはどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q10" value="a"> A. stolen tokenはbound keyなしで常に使える</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. XSS codeがcompromised client contextからsigning keyをinvokeできる</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. XSSがclient経由でsigning keyを使える</label>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. HTTPSがresource serverをauthenticateできなくなる</label>
         </fieldset><div class="explain">**解説:**
 
 A: token-only useの防止がsender constrainingのprincipal benefitである.
-B: non-extractable keyはexportに耐えてもclient内実行codeによるmalicious useは防げない.
+B: RFC 9449 Section 11.4は,non-extractable keyがexportに耐えてもclient内で実行されるcodeによるmalicious useは防げないと説明します.
 C: DPoPはTLS server authenticationをdisableしない.</div></div>
       </article>
     </section>

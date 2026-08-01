@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 6749",
       SKILL_SUBTITLE: "OAuth 2.0のrole・grant・token境界",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -88,7 +89,7 @@ E: OAuthはnetwork broker roleを必須にしていません.</div></div>
         <header><h4>Q2: clientがphoto API用のOAuth access tokenを受け取った.RFC 6749だけから言えることはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q2" value="a"> A. login用のstandardized end-user identity assertionを取得した</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. granted scope内のprotected resourceへaccessするauthorizationを表すcredentialを得た</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. tokenはprotected resourceへのscoped authorizationを表す</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. 全resource serverがtokenをuser passwordとして解釈する</label>
         </fieldset><div class="explain">**Explanation:**
 A:  OAuth 2.0はauthorization frameworkであり,OpenID Connectなどがstandardized login identity semanticsを追加します.
@@ -100,7 +101,7 @@ C:  token abstractionはpasswordの直接共有を置き換え,clientにはopaqu
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q3" value="a"> A. 全protocol stepで同じcredentialを指す二つの名前</label>
           <label class="choice"><input type="radio" name="Q3" value="b"> B. access tokenをresource serverへ出してgrantを取得する</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. grantはaccess token取得に使うauthorization表現で,access tokenはprotected resourceで使う</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. grantでtokenを取得し,tokenをprotected resourceで使う</label>
         </fieldset><div class="explain">**Explanation:**
 A:  両者は異なるprotocol boundaryで使います.
 B:  向きが逆で,abstract flowのresource serverはgrant issuerではありません.
@@ -128,7 +129,7 @@ A:  obfuscationやminificationはcredential confidentialityを保ちません.
 B:  browser-based・native applicationは通常shared secretを保持できず,authorization serverはその固定値だけでpublic clientを識別してはなりません.
 C:  client credentialとresource-owner credentialは別です.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="redirect先と,browser transactionからcallbackまでのbindingをそれぞれ保護してください.">
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="redirect先と,browser transactionからcallbackまでのbindingをそれぞれ保護してください.">
         <header><h4>Q6: authorization-code redirect flowを保護するcontrolはどれか.複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="checkbox" name="Q6" value="a"> A. redirect URIを事前登録値と照合し,現行RFC 9700に従いnative-app exception以外はexact string matchingする</label>
@@ -140,14 +141,14 @@ C:  client credentialとresource-owner credentialは別です.</div></div>
 A: registered redirect URIとのexact matchingは,attackerがcredential受信先を選ぶことを防ぎます.
 B: syntax上有効でもattacker URIならcodeを奪えます.
 C: callbackを開始元user-agent transactionへbindすると,forgedまたは取り違えたcallbackを検出できます.
-D: PKCEにより,開始元client instanceが持つverifierなしではcodeを交換できません.RFC 6749は`state`によるCSRF対策を説明し,RFC 9700は条件を満たすPKCEやOpenID Connect `nonce`も扱います.</div></div>
+D: PKCEにより,開始元client instanceが持つverifierなしではcodeを交換できません.RFC 6749 Sections 3.1.2.3と10.12はredirect照合とCSRF対策を扱い,RFC 9700 Sections 2.1と2.1.1が現行のexact matching・PKCE guidanceを示します.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="abstract token credentialと,HTTPでの特定presentation methodを分けてください.">
         <header><h4>Q7: access tokenについて正しい記述はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. RFC 6749は全access tokenをclientが理解できるJWTに限定する</label>
           <label class="choice"><input type="radio" name="Q7" value="b"> B. RFC 6749だけで全access tokenがsender-constrainedになる</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. tokenはopaqueまたはself-containedで,特定scopeとdurationを表し,presentation methodは別仕様で定める</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. opaqueまたはself-containedで,特定のscopeとdurationを表す</label>
         </fieldset><div class="explain">**Explanation:**
 A:  tokenはclientにopaqueな場合が多く,JWTに限定されません.
 B:  RFC 6749は全tokenをsenderへ自動bindingしません.bearer usageはRFC 6750,sender constrainingは追加mechanismが必要です.
@@ -164,7 +165,7 @@ A:  refresh tokenはaccess token取得用credentialで,authorization serverだ�
 B:  RFC 6749はresource serverへ決して送らないとします.
 C:  redirectで公開するとcredential leakageになります.更新はtoken endpointで行います.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="RFC 6749は歴史的なgrant typeを記録し,RFC 9700が現在のdeployment security guidanceを与えます.">
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="RFC 6749は歴史的なgrant typeを記録し,RFC 9700が現在のdeployment security guidanceを与えます.">
         <header><h4>Q9: RFC 9700の現行OAuth 2.0 security guidanceに合うものはどれか.複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="checkbox" name="Q9" value="a"> A. resource owner password credentials grantはMUST NOTである</label>
@@ -176,19 +177,19 @@ C:  redirectで公開するとcredential leakageになります.更新はtoken e
 A: password grantはresource-owner credentialをclientへ露出するため,RFC 9700が禁止しています.
 B: authorization responseでaccess tokenを返すと,leakageとreplay riskが生じます.
 C: RFC 9700は,規定されたinjection・leakage対策を満たさないimplicitの利用を避けるよう求めます.
-D: public code-flow clientではPKCEがmandatoryで,confidential clientにもrecommendedです.RFC 6749はframeworkの基礎ですが,記載されたhistorical grantすべてが現在のdeployment recommendationではありません.</div></div>
+D: public code-flow clientではPKCEがmandatoryで,confidential clientにもrecommendedです.根拠はRFC 9700 Sections 2.1.1,2.1.2,2.4です.</div></div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="tokenはresource operationをauthorizeできても,runtime,delegation chain,task contextの全claimを証明するとは限りません.">
         <header><h4>Q10: Agent BがAgent AからOAuth access tokenを受け取り,高impact taskを実行するか判断する.適切な結論はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">tokenはBのresource API向けにvalidです.さらに,提示可能なruntime,承認されたtask,onward delegation可否も判断する必要があります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. token validityだけで全agent identity,runtime property,task parameter,delegation hopが証明される</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. issuer,audience,scope,lifetimeを強制し,追加判断にはprofiled claim,sender constraining,local policyを使う</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. TLSがtaskをauthorize済みなのでtoken scopeは無視する</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. BのAPI向けにvalidなら,追加profileやlocal policyなしで全agent identity,runtime property,task parameter,delegation hopが証明されたと扱う</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. authorization serverとresource profileが定めるvalidation・scope ruleを適用し,追加判断にはprofiled evidence,sender constraining,local policyを使う</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. TLS channel authenticationでtask全体がauthorizeされたと扱い,tokenのscope,resource制約,delegation制約を無視する</label>
           </fieldset><div class="explain">**Explanation:**
 A:  OAuth tokenのvalidityだけではtask semantics,runtime attestation,完全なdelegation chainを自動的に証明しません.
-B:  OAuthはauthorization-token frameworkを提供し,A2A profileが追加claimとacceptance policyを定めます.mTLSやDPoPなどでtokenをsender-constrainできます.
+B:  RFC 6749 Sections 1.4と7では,token format,token attribute,resource serverへの提示方法はcompanion specificationまたはprofileに委ねられます.RFC 6749自体が全tokenにissuer・audience fieldを要求するわけではありません.A2A profileが適用するvalidation rule,追加evidence,acceptance policyを定め,mTLSやDPoPなどでtokenをsender-constrainできます.
 C:  TLSはchannelを保護しますが,resource authorizationやscope enforcementを置き換えません.</div>
         </div>
       </article>

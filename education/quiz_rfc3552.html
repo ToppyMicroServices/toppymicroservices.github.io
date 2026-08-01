@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 3552",
       SKILL_SUBTITLE: "Writing Security Considerations",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -93,25 +94,24 @@
         <header><h4>Q1: A good Security Considerations section should primarily</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Restate the entire protocol in different words</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Restate every protocol message while leaving threat and failure assumptions implicit</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. Describe realistic threats, assumptions, and mitigations relevant to the spec</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Promise that the design is secure</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. State that the design is secure without identifying attackers or residual risks</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             A Security Considerations section is not a formality added after the protocol is designed. It should let implementers and users understand the relevant threats and the limits of the design.
 
-            **Terms:** A **Security Considerations section** connects the protocol to its security properties, threats, failure modes, assumptions, and countermeasures.
+            A **Security Considerations section** connects the protocol to its security properties, threats, failure modes, assumptions, and countermeasures.
 
-            **Correct (B):** RFC 3552 says the section should inform readers of relevant security issues and clearly describe foreseeable threats, protections, and residual risks.
+            RFC 3552 says the section should inform readers of relevant security issues and clearly describe foreseeable threats, protections, and residual risks.
 
-            **Options:**
-            - A (incorrect): Repeating the protocol does not identify its security consequences.
-            - B (correct): Realistic threats, assumptions, and mitigations give readers information they can act on.
-            - C (incorrect): No protocol is simply “secure” in every threat model. The section must state scope and limitations.
+            Repeating the protocol does not identify its security consequences.
+            Realistic threats, assumptions, and mitigations give readers information they can act on.
+            No protocol is simply “secure” in every threat model. The section must state scope and limitations.
 
-            **Related:** The useful question is not “does the document claim security,” but “under which assumptions does it provide which protections.”
+            The useful question is not “does the document claim security,” but “under which assumptions does it provide which protections.”
           </div>
         </div>
       </article>
@@ -130,22 +130,21 @@
 
             RFC 3552 calls for analysis tied to the protocol, including its threat environment, the security properties it provides, and residual risks.
 
-            **Terms:** **In scope** identifies attacks the design considers. **Protection properties** say what cryptography or another mechanism actually provides. **Residual risk** is what can still go wrong after mitigation.
+            **In scope** identifies attacks the design considers. **Protection properties** say what cryptography or another mechanism actually provides. **Residual risk** is what can still go wrong after mitigation.
 
-            **Correct (A,B,C):** RFC 3552 calls for the scope of attacks, the portions and properties protected by security mechanisms, and a clear description of remaining risk.
+            RFC 3552 calls for the scope of attacks, the portions and properties protected by security mechanisms, and a clear description of remaining risk.
 
-            **Options:**
-            - A (correct): Readers need to know which attacks are considered and which are excluded, including why.
-            - B (correct): Saying only that data is “protected” is insufficient; the document should distinguish confidentiality, integrity, authentication, and related properties.
-            - C (correct): Mitigation does not erase all risk, so the remaining exposure must be stated.
-            - D (incorrect): Compliance marketing is not a substitute for security analysis.
+            Readers need to know which attacks are considered and which are excluded, including why.
+            Saying only that data is “protected” is insufficient; the document should distinguish confidentiality, integrity, authentication, and related properties.
+            Mitigation does not erase all risk, so the remaining exposure must be stated.
+            Compliance marketing is not a substitute for security analysis.
 
-            **Related:** Operational and privacy guidance can still be valuable when relevant, but those topics should not be presented as RFC 3552's specific checklist when the document does not say so.
+            Operational and privacy guidance can still be valuable when relevant, but those topics should not be presented as RFC 3552's specific checklist when the document does not say so.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Even a protocol with limited impact needs the reasoning behind that conclusion to be reviewable.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Even a protocol with limited impact needs the reasoning behind that conclusion to be reviewable.">
         <header><h4>Q3: Your draft says "This protocol has no security considerations". A better approach is to</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -158,16 +157,15 @@
 
             A small protocol change can still create risk through deployment, composition, or misuse. An unsupported “no considerations” statement hides those assumptions.
 
-            **Terms:** An **assumption** is a condition on which the analysis depends. **Residual risk** is exposure that remains after the stated countermeasures.
+            An **assumption** is a condition on which the analysis depends. **Residual risk** is exposure that remains after the stated countermeasures.
 
-            **Correct (A):** If the impact is genuinely limited, explain why, identify the assumptions, and state what the protocol does not address.
+            If the impact is genuinely limited, explain why, identify the assumptions, and state what the protocol does not address.
 
-            **Options:**
-            - A (correct): It gives readers enough information to test whether the conclusion applies to their deployment.
-            - B (incorrect): An external reference cannot replace analysis of this protocol's interactions and assumptions.
-            - C (incorrect): Generic controls do not explain which threats arise from this protocol or what remains exposed.
+            It gives readers enough information to test whether the conclusion applies to their deployment.
+            An external reference cannot replace analysis of this protocol's interactions and assumptions.
+            Generic controls do not explain which threats arise from this protocol or what remains exposed.
 
-            **Related:** RFC 3552 requires due diligence about known or foreseeable threats, even though no protocol must be immune to every attack.
+            RFC 3552 requires due diligence about known or foreseeable threats, even though no protocol must be immune to every attack.
           </div>
         </div>
       </article>
@@ -183,21 +181,20 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A reviewable security analysis states what is protected and which security properties are required, describes attacker capabilities and trust assumptions, explains key management, and identifies residual risk after mitigation.
+            A reviewable security analysis states what is protected and which security properties are required, describes attacker capabilities and trust assumptions, explains key management, and identifies residual risk after mitigation.
 
-            **Correct (B):** This revision supplies the claims and boundary conditions a reviewer needs to test. It connects mechanisms to protected assets, threats, operational assumptions, and risks the design does not eliminate.
+            This revision supplies the claims and boundary conditions a reviewer needs to test. It connects mechanisms to protected assets, threats, operational assumptions, and risks the design does not eliminate.
 
-            **Options:**
-            - A (incorrect): Algorithm names alone do not establish the required security properties, threat model, key lifecycle, or deployment assumptions.
-            - B (correct): Each listed element makes the protection claim specific enough to assess against the intended deployment.
-            - C (incorrect): A cipher suite does not by itself address authentication, key management, endpoint compromise, availability, or every deployment model.
+            Algorithm names alone do not establish the required security properties, threat model, key lifecycle, or deployment assumptions.
+            Each listed element makes the protection claim specific enough to assess against the intended deployment.
+            A cipher suite does not by itself address authentication, key management, endpoint compromise, availability, or every deployment model.
 
-            **Related:** RFC 3552 requires the services expected from a lower-layer security protocol and the resulting combined-system properties to be specified, and calls for a clear description of residual risk.
+            RFC 3552 requires the services expected from a lower-layer security protocol and the resulting combined-system properties to be specified, and calls for a clear description of residual risk.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="A mitigation is useful only when readers know its target, cost, and limits.">
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="A mitigation is useful only when readers know its target, cost, and limits.">
         <header><h4>Q5: When discussing mitigations, good guidance tends to (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -211,17 +208,16 @@
 
             A list of countermeasure names is not enough for an implementer to decide whether a mitigation fits a deployment.
 
-            **Terms:** A **mitigation** reduces a threat; a **trade-off** is its performance, complexity, or operational cost; **out of scope** identifies what the mitigation is not intended to solve.
+            A **mitigation** reduces a threat; a **trade-off** is its performance, complexity, or operational cost; **out of scope** identifies what the mitigation is not intended to solve.
 
-            **Correct (A,B,C):** Useful guidance explains the defended threat, the cost or constraints, and the remaining limits.
+            Useful guidance explains the defended threat, the cost or constraints, and the remaining limits.
 
-            **Options:**
-            - A (correct): Without the threat, readers cannot evaluate whether the mitigation is relevant.
-            - B (correct): Costs and constraints affect whether a countermeasure can be deployed correctly.
-            - C (correct): Explicit limits show where another control or a different threat model is needed.
-            - D (incorrect): RFC 3552 explicitly does not require immunity to every form of attack.
+            Without the threat, readers cannot evaluate whether the mitigation is relevant.
+            Costs and constraints affect whether a countermeasure can be deployed correctly.
+            Explicit limits show where another control or a different threat model is needed.
+            RFC 3552 explicitly does not require immunity to every form of attack.
 
-            **Related:** A mitigation can be valuable without being complete. Clear residual-risk text prevents it from being mistaken for a guarantee.
+            A mitigation can be valuable without being complete. Clear residual-risk text prevents it from being mistaken for a guarantee.
           </div>
         </div>
       </article>
@@ -233,17 +229,9 @@
           <div class="explain">
             **Explanation:**
 
-            The first step in reading security text is to identify who the attacker is assumed to be and what that attacker can do.
+            A threat model states the relevant assets, attacker capabilities, trust assumptions, and exclusions. RFC 3552 uses those assumptions to identify attacks of concern and to delimit what a proposed countermeasure addresses.
 
-            **Real-world usage:** Protocol reviews and incident analysis use the threat model to decide whether a mitigation covers the attacker and deployment in question.
-
-            **Terms:** A **threat model** describes attacker capabilities, available resources, relevant assets, trust assumptions, and explicit exclusions.
-
-            **Correct:** **threat model**.
-
-            **Why this matters:** A countermeasure that is adequate against passive observation might fail against an active attacker who can insert, delete, or modify messages.
-
-            **Related:** RFC 3552 uses the threat model both to identify attacks of concern and to state which attacks are explicitly out of scope.
+            A control adequate against passive observation can fail against an active attacker who inserts, deletes, or modifies messages. Its adequacy therefore cannot be evaluated independently of the stated threat model and deployment.
           </div>
         </div>
       </article>
@@ -253,18 +241,18 @@
         <div class="body">
           <p class="question-premise">To investigate misuse between agents, a design proposes long-term retention of complete requests, session proofs, and task context.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. State that the log store requires authentication; that is sufficient security analysis for logging</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. State only that logging is an attack and prohibit it, leaving incident detection and audit impact out of scope</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Require authenticated log access, but leave confidentiality, integrity, retention, and failure impact to undocumented deployment defaults</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Prohibit complete-request logging, then omit detection goals and residual risk because non-recording removes the logging threat</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. Specify detection goals, log assets and attackers, confidentiality, integrity, and availability controls, collection scope, and residual risk</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3552 asks authors to explain a threat model and the resulting security properties, not merely name a mechanism. Logging can support attack detection, but it can also create a high-value data set, a tampering target, and a resource-exhaustion path.
+            RFC 3552 Sections 2.3, 3, and 5 ask authors to identify system-security goals, an explicit threat model, applicable countermeasures, and residual risk rather than merely name a mechanism. Logging can support attack detection, but it can also create a high-value data set, a tampering target, and a resource-exhaustion path.
 
-            - A (incorrect): Authentication addresses only part of access. Excess privilege, credential compromise, exfiltration, log injection, deletion, storage exhaustion, retention, and remaining risk are still unanalyzed.
-            - B (incorrect): RFC 3552 does not require immunity to every attack; it asks authors to explain threats, countermeasures, exclusions, and residual risk. A blanket prohibition does not evaluate the operational trade-off.
-            - C (correct): Stating what the log detects, what must be protected, what attackers can do, and what remains after controls gives implementers a reviewable security argument.
+            Authentication addresses only part of access. Excess privilege, credential compromise, exfiltration, log injection, deletion, storage exhaustion, retention, and remaining risk are still unanalyzed.
+            RFC 3552 does not require immunity to every attack; it asks authors to explain threats, countermeasures, exclusions, and residual risk. A blanket prohibition does not evaluate the operational trade-off.
+            Stating what the log detects, what must be protected, what attackers can do, and what remains after controls gives implementers a reviewable security argument.
 
             In this sense, “treat logging as an attack” is too compressed. The precise design rule is to **include log collection as an attack surface and privacy-sensitive asset in the threat model**. Field selection, avoidance of raw values, retention, access control, redaction, tamper evidence, and failure behavior then belong to the deployment design.
           </div>

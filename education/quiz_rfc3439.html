@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 3439",
       SKILL_SUBTITLE: "Internet Architectural Guidelines and Philosophy",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -75,20 +76,20 @@
         </fieldset><div class="explain">**Explanation:**
 
 RFC 3439 treats complexity as a primary obstacle to efficient scaling and a driver of CAPEX and OPEX.
-A:  speculative feature richness expands interactions.
-B:  the principle pushes architecture toward the simplest sufficient solution.
-C:  local optimization can add complexity and tighter coupling.</div></div>
+speculative feature richness expands interactions.
+the principle pushes architecture toward the simplest sufficient solution.
+local optimization can add complexity and tighter coupling.</div></div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The issue is the interaction between endpoint communication state and network-core state, not the mere existence of routes.">
         <header><h4>Q2: What does the end-to-end argument imply about state in the Internet core?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. The core must contain no state of any kind</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. Every endpoint session should be replicated into the routing system</label>
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. The core must be completely stateless at every layer and for every function</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Every endpoint session should be copied into routing and forwarding state</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. Coarse core state may exist, but its interaction with endpoint state should be minimized</label>
         </fieldset><div class="explain">**Explanation:**
-A:  the core necessarily maintains coarse-grained state such as routes.
-B:  coupling routing to each endpoint session undermines simplicity and fate sharing.
-C:  RFC 3439 emphasizes near-orthogonality between core state and endpoint communication state.</div></div>
+the core necessarily maintains coarse-grained state such as routes.
+coupling routing to each endpoint session undermines simplicity and fate sharing.
+RFC 3439 emphasizes near-orthogonality between core state and endpoint communication state.</div></div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Ask whether a one-tenant event remains local or forces unrelated participants to react.">
         <header><h4>Q3: A configuration change for one tenant triggers a global recomputation across every gateway. Which principle identifies the concern?</h4><span class="type">Multiple Choice</span></header>
@@ -97,20 +98,20 @@ C:  RFC 3439 emphasizes near-orthogonality between core state and endpoint commu
           <label class="choice"><input type="radio" name="Q3" value="b"> B. The requirement for a universal interworking function</label>
           <label class="choice"><input type="radio" name="Q3" value="c"> C. The rule that every layer must repeat error recovery</label>
         </fieldset><div class="explain">**Explanation:**
-A:  small perturbations can cause disproportionately large events at scale; RFC 3439 recommends making local changes have local effects.
-B:  the RFC warns against universal interworking.
-C:  duplicated functions across layers are an example of avoidable complexity, not a requirement.</div></div>
+small perturbations can cause disproportionately large events at scale; RFC 3439 recommends making local changes have local effects.
+the RFC warns against universal interworking.
+duplicated functions across layers are an example of avoidable complexity, not a requirement.</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Focus on interdependence and the number of ways that simultaneous events can interact.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Focus on interdependence and the number of ways that simultaneous events can interact.">
         <header><h4>Q4: Two individually safe recovery mechanisms repeatedly trigger each other and create a cascading outage. Which analysis fits best?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q4" value="a"> A. The mechanisms prove that more components always increase reliability</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. Tight coupling created an unforeseen feature interaction</label>
           <label class="choice"><input type="radio" name="Q4" value="c"> C. The failure occurred because the payload was transported without modification</label>
         </fieldset><div class="explain">**Explanation:**
-A:  component count and interaction can reduce stability.
-B:  the Coupling Principle predicts increased interdependence and unforeseen interactions as systems grow.
-C:  preserving payload is the Minimum Intervention guidance; it does not describe mutually triggering recovery loops.</div></div>
+component count and interaction can reduce stability.
+the Coupling Principle predicts increased interdependence and unforeseen interactions as systems grow.
+preserving payload is the Minimum Intervention guidance; it does not describe mutually triggering recovery loops.</div></div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare distributing an application to consenting endpoints with upgrading every intermediary.">
         <header><h4>Q5: Why can a smart-edge, simple-core architecture reduce the cost of adding a new service?</h4><span class="type">Multiple Choice</span></header>
@@ -119,20 +120,20 @@ C:  preserving payload is the Minimum Intervention guidance; it does not describ
           <label class="choice"><input type="radio" name="Q5" value="b"> B. It removes all control planes and forwarding state from the network</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. Participating endpoints can adopt the service without upgrading the entire core</label>
         </fieldset><div class="explain">**Explanation:**
-A:  that is the expensive smart-core model the RFC contrasts.
-B:  a simple core still has routing and forwarding functions.
-C:  distributing edge software to consenting users avoids a network-wide core upgrade.</div></div>
+that is the expensive smart-core model the RFC contrasts.
+a simple core still has routing and forwarding functions.
+distributing edge software to consenting users avoids a network-wide core upgrade.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="The critique targets rigid ordering, duplicated work, and hidden information rather than modular structure itself.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The critique targets rigid ordering, duplicated work, and hidden information rather than modular structure itself.">
         <header><h4>Q6: How should “Layering Considered Harmful” be read in RFC 3439?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q6" value="a"> A. Layering has structural value, but excessive rigid layers can duplicate work and obstruct global optimization</label>
           <label class="choice"><input type="radio" name="Q6" value="b"> B. Every protocol must collapse application, transport, and link functions into one component</label>
           <label class="choice"><input type="radio" name="Q6" value="c"> C. More vertical layers always lower OPEX by isolating every decision</label>
         </fieldset><div class="explain">**Explanation:**
-A:  the RFC acknowledges layering's conceptual benefits while warning about ordering constraints, hidden information, and repeated functions.
-B:  it does not ban modular boundaries.
-C:  its operational observation is that extra layering often increases complexity and OPEX.</div></div>
+the RFC acknowledges layering's conceptual benefits while warning about ordering constraints, hidden information, and repeated functions.
+it does not ban modular boundaries.
+its operational observation is that extra layering often increases complexity and OPEX.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask whether the intermediary must understand and rewrite information it could instead carry transparently.">
         <header><h4>Q7: A gateway can encapsulate a payload unchanged or translate every field into a universal internal schema. Which default follows the Principle of Minimum Intervention?</h4><span class="type">Multiple Choice</span></header>
@@ -141,44 +142,44 @@ C:  its operational observation is that extra layering often increases complexit
           <label class="choice"><input type="radio" name="Q7" value="b"> B. Carry the payload as received when modification is not required</label>
           <label class="choice"><input type="radio" name="Q7" value="c"> C. Reject all encapsulation because it necessarily violates end-to-end design</label>
         </fieldset><div class="explain">**Explanation:**
-A:  universal translation increases the scope and coupling of the intermediary.
-B:  RFC 3439 recommends transporting payload without modification where possible.
-C:  the RFC permits data-plane interworking and encapsulation, especially at the edge.</div></div>
+universal translation increases the scope and coupling of the intermediary.
+RFC 3439 recommends transporting payload without modification where possible.
+the RFC permits data-plane interworking and encapsulation, especially at the edge.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate carrying data between systems from translating their distributed control logic.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate carrying data between systems from translating their distributed control logic.">
         <header><h4>Q8: Two unlike networks must interoperate. Which boundary is preferred by RFC 3439?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. Merge both control planes into one universal state machine in the core</label>
           <label class="choice"><input type="radio" name="Q8" value="b"> B. Replicate every application's policy into every transit node</label>
           <label class="choice"><input type="radio" name="Q8" value="c"> C. Restrict interworking mainly to data-plane encapsulation at the edge</label>
         </fieldset><div class="explain">**Explanation:**
-A:  control-plane translation creates a large opportunity for failure.
-B:  it tightly couples transit infrastructure to application state.
-C:  the RFC recommends edge-based data-plane interworking and minimizing control-plane interworking.</div></div>
+control-plane translation creates a large opportunity for failure.
+it tightly couples transit infrastructure to application state.
+the RFC recommends edge-based data-plane interworking and minimizing control-plane interworking.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="System availability and the availability target of each individual component are not identical questions.">
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="System availability and the availability target of each individual component are not identical questions.">
         <header><h4>Q9: Which reliability strategy is consistent with RFC 3439's “myth of five nines” discussion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. Design for system reliability without assuming every complex component must individually reach five nines</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. Add mechanisms until every component independently claims perfect availability</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. Ignore component failure because packet networks are automatically reliable</label>
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Design reliability at system level instead of demanding five nines from every complex component</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Keep adding mechanisms until each component can independently claim perfect availability</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Assume packet networking makes component failures irrelevant to end-to-end reliability</label>
         </fieldset><div class="explain">**Explanation:**
-A:  system-level resilience can use comparatively unreliable components, and attempts to perfect every component may add human and process complexity.
-B:  that can feed the robustness/complexity spiral.
-C:  the argument changes how reliability is composed; it does not dismiss failures.</div></div>
+system-level resilience can use comparatively unreliable components, and attempts to perfect every component may add human and process complexity.
+that can feed the robustness/complexity spiral.
+the argument changes how reliability is composed; it does not dismiss failures.</div></div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Count the independently deployed, operated, and failed elements on the path of one request.">
         <header><h4>Q10: An Agent-to-Agent request must traverse seven mandatory brokers, translators, and policy engines. What is the strongest RFC 3439 review question?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">The service works in a small test environment; the concern is whether the mandatory path remains stable and operable at scale.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Can each intermediary expose more optional features?</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Can each intermediary scale its own implementation and interface independently?</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. Which components can be removed or made optional without losing required behavior?</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Can all intermediaries share one larger control-plane database?</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Can a shared control plane coordinate the intermediaries and mask their failures?</label>
           </fieldset><div class="explain">**Explanation:**
-A:  feature count is not evidence of deployability.
-B:  the Architectural Component Proportionality Law ties complexity to component count and recommends minimizing components in the service-delivery path.
-C:  a shared control plane can increase coupling and failure scope rather than reduce the path's obligations.</div>
+feature count is not evidence of deployability.
+RFC 3439 Sections 8 and 8.1 tie architectural complexity to component count and recommend minimizing components in the service-delivery path.
+a shared control plane can increase coupling and failure scope rather than reduce the path's obligations.</div>
         </div>
       </article>
     </section>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5056","SKILL_SUBTITLE":"Channel Bindingの使い方","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5056","SKILL_SUBTITLE":"Channel Bindingの使い方","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="channel bindingが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 5056のchannel bindingだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="bindingについて一致すべき二つのprotocol layerを特定してください. operationを実行する権限とは区別します. ">
+        <header><h4>Q1: channel bindingが答えられるsecurity上の問いはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 5056を参照し,channel bindingを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">agentがTLS connection内のSASL mechanismでauthenticationを行います. profileは, 攻撃者がTLSを終端し, application authenticationを別のTLS connectionへrelayする攻撃を検出したいと考えています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 上位のauthenticationが同じsecure channel instanceへ結び付いているか判断すること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 上位のauthenticationが同じsecure channel instanceへ結び付いているか判断すること.ただし受理するpeer identity, authorization, mechanism negotiation policyはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9266はTLS 1.3のchannel binding typeを与え, RFC 5056は一般モデルを説明する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 5056を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. authentication済みagentに, 要求されたA2A operationを実行する権限があるか</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. application-layer authenticationと各peerが, 同じsecure-channel instanceを参照しているか</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS certificateが有効期間とcertification path constraintを満たすか</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. authentication済みの二つのapplication messageが, 同じbusiness transactionを表すか</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-3はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-3がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 5056はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: authorizationは, applicationまたはdeploymentが別に判断します.
+B: RFC 5056 Sections 2 and 3は, application-layer authenticationをsecure channelへ結び付け, 双方が同じbindingを観測したと確認できる仕組みを定義します. これによりchannel relayを検出できます.
+C: certificate path validationは, RFC 5056が定義するchannel-binding機能ではありません.
+D: business messageの同一性には, channel bindingが提供しないapplication semanticsが必要です. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがchannel bindingについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="interoperabilityには, 選択するtypeと曖昧さのないbyte表現の両方が必要です. nestingにも選択規則があります. ">
+        <header><h4>Q2: nested channelでauthenticationをどうbindすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 5056を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A connectionには, 同じchannel-binding typeのsecure channelが二重にnestしています. 独立したimplementationは, 選択したbinding dataをserializeして比較します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 受理するpeer identity, authorization, mechanism negotiation policyだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 9266はTLS 1.3のchannel binding typeを与え, RFC 5056は一般モデルを説明する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. channel binding typeと比較するchannel dataを明確に指定する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 最も外側のchannelを使い, 各implementationのnative object encodingを許す</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. すべてのnested bindingを連結し, implementation固有のstructureを比較する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. binding typeを指定し, nestingでは最も内側を選び, canonical octet encodingを使う</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. 最後に確立したchannelを使い, 各implementationで成功したencodingを同値とみなす</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Section 4に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: RFC 5056 Section 2.1は, 同じtypeのnested channelでは最も内側を選び, canonical octet encodingを使うよう求めます.
+B: RFC 5056は, nesting規則として連結を定義していません. implementation固有のstructureも相互運用可能な比較値になりません.
+C: このscenarioに関係するSection 2.1の三点, typeの指定, 最も内側のsame-type channelの選択, canonical bytesの使用を満たします.
+D: 確立順序やlocal successだけでは, 双方が同じbindingを比較したと確認できません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このchannel bindingのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="backendがbindされたと主張する二つのendpointを特定し, そのevidenceをそのendpointが導出したのか, 別のtrust boundaryからassertされたのかを確認します. ">
+        <header><h4>Q3: backendはforwardされたbinding値から何を結論できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: channelから導出せずapplication metadataでコピーされた値を比較すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">gatewayがclient TLS connectionを終端してchannel bindingを導出し, 別のgateway-to-backend TLS connection上の通常のHTTP headerでその値を転送します. backendは, 自身のapplication authenticationがclient TLS channelへ直接bindされていると主張したいと考えています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,binding失敗をsession受理へどう反映するかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. binding dataがpeerの使う同じchannel instanceから来たことを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 9266はTLS 1.3のchannel binding typeを与え, RFC 5056は一般モデルを説明する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 5056対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 両network hopがTLSを使いbinding値が変わらないため, 直接bindingと主張できる</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. forward headerがgateway assertionとしてintegrity-protectされていなくても, gatewayがclientをauthenticate済みなら主張できる</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. channel bindingではend-to-end transportだけが許されるため, すべてのgateway architectureをrejectしなければならない</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 直接bindingとは推論できない. backend-verifiable evidenceまたは明示的trust modelによるprotected gateway assertionが必要である</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 8に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: 二つのTLS hopは別のchannel instanceです. 値をcopyしてもendpointは一体化しません.
+B: gateway authenticationはdelegated trust modelを構成できますが, 保護されていないheaderはbackendに対する真正なgateway assertionになりません.
+C: RFC 5056はtrusted intermediaryを禁止していません. security claimを, 実際にbindしたchannelとapplication authenticationへ一致させる必要があります.
+D: RFC 5056 Sections 3 and 8に従い, application authenticationとchannel-binding constructionを組み合わせて分析します. gateway assertionも別の設計として成立し得ますが, そのtrust boundaryとintegrityはlocal profileの責務です. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: channel bindingを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="必要な性質はpeer identityの安定性ではありません. 別channelを確立した後にproofをreplayできるかが判断基準です. ">
+        <header><h4>Q4: per-sessionのreplay要件に合うbindingはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 5056を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">profileは, 一つのsecure-channel sessionで取得されたauthentication proofが, 同じserver certificateを使う場合でも, 新しいsessionを確立した後には失敗することを求めています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するpeer identity, authorization, mechanism negotiation policy</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. binding dataがpeerの使う同じchannel instanceから来たことを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. binding失敗をsession受理へどう反映するか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 上位のauthenticationが同じsecure channel instanceへ結び付いているか判断すること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. certificate continuityが決定的なのでendpoint bindingを使う</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. review対象のsession間で値が変わるunique channel bindingを使う</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. application authenticationがあればbindingのuniquenessは不要なので, どちらでもよい</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. reconnect中のproofを安定させるため, endpoint bindingのvalidity intervalを長くする</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-3は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 5056 Section 2.1は, 複数のchannel instanceでendpointを識別し得るendpoint bindingと, unique bindingを区別します.
+B: replayを検出するには, threat modelに含まれるsession間でbindingがuniqueでなければなりません. Section 8.1は, 再確立時のnon-unique bindingのriskを説明します.
+C: application authenticationは必要ですが, 再利用されるbinding値をper-session値には変えません.
+D: lifetimeを延ばすとcontinuityが強まり, 提示されたreplay基準とは逆になります. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでchannel bindingを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="bindingの比較は値を作ったchannelの外でも行えますが, その比較を運ぶ通信にもsecurity要件があります. ">
+        <header><h4>Q5: 別exchangeでbinding dataを比較するとき何が不足しているか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: SASL, token, application proofをprotected connectionへ結び付ける場面.観測した欠陥: hostname, token audience, unauthenticated metadataをchannel binding dataの代わりに扱うこと.</p>
+          <p class="question-premise">二つのagentがsecure channelから同じtypeのchannel bindingを導出します. その後, messageを改変可能な別exchangeを介してbinding値をA2A coordinatorへ送り, coordinatorは値の一致を元channelのbinding証明として扱います. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（上位のauthenticationが同じsecure channel instanceへ結び付いているか判断すること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（channel binding typeと比較するchannel dataを明確に指定する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 9266はTLS 1.3のchannel binding typeを与え, RFC 5056は一般モデルを説明する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 正しく導出した値が一致すれば, その後に値を運ぶcarrierもすべてauthenticateされるため不足はない</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. modified messageは一致判定に影響しないため, confidentialityだけが不足している</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 別exchangeのintegrity protectionと, 各値を主張したpartyへcoordinatorが対応付けるためのauthentication semantics</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 二つのbinding typeを使えばcoordinator exchangeも自動的にauthenticateされるため, 二つ目のendpoint binding</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 8に沿って欠陥を解消してからresultを使います.profile rule: channel binding typeと比較するchannel dataを明確に指定する.check: binding dataがpeerの使う同じchannel instanceから来たことを確認する.local policy: 受理するpeer identity, authorization, mechanism negotiation policy.</div>
+A: 正しいderivationは, 値を運ぶ別exchangeを保護しません.
+B: RFC 5056 Section 3は, 別のprotected exchangeを使う場合に少なくともintegrityを求めます. また, coordinatorは誰の観測を比較するのか知るためにapplication authenticationを必要とします.
+C: 比較のintegrityと, channel-binding modelに必要なidentity associationの両方を提供します.
+D: 値を増やしても, 攻撃者が改変できるcarrierはauthenticateされません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: channel bindingとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="token validity, client-channel binding, gateway assertionのauthenticity, resource authorizationについて, それぞれのverifierを特定します. ">
+        <header><h4>Q6: 正確なsecurity claimを保つgateway設計はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはchannel bindingを別protocol layerと組み合わせます.design noteには「RFC 9266はTLS 1.3のchannel binding typeを与え, RFC 5056は一般モデルを説明する」とあります.</p>
+          <p class="question-premise">gatewayがagent grantをvalidateし, agent authenticationがclient-to-gateway channelへbindされていることをverifyします. 別のTLS connectionにあるbackendが要求resourceを所有し, 最終authorizationを判断します. backendが受け取るのはgateway生成のassertionだけです. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,受理するpeer identity, authorization, mechanism negotiation policyは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（binding dataがpeerの使う同じchannel instanceから来たことを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（受理するpeer identity, authorization, mechanism negotiation policy）を定義し,必要なcheck（binding dataがpeerの使う同じchannel instanceから来たことを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. protected gateway assertionでclient identity, binding result, request contextを結び, backendは別にauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 元のbinding bytesをforwardし, 両hopが同じdeployment内なのでbackend自身のchannel bindingとして扱う</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. validなgrantをchannel-binding proofとみなし, gatewayのbinding resultをassertionから省略する</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. gatewayでbindingに成功すればagent identityとoperation permissionの両方を証明できるため, 最終resource authorizationとして扱う</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-3とSection 8がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 5056 Sections 3 and 8はgatewayのclient-channel claimを支えます. 一方, protected assertionとbackend authorizationは, 明示されたcompositionおよびlocal trust decisionです. gatewayが観測したchannelをclient-to-backendの直接channelと言い換えてはいけません.
+B: 同じ管理範囲でも, binding dataを導出したendpointやinstanceは変わりません.
+C: grant validationとchannel bindingは独立した問いへ答えます. 一方から他方は導けません.
+D: authenticationをchannelへbindしても, backend所有resourceへのpermissionは付与されません. </div>
         </div>
       </article>
     </section>

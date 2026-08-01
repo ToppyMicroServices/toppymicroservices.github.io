@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8949","SKILL_SUBTITLE":"Concise Binary Object Representation (CBOR)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8949","SKILL_SUBTITLE":"Concise Binary Object Representation (CBOR)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what CBOR data model provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 8949 make CBOR data model sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="CBOR syntax, generic-data-model validity, and an application's expected input are separate acceptance layers.">
+        <header><h4>Q1: Is this CBOR item acceptable to the A2A operation?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 8949 and claims that using CBOR data model automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">A decoder accepts a well-formed and valid CBOR text string. The A2A operation schema requires a map containing integer keys 1 and 2.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. encoding structured data in a compact binary representation with extensibility and well-defined data items; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. encoding structured data in a compact binary representation with extensibility and well-defined data items, while the schema or profile that assigns meaning to map keys, tags, and allowed value types remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWT and COSE rely on CBOR, but their security processing is defined by their own profiles; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 8949 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Yes; once a generic decoder reports valid CBOR, every application schema must accept the resulting data item</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. No for this operation; the item can be valid CBOR yet fail the application's expected-input rules</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. No because text strings are not part of the CBOR generic data model and therefore cannot be well-formed</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Yes if the text is UTF-8, because application-level map requirements apply only to deterministic encodings</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-5 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-5 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 8949 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Section 5 distinguishes valid CBOR from input expected by a particular application protocol.
+B: Correct. Sections 5 and 5.3 treat well-formedness, validity, and application expectations as successive checks.
+C: Text strings are a basic CBOR data type; the defect is a schema mismatch, not CBOR syntax.
+D: UTF-8 validity does not convert a text string into the map required by the operation.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for CBOR data model. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="RFC 8949 permits representation variation unless a protocol selects deterministic rules for its use case.">
+        <header><h4>Q2: Does RFC 8949 require every CBOR message to use core deterministic encoding?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 8949 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A telemetry message is decoded only to data-model values; it is not hashed, signed by encoded bytes, or compared byte-for-byte. Its profile has not selected a deterministic encoding.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only the schema or profile that assigns meaning to map keys, tags, and allowed value types and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: CWT and COSE rely on CBOR, but their security processing is defined by their own profiles</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Choose deterministic encoding when bytes are compared, signed, or hashed across implementations</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Yes; preferred serialization and sorted map keys are mandatory for every well-formed CBOR item</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Yes; any two encodings of the same data-model value are invalid unless their bytes are identical</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. No; deterministic encoding is prohibited unless the message is wrapped in a registered CBOR tag</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. No; a profile selects Section 4.2 deterministic rules when the application needs stable bytes</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 4-5 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Section 4.1 explains that preferred serialization is not generally required; Section 4.2 defines deterministic variants for protocols that need them.
+B: CBOR normally permits multiple well-formed encodings of a data-model value.
+C: Deterministic encoding is independent of whether the item carries a tag.
+D: Correct. A profile can select the core requirements in Section 4.2.1 or a specified alternative such as Section 4.2.3.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this CBOR data model review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Do not let a generic map API silently choose between duplicate security-relevant keys.">
+        <header><h4>Q3: How should the authorization parser handle this map?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: accepting duplicate map keys and deeply nested values without applying the profile's interpretation and resource limits. The result controls an A2A security decision.</p>
+          <p class="question-premise">An attacker sends a CBOR map containing role twice: role=reader followed by role=admin. The gateway library keeps the first entry; the backend library keeps the last. The profile requires one unambiguous role value for authorization.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document limits for nesting depth, integer size, string size, and duplicate map keys as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Parse only well-formed CBOR and apply the application profile for duplicate keys, tags, and resource limits</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: CWT and COSE rely on CBOR, but their security processing is defined by their own profiles</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 8949 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Use the first value at both services because streaming decoders encounter it before the duplicate</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Use the last value at both services because later map entries act as explicit updates to earlier entries</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Reject before authorization using duplicate detection at the decoder or application boundary required by the profile</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Let each service use its native map behavior, then reconcile authorization differences in downstream logs</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 10 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: Section 5.3.1 identifies duplicate map keys as a validity error and notes that decoder behaviors differ.
+B: CBOR maps are not update logs; the generic data model has unique keys.
+C: Correct. Sections 5 and 5.3.1 require the CBOR-based protocol to define handling, and this security profile needs a single interpretation.
+D: Divergent native behavior creates exactly the cross-component security failure in the premise.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing CBOR data model, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Core and length-first deterministic encodings choose different map-key orderings; a profile must select one byte representation.">
+        <header><h4>Q4: Why do signatures fail between these implementations?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 8949 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">Two A2A implementations sign the CBOR-encoded request bytes after locally re-encoding the same map. One uses Section 4.2.1 core deterministic encoding; the other uses Section 4.2.3 length-first map ordering. The profile says only deterministic CBOR and requires identical signature inputs.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. The schema or profile that assigns meaning to map keys, tags, and allowed value types</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Parse only well-formed CBOR and apply the application profile for duplicate keys, tags, and resource limits</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Limits for nesting depth, integer size, string size, and duplicate map keys</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Encoding structured data in a compact binary representation with extensibility and well-defined data items</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. The profile is ambiguous; select one deterministic rule and the exact signing input rather than treating both byte orders as interchangeable</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Both signatures should verify because deterministic encodings always produce identical bytes for the same data-model value</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Prefer whichever signature was generated first, since timing resolves deterministic-encoding conflicts without changing the profile</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Decode both signatures into maps before verification, because a signature operation authenticates abstract CBOR values rather than bytes</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-5 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Sections 4.2.1 and 4.2.3 intentionally define different map ordering. A byte-signing profile must choose one and define its signing input.
+B: Each variant is deterministic within its own rules, but the two variants need not produce the same bytes.
+C: Message timing is not part of either deterministic encoding and cannot repair an interoperability rule.
+D: Cryptographic signatures operate on defined bytes; decoding a signature does not transform its signed input.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when CBOR data model is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Well-formed input can still consume unbounded memory, stack depth, or arithmetic effort.">
+        <header><h4>Q5: Which design meets the parser-availability criterion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a binary protocol or token profile needs compact, typed, and extensible data. Observed defect: letting different encodings of the same abstract value break signatures, hashes, or cache keys.</p>
+          <p class="question-premise">An unauthenticated A2A endpoint accepts well-formed CBOR. A 2 KB input can declare enormous lengths or deeply nest arrays until the decoder exhausts memory or stack. The requirement is bounded work before authentication.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (encoding structured data in a compact binary representation with extensibility and well-defined data items), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (choose deterministic encoding when bytes are compared, signed, or hashed across implementations) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (CWT and COSE rely on CBOR, but their security processing is defined by their own profiles), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Rely on well-formedness checks because syntactically valid lengths and nesting cannot be used for resource exhaustion</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Parse without limits over TLS because transport authentication makes the encoded length and nesting trustworthy</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Allocate the declared sizes first and reject only when the complete application object fails its schema checks</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Enforce profile and implementation limits on sizes, nesting, allocation, and numeric processing before constructing unbounded objects</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 10 supports resolving the defect before relying on the result. The profile rule is: choose deterministic encoding when bytes are compared, signed, or hashed across implementations. The check is: parse only well-formed CBOR and apply the application profile for duplicate keys, tags, and resource limits. The local policy is: the schema or profile that assigns meaning to map keys, tags, and allowed value types.</div>
+A: Section 10 describes hostile, well-formed inputs that use large sizes or deep nesting to exhaust resources.
+B: Section 10 says decoders must treat input as hostile even after TLS, signing, or other presumed-trusted sources.
+C: Early attacker-driven allocation violates the bounded-work criterion and can fail before schema validation.
+D: Section 10 calls for appropriate resource management against large data items, stack exhaustion, integer issues, and superlinear work. Exact limits are profile or implementation policy.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should CBOR data model be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Choose whether identity is over transmitted bytes or a defined data-model representation before gateways re-encode the request.">
+        <header><h4>Q6: How should the A2A profile define its idempotency key?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines CBOR data model with another protocol layer. Its design note says: CWT and COSE rely on CBOR, but their security processing is defined by their own profiles.</p>
+          <p class="question-premise">An agent computes request_id=SHA-256(encoded CBOR). A gateway decodes and re-encodes the same data-model value using a different valid representation before sending it to the backend, which recomputes request_id. The profile requires semantically identical requests to have the same ID across this gateway.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes the schema or profile that assigns meaning to map keys, tags, and allowed value types unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (parse only well-formed CBOR and apply the application profile for duplicate keys, tags, and resource limits) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (the schema or profile that assigns meaning to map keys, tags, and allowed value types), perform the required check (parse only well-formed CBOR and apply the application profile for duplicate keys, tags, and resource limits), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Hash whichever valid encoding each hop receives because CBOR data-model equality guarantees byte-hash equality</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Select one deterministic hash input, or carry and protect the original ID without assuming re-encoding preserves it</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Require the backend to accept both IDs and choose the smaller hash value as the canonical request identity</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Add the self-described CBOR tag before hashing, since tag 55799 makes all encodings of the tagged value byte-identical</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 2-5 and Section 10 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: Sections 4.1 and 4.2 distinguish data-model equality from deterministic byte representation.
+B: This meets the stated cross-gateway identity criterion. Sections 4.2 and 5.6 provide encoding and map-key choices that the A2A profile must make explicit.
+C: Treating two IDs as one after the fact creates ambiguity for replay and authorization checks.
+D: A tag identifies CBOR but does not normalize the encoding of its content.</div>
         </div>
       </article>
     </section>

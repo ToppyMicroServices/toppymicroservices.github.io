@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 5077",
       SKILL_SUBTITLE: "TLS session tickets",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -93,23 +94,22 @@
         <header><h4>Q1: TLS session ticketの主目的として近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate validationを置き換える</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. plaintext HTTPを可能にする</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. authenticated server identityを保ったままcertificate validationを置き換える</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 初回TLS handshake後のapplication dataをplaintext HTTPで送れるようにする</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. server側stateなしでprior sessionをresumeする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **用語:** **TLS session ticket** は, server が session 再開に必要な情報を暗号化した blob として client に渡し, 後で持ち戻させる仕組みです. これにより server は session cache を持たずに resumption できます.
+            **TLS session ticket** は, server が session 再開に必要な情報を暗号化した blob として client に渡し, 後で持ち戻させる仕組みです. これにより server は session cache を持たずに resumption できます.
 
-            **Correct (C):** これが session ticket の主目的に最も近いです. 速度改善の背後にある設計上の利点は, server 側 state を減らせることです.
+            これが session ticket の主目的に最も近いです. 速度改善の背後にある設計上の利点は, server 側 state を減らせることです.
 
-            **選択肢:**
-            - A (incorrect): certificate validation を置き換える仕組みではありません. server identity の確認は引き続き必要です.
-            - B (incorrect): plaintext HTTP を可能にする機能ではなく, TLS session resumption の仕組みです.
-            - C (correct): state を ticket として client に持たせる, という要点を正しく言っています.
+            certificate validation を置き換える仕組みではありません. server identity の確認は引き続き必要です.
+            plaintext HTTP を可能にする機能ではなく, TLS session resumption の仕組みです.
+            state を ticket として client に持たせる, という要点を正しく言っています.
 
-            **関連:** 「stateless だから安全」ではありません. secret である ticket key の管理責任はむしろ重くなります.
+            「stateless だから安全」ではありません. secret である ticket key の管理責任はむしろ重くなります.
           </div>
         </div>
       </article>
@@ -118,28 +118,27 @@
         <header><h4>Q2: ticket内容のconfidentialityとintegrityを守る主体として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. clientがprivate keyで暗号化する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. clientがcertificate由来のkeyでticketを暗号化し認証する</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. serverがticket keyで暗号化と認証を行う</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. DNSSECがticketへ署名する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. DNSSECがticketへ署名しserverのDNS nameへbindする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **用語:** **ticket key** は server が ticket を encrypt/authenticate するための secret です. この key が漏れると, ticket 内容の保護や resumption の安全性が崩れます.
+            **ticket key** は server が ticket を encrypt/authenticate するための secret です. この key が漏れると, ticket 内容の保護や resumption の安全性が崩れます.
 
-            **Correct (B):** ticket の confidentiality と integrity を守る主体は **server** です. 発行者が server だからこそ, key 管理も rotation も server 運用の責務になります.
+            ticket の confidentiality と integrity を守る主体は **server** です. 発行者が server だからこそ, key 管理も rotation も server 運用の責務になります.
 
-            **選択肢:**
-            - A (incorrect): client が private key で暗号化する仕組みではありません. ticket を保護する鍵は server secret です.
-            - B (correct): server が ticket key を使って保護する, という説明が正しいです.
-            - C (incorrect): DNSSEC は DNS データの保護に関わるもので, TLS ticket へ署名する役割ではありません.
+            client が private key で暗号化する仕組みではありません. ticket を保護する鍵は server secret です.
+            server が ticket key を使って保護する, という説明が正しいです.
+            DNSSEC は DNS データの保護に関わるもので, TLS ticket へ署名する役割ではありません.
 
-            **関連:** 複数 node で resumption したいときは, server 群で ticket key をどう共有・rotation するかが実装より先に問題になります.
+            複数 node で resumption したいときは, server 群で ticket key をどう共有・rotation するかが実装より先に問題になります.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="protection keyを得たattackerが, 記録済みtrafficから何を回収できるかを追ってください.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="protection keyを得たattackerが, 記録済みtrafficから何を回収できるかを追ってください.">
         <header><h4>Q3: ticket keyを長期間使い回すときの大きなリスクとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -150,43 +149,41 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **forward secrecy** は, 長期秘密鍵が後で漏れても過去の通信をさかのぼって読まれにくくする性質です. resumption path や ticket key の扱いが悪いと, この目標を弱めることがあります.
+            **forward secrecy** は, 長期秘密鍵が後で漏れても過去の通信をさかのぼって読まれにくくする性質です. resumption path や ticket key の扱いが悪いと, この目標を弱めることがあります.
 
-            **Correct (A):** ticketはTLS master secretを含み得ます. 長期間使うprotection keyの漏えいによってcapture済みticket内のstateが露出し, TLS versionとconfigurationによっては関連する記録済みresumed trafficをdecryptできる可能性があります. これはRFC本文から導く運用上のinferenceです.
+            ticketはTLS master secretを含み得ます. 長期間使うprotection keyの漏えいによってcapture済みticket内のstateが露出し, TLS versionとconfigurationによっては関連する記録済みresumed trafficをdecryptできる可能性があります. これはRFC本文から導く運用上のinferenceです.
 
-            **選択肢:**
-            - A (correct): 長期間の使い回しは被害範囲を過去方向にも広げ得ます.
-            - B (incorrect): compromised keyで保護された発行済みticketも影響を受ける可能性があります.
-            - C (incorrect): ticket-protection keyはcertificateとは別であり, RFC 5077はregularな変更を推奨しています.
+            長期間の使い回しは被害範囲を過去方向にも広げ得ます.
+            compromised keyで保護された発行済みticketも影響を受ける可能性があります.
+            ticket-protection keyはcertificateとは別であり, RFC 5077はregularな変更を推奨しています.
 
-            **関連:** ticket の導入判断は性能だけでなく, key compromise 時の blast radius と rotation 体制まで含めて行うべきです.
+            ticket の導入判断は性能だけでなく, key compromise 時の blast radius と rotation 体制まで含めて行うべきです.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="confidentialityの期間, node間のkey配布, 古いresumption stateが使える期間を考えてください.">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="confidentialityの期間, node間のkey配布, 古いresumption stateが使える期間を考えてください.">
         <header><h4>Q4: session ticket運用の良い衛生として正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. ticket keyをrotateする</label>
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. deploymentのsecurityと運用要件に合うticket lifetimeを設定する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. node跨ぎresumptionが必要ならserver群でkeyを共有する</label>
+            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. node跨ぎresumptionに必要なserverだけへ保護されたkey accessを限定する</label>
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. ticket keyをclientのlocalStorageへ保存する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **用語:** **key rotation** は secret の定期更新, **ticket lifetime** は resumption を許す期間, **shared key** は複数 node で同じ ticket を受け付けるための共有 secret です.
+            **key rotation** は secret の定期更新, **ticket lifetime** は resumption を許す期間, **shared key** は複数 node で同じ ticket を受け付けるための共有 secret です.
 
-            **Correct (A,B,C):** どれも運用上の基本です. rotate し, lifetime を短くし, cluster resumption が必要なら server 群で鍵共有を設計します.
+            どれも運用上の基本です. keyをrotateし, 要件に合うlifetimeを定め, cluster resumptionが必要ならkey accessの範囲と保護方法を設計します.
 
-            **選択肢:**
-            - A (correct): 漏えい時の影響期間を絞るために rotation は重要です.
-            - B (correct): serverはdeploymentのsecurityと運用要件からacceptable lifetimeを決めます. 常に最短が正解という意味ではありません.
-            - C (correct): node跨ぎresumptionには関連serverがcompatibleなprotection keyへaccessできる必要があり, key共有のriskも管理します.
-            - D (incorrect): ticket key は **server secret** であり, client storage に置くものではありません.
+            漏えい時の影響期間を絞るために rotation は重要です.
+            serverはdeploymentのsecurityと運用要件からacceptable lifetimeを決めます. 常に最短が正解という意味ではありません.
+            node跨ぎresumptionには関連serverがcompatibleなprotection keyへaccessできる必要があり, key共有のriskも管理します.
+            ticket key は **server secret** であり, client storage に置くものではありません.
 
-            **関連:** stateless resumption は「状態が消える」のではなく, state を secret で包んで client に持たせ直す設計だと理解すると運用論点が見えやすいです.
+            stateless resumption は「状態が消える」のではなく, state を secret で包んで client に持たせ直す設計だと理解すると運用論点が見えやすいです.
           </div>
         </div>
       </article>
@@ -202,16 +199,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **server side session cache** は resumption state を server に保存する方式, **ticket** はその state を client に持たせる方式です.
+            **server side session cache** は resumption state を server に保存する方式, **ticket** はその state を client に持たせる方式です.
 
-            **Correct (B):** ticket は server を stateless に近づけられますが, 代わりに ticket key の管理が必須になります. cache は key 共有より session storage の運用が中心です.
+            ticket は server を stateless に近づけられますが, 代わりに ticket key の管理が必須になります. cache は key 共有より session storage の運用が中心です.
 
-            **選択肢:**
-            - A (incorrect): stateの置き場所が逆です. cacheはsessionごとのserver entryを持ち, ticketはそのstateをclientへ移します.
-            - B (correct): 両方式の違いを, state storage と secret management の観点で正しく述べています.
-            - C (incorrect): ticket内容のconfidentialityとintegrityを守るserver-side protection keyは引き続き必要です.
+            stateの置き場所が逆です. cacheはsessionごとのserver entryを持ち, ticketはそのstateをclientへ移します.
+            両方式の違いを, state storage と secret management の観点で正しく述べています.
+            ticket内容のconfidentialityとintegrityを守るserver-side protection keyは引き続き必要です.
 
-            **関連:** 大規模 fleet では, 「cache を共有するか」「ticket key を共有するか」のどちらを運用しやすいかが実装選択に影響します.
+            大規模 fleet では, 「cache を共有するか」「ticket key を共有するか」のどちらを運用しやすいかが実装選択に影響します.
           </div>
         </div>
       </article>
@@ -223,11 +219,28 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **ticket** または **session ticket** は, server が発行し, client が保存する暗号化 blob です. 次回 handshake で提示され, resumption の手掛かりになります.
+            RFC 5077のticketはsession-specific stateを運ぶopaqueなstructureです. clientはinternal formatを仮定して解釈せず保存し, resumptionを求める後続handshakeの`SessionTicket` extensionで提示します.
+          </div>
+        </div>
+      </article>
 
-            **Correct:** **ticket** または **session ticket**.
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="同じticketをdecryptまたはauthenticateできる全serverを, 1つのprotection-key trust boundaryとして扱ってください.">
+        <header><h4>Q7: RFC 5077のticket security analysisに最も合う対応はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">TLS 1.2のA2A fleetがRFC 5077 ticketを30日間受理します. 40台のgatewayが1つのticket-protection keyを共有し, その中のlow-trustなregional nodeが侵害されました. operatorは, session stateをclientが保存するstateless方式なのでincidentはそのnodeに限定されると主張します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. stateless resumptionではserverにreusable secretもtrust boundaryもないため, 30日目まで全ticketを受理し続ける</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. ticket confidentialityによりprotection key holderもforgeryできないため, 無関係なlocal TLS certificateだけをrotateする</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. shared keyをfleet trust boundaryとして扱い, compromise後にscopeとkeyを変更し, server-selected lifetimeも再評価する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
 
-            **Why this matters:** これをただの cache entry と見ると, key rotation や confidentiality の議論が抜けます. 名前と役割をセットで覚えるのが大切です.
+            RFC 5077 Section 5.3は, integrity protectionが破れるとforged ticketによるsession延長, impersonation, privilege取得が起こり得ると説明します. shared protection keyを持つnodeは, そのkeyのticketを受理する全gatewayのtrust boundary内です. sessionごとのstateをclientへ移しても, このserver secretはなくなりません.
+
+            Section 5.5はticket-protection keyを専用目的に限定しregularly changeすることを推奨します. Section 5.6はacceptable lifetimeをserverのoperational/security requirementに委ねます. したがってcompromise後のcontainment, rotation, lifetime reviewは必要ですが, RFCは単一のfleet topologyや最短lifetimeを一律には指定しません.
+
+            RFC 8446は後にTLS 1.3についてRFC 5077をobsoletesしました. このpremiseはRFC 5077 mechanismを使うTLS 1.2 deploymentを意図しています.
           </div>
         </div>
       </article>

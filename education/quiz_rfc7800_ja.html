@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7800","SKILL_SUBTITLE":"JWT Proof-of-Possession Key Semantics","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7800","SKILL_SUBTITLE":"JWT Proof-of-Possession Key Semantics","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JWT confirmation keyが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 7800のJWT confirmation keyだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="claimはkeyに関するexpectationを識別します. そのkeyのcontrolを示す別protocol stepを確認します. ">
+        <header><h4>Q1: cnf claimだけで確立できるものは何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 7800を参照し,JWT confirmation keyを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">signed A2A task tokenがpresenterのpublic keyを含むcnf claimを持ちます. requestはtokenを運びますが, 対応するprivate keyによる別proofはありません. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 特定keyのpossessionを証明できるpartyがJWTを使う意図を表すこと.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 特定keyのpossessionを証明できるpartyがJWTを使う意図を表すこと.ただし受理するproof mechanism, key distribution method, authorization policyはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9449はOAuth DPoP requestへproof of possessionを適用し, RFC 7800はJWT confirmation key semanticsを定義する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 7800を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. tokenがsignedなので, presenterがこのrequestでprivate keyをcontrolしたこと</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. possessionを示すべきkey. profileがproofを提供しverifyする</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. tokenを読めるpresenterが行う全requestのauthorization</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. non-holderからclaimを隠すencrypted tokenへの変換</label>
           </fieldset><div class="explain">**解説:**
-A: Section 3はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Section 3がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 7800はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: issuerのtoken signatureはcnf claimをauthenticateしますが, request presenterがreferenced private keyをcontrolすることは示しません.
+B: RFC 7800 Sections 3 and 3.6はconfirmation-key semanticsを定義し, actual proof protocolは意図的にapplicationへ委ねます.
+C: cnfはpresentationを制約するためのもので, bearer useやresource permissionを付与しません.
+D: public confirmation keyはJWTを暗号化しません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがJWT confirmation keyについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="public verification keyとshared symmetric keyでは, claim set内で必要なconfidentialityが異なります. ">
+        <header><h4>Q2: confirmation keyをJWTへどう格納できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 7800を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A profileは, asymmetric public JWKまたはsymmetric MAC keyを, signed but unencrypted JWTのcnfへ直接入れる案を検討します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 受理するproof mechanism, key distribution method, authorization policyだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 9449はOAuth DPoP requestへproof of possessionを適用し, RFC 7800はJWT confirmation key semanticsを定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. proof-of-possession keyを曖昧さなく識別するconfirmation claimを入れる</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. JWT signatureがregistered claimのconfidentialityを提供するため, どちらもplaintextにできる</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. cnfにはどちらも格納できず, kid valueだけが許される</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. public JWKは直接格納できる. symmetric keyはencrypted JWTまたはkey valueで保護する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. JWT lifetimeがrequest timeoutより短ければsymmetric keyを公開できる</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3.1-3.6に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: signatureはintegrityとorigin authenticationを提供しますが, confidentialityは提供しません.
+B: RFC 7800はdirect JWKとkey-identifier representationの両方を定義します.
+C: RFC 7800 Sections 3.2 and 3.3はpublic asymmetric JWKと, unauthorized partyから暗号化すべきsymmetric key materialを区別します.
+D: short lifetimeでもactive MAC keyのdisclosureは安全になりません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このJWT confirmation keyのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="key possessionとrequest bindingは別の性質です. signed proofが何をcoverし, reuseを何が防ぐか確認します. ">
+        <header><h4>Q3: このholder proofはrequest-level sender constraintに十分か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: token signatureだけ検証し, presenterがcnf keyをcontrolするか確認しないこと.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">presenterはcnf private keyでfixed stringへ署名します. 同じsignatureを全A2A requestへ付け, method, URI, body digest, nonce, time valueをcoverしません. profileは各requestへbindしたreplay-resistant proofを求めます. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,protected requestと一緒にholder proofをどう運ぶかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. JWTを検証した上で, cnfが示すkeyと一致するholder proofを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 9449はOAuth DPoP requestへproof of possessionを適用し, RFC 7800はJWT confirmation key semanticsを定義する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 7800対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. cnf keyのsignatureを一つverifyすればJWTを運ぶ全requestへ自動的にbindするため十分である</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. JWT audienceがAPIを指せばaudienceがproof freshnessも提供するため十分である</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. RFC 7800が一つのuniversal nonce formatをmandateしており, それを含まないため不十分である</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 不十分. profileがrequest contextとfreshnessのproofをverifyする. RFC 7800はformatを定義しない</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 4に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: reusable fixed-string signatureはkey useを示しますが, particular requestのintegrityやfreshnessを示しません.
+B: audienceはtoken recipientを制限しますが, 別holder proofをfreshにしません.
+C: RFC 7800 Section 3.6はnonceとproofの詳細をapplication protocolへ意図的に委ねます.
+D: Sections 3.6 and 4に従い, 利用protocolがstated acceptance criterionに必要なproofとreplay controlを提供します. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: JWT confirmation keyを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="key identifierはresolution namespace内でだけ意味を持ちます. そのnamespaceを提供するissuer, tenant, registryを確認します. ">
+        <header><h4>Q4: ambiguousなcnf kidをどうresolveすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 7800を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">二つのA2A tenantが異なるkeyへ同じcnf kid "signing-key-1"を使います. verifierはtrusted token issuerやtenant contextへbindする前に, single global tableでkidをlookupします. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するproof mechanism, key distribution method, authorization policy</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. JWTを検証した上で, cnfが示すkeyと一致するholder proofを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. protected requestと一緒にholder proofをどう運ぶか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 特定keyのpossessionを証明できるpartyがJWTを使う意図を表すこと</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. kid valueは定義上globally uniqueなので最初のglobal matchを使う</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. key選択前にkidをauthenticated issuer, tenant, その他trusted namespaceへscopeする</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. どのtenantが提供したか記録せず, matching keyをすべて試して一つでもproofがverifyできればacceptする</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. kid stringをhashし, そのdigest自体をproof-of-possession keyとして使う</label>
           </fieldset><div class="explain">**解説:**
-A: Section 3は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 7800はkidをglobally uniqueにしません.
+B: RFC 7800 Section 3.4はkid contentをapplication specificとし, recipientがidentified keyを取得できる場合にだけ機能するとします. profileはcross-namespace key confusionを防ぐ必要があります.
+C: 全keyを試すとidentifierの解釈に必要なtrusted identity contextを失います.
+D: identifierのdigestはkey materialではなくpossessionを示しません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでJWT confirmation keyを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="audienceはintended recipientを制限し, cnfはpresenterを制限します. 一方のcheck成功は他方を提供しません. ">
+        <header><h4>Q5: cnf tokenをbearer processingへfallbackしてよいか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: tokenをコピーした誰でも使える状態ではなくsender-constrainedにする場面.観測した欠陥: cnf claimがあるのにtokenをbearer tokenとしても受理すること.</p>
+          <p class="question-premise">A2A resourceがcorrect audienceとcnf claimを持つtokenを受け取ります. requestにvalidなholder proofがない場合, implementationはcnfをignoreしてbearer tokenとして処理します. profileはproof of possessionを必須にします. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（特定keyのpossessionを証明できるpartyがJWTを使う意図を表すこと）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（proof-of-possession keyを曖昧さなく識別するconfirmation claimを入れる）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 9449はOAuth DPoP requestへproof of possessionを適用し, RFC 7800はJWT confirmation key semanticsを定義する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. correct audienceがpresenter constraintを不要にするためfallbackしてよい</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. token signatureがvalidでcnf keyがexpireしていなければfallbackしてよい</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. fallbackしない. PoP profileはvalidation後もmissingまたはinvalid proofをrejectする</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. cnfを持つtokenはaud claimを一切持てないためfallbackしてはいけない</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 4に沿って欠陥を解消してからresultを使います.profile rule: proof-of-possession keyを曖昧さなく識別するconfirmation claimを入れる.check: JWTを検証した上で, cnfが示すkeyと一致するholder proofを確認する.local policy: 受理するproof mechanism, key distribution method, authorization policy.</div>
+A: RFC 7800 Section 4はproof of possessionとaudienceが異なるprotectionを提供すると説明します.
+B: token validationはclaimをauthenticateしますが, presenterが現在keyをpossessすることは示しません.
+C: profileの明示的acceptance criterionを適用し, 他profileに一律のbearer-fallback ruleを作っていません.
+D: audとcnfは共存でき, 独立したsecurity propertyを扱います. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: JWT confirmation keyとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="proofをverifyした場所, coverしたrequest, そのresultがgateway boundaryを越えた後に何でauthenticateされるかを特定します. ">
+        <header><h4>Q6: gatewayはverified cnf resultをどうdelegateすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはJWT confirmation keyを別protocol layerと組み合わせます.design noteには「RFC 9449はOAuth DPoP requestへproof of possessionを適用し, RFC 7800はJWT confirmation key semanticsを定義する」とあります.</p>
+          <p class="question-premise">gatewayがincoming requestのcnf tokenとholder proofをvalidateし, 別connection上のbackendへX-Proof-Valid: trueだけをforwardします. backendはresourceを所有しますがoriginal proofを確認できません. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,受理するproof mechanism, key distribution method, authorization policyは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（JWTを検証した上で, cnfが示すkeyと一致するholder proofを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（受理するproof mechanism, key distribution method, authorization policy）を定義し,必要なcheck（JWTを検証した上で, cnfが示すkeyと一致するholder proofを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. backendがend-to-end proofをverifyするか, protected request-bound gateway assertionを信頼し, 別にauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. proof verificationの成功はtransport後もself-authenticatingなのでboolean headerを維持する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. public keyを知ることがgatewayによるprivate-key holderのcheckを示すため, cnf keyだけをforwardする</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. sender constraintはresource permissionも含むため, gateway proof successをbackendのfinal authorizationとして扱う</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Section 3とSection 4がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 7800 Sections 3.6 and 4はproof transportとreplay controlをapplicationへ委ねます. 二つの案はverifierとtrust boundaryを明示しrequest contextを保ちます. resource ownerはauthorizationを別に判断します.
+B: 通常のbooleanはcryptographic evidenceではなく, requestへbindされていません.
+C: public keyは何をproveすべきかを識別しますが, possessionがverifyされたかは示しません.
+D: proof of possessionとresource authorizationは独立しています. </div>
         </div>
       </article>
     </section>

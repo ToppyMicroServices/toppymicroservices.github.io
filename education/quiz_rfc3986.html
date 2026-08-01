@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 3986",
       SKILL_SUBTITLE: "URI Generic Syntax",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,22 +101,9 @@
           <div class="explain">
             **Explanation:**
 
-            The `//` marker determines whether the next characters are parsed as an authority or as part of another path form.
+            In RFC 3986 Section 3, `//` selects the grammar branch that contains an authority. The authority continues until the next `/`, `?`, or `#` and can contain userinfo, host, and port. By contrast, `?` begins the query and `#` begins the fragment.
 
-            **Real-world usage:** URI parsers, reverse proxies, routers, and security filters all need to agree on this boundary to avoid routing and validation differences.
-
-            **Terms:** authority, delimiter, scheme. In the generic URI syntax, the authority component is preceded by "//" and is followed by path, query, or fragment delimiters.
-
-            **Correct (C):** "//" signals that the following part is an authority, which can include userinfo, host, and port.
-
-            **Options:**
-
-            - A (incorrect): # introduces the fragment component, not authority.
-
-            - B (incorrect): ? introduces the query component.
-            - C (correct): // is the authority introducer in the generic syntax.
-
-            **Related:** Not all URIs use an authority. An authority-less URI can use a path-rootless form, as in `mailto:user@example.com`, without `//`.
+            An authority is optional: `mailto:user@example.com`, for example, uses a path-rootless form without `//`. Parsers, proxies, routers, and security filters therefore need to agree on the grammar branch before they make routing or policy decisions.
           </div>
         </div>
       </article>
@@ -125,29 +113,17 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. user:pass@example.com:8443</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. /a</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. example.com:8443/a?x=1</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. https://user:pass@example.com</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            Treating only the host as the authority can drop userinfo or port data that belongs to the same component.
+            RFC 3986 Section 3.2 defines authority as `[userinfo@]host[:port]`. Here it begins after `//` and ends before `/a`, so it is `user:pass@example.com:8443`: userinfo is `user:pass`, the host is `example.com`, and the port is `8443`.
 
-            **Real-world usage:** Correct authority boundaries matter in proxy configuration, origin comparison, access logs, and URL security review.
+            `example.com:8443/a?x=1` crosses into the path and query. `https://user:pass@example.com` includes the scheme and omits the port. Those boundary errors can change proxy routing, origin comparison, logging, and authorization behavior.
 
-            **Terms:** authority, userinfo, host, port. The authority component is the part after // up to the next /, ?, or # and it can include userinfo and port.
-
-            **Correct (A):** In this example the authority includes userinfo (user:pass), host (example.com), and port (8443).
-
-            **Options:**
-
-            - A (correct): This matches the RFC 3986 structure [userinfo@]host[:port].
-
-            - B (incorrect): This is only the host subcomponent, not the entire authority here.
-
-            - C (incorrect): /a is path, not authority.
-
-            **Related:** The `user:password` form is deprecated by RFC 3986. Applications should not render the password in cleartext or store it unencrypted; it appears here only to illustrate the authority grammar.
+            RFC 3986 deprecates cleartext passwords in userinfo. The password-like text in this example illustrates the grammar; applications should not expose or persist such credentials as URI text.
           </div>
         </div>
       </article>
@@ -164,57 +140,27 @@
           <div class="explain">
             **Explanation:**
 
-            “Reserved” does not mean forbidden or inherently unsafe; it marks characters that can serve as delimiters in the generic syntax.
+            RFC 3986 Sections 2.2 and 2.3 divide URI characters into reserved and unreserved sets. `?` and `#` are generic delimiters, while `&amp;` is a sub-delimiter; `~` is unreserved.
 
-            **Real-world usage:** Query builders, routers, signature code, and redirect validation depend on preserving the distinction between delimiters and data.
-
-            **Terms:** reserved, unreserved, gen-delims, sub-delims. Reserved characters have special meaning as delimiters in some URI components and may need percent-encoding when used as data.
-
-            **Correct (A,B,C):** ?, # are gen-delims. &amp; is a sub-delims character. ~ is unreserved, so it is typically safe without encoding.
-
-            **Options:**
-
-            - A (correct): ? separates path from query in generic syntax.
-
-            - B (correct): # introduces the fragment component.
-
-            - C (correct): &amp; is reserved as a sub-delims character and often has application-specific meaning inside the query.
-
-            - D (incorrect): ~ is in the unreserved set in RFC 3986 and is not reserved.
-
-            **Related:** Do not confuse reserved vs unsafe. Reserved means it might be a delimiter, so encoding depends on component and intent.
+            “Reserved” does not mean forbidden or inherently unsafe. It means that a character can have a delimiter role, depending on the component or scheme. Query construction, signature processing, and redirect validation must preserve whether the character is syntax or data; a reserved character used as data may need percent-encoding.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Ask whether the character is acting as syntax or as literal data inside one component.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Ask whether the character is acting as syntax or as literal data inside one component.">
         <header><h4>Q4: When should you percent-encode a character in a URI</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. Percent-encode every reserved character, including delimiters that define the URI structure</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Never encode reserved characters because they are required delimiters</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Never encode a reserved character, even when it appears as data, because reserved characters must remain delimiters</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Encode when the character is not allowed in that component or when you need a reserved character to be treated as data</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            Percent-encoding is component-sensitive. A blanket encoder can change structure, while failing to encode data can make it look like a delimiter.
+            RFC 3986 Sections 2.1 and 2.4 define percent-encoding as an octet representation of the form `%HH`; whether it is appropriate depends on the URI component and the character's role. A reserved character that is serving as a delimiter must remain literal. The same character used as data should be encoded so that a parser does not treat it as syntax. A character not permitted in the component also needs an appropriate encoding.
 
-            **Real-world usage:** This distinction appears in signed URLs, redirect targets, API path parameters, and defenses against parser differentials.
-
-            **Terms:** percent-encoding, component, delimiter vs data. Percent-encoding is a mechanism to represent octets using %HH so that the URI remains syntactically valid and unambiguous.
-
-            **Correct (C):** Encoding is context-dependent. If a reserved character would be interpreted as a delimiter but you need it as data, encode it. If a character is not permitted in a component, encode it or use an appropriate encoding scheme for that context.
-
-            **Options:**
-
-            - A (incorrect): Reserved characters that serve as delimiters must remain literal. Encoding them changes the URI structure or meaning.
-
-            - B (incorrect): Reserved characters can appear as data, but then they should be percent-encoded to avoid delimiter interpretation.
-
-            - C (correct): This captures the core rule and the reason behind it.
-
-            **Related:** Many bugs happen when code decodes too early and loses the ability to distinguish delimiter from data. Non-ASCII text also requires a defined character-to-octet mapping or IRI processing; RFC 3986 does not justify one blanket rule for every component.
+            Encoding every reserved character can destroy URI structure, while decoding too early can erase the distinction between delimiter and data. Signed URLs, redirect targets, and path parameters therefore need a single component-aware processing order. Non-ASCII text additionally needs a defined character-to-octet mapping or IRI processing; RFC 3986 does not supply one blanket rule for every component.
           </div>
         </div>
       </article>
@@ -230,22 +176,9 @@
           <div class="explain">
             **Explanation:**
 
-            URI normalization can improve comparison, but an unsafe transformation can point to a different resource.
+            RFC 3986 Section 6.2.2.1 treats the scheme and host as case-insensitive, so normalizing those components to lowercase is generally semantics-preserving. That rule does not extend to the entire URI: path case can be scheme- or server-dependent, and a fragment can affect client-side navigation even though it is not sent to an HTTP server.
 
-            **Real-world usage:** Cache keys, allowlists, routing tables, deduplication, and signed URLs all depend on normalization choices.
-
-            **Terms:** normalization, scheme, host, path, fragment. Normalization is changing the textual form while attempting to preserve the same reference.
-
-            **Correct (A):** Scheme and host are case-insensitive in generic URI processing, so lowercasing them is a common, safe normalization step.
-
-            **Options:**
-
-            - A (correct): Does not change the reference for typical URI processing, because scheme and host are case-insensitive.
-
-            - B (incorrect): Path case-sensitivity is scheme and server dependent. Lowercasing can change what resource is referenced.
-
-            - C (incorrect): Fragments are not sent to the server, but they can be meaningful to clients. Removing them may change client behavior and is not universally safe.
-            **Related:** Be careful: even seemingly harmless normalization can break signed URLs, caches, and routing.
+            Normalization is purpose-dependent. A transformation that is harmless for one comparison can change a signed value, cache key, routing key, or authorization identifier in another context. A profile should therefore define exactly which components it normalizes and at which trust boundary.
           </div>
         </div>
       </article>
@@ -257,17 +190,9 @@
           <div class="explain">
             **Explanation:**
 
-            The fragment appears in the displayed URI alongside the query and path, but it has different processing rules.
+            RFC 3986 Section 3.5 calls the component after `#` the fragment. It identifies a secondary resource in relation to the primary resource; its interpretation depends on the media type and client context.
 
-            **Real-world usage:** Browser navigation, document anchors, client-side routers, and URI comparison all need to treat the fragment as its own component.
-
-            **Terms:** fragment component. In RFC 3986 the fragment is the part after # and it identifies a secondary resource or client-side reference.
-
-            **Correct:** fragment. That is the RFC name for that component.
-
-            **Why others are wrong:** Query is introduced by ?, path is the hierarchical component after the authority, and scheme is before :. Confusing these leads to incorrect parsing and incorrect URL handling.
-
-            **Related:** Fragments are typically processed by the user agent and are not transmitted in an HTTP request.
+            The fragment is separated before dereferencing, so a user agent normally does not include it in an HTTP request. This differs from a query, which begins with `?` and is part of the resource request. Confusing the two changes both parsing and policy behavior.
           </div>
         </div>
       </article>
@@ -284,11 +209,11 @@
           <div class="explain">
             **Explanation:**
 
-            RFC 3986 does not define one universal URI comparison rule. The relevant trade-offs depend on the comparison purpose and can require scheme-specific or application-specific rules. A security decision must especially avoid a false positive that treats different identifiers as equivalent.
+            RFC 3986 Sections 6.1 and 6.2 do not define one universal URI comparison rule. The relevant trade-offs depend on the comparison purpose and can require scheme-specific or application-specific rules. A security decision must especially avoid a false positive that treats different identifiers as equivalent.
 
-            - A (incorrect): Returning the same representation at one moment does not prove authorization-identity equivalence. Redirects, virtual hosting, shared content, and temporary routing can make results coincide.
-            - B (correct): RFC 3986 recommends consistently producing URI references in an already-normalized form to reduce unnecessary aliases. A security profile can pin that canonical form and comparison rule at a trusted boundary, avoiding verifier-specific guesses.
-            - C (incorrect): Scheme and host case normalization follow generic rules, but paths and other components can be scheme dependent. Receiver-added alias or display-name repair creates new equivalence from attacker-controlled input.
+            Returning the same representation at one moment does not prove authorization-identity equivalence. Redirects, virtual hosting, shared content, and temporary routing can make results coincide.
+            RFC 3986 recommends consistently producing URI references in an already-normalized form to reduce unnecessary aliases. A security profile can pin that canonical form and comparison rule at a trusted boundary, avoiding verifier-specific guesses.
+            Scheme and host case normalization follow generic rules, but paths and other components can be scheme dependent. Receiver-added alias or display-name repair creates new equivalence from attacker-controlled input.
 
             The draft narrows the rule further for decision-sensitive values: canonicalize before issuance or trusted policy comparison, then do not repair peer aliases, case variants, URI variants, or natural-language interpretations in the final acceptance path. “Canonicalize on input” means **apply one deterministic, profile-defined transform at a trusted boundary**, not let the verifier infer convenient meaning.
           </div>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9266", "SKILL_SUBTITLE": "TLS 1.3のChannel Binding", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9266", "SKILL_SUBTITLE": "TLS 1.3のChannel Binding", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -102,7 +102,7 @@ A: valueはTLS connection instanceをidentifyしstable server identityではな�
 B: RFC 9266はRFC 5056のconnection-level uniquenessを提供する.
 C: base channel bindingはupper-layer streamやmechanism instanceを区別しない.</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="connection bindingはmultiple upper-layer mechanism instanceをseparateしない.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="connection bindingはmultiple upper-layer mechanism instanceをseparateしない.">
         <header><h4>Q5: 1つのTLS connectionがupper-layer authentication exchangeを運ぶ. RFC 9266に合うlifecycleはどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. 同じusernameならlater mechanismでもconnectionをreuseする</label>
@@ -112,7 +112,7 @@ C: base channel bindingはupper-layer streamやmechanism instanceを区別しな
 
 A: user identityではmechanism instance間のcryptographic separationを作れない.
 B: valueはnon-secretでper-mechanism instance separationを持たない.
-C: RFC 9266はbindingがconnection-uniqueだけなのでこのlifecycleを要求する.</div></div>
+C: RFC 9266 Section 4.1はTLS connectionごとに1 authentication-mechanism instanceだけを使い,upper-layer protocol終了時に直ちにconnectionをcloseするよう要求します.</div></div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="documentはTLS 1.3のmandatory-to-implement bindingをupdateする.">
         <header><h4>Q6: TLS 1.3 implementationがchannel bindingを実装する場合何をsupportする必要がある?</h4><span class="type">単一選択</span></header>
@@ -130,7 +130,7 @@ C: application-specific fingerprintはregisteredなinteroperable bindingでは�
         <header><h4>Q7: master secretに関してtls-exporterがdefinedされる条件はどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. extensionに関係なく全legacy TLS connection</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. handshakeがunique master secretをproduceする場合でTLS 1.3では常にtrue</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. unique master secretを作るhandshake.TLS 1.3は該当する</label>
           <label class="choice"><input type="radio" name="Q7" value="c"> C. applicationがbearer tokenを送った後だけ</label>
         </fieldset><div class="explain">**解説:**
 
@@ -153,7 +153,7 @@ C: RFC 9266はrenegotiation enabledの場合bindingはnot definedとする.</div
       <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="channel identityとapplication authorizationは別layerである.">
         <header><h4>Q9: matchingするtls-exporter valueはapplicationのauthorization policyが満たされたことをproveする?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. いいえ, upper-layer protocolが使うchannel associationをproveする</label>
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. いいえ.upper-layer用channel associationだけを示す</label>
           <label class="choice"><input type="radio" name="Q9" value="b"> B. はい, TLS serverがuser scopeを選んだため</label>
           <label class="choice"><input type="radio" name="Q9" value="c"> C. はい, connectionがpublic certificateを使う場合</label>
         </fieldset><div class="explain">**解説:**
@@ -162,17 +162,17 @@ A: upper layerはprincipalをauthenticateしauthorizationを評価する必要�
 B: TLS exporterはOAuth scope decisionを運ばない.
 C: certificate validationとapplication authorizationはexporter valueとは別である.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="base bindingはconnection-wideでapplication sessionをnameしない.">
-        <header><h4>Q10: A2A protocolが1 TLS connection上でmany independent sessionをmultiplexする. どの追加design issueが生じる?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. exporterが各A2A sessionにdistinct valueを自動作成する</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. profileにexplicitなper-session separationまたはone-instance lifecycleが必要</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. sessionはapplication authenticationが不要になる</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="提案されたlifecycleがbindingの定義済みconnection scope内に収まるか確認してください.">
+        <header><h4>Q10: RFC 9266 Section 4.1に基づくdesign-review conclusionはどれ?</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">A2A profileが1 TLS connection上で独立したauthentication-mechanism instanceをmultiplexし,各instanceに同じRFC 9266 tls-exporter bindingを使う提案をしています.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. connection exporterが各A2A mechanism instance向けcontextを自動生成するためconformする</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. lifecycleに違反するため,そのconnectionでは最大1 mechanism instanceとし,exchange終了時にcloseする</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. application authenticationが成功すればauthorizationが不足binding contextを補うためconformする</label>
         </fieldset><div class="explain">**解説:**
 
-A: RFC 9266は1 connection bindingをfixedしsession contextを追加しない.
-B: separationがないとconnection-level bindingがupper-layer instance間でreplayされうる.
-C: multiplexingとchannel bindingはprincipal authenticationをreplaceしない.</div></div>
+A: RFC 9266 Section 4.1はconnection-level bindingを定め,per-instance contextを導出しません.
+B: Section 4.1は,tls-exporterを1 TLS connection上の複数authentication-mechanism instanceへ使ってはならず,upper-layer protocol終了直後にconnectionをcloseするよう要求します.multiplexingに別のprofiled binding constructionを検討する余地はありますが,それはこのRFC 9266 tls-exporter lifecycleではありません.
+C: application authenticationやauthorizationはchannel-binding constructionとlifecycleを変更しません.</div></div>
       </article>
     </section>
     <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

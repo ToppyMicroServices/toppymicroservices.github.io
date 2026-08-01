@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7617",
       SKILL_SUBTITLE: "HTTP Basic認証",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,16 +101,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** Basic challengeは`WWW-Authenticate`で運ばれ, clientのcredential responseは`Authorization` request headerを使います.
+            Basic challengeは`WWW-Authenticate`で運ばれ, clientのcredential responseは`Authorization` request headerを使います.
 
-            **Correct (A):** clientは`Authorization: Basic <token68>`を送ります.
+            clientは`Authorization: Basic &lt;token68&gt;`を送ります.
 
-            **Options:**
-            - A (correct): `Authorization`はHTTP authentication frameworkがcredential用に定義するrequest fieldです.
-            - B (incorrect): `Authenticate`というrequest fieldはなく, server challengeには`WWW-Authenticate`を使います.
-            - C (incorrect): `Cookie`は別のstate mechanismであり, Basic credential fieldではありません.
+            `Authorization`はHTTP authentication frameworkがcredential用に定義するrequest fieldです.
+            `Authenticate`というrequest fieldはなく, server challengeには`WWW-Authenticate`を使います.
+            `Cookie`は別のstate mechanismであり, Basic credential fieldではありません.
 
-            **Related:** proxy authenticationでは`Authorization`ではなく`Proxy-Authorization`を使います.
+            proxy authenticationでは`Authorization`ではなく`Proxy-Authorization`を使います.
           </div>
         </div>
       </article>
@@ -118,23 +118,22 @@
         <header><h4>Q2: Basic認証のcredentialは一般にどう符号化される</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. usernameとpasswordのhash</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. server public keyで暗号化したblob</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. user-idとpasswordをcolonで連結した値のone-way hash</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. certificate algorithmでserver public key宛てに暗号化したciphertext</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. user-id, colon, passwordのsequenceをoctet化してBase64</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** Basicはuser-id, 1つのcolon, passwordを連結して`user-pass`を作り, character sequenceをoctetへ変換してからBase64で符号化します.
+            Basicはuser-id, 1つのcolon, passwordを連結して`user-pass`を作り, character sequenceをoctetへ変換してからBase64で符号化します.
 
-            **Correct (C):** Base64は表現を変えるだけで, confidentialityを提供しません.
+            Base64は表現を変えるだけで, confidentialityを提供しません.
 
-            **Options:**
-            - A (incorrect): wire上のBasic tokenはpassword hashではなく, Base64から元のuser-pass octetを復元できます.
-            - B (incorrect): Basicはserver public keyでcredentialを暗号化しません.
-            - C (correct): character encodingの段階とBase64の段階を分けたconstructionです.
+            wire上のBasic tokenはpassword hashではなく, Base64から元のuser-pass octetを復元できます.
+            Basicはserver public keyでcredentialを暗号化しません.
+            character encodingの段階とBase64の段階を分けたconstructionです.
 
-            **Related:** default character encodingは一意に固定されておらず, challengeは`charset="UTF-8"`を提示できます.
+            default character encodingは一意に固定されておらず, challengeは`charset="UTF-8"`を提示できます.
           </div>
         </div>
       </article>
@@ -143,23 +142,22 @@
         <header><h4>Q3: TLSなしのBasic認証が危険な理由として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP/2で動かない</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. HTTP/2と非互換でHTTP/1.1 connection上でしかparseできない</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. 盗聴されると容易にdecodeされる</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. cookieが必ずcross siteで送られる</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. browserに全cookieをunrelatedなcross-site requestへ付けさせる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** Base64はreversibleなbinary-to-text encodingであり, decodeにsecret keyを必要としません.
+            Base64はreversibleなbinary-to-text encodingであり, decodeにsecret keyを必要としません.
 
-            **Correct (B):** unprotectedなBasic credentialをpassive observerが取得すると, user-idとpasswordを復元できます.
+            unprotectedなBasic credentialをpassive observerが取得すると, user-idとpasswordを復元できます.
 
-            **Options:**
-            - A (incorrect): BasicはHTTP authentication semanticsで動き, HTTP/2と本質的に非互換ではありません.
-            - B (correct): credentialをin transitで守るにはTLSなどのexternal secure channelが必要です.
-            - C (incorrect): Basic自体がbrowser cookieをcross-siteへ送信させるわけではありません.
+            BasicはHTTP authentication semanticsで動き, HTTP/2と本質的に非互換ではありません.
+            credentialをin transitで守るにはTLSなどのexternal secure channelが必要です.
+            Basic自体がbrowser cookieをcross-siteへ送信させるわけではありません.
 
-            **Related:** passwordを使い回していると, 1つのBasic credential漏えいが別systemのaccountにも波及します.
+            passwordを使い回していると, 1つのBasic credential漏えいが別systemのaccountにも波及します.
           </div>
         </div>
       </article>
@@ -175,45 +173,35 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** origin serverは401 responseの`WWW-Authenticate`でchallengeを送り, clientは後続requestの`Authorization`でcredentialを返します.
+            RFC 7617 Section 2では, origin serverが401 responseと`WWW-Authenticate` fieldでBasic challengeを送り, clientが後続requestの`Authorization` fieldでcredentialを提示します.
 
-            **用語:** 認証 challenge では server が **401 Unauthorized** と **`WWW-Authenticate`** header を返し, client が次の request で **`Authorization`** header を送ります.
-
-            **Correct (A):** Basic challenge でよく使う status code は **401** です.
-
-            **選択肢:**
-            - A (correct): challenge と `WWW-Authenticate` を伴う代表的な status code です.
-            - B (incorrect): **206** は partial content の status code で, Basic challenge とは無関係です.
-            - C (incorrect): **302** は redirect であり, 認証 challenge の中心ではありません.
-
-            **関連:** 「401 + `WWW-Authenticate` -> 次 request で `Authorization`」という流れをセットで覚えると実装や debug が楽になります.
+            206はpartial content, 302はredirectです. proxy authenticationはoriginの401とは別に407と`Proxy-Authenticate`を使います.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="値をreusable secretとして扱い, forwarding, redirect, loggingの各boundaryを確認します.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="値をreusable secretとして扱い, forwarding, redirect, loggingの各boundaryを確認します.">
         <header><h4>Q5: Basic認証credentialの運用上のbest practiceとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. debugしやすいのでURLへ入れる</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. decodeした値をlogへ出す</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. history,redirect,logでrequestを再現できるようcredentialをURLへ入れる</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. authentication failureを調査できるようcredentialをdecodeして記録する</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. untrusted originへ送らず, logにも残さない</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** Basic credentialは再利用可能なsecretなので, TLSで通信経路を保護するだけでなく, redirect, debug output, proxy logへの転送や記録も制限します.
+            Basic credentialは再利用可能なsecretなので, TLSで通信経路を保護するだけでなく, redirect, debug output, proxy logへの転送や記録も制限します.
 
-            **用語:** **Authorization header** は credential を直接含む sensitive data です. untrusted origin への転送や log 出力は, そのまま secret 漏えいになります.
+            **Authorization header** は credential を直接含む sensitive data です. untrusted origin への転送や log 出力は, そのまま secret 漏えいになります.
 
-            **Correct (C):** best practice に近いのは, **untrusted origin へ送らず, log にも残さない**ことです.
+            best practice に近いのは, **untrusted origin へ送らず, log にも残さない**ことです.
 
-            **選択肢:**
-            - A (incorrect): URL に入れると browser history, log, analytics, referer などから漏れやすくなります.
-            - B (incorrect): decode した値を log に出すのは最悪の運用です.
-            - C (correct): trust boundary を越える前に header を落とし, storage にも残さないのが基本です.
+            URL に入れると browser history, log, analytics, referer などから漏れやすくなります.
+            decode した値を log に出すのは最悪の運用です.
+            trust boundary を越える前に header を落とし, storage にも残さないのが基本です.
 
-            **関連:** reverse proxy や redirect handler では, `Authorization` をどこで strip するかを明示しておくと事故が減ります.
+            reverse proxy や redirect handler では, `Authorization` をどこで strip するかを明示しておくと事故が減ります.
           </div>
         </div>
       </article>
@@ -225,14 +213,33 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** optionalな**`charset`** authentication parameterはBasic challengeに現れます. RFC 7617で定義される値はcase-insensitiveな`UTF-8`だけです.
+            optionalな**`charset`** authentication parameterはBasic challengeに現れます. RFC 7617で定義される値はcase-insensitiveな`UTF-8`だけです.
 
-            **Correct:** **charset**.
 
-            **Why this matters:** このparameterはadvisoryであり, Base64より前にuser-pass characterをoctetへ変換する方法を扱います. encryption settingでもcredential token内のfieldでもありません.
+            このparameterはadvisoryであり, Base64より前にuser-pass characterをoctetへ変換する方法を扱います. encryption settingでもcredential token内のfieldでもありません.
 
-            **Related:** character encodingについて合意できないと, non-ASCIIのuser-idやpasswordでinteroperability failureが起きます.
+            character encodingについて合意できないと, non-ASCIIのuser-idやpasswordでinteroperability failureが起きます.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="redirect targetへreusable credentialを送れるか判断する前に, original protection spaceを特定してください.">
+        <header><h4>Q7: RFC 7617が最も強く支持するcredential-handling decisionはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">agentが`https://api.example/tasks/7`へHTTPS上のBasicでauthenticateします. originは`https://collector.example/import`へredirectします. client libraryは同じ`Authorization` fieldを転送し, decoded valueをdebug logへ記録しようとしています.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. targetのschemeやauthorityが異なってもredirectはoriginal realmをinheritするためcredentialを転送する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. freshなBase64 representationが新しいprotection spaceを作るためdecode後に再encodeして転送する</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. new originへ再利用せずapplicableなchallengeかpolicyを要求し, reusable secretをlogへ残さない</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+RFC 7617 Section 2.2がpreemptive reuseを認めるのはprotection spaceのauthentication scope内です. 同sectionの例ではscheme変更もscope外であり, 異なるauthorityもoriginal originのprotection spaceではありません. redirectはnew originへcredentialを渡すpermissionを作りません.
+
+Section 4はBasic passwordが容易にreverseできる形で送られ, sensitive informationの保護にHTTPSなしで使うべきでないと説明します. Base64の再encodeはfreshnessもconfidentialityも作りません. 値はreusable secretのままなので, decoded formのloggingは別のdisclosure pathになります. logへ残さない判断はこのthreatから導くdeployment上の対策であり, RFC 7617が別個のwire-format ruleとして規定するものではありません.
+
+new originは自身にapplicableなchallengeを出すか, applicationが明示的なcredential policyを適用できます. redirect handlingだけでfirst originのcredentialを取得させてはいけません.</div>
         </div>
       </article>
     </section>

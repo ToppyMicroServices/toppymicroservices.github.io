@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what JWT claims token provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 7519 make JWT claims token sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The registry defines names and general semantics; the application context decides which claims must appear and what authorization follows.">
+        <header><h4>Q1: Which claims does RFC 7519 require in every JWT?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 7519 and claims that using JWT claims token automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An A2A profile wants every task token to contain iss, sub, aud, exp, and jti. Its authors say RFC 7519 itself makes that claim set mandatory.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. carrying a compact JSON claims set that can be signed, MACed, or encrypted by JOSE mechanisms; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. carrying a compact JSON claims set that can be signed, MACed, or encrypted by JOSE mechanisms, while which claims are required and what they mean for authorization remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8725 gives current JWT best practices for using the RFC 7519 format safely; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 7519 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. All registered claims in Section 4.1 are mandatory whenever a JWT is integrity-protected</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. None universally; the A2A profile may require these claims and define validation and authorization</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Only iss and exp are universally mandatory, while the remaining claims are optional</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. No claims may be required by an application profile because JWT claim use is always optional</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-4 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 3-4 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 7519 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Registration does not make every registered claim mandatory.
+B: RFC 7519 Section 4 says required claims are context dependent and outside the specification's universal requirements. A profile can make selected claims mandatory and define their operational meaning.
+C: RFC 7519 does not define iss and exp as universally mandatory either.
+D: The base specification leaves requirements to applications; it does not prohibit a profile from imposing them.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for JWT claims token. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The claim can contain one audience or an array. The processor's own identity, not just a related service name, is the comparison point.">
+        <header><h4>Q2: How should an A2A recipient validate aud?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 7519 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">A JWT has aud equal to ["task-gateway", "billing-agent"]. The billing-agent processes the token; an unrelated inventory-agent receives a copied request.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which claims are required and what they mean for authorization and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 8725 gives current JWT best practices for using the RFC 7519 format safely</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Define claim meanings, token type, audience, lifetime, and required signing or encryption behavior</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Both agents accept because any non-empty aud array proves that a recipient was named</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Both agents accept if they share the same issuer and verification key</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. billing-agent may pass; inventory-agent must reject because it is absent from aud</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Only task-gateway may accept because an aud array is interpreted using its first element</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 4 and 7 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: A recipient must identify itself in the audience value; a non-empty array is not enough.
+B: Issuer and key validation do not substitute for recipient restriction.
+C: RFC 7519 Section 4.1.3 permits a string or array and requires a processor to reject when it does not identify itself in aud. Passing aud is necessary but not sufficient for overall acceptance.
+D: Array order does not limit acceptance to the first audience.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this JWT claims token review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A signature proves control of a selected key. Review how the verifier decided that this key was authorized for the claimed issuer and token profile.">
+        <header><h4>Q3: May an unverified iss claim select its own verification key?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: checking only the cryptographic signature while ignoring issuer, audience, and token type. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">Before verifying a JWT, an A2A service reads iss, fetches a key from a URL constructed solely from that value, and accepts any token whose signature verifies with the fetched key. It has no configured issuer-to-key trust relationship.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document whether a token kind is access token, ID token, session token, or another profile as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify signature or MAC, allowed algorithms, issuer, audience, time claims, and the application-specific claim profile</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 8725 gives current JWT best practices for using the RFC 7519 format safely</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 7519 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Yes, because successful signature verification makes the unverified issuer value trustworthy retroactively</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes, if the URL uses HTTPS, regardless of who controls the issuer namespace and key</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. No JWT may use iss during key selection, even after applying a configured issuer policy</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. No. Bind trusted issuer IDs to authorized key sources and algorithms, then validate the signature and claim profile</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Sections 7 and 11 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: This creates circular trust: the attacker can name an issuer and supply the key that validates it.
+B: HTTPS protects transport to a selected endpoint but does not authorize that endpoint as the claimed JWT issuer.
+C: Issuer-aware key selection can be safe when constrained by configured trust; RFC 7519 does not prohibit it.
+D: RFC 7519 Sections 7.2 and 11.1 require cryptographic validation in the necessary trust context. The issuer-to-key association and acceptable algorithms are application or profile policy.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing JWT claims token, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Apply the verifier's current time to both boundaries. A small clock-skew allowance is a profile choice, not an unlimited extension.">
+        <header><h4>Q4: Is this token currently within its time window?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 7519 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">At verifier time 12:00:30Z, a token has nbf 12:01:00Z and exp 12:10:00Z. The profile permits at most 10 seconds of clock-skew leeway.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which claims are required and what they mean for authorization</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify signature or MAC, allowed algorithms, issuer, audience, time claims, and the application-specific claim profile</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Whether a token kind is access token, ID token, session token, or another profile</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Carrying a compact JSON claims set that can be signed, MACed, or encrypted by JOSE mechanisms</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes, because exp is still in the future and nbf is only advisory</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. No. It is 30 seconds before nbf, beyond the permitted 10-second leeway</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes, because any positive leeway makes both nbf and exp optional</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. No, because a token may not contain both nbf and exp</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-4 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: RFC 7519 Section 4.1.5 requires current time not to be before nbf, subject to permitted leeway.
+B: The token is outside the stated acceptance window. Sections 4.1.4 and 4.1.5 define exp and nbf; a small leeway may account for skew, and the profile selected its bound.
+C: Leeway adjusts a boundary by a limited amount; it does not remove the claim checks.
+D: The claims may appear together to bound a validity interval.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when JWT claims token is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A unique identifier makes detection possible only when a verifier retains or otherwise checks the state needed to recognize reuse.">
+        <header><h4>Q5: Does jti alone prevent token replay?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when an API or identity flow receives a signed claims set and must decide whether to accept it. Observed defect: accepting tokens with confused algorithms, wrong issuer, wrong audience, or expired time claims.</p>
+          <p class="question-premise">Every A2A task token has a unique jti and a valid signature. A verifier keeps no replay state and accepts the same token repeatedly until exp. The profile claims that merely including jti provides one-time use.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (carrying a compact JSON claims set that can be signed, MACed, or encrypted by JOSE mechanisms), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (define claim meanings, token type, audience, lifetime, and required signing or encryption behavior) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 8725 gives current JWT best practices for using the RFC 7519 format safely), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; uniqueness of the string causes JWT libraries to reject its second presentation automatically</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes, provided exp is present, because replay before expiration is excluded by jti semantics</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. No. jti only indexes a replay check; the profile defines reuse detection, scope, and lifetime</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; RFC 7519 requires every verifier to store every jti forever</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Sections 7 and 11 supports resolving the defect before relying on the result. The profile rule is: define claim meanings, token type, audience, lifetime, and required signing or encryption behavior. The check is: verify signature or MAC, allowed algorithms, issuer, audience, time claims, and the application-specific claim profile. The local policy is: which claims are required and what they mean for authorization.</div>
+A: JWT processing does not create replay state merely because the claim is present.
+B: exp limits the acceptance interval but does not prevent reuse inside it.
+C: RFC 7519 Section 4.1.7 says jti can be used to prevent replay. The actual detection protocol, storage, scope, and retention are profile or deployment choices.
+D: RFC 7519 does not impose universal indefinite storage.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should JWT claims token be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Decide whether the backend is a JWT recipient or a relying party for a gateway assertion. Those architectures have different audience and trust checks.">
+        <header><h4>Q6: How should a gateway handle a JWT addressed only to itself?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines JWT claims token with another protocol layer. Its design note says: RFC 8725 gives current JWT best practices for using the RFC 7519 format safely.</p>
+          <p class="question-premise">A signed task JWT has aud "task-gateway" only. The gateway validates it, then calls a billing backend that owns the resource. The backend either can process the original JWT or can trust a gateway assertion, depending on the chosen profile.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which claims are required and what they mean for authorization unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify signature or MAC, allowed algorithms, issuer, audience, time claims, and the application-specific claim profile) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which claims are required and what they mean for authorization), perform the required check (verify signature or MAC, allowed algorithms, issuer, audience, time claims, and the application-specific claim profile), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The backend either rejects the JWT on aud, or trusts a protected request-bound gateway assertion and authorizes separately</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. The backend may process the original JWT because sharing a deployment automatically adds it to aud</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. The gateway may copy the JWT claims into ordinary headers because a valid signature continues to protect copied values</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. The gateway's successful JWT validation authorizes every operation at the billing backend</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 3-4 and Sections 7 and 11 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 7519 Section 4.1.3 requires a JWT recipient to identify itself in aud. A protected gateway assertion is a different trust model and must authenticate the gateway, context, and downstream request; the resource owner still decides authorization.
+B: Deployment topology does not rewrite a signed audience claim.
+C: Copying claims removes the original signature's protection unless the new carrier is independently protected and interpreted as a gateway assertion.
+D: Token validation and resource authorization remain distinct decisions.</div>
         </div>
       </article>
     </section>

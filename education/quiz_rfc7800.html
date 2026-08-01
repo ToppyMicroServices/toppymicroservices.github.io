@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7800","SKILL_SUBTITLE":"Proof-of-Possession Key Semantics for JWTs","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7800","SKILL_SUBTITLE":"Proof-of-Possession Key Semantics for JWTs","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what JWT confirmation key provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 7800 make JWT confirmation key sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The claim identifies a key-related expectation. Look for the separate protocol step that demonstrates control of that key.">
+        <header><h4>Q1: What does a cnf claim establish by itself?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 7800 and claims that using JWT confirmation key automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">A signed A2A task token contains a cnf claim with the presenter's public key. The request carries the token but no separate proof made with the corresponding private key.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. expressing that a JWT is intended to be used by a party that can prove possession of a specific key; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. expressing that a JWT is intended to be used by a party that can prove possession of a specific key, while which proof mechanism, key distribution method, and authorization policy are acceptable remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9449 applies proof of possession to OAuth DPoP requests, while RFC 7800 defines JWT confirmation key semantics; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 7800 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. It proves that the presenter controlled the private key for this request because the token is signed</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. It identifies the expected key; the profile must supply and verify the possession proof</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. It authorizes every request made by any presenter that can read the token</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. It converts the JWT into an encrypted token whose claims are hidden from non-holders</label>
           </fieldset><div class="explain">**Explanation:**
-A: Section 3 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Section 3 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 7800 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: The issuer's token signature authenticates the cnf claim; it does not demonstrate that the request presenter controls the referenced private key.
+B: RFC 7800 Sections 3 and 3.6 define the confirmation-key semantics but intentionally leave the actual proof protocol to the application.
+C: cnf is intended to constrain presentation, not grant bearer use or resource permission.
+D: A public confirmation key does not encrypt the JWT.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for JWT confirmation key. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="A public verification key and a shared symmetric key have different confidentiality requirements inside a claim set.">
+        <header><h4>Q2: How may confirmation keys be carried in a JWT?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 7800 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A profile considers placing either an asymmetric public JWK or a symmetric MAC key directly in cnf of a signed but unencrypted JWT.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which proof mechanism, key distribution method, and authorization policy are acceptable and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 9449 applies proof of possession to OAuth DPoP requests, while RFC 7800 defines JWT confirmation key semantics</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Include a confirmation claim that unambiguously identifies the proof-of-possession key</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Either key may appear in plaintext because a JWT signature provides confidentiality for registered claims</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Neither key may appear in cnf; only a kid value is permitted</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. A public JWK may be direct; a symmetric key needs confidentiality through an encrypted JWT or key value</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. A symmetric key may be public if the JWT lifetime is shorter than the request timeout</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3.1-3.6 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: A signature supplies integrity and origin authentication, not confidentiality.
+B: RFC 7800 defines both direct JWK and key-identifier representations.
+C: RFC 7800 Sections 3.2 and 3.3 distinguish public asymmetric JWK use from symmetric key material that must be encrypted from unauthorized parties.
+D: A short lifetime does not make disclosure of a live MAC key safe.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this JWT confirmation key review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Key possession and request binding are separate properties. Check what the signed proof actually covers and what prevents reuse.">
+        <header><h4>Q3: Is this holder proof sufficient for request-level sender constraint?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: validating the token signature but never checking that the presenter controls the cnf key. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A presenter signs a fixed string with the cnf private key. The same signature is sent with every A2A request; it covers no method, URI, body digest, nonce, or time value. The profile requires proof bound to each request and resistant to replay.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how the holder proof is transported with the protected request as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify the JWT and then verify a holder proof that matches the key identified by cnf</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 9449 applies proof of possession to OAuth DPoP requests, while RFC 7800 defines JWT confirmation key semantics</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 7800 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Yes; verifying any signature under the cnf key automatically binds every request carrying the JWT</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes, if the JWT audience names the API, because audience also supplies proof freshness</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. No; RFC 7800 mandates one universal nonce format that this implementation failed to include</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. No. The profile verifies proof over request context and freshness; RFC 7800 defines key semantics, not proof format</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 4 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: A reusable fixed-string signature demonstrates key use but not integrity or freshness of a particular request.
+B: Audience restricts token recipients; it does not make a separate holder proof fresh.
+C: RFC 7800 Section 3.6 deliberately leaves nonce and proof details to the application protocol.
+D: Sections 3.6 and 4 require the consuming protocol to supply the proof and replay controls needed for its stated acceptance criterion.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing JWT confirmation key, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A key identifier has meaning only within a resolution namespace. Review which issuer, tenant, or registry supplies that namespace.">
+        <header><h4>Q4: How should an ambiguous cnf kid be resolved?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 7800 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">Two A2A tenants both use cnf kid "signing-key-1" for different keys. The verifier looks up kid in a single global table without first binding it to the trusted token issuer or tenant context.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which proof mechanism, key distribution method, and authorization policy are acceptable</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify the JWT and then verify a holder proof that matches the key identified by cnf</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How the holder proof is transported with the protected request</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Expressing that a JWT is intended to be used by a party that can prove possession of a specific key</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Use the first global match because kid values are globally unique by definition</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Scope kid to an authenticated issuer, tenant, or other trusted namespace before selecting the key</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Try every matching key and accept if any proof verifies, without recording which tenant supplied it</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Hash the kid string and use the digest itself as the proof-of-possession key</label>
           </fieldset><div class="explain">**Explanation:**
-A: Section 3 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: RFC 7800 does not make kid globally unique.
+B: RFC 7800 Section 3.4 says kid content is application specific and works only when the recipient can obtain the identified key. The profile must prevent cross-namespace key confusion.
+C: Trying all keys discards the trusted identity context needed to interpret the identifier.
+D: An identifier digest is not key material and proves no possession.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when JWT confirmation key is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Audience restricts intended recipients; cnf restricts presenters. Passing one check does not supply the other.">
+        <header><h4>Q5: May a cnf token fall back to bearer processing?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a token must be sender-constrained instead of usable by whoever copies it. Observed defect: treating a cnf claim as useful while still accepting the token as a bearer token.</p>
+          <p class="question-premise">An A2A resource accepts a token with the correct audience and a cnf claim. If the request has no valid holder proof, the implementation ignores cnf and processes the token as a bearer token. The profile requires proof of possession.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (expressing that a JWT is intended to be used by a party that can prove possession of a specific key), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (include a confirmation claim that unambiguously identifies the proof-of-possession key) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9449 applies proof of possession to OAuth DPoP requests, while RFC 7800 defines JWT confirmation key semantics), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes, because a correct audience makes presenter constraint unnecessary</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes, if the token signature is valid and the cnf key has not expired</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. No. A PoP profile rejects missing or invalid proof even after token validation</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No, because a token containing cnf can never carry an aud claim</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 4 supports resolving the defect before relying on the result. The profile rule is: include a confirmation claim that unambiguously identifies the proof-of-possession key. The check is: verify the JWT and then verify a holder proof that matches the key identified by cnf. The local policy is: which proof mechanism, key distribution method, and authorization policy are acceptable.</div>
+A: RFC 7800 Section 4 explains that proof of possession and audience provide different protections.
+B: Token validation authenticates the claim, not current possession by this presenter.
+C: This applies the profile's explicit acceptance criterion without inventing a universal bearer-fallback rule for other profiles.
+D: aud and cnf can coexist and address independent security properties.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should JWT confirmation key be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Identify where proof was verified, which request it covered, and what authenticates the result after crossing the gateway boundary.">
+        <header><h4>Q6: How should a gateway delegate a verified cnf result?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines JWT confirmation key with another protocol layer. Its design note says: RFC 9449 applies proof of possession to OAuth DPoP requests, while RFC 7800 defines JWT confirmation key semantics.</p>
+          <p class="question-premise">A gateway validates a cnf token and holder proof for an incoming request, then forwards only X-Proof-Valid: true to a backend over another connection. The backend owns the resource and cannot inspect the original proof.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which proof mechanism, key distribution method, and authorization policy are acceptable unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify the JWT and then verify a holder proof that matches the key identified by cnf) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which proof mechanism, key distribution method, and authorization policy are acceptable), perform the required check (verify the JWT and then verify a holder proof that matches the key identified by cnf), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. The backend verifies end-to-end proof, or trusts a protected request-bound gateway assertion; it then authorizes separately</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Keep the boolean header because successful proof verification remains self-authenticating after transport</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Forward only the cnf key because knowing a public key proves the gateway checked its private-key holder</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Treat gateway proof success as final backend authorization because sender constraint includes resource permission</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Section 3 and Section 4 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 7800 Sections 3.6 and 4 leave proof transport and replay controls to the application. The alternatives make the verifier and trust boundary explicit and preserve request context; the resource owner still decides authorization.
+B: An ordinary boolean is not cryptographic evidence and is not bound to a request.
+C: A public key identifies what should be proven, not whether possession was verified.
+D: Proof of possession and resource authorization are independent.</div>
         </div>
       </article>
     </section>

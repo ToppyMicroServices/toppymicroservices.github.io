@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 4949",
       SKILL_SUBTITLE: "Internet Security Glossary",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,16 +101,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **authentication** は「その主体が本当に誰かを確認すること」, **authorization** は「確認済みの主体に何を許すかを決めること」です.
+            **authentication** は「その主体が本当に誰かを確認すること」, **authorization** は「確認済みの主体に何を許すかを決めること」です.
 
-            **Correct (A):** user が主張する identity が正しいか確かめる行為は **authentication** です. password, passkey, certificate, session などはこの確認を支える手段です.
+            user が主張する identity が正しいか確かめる行為は **authentication** です. password, passkey, certificate, session などはこの確認を支える手段です.
 
-            **選択肢:**
-            - A (correct): identity verification そのものを指します.
-            - B (incorrect): **authorization** は権限判断です. 本人確認が終わった後に「その user に delete を許すか」を決めます.
-            - C (incorrect): **identification** はuser identifierなどのclaimed valueを提示する段階で, claimの検証そのものではありません.
+            identity verification そのものを指します.
+            **authorization** は権限判断です. 本人確認が終わった後に「その user に delete を許すか」を決めます.
+            **identification** はuser identifierなどのclaimed valueを提示する段階で, claimの検証そのものではありません.
 
-            **関連:** login は authentication の入口ですが, login 済みだから何でもできるわけではありません. その先に authorization が続きます.
+            login は authentication の入口ですが, login 済みだから何でもできるわけではありません. その先に authorization が続きます.
           </div>
         </div>
       </article>
@@ -125,16 +125,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **authorization** は access control decision です. 認証済みの user に対して, resource や action ごとに許可/拒否を決めます.
+            **authorization** は access control decision です. 認証済みの user に対して, resource や action ごとに許可/拒否を決めます.
 
-            **Correct (B):** record を delete できるか決めるのは **authorization** です. その user が誰か分かったあとに, 何をしてよいかを判断する段階です.
+            record を delete できるか決めるのは **authorization** です. その user が誰か分かったあとに, 何をしてよいかを判断する段階です.
 
-            **選択肢:**
-            - A (incorrect): **authentication** は本人確認であり, delete 許可の判断までは含みません.
-            - B (correct): operation ごとの access control を決めるのでこれが正解です.
-            - C (incorrect): **accounting** はactivityの記録や計測であり, permission decisionそのものではありません.
+            **authentication** は本人確認であり, delete 許可の判断までは含みません.
+            operation ごとの access control を決めるのでこれが正解です.
+            **accounting** はactivityの記録や計測であり, permission decisionそのものではありません.
 
-            **関連:** admin 画面で「ログインできたが削除はできない」は正常です. authentication と authorization が別だからです.
+            admin 画面で「ログインできたが削除はできない」は正常です. authentication と authorization が別だからです.
           </div>
         </div>
       </article>
@@ -150,16 +149,9 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **confidentiality** は unauthorized disclosure, つまり見てはいけない人に読まれないことを守る性質です. encryption はその代表的な手段です.
+            RFC 4949 Section 4で, confidentialityはunauthorized disclosureを防ぐ性質です. encryptionはそのために使えるmechanismですが, security objectiveそのものとmechanismは同一ではありません.
 
-            **Correct (C):** outsider が data を読めないように守るなら **confidentiality** が最も近いです.
-
-            **選択肢:**
-            - A (incorrect): **availability** は必要なときに使えることです. 読めないようにする性質ではありません.
-            - B (incorrect): **integrity** は改ざんされていないことを守る性質です.
-            - C (correct): disclosure 防止という問いにそのまま対応します.
-
-            **関連:** 「漏えい」は confidentiality, 「改ざん」は integrity, 「落ちる」は availability と結び付けて覚えると, review の会話がぶれにくくなります.
+            integrityはunauthorized modificationまたはdestruction, availabilityはauthorized entityが必要なときにresourceを利用できる性質を扱います. outsiderによるreadingを防ぐという要件にはconfidentialityが対応します.
           </div>
         </div>
       </article>
@@ -175,21 +167,20 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **integrity** は data や message が unauthorized に改変されていないことを守る性質です. MAC, signature, checksum の一部はこの検証に関わります.
+            **integrity** は data や message が unauthorized に改変されていないことを守る性質です. MAC, signature, checksum の一部はこの検証に関わります.
 
-            **Correct (B):** transit 中に message が tamper されたことを検知したいなら **integrity** が最も近いです.
+            transit 中に message が tamper されたことを検知したいなら **integrity** が最も近いです.
 
-            **選択肢:**
-            - A (incorrect): **confidentiality** は見えないようにする性質で, 改ざん検知そのものは主目的ではありません.
-            - B (correct): tampering の防止や検知に関わるので正解です.
-            - C (incorrect): **availability** は必要なときのaccessやoperationを扱い, messageが改変されたかは示しません.
+            **confidentiality** は見えないようにする性質で, 改ざん検知そのものは主目的ではありません.
+            tampering の防止や検知に関わるので正解です.
+            **availability** は必要なときのaccessやoperationを扱い, messageが改変されたかは示しません.
 
-            **関連:** encryption だけでは integrity が十分でない場合があります. 「読めない」と「書き換えられない」は別に確認する癖が大切です.
+            encryption だけでは integrity が十分でない場合があります. 「読めない」と「書き換えられない」は別に確認する癖が大切です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="各protocol instanceを一意にするためのfreshな値を探してください.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="各protocol instanceを一意にするためのfreshな値を探してください.">
         <header><h4>Q5: replay検知のためprotocol exchangeへ入れるrandomまたはnon-repeatingな値は何と呼ぶ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -200,16 +191,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** RFC 4949の**nonce**は, protocolで交換するdataへ入れるrandomまたはnon-repeatingな値です. 通常はlivenessを保証し, replay attackを検知または防止するために使います.
+            RFC 4949の**nonce**は, protocolで交換するdataへ入れるrandomまたはnon-repeatingな値です. 通常はlivenessを保証し, replay attackを検知または防止するために使います.
 
-            **Correct (A):** replay を防ぐ one-time value として最もよく出る語は **nonce** です.
+            replay を防ぐ one-time value として最もよく出る語は **nonce** です.
 
-            **選択肢:**
-            - A (correct): 一回性を持たせる値として代表的です.
-            - B (incorrect): **credential** はsecurity判断に使うevidenceやattributeを運びますが, 固有にfreshとは限りません.
-            - C (incorrect): **checksum** はdata changeを検知できる場合がありますが, protocol exchangeをnon-repeatingにはしません.
+            一回性を持たせる値として代表的です.
+            **credential** はsecurity判断に使うevidenceやattributeを運びますが, 固有にfreshとは限りません.
+            **checksum** はdata changeを検知できる場合がありますが, protocol exchangeをnon-repeatingにはしません.
 
-            **関連:** nonce 自体は秘密でなくてもよいことがあります. 重要なのは, 同じ文脈で再利用しないことです.
+            nonce 自体は秘密でなくてもよいことがあります. 重要なのは, 同じ文脈で再利用しないことです.
           </div>
         </div>
       </article>
@@ -221,9 +211,29 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **replay attack**.
 
             RFC 4949は, 有効なdata transmissionをoriginatorまたはinterceptorが悪意または不正に繰り返すattackと定義しています. nonceなどのfreshness mechanismは, 以前使われたprotocol dataをreceiverが拒否する助けになります.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="claimed identityのverification, forwarded assertionの保護, 1つのresourceに対するpermissionを分けてください.">
+        <header><h4>Q7: 欠けているsecurity boundaryを最も正確に指摘するterminology reviewはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A2A gatewayがclient certificateをvalidateし, backendへ`X-Agent-ID`を転送します. internal network上の任意workloadも同じheaderを作成できます. backendはheaderがresource ownerを示すことだけを根拠に削除を実行します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. gatewayのcertificate checkを全backend resourceとoperationのauthentication兼authorizationとして扱う</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. untrusted workloadが同じ値を作成できても, syntaxがvalidなidentity headerをauthenticatedとして扱う</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. gateway authentication, forwarded identity assertionの保護, backend固有のauthorization判断を分離する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 4949 Section 4はauthentication, authorization, access controlの各glossary entryを区別します. authenticationはclaimed identityやattributeをverifyし, authorizationはpolicyに基づいてpermissionをgrantし, access controlはそのpolicyをenforceします. gatewayのcertificate checkだけでは, authenticated agentがこのbackend resourceを削除してよいかは決まりません.
+
+            backendには`X-Agent-ID`とgatewayのverification resultを結ぶtrustworthyなbindingも必要です. untrusted workloadが同じheaderを作れるなら, syntaxだけではauthenticationもintegrityも得られません. protectedなgateway-to-backend trust boundaryを置く設計も, backendがevidenceを直接verifyする設計もあり得ますが, RFC 4949は一方を選びません.
+
+            RFC 4949はInformationalなglossaryであり, conformance specificationではありません. ここではdesign review上のcategory errorを明確にできますが, gatewayを使う全設計を非適合とはしません.
           </div>
         </div>
       </article>

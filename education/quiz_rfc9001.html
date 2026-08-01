@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9001",
       SKILL_SUBTITLE: "Using TLS to Secure QUIC",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** A common misunderstanding is that QUIC invents a separate TLS-like handshake. RFC 9001 instead explains how TLS 1.3 is used in a QUIC-specific way.
+            A common misunderstanding is that QUIC invents a separate TLS-like handshake. RFC 9001 instead explains how TLS 1.3 is used in a QUIC-specific way.
 
-            **Terms:** **TLS 1.3** provides the cryptographic handshake and key schedule. **QUIC** provides transport, packetization, and encryption-level handling around that handshake.
+            **TLS 1.3** provides the cryptographic handshake and key schedule. **QUIC** provides transport, packetization, and encryption-level handling around that handshake.
 
-            **Real-world usage:** This distinction helps when deciding whether a bug belongs in the TLS stack, QUIC transport logic, or the integration between them.
+            This distinction helps when deciding whether a bug belongs in the TLS stack, QUIC transport logic, or the integration between them.
 
-            **Options:**
+
             - A (incorrect): QUIC does not replace TLS 1.3 with a new crypto protocol here.
             - B (correct): This is the core purpose of RFC 9001.
             - C (incorrect): Header compression for HTTP/3 is QPACK, not RFC 9001.
 
-            **Related:** RFC 9001 is best read as the “how QUIC and TLS fit together” document, while RFC 9000 handles transport behavior and RFC 8446 handles TLS semantics.
+            RFC 9001 is best read as the “how QUIC and TLS fit together” document, while RFC 9000 handles transport behavior and RFC 8446 handles TLS semantics.
           </div>
         </div>
       </article>
@@ -129,18 +130,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Engineers often memorize “Initial, Handshake, 1-RTT” as labels without connecting them to what each level permits and why that staging exists.
+            Engineers often memorize “Initial, Handshake, 1-RTT” as labels without connecting them to what each level permits and why that staging exists.
 
-            **Terms:** **encryption levels** are handshake stages tied to different secrets and packet protection contexts. They control when packets can be generated and understood.
+            **encryption levels** are handshake stages tied to different secrets and packet protection contexts. They control when packets can be generated and understood.
 
-            **Real-world usage:** This is crucial when debugging why some frames are allowed only at certain stages or why decryption fails during connection setup.
+            This is crucial when debugging why some frames are allowed only at certain stages or why decryption fails during connection setup.
 
-            **Options:**
+
             - A (incorrect): Encryption levels are not HTTP semantics.
             - B (incorrect): They do not remove the TLS key schedule; they use its outputs.
             - C (correct): This is the correct operational meaning.
 
-            **Related:** Thinking in encryption levels is a good way to understand why QUIC can protect different handshake stages without treating the whole connection as one monolithic state.
+            Thinking in encryption levels is a good way to understand why QUIC can protect different handshake stages without treating the whole connection as one monolithic state.
           </div>
         </div>
       </article>
@@ -149,7 +150,7 @@
         <header><h4>Q3: What are QUIC transport parameters</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. QUIC-specific configuration values exchanged during the TLS handshake that affect transport behavior</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. QUIC transport settings carried in the TLS handshake</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Replacement HTTP headers used to carry TLS certificates</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. DNS records that announce which cipher suites the origin prefers</label>
           </fieldset>
@@ -176,23 +177,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Transport parameters are a classic place where engineers blur protocol boundaries: they are carried via the handshake, but they are about QUIC transport, not generic TLS policy.
+            Transport parameters are a classic place where engineers blur protocol boundaries: they are carried via the handshake, but they are about QUIC transport, not generic TLS policy.
 
-            **Terms:** **transport parameters** are QUIC-specific values exchanged in the TLS handshake. They affect transport behavior such as limits and connection properties.
+            **transport parameters** are QUIC-specific values exchanged in the TLS handshake. They affect transport behavior such as limits and connection properties.
 
-            **Real-world usage:** This matters when diagnosing peer mismatch, flow-control setup, or configuration assumptions that were never actually negotiated.
+            This matters when diagnosing peer mismatch, flow-control setup, or configuration assumptions that were never actually negotiated.
 
-            **Options:**
+
             - A (correct): This captures both where they are exchanged and what they control.
             - B (incorrect): They are not HTTP headers.
             - C (incorrect): DNS does not carry them.
 
-            **Related:** A healthy mental model is: TLS carries them, but QUIC interprets them.
+            A healthy mental model is: TLS carries them, but QUIC interprets them.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Evaluate early data under replay, not only confidentiality; then ask whether repeating the application operation is safe.">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Evaluate early data under replay, not only confidentiality; then ask whether repeating the application operation is safe.">
         <header><h4>Q4: Which statements about 0-RTT in QUIC are generally true (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -204,19 +205,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Teams often hear “QUIC is faster” and forget that early data changes the security model. RFC 9001 inherits the TLS 1.3 replay concern rather than erasing it.
+            Teams often hear “QUIC is faster” and forget that early data changes the security model. RFC 9001 inherits the TLS 1.3 replay concern rather than erasing it.
 
-            **Terms:** **0-RTT** allows early application data before handshake completion. **replay** means an attacker may cause early data to be accepted more than once under some conditions.
+            **0-RTT** allows early application data before handshake completion. **replay** means an attacker may cause early data to be accepted more than once under some conditions.
 
-            **Real-world usage:** This affects login shortcuts, cached API requests, and any idempotent-vs-non-idempotent design review on top of QUIC.
+            This affects login shortcuts, cached API requests, and any idempotent-vs-non-idempotent design review on top of QUIC.
 
-            **Options:**
+
             - A (correct): Lower latency is the gain, replay risk is the trade-off.
             - B (incorrect): Write operations can be dangerous under replay.
             - C (correct): Replay-safe behavior remains the design principle.
             - D (incorrect): Anti-replay and policy decisions are still needed.
 
-            **Related:** Faster handshake paths are only useful when the application semantics can tolerate the changed risk profile.
+            Faster handshake paths are only useful when the application semantics can tolerate the changed risk profile.
           </div>
         </div>
       </article>
@@ -232,23 +233,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The hard part of RFC 9001 is knowing where the division of labor sits. Not everything involving encrypted packets belongs to QUIC transport design.
+            The hard part of RFC 9001 is knowing where the division of labor sits. Not everything involving encrypted packets belongs to QUIC transport design.
 
-            **Terms:** **certificate authentication** and the **key schedule** come from TLS 1.3 semantics. QUIC uses their outputs but does not redefine those cryptographic responsibilities.
+            **certificate authentication** and the **key schedule** come from TLS 1.3 semantics. QUIC uses their outputs but does not redefine those cryptographic responsibilities.
 
-            **Real-world usage:** This helps teams decide whether a bug belongs in certificate validation policy, TLS library usage, or QUIC packet logic.
+            This helps teams decide whether a bug belongs in certificate validation policy, TLS library usage, or QUIC packet logic.
 
-            **Options:**
+
             - A (incorrect): That is QUIC transport and packet-format territory.
             - B (incorrect): Connection ID policy is a QUIC transport concern.
             - C (correct): These are fundamentally TLS responsibilities.
 
-            **Related:** The useful split is not “encrypted means QUIC” versus “crypto means TLS,” but rather “who defines the semantics that peers are expected to follow.”
+            The useful split is not “encrypted means QUIC” versus “crypto means TLS,” but rather “who defines the semantics that peers are expected to follow.”
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Look at how TLS handshake bytes are carried by QUIC CRYPTO frames rather than assuming a separate TLS record stream.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Compare QUIC's TLS handshake interface with a conventional TLS-over-transport stack.">
         <header><h4>Q6: Why doesn't QUIC simply expose a normal TLS record layer on the wire</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -259,122 +260,102 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** This is a subtle architectural point. QUIC uses TLS 1.3, but it does not look like “TLS records carried inside QUIC packets.”
+            This is a subtle architectural point. QUIC uses TLS 1.3, but it does not look like “TLS records carried inside QUIC packets.”
 
-            **Terms:** **TLS record layer** is the wire format used in traditional TLS over TCP. QUIC instead carries TLS handshake data in CRYPTO frames and uses QUIC packet protection semantics.
+            **TLS record layer** is the wire format used in traditional TLS over TCP. QUIC instead carries TLS handshake data in CRYPTO frames and uses QUIC packet protection semantics.
 
-            **Real-world usage:** This matters when instrumenting traffic, building parsers, or explaining why a normal TLS-over-TCP mental model breaks down for QUIC.
+            This matters when instrumenting traffic, building parsers, or explaining why a normal TLS-over-TCP mental model breaks down for QUIC.
 
-            **Options:**
+
             - A (correct): This is the architectural reason.
             - B (incorrect): There is no such prohibition; this answer is nonsense.
             - C (incorrect): QUIC does not keep everything plaintext until the end.
 
-            **Related:** “QUIC uses TLS” is true, but it does not mean “QUIC looks like TLS over UDP.”
+            “QUIC uses TLS” is true, but it does not mean “QUIC looks like TLS over UDP.”
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Transport parameters establish QUIC state; ask what happens when the peers build incompatible views of that state.">
-        <header><h4>Q7: If a transport parameter is missing or inconsistent with what the peer expects, what kind of problem is most likely</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Rejection invalidates the assumptions used to create the early streams, not just their transmitted bytes.">
+        <header><h4>Q7: What must the client reset after 0-RTT is rejected?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client resumes a QUIC connection, creates two request streams, and sends application data in 0-RTT. The server's EncryptedExtensions omits early_data, thereby rejecting 0-RTT.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. The application automatically downgrades to HTTP/1.1 without any handshake effect</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. The connection can fail because the peer's QUIC transport assumptions no longer match the negotiated state</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. The issue can only affect certificate trust, never transport behavior</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Keep both stream and application state; retransmit only the missing 0-RTT packets as 1-RTT</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Reset only QUIC packet numbers because application stream state is independent of early-data acceptance</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Reset all affected streams, including application state bound to those streams</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Close the connection with PROTOCOL_VIOLATION whenever a server rejects 0-RTT</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Why it matters:** Engineers often underestimate transport parameters because they look like just another list of values. In practice they are foundational negotiation inputs.
-
-            **Terms:** **negotiated state** matters because both peers derive transport behavior from the values exchanged in the handshake.
-
-            **Real-world usage:** This comes up in interop testing, version skew, and bugs where one stack assumes limits or options the other side never agreed to.
-
-            **Options:**
-            - A (incorrect): HTTP downgrade is not the normal meaning of transport-parameter mismatch.
-            - B (correct): Broken or mismatched transport assumptions can cause connection failure.
-            - C (incorrect): The impact is often transport behavior itself.
-
-            **Related:** A useful debugging habit is to ask not only “what did I configure” but “what did the peer actually learn through negotiation.”
+            A: Retransmitting bytes is insufficient because the application protocol, transport parameters, and stream assumptions used for 0-RTT might all differ on the new connection.
+            B: The invalidated state is broader than packet numbering and includes application state attached to the early streams.
+            C: RFC 9001 Section 4.6.2 requires the client to reset all streams, including application state bound to them, when 0-RTT is rejected.
+            D: Rejection is a defined outcome, not itself a protocol violation. The server must not process rejected 0-RTT packets.
+            Decision rule: Treat 0-RTT acceptance as the condition for every early-data assumption; rejection rolls back the stream and application state created under those assumptions.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Identify which mechanism authenticates the server identity and binds it to the handshake, rather than merely routing packets.">
-        <header><h4>Q8: What does server authentication in QUIC most directly depend on</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Check whether QUIC permits TLS CertificateRequest after the handshake, then separate TLS and application authentication.">
+        <header><h4>Q8: How should this on-demand client authentication be redesigned?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A QUIC server completes the TLS handshake without requesting a client certificate. When an agent later invokes a privileged operation on one multiplexed stream, the server plans to send a post-handshake TLS CertificateRequest.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. The client trusting the current packet number space</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. The connection ID remaining unchanged for the entire connection lifetime</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. The TLS certificate validation process and the authenticated handshake transcript</label>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Keep the design because the stream ID lets the client correlate the TLS CertificateRequest with that operation</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Request the certificate during the handshake, or define a separate application-layer authentication mechanism for the operation</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Send the CertificateRequest in a QUIC STREAM frame so it is no longer post-handshake TLS authentication</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Rotate the QUIC connection ID before CertificateRequest to create a new authenticated context</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Why it matters:** Connection IDs, packet protection, and TLS authentication all show up together in QUIC, so people sometimes assign identity guarantees to the wrong mechanism.
-
-            **Terms:** **certificate validation** and the authenticated **handshake transcript** are the basis for server authentication. QUIC transport identifiers do not replace that trust model.
-
-            **Real-world usage:** This helps prevent incorrect security arguments such as “the connection ID proves the server identity” or “encrypted packets imply correct certificate validation happened.”
-
-            **Options:**
-            - A (incorrect): Packet number space does not authenticate the server.
-            - B (incorrect): Connection ID stability is not the basis of authentication.
-            - C (correct): This is the actual root of server identity assurance.
-
-            **Related:** QUIC transport features help continuity and routing, but authentication still comes from the TLS side of the design.
+            A: TLS post-handshake authentication is connection-scoped, and multiplexing prevents reliable correlation with the application event that triggered it.
+            B: RFC 9001 Section 4.4 permits the server to request client authentication during the handshake but forbids post-handshake CertificateRequest. Application authentication is a separate valid design choice.
+            C: TLS handshake messages belong in CRYPTO frames; moving CertificateRequest bytes to a STREAM frame does not create a valid authentication protocol.
+            D: A connection ID is a transport identifier, not a new TLS handshake or authentication boundary.
+            Decision rule: Choose either handshake-time TLS client authentication or an explicitly defined application mechanism; QUIC does not permit an operation-triggered post-handshake CertificateRequest.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Debug the cryptographic state machine and the QUIC transport state machine separately, then inspect where they interact.">
-        <header><h4>Q9: Which statement best captures the split between QUIC and TLS when debugging handshake failures</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Grant validity, TLS confidentiality, and replay-safe execution are independent predicates.">
+        <header><h4>Q9: Which acceptance policy accounts for QUIC 0-RTT replay?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A gateway accepts a signed, unexpired grant in QUIC 0-RTT. The authorized operation transfers credits and is not replay-safe. The A2A profile says only that valid grants may invoke the operation; it defines no 0-RTT rules or replay mitigation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q9" value="a"> A. Check both TLS handshake state and QUIC transport state, including transport parameters and encryption-level transitions</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. If the TLS library reports success, QUIC transport state cannot be responsible for any connection-setup failure</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. QUIC failures can always be solved by disabling certificate validation temporarily</label>
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Accept it because a valid signature makes a replayed request unauthorized</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Accept it once per TLS ticket because ticket recovery provides application exactly-once semantics</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Exclude this operation from 0-RTT until the application protocol defines and enforces replay-safe handling</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Accept it if the gateway validates the client's current source address before processing</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Why it matters:** RFC 9001 is valuable because it teaches that connection setup problems can live in the seam between protocols, not only in one stack or the other.
-
-            **Terms:** **cryptographic handshake** and **QUIC-specific state** are related but not identical concerns. A healthy setup needs both to line up.
-
-            **Real-world usage:** This framing is useful in browser, server, and proxy debugging when “TLS worked” is true in one sense but the QUIC connection still failed to establish cleanly.
-
-            **Options:**
-            - A (correct): This is the most accurate debugging mindset.
-            - B (incorrect): QUIC-specific setup can still fail even if core TLS processing advanced.
-            - C (incorrect): Disabling validation is not a principled fix and undermines the security model.
-
-            **Related:** Good QUIC debugging asks “which layer owns this failure” and also “which layer depended on the other one being in a certain state.”
+            A: A replay can preserve a valid signature and grant while repeating the authorized state change. Authorization validity is not replay detection.
+            B: Session tickets enable resumption; RFC 9001 does not give the application exactly-once execution.
+            C: RFC 9001 Section 9.2 places responsibility on the application protocol to describe 0-RTT use and replay protection. With no such rule, excluding this operation is the supported policy.
+            D: Address validation limits amplification and proves address reachability; it does not prevent a captured early request from being replayed.
+            Decision rule: Accept 0-RTT only when the application profile defines replay consequences and the particular operation satisfies that policy. Grant, channel, and replay checks remain independent.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC 9001 couples acknowledgment of a peer-initiated key phase with the receiver's corresponding send phase; inspect the required ordering.">
-        <header><h4>Q10: An endpoint successfully decrypts a peer packet whose Key Phase differs from the phase it last sent. What must it do before sending an acknowledgment for that packet</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The acknowledgment confirms the peer-initiated phase only if it is protected in the corresponding send phase.">
+        <header><h4>Q10: Which endpoint behavior follows the key-update state machine?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An endpoint successfully removes protection from a 1-RTT packet using the next receive keys. Its Key Phase differs from the phase used for the endpoint's last sent packet. The endpoint has not yet acknowledged the triggering packet.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q10" value="a"> A. Send the acknowledgment with its old send keys, then update after the peer confirms receipt</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. Update its send keys to the new phase, then protect the acknowledgment with those updated keys</label>
             <label class="choice"><input type="radio" name="Q10" value="c"> C. Send a TLS KeyUpdate message, then leave its QUIC send keys in the previous phase</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Discard the packet because QUIC never accepts a peer-initiated key phase first</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            Under RFC 9001 Section 6.2, a successfully processed packet with a changed Key Phase shows that the peer initiated a key update. The receiver must update its corresponding send keys before acknowledging that packet.
-
-            **Options:**
-            - A (incorrect): An acknowledgment protected with old keys would not confirm that the responder has moved to the new key phase.
-            - B (correct): The updated-key acknowledgment signals completion of the peer-initiated key update.
-            - C (incorrect): QUIC replaces the TLS KeyUpdate-message mechanism; sending a TLS KeyUpdate message is a connection error.
-
-            **Related:** The endpoint may follow its normal packet timing; the requirement concerns which keys protect the next acknowledgment, not that it be sent immediately.
+            A: An acknowledgment protected with old keys would not confirm that the responder moved to the new phase.
+            B: RFC 9001 Section 6.2 requires send keys to be updated before acknowledging the packet received with updated keys.
+            C: QUIC does not use the TLS KeyUpdate message; receiving that message is a connection error under Section 8.4.
+            D: A peer can initiate an update after the required confirmation. Successful processing with the next keys triggers the response procedure.
+            Decision rule: Normal packet timing may be retained, but the next acknowledgment for the triggering packet must be protected with updated send keys.
           </div>
         </div>
       </article>

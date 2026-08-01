@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 8999",
       SKILL_SUBTITLE: "QUICのversion-independent properties",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -132,7 +133,7 @@ A:  RFC 8999はconnection IDをopaque fieldと定義します.
 B:  endpointはversion-specificな方法で値を選び,同じconnectionでも値が変わり得ます.
 C:  これはpacketの配送先を識別する値であり,userやauthorization subjectではありません.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="一つの予約値は,利用可能なversionではなくnegotiation packetを識別します.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="利用可能なprotocol versionと,version-independent wire imageで予約された値を分けます.">
         <header><h4>Q6: Version 0x00000000が表すものはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q6" value="a"> A. Version Negotiation packet</label>
@@ -154,7 +155,7 @@ A:  unsupported versionを持つlong-header packetだけがVersion Negotiation�
 B:  fieldの意味が異なり,short headerにVersion fieldはありません.
 C:  RFC 8999が明示しています.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="negotiation packetをparseできることと,downgradeに関わる内容を信頼できることは別です.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="negotiation packetをparseできることと,downgradeに関わる内容を信頼できることは別です.">
         <header><h4>Q8: clientが妥当に見えるVersion Negotiation packetを受信し,versionを切り替えようとしている.追加で必要な条件はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. long-header形式であるため,すでに完全なintegrity protectionがある</label>
@@ -167,29 +168,32 @@ A:  形式の認識は認証ではありません.
 B:  その結果としてversionを変更するなら,選んだversionの仕組みでsemantic contentを認証する必要があります.
 C:  RFC 8999は「先頭を選ぶ」と定めていません.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="現在のversionで観測できる性質が,将来versionの契約とは限りません.">
-        <header><h4>Q9: middleboxがQUIC v1のfixed bitやTLSの見え方を前提にQUICを判定する.設計上の問題はどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. 変更可能なv1の性質を固定化し,正当な将来versionを遮断し得る</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. endpointに同じconnection IDを永久に使わせていない</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. Version Negotiationにlong headerを使わせている</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  Appendix Aは,別versionでは成立しない可能性のあるv1の観測可能な性質を列挙しています.これを強制するとossificationが起きます.
-B:  connection IDは変わり得ます.
-C:  Version Negotiationは意図的にlong-header形式で認識できるようにしています.</div></div>
-      </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="RFC 8999がA2Aを定義すると考えず,不変集合を小さく保つ発想だけを応用してください.">
-        <header><h4>Q10: 将来複数のprofileを想定するAgent-to-Agent protocolで,RFC 8999の設計思想に最も近いものはどれか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="強制している観測値と、RFC 8999が実際にinvariantとする性質を比較する。">
+        <header><h4>Q9: 設計レビューとして最も正確な指摘はどれ？</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">これはarchitecture上の類推です.RFC 8999はAgent-to-Agent messageを規定していません.</p>
+          <p class="question-premise">network gatewayは、QUIC v1のfixed bitと、v1 trafficから学習したTLS関連の特徴が見えるpacketだけをQUICとして通す。将来versionはRFC 8999の全invariantを守るが、この二つの観測値を変更したためgatewayに遮断される。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. profile 1の全fieldと全処理手順を永久に不変と宣言する</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. gatewayがprofile 1で観測した特徴から将来profileの意味を推測する</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. 安定させる必要がある認識・交渉部分だけをcoreにし,他の意味はprofileごとに定義する</label>
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. 観測可能なv1の特徴はすべて恒久的invariantなので、将来versionはQUICではない</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. 運用実績は仕様なしに新しいinvariantを追加できるため、gatewayが正しい</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. gatewayがversion固有の観測値を固定化し、正当なversion進化を妨げている</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. 問題は将来versionがv1のconnection IDを再利用しないことだけである</label>
+        </fieldset><div class="explain">**解説:**
+
+RFC 8999 Section 7とAppendix Aは、middleboxがinvariantではない観測値へv1の意味を結び付ける危険を説明する。文書のfixed propertyを満たすversionは、それらの特徴を変えただけでは無効にならない。Cがgatewayによるossificationを指摘する。Bは観測によってprotocol contractを暗黙に書き換え、Dはopaqueなrouting値を恒久定数と誤解している。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="dispatch・negotiationの安定性を保ちつつ、authorization semanticsを可視envelopeへ移さない。">
+        <header><h4>Q10: 全要件を満たすversioningとverificationの分担はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profile 1ではtask type、grant format、routing fieldが見える。Profile 2ではそれらを暗号化または再構成できなければならない。gatewayはdispatch用の安定したprofile identifierとnegotiation exchangeを必要とし、backendはoperationをauthorizeする前にversion固有の署名付きgrantを検証する必要がある。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. 可視grant fieldを固定し、将来profileのauthorizationもgatewayへ任せる</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. profile 1の観測fieldをinvariantとし、gatewayのparseをsignature検証とみなす</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. 識別とnegotiationを安定化し、各profileのgrantをbackendで検証する</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. negotiationを廃止し、有効なTLS connectionへ届いたgrant syntaxをそのまま選ぶ</label>
           </fieldset><div class="explain">**Explanation:**
-A:  最初のprofile全体を固定すると進化できません.
-B: 偶然見える特徴を契約にするとossificationを招きます.
-C: 小さな明示的coreなら,architecture上の類推として交渉可能性と配備自由度を両立できます.具体的なA2A coreはapplication仕様が決めるもので,RFC 8999の要件ではありません.</div>
+
+RFC 8999 Section 2は、QUICの認識とversion negotiationに必要な最小propertyだけを固定し、他のsemanticsをversion固有にする。Section 7は、versionを変更するendpointが、選択したversionの仕組みでnegotiationのsemantic contentを認証することも求める。Cはこの分離を類推として適用し、署名付きgrantを理解するbackendにauthorizationを残す。RFC 8999自体はA2A fieldやgrant検証を定義しないため、それらはA2A profile側の責務である。</div>
         </div>
       </article>
     </section>

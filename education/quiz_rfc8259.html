@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSON Data Interchange Format", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8259", "SKILL_SUBTITLE": "JSON Data Interchange Format", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -62,9 +62,9 @@
           <label class="choice"><input type="radio" name="Q1" value="c"> C. The endpoint must also accept every scalar because parsers cannot apply schemas</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: RFC 8259 permits any serialized JSON value at the top level.
-B: An application can narrow the valid input beyond the general JSON grammar.
-C: RFC 8259 defines JSON syntax and does not prohibit schema validation after parsing.</div></div>
+RFC 8259 permits any serialized JSON value at the top level.
+An application can narrow the valid input beyond the general JSON grammar.
+RFC 8259 defines JSON syntax and does not prohibit schema validation after parsing.</div></div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Compare how different parsers expose duplicate object names.">
         <header><h4>Q2: A request contains {&quot;role&quot;:&quot;reader&quot;,&quot;role&quot;:&quot;admin&quot;}. What is the safest interoperable decision?</h4><span class="type">Multiple Choice</span></header>
@@ -74,9 +74,9 @@ C: RFC 8259 defines JSON syntax and does not prohibit schema validation after pa
           <label class="choice"><input type="radio" name="Q2" value="c"> C. Sort the two members and use the first one</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Object names should be unique and duplicate handling is unpredictable across implementations.
-B: Last-wins is common but is not the required behavior in RFC 8259.
-C: Member ordering does not resolve duplicate-name ambiguity and parsers expose ordering differently.</div></div>
+Object names should be unique and duplicate handling is unpredictable across implementations.
+Last-wins is common but is not the required behavior in RFC 8259.
+Member ordering does not resolve duplicate-name ambiguity and parsers expose ordering differently.</div></div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Distinguish object members from array elements.">
         <header><h4>Q3: Can an A2A implementation assign meaning to the order of members in a JSON object?</h4><span class="type">Multiple Choice</span></header>
@@ -86,21 +86,21 @@ C: Member ordering does not resolve duplicate-name ambiguity and parsers expose 
           <label class="choice"><input type="radio" name="Q3" value="c"> C. No, use an array when order is part of the message meaning</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: RFC 8259 notes that libraries differ on whether member ordering is visible.
-B: Encoding choice does not turn object-member order into an interoperable semantic contract.
-C: Array order is represented by element position while object-member order is not a safe dependency.</div></div>
+RFC 8259 notes that libraries differ on whether member ordering is visible.
+Encoding choice does not turn object-member order into an interoperable semantic contract.
+Array order is represented by element position while object-member order is not a safe dependency.</div></div>
       </article>
       <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Ask whether array elements must share one JSON type.">
         <header><h4>Q4: Which JSON array is valid under RFC 8259?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. Only an array whose elements all have the same type</label>
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. Only a non-empty array whose elements all have the same JSON type</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. An array containing a string, number, object, and null</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. Only an array with at least one element</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. Only a non-empty array that never mixes objects with other JSON values</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: RFC 8259 has no same-type requirement for array elements, so mixed values remain valid.
-B: Arrays may contain heterogeneous JSON values and each element follows the normal value grammar.
-C: The grammar permits an empty array as well as arrays with one or more elements.</div></div>
+RFC 8259 has no same-type requirement for array elements, so mixed values remain valid.
+Arrays may contain heterogeneous JSON values and each element follows the normal value grammar.
+The grammar permits an empty array as well as arrays with one or more elements.</div></div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Check the JSON number grammar rather than a programming language&#x27;s numeric type.">
         <header><h4>Q5: A sender emits NaN as an unquoted JSON number. How should a conforming receiver classify it?</h4><span class="type">Multiple Choice</span></header>
@@ -110,21 +110,21 @@ C: The grammar permits an empty array as well as arrays with one or more element
           <label class="choice"><input type="radio" name="Q5" value="c"> C. It is the JSON null literal</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: NaN and Infinity are outside the RFC 8259 number grammar.
-B: IEEE 754 implementations can represent NaN but JSON syntax does not permit it.
-C: NaN is neither the lowercase null literal nor another JSON literal.</div></div>
+NaN and Infinity are outside the RFC 8259 number grammar.
+IEEE 754 implementations can represent NaN but JSON syntax does not permit it.
+NaN is neither the lowercase null literal nor another JSON literal.</div></div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare the identifier with the exactly interoperable integer range for binary64.">
         <header><h4>Q6: An agent identifier is the integer 9007199254740993 and must round-trip exactly across common runtimes. What is the better representation?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. A JSON number with an exponent added</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. A JSON number followed by a type comment</label>
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. A JSON number with exponent notation so parsers infer arbitrary-precision integer semantics</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. A JSON number followed by a type comment declaring exact integer handling</label>
           <label class="choice"><input type="radio" name="Q6" value="c"> C. A JSON string with application-level identifier rules</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Changing number notation does not make a value outside the exact binary64 integer range exact.
-B: JSON has no comment syntax and the numeric precision issue remains.
-C: A string avoids numeric rounding and lets the application define identifier syntax.</div></div>
+Changing number notation does not make a value outside the exact binary64 integer range exact.
+JSON has no comment syntax and the numeric precision issue remains.
+A string avoids numeric rounding and lets the application define identifier syntax.</div></div>
       </article>
       <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Look at the network interoperability rule and the BOM rule separately.">
         <header><h4>Q7: Which encoding rule applies to JSON exchanged between independent systems?</h4><span class="type">Multiple Choice</span></header>
@@ -134,9 +134,9 @@ C: A string avoids numeric rounding and lets the application define identifier s
           <label class="choice"><input type="radio" name="Q7" value="c"> C. Encoding is selected by object-member order</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: RFC 8259 requires UTF-8 for JSON exchanged outside a closed ecosystem.
-B: Networked JSON uses UTF-8 and generators must not add a BOM.
-C: Member ordering carries no encoding negotiation signal.</div></div>
+RFC 8259 requires UTF-8 for JSON exchanged outside a closed ecosystem.
+Networked JSON uses UTF-8 and generators must not add a BOM.
+Member ordering carries no encoding negotiation signal.</div></div>
       </article>
       <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare decoded Unicode code units, not the source escape spelling.">
         <header><h4>Q8: A parser receives the member names &quot;a\\b&quot; and &quot;a\u005Cb&quot;. How should equality be determined?</h4><span class="type">Multiple Choice</span></header>
@@ -146,11 +146,11 @@ C: Member ordering carries no encoding negotiation signal.</div></div>
           <label class="choice"><input type="radio" name="Q8" value="c"> C. Decode escapes and compare the resulting code units</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Different escape spellings can encode the same string value.
-B: String equality does not depend on the position of the member in an object.
-C: RFC 8259 recommends code-unit comparison after converting the textual representation.</div></div>
+Different escape spellings can encode the same string value.
+String equality does not depend on the position of the member in an object.
+RFC 8259 recommends code-unit comparison after converting the textual representation.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Separate what the ABNF can express from what interoperable Unicode handling guarantees.">
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Separate what the ABNF can express from what interoperable Unicode handling guarantees.">
         <header><h4>Q9: What should an implementation expect from a JSON string containing a lone UTF-16 surrogate?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q9" value="a"> A. Receiver behavior can be unpredictable across implementations</label>
@@ -158,11 +158,11 @@ C: RFC 8259 recommends code-unit comparison after converting the textual represe
           <label class="choice"><input type="radio" name="Q9" value="c"> C. It becomes a valid Unicode scalar value after UTF-8 encoding</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: RFC 8259 describes differing lengths, values, and even runtime failures for such data.
-B: RFC 8259 does not define a universal replacement procedure.
-C: Encoding a lone surrogate does not turn it into a Unicode scalar value.</div></div>
+RFC 8259 describes differing lengths, values, and even runtime failures for such data.
+RFC 8259 does not define a universal replacement procedure.
+Encoding a lone surrogate does not turn it into a Unicode scalar value.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC 8259 permits parser limits, while the application decides safe values.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 8259 permits parser limits, while the application decides safe values.">
         <header><h4>Q10: Where should an A2A service enforce limits on JSON size and nesting depth?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q10" value="a"> A. After authorization and business processing complete</label>
@@ -170,9 +170,27 @@ C: Encoding a lone surrogate does not turn it into a Unicode scalar value.</div>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. Only in the sender because a conforming parser cannot reject deep input</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Late checks allow hostile input to consume parser and application resources first.
-B: RFC 8259 permits size and depth limits, and early enforcement bounds resource use.
-C: Parsers may impose limits on text size and maximum nesting depth.</div></div>
+Late checks allow hostile input to consume parser and application resources first.
+RFC 8259 permits size and depth limits, and early enforcement bounds resource use.
+Parsers may impose limits on text size and maximum nesting depth.</div></div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare the member mapping seen by every security component, not merely whether one parser accepts the octets.">
+        <header><h4>Q11: Which design review conclusion is justified by RFC 8259?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A signed A2A grant contains `{"role":"reader","role":"admin"}`. The signature verifier exposes the first `role`, while the authorization service's JSON library exposes the last. Both process the same signed bytes successfully.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. Accept it because Section 4 says names only SHOULD be unique, so every parser interpretation is equally safe for authorization</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. Let each component apply its native duplicate-name behavior because signature coverage makes their member mappings equivalent</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. Reject duplicate decision fields at the input boundary and make all security checks consume one unambiguous parsed representation</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+RFC 8259 Section 4 says object names SHOULD be unique and explains the interoperability reason: implementations disagree when names repeat, variously retaining the first, the last, all values, or rejecting the object. A signature over the bytes does not force those parsers to derive the same name-value mapping.
+
+For an authorization field, disagreement creates a security boundary. An A2A profile can strengthen the base JSON guidance by requiring unique names and rejecting duplicates before signature results and authorization data flow into different parsers. The same validated representation should then feed all decision points.
+
+Because Section 4 uses SHOULD rather than MUST, RFC 8259 alone does not make every duplicate-name JSON text syntactically nonconforming. The mandatory rejection in this scenario comes from the application's security profile and its need for an unambiguous interpretation, supported by the interoperability risk the RFC documents.</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

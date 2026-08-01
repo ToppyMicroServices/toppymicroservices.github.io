@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9052","SKILL_SUBTITLE":"COSE Structures and Process","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9052","SKILL_SUBTITLE":"COSE Structures and Process","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="COSE security structureが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9052のCOSE security structureだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="protected/unprotected header bucketはparameterを運びますが,security decisionを支えられるのはauthenticated inputです.">
+        <header><h4>Q1: COSE headerについて正しい説明はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9052を参照し,COSE security structureを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A profileはCOSE_Sign1を使い,どのheader valueがsignatureで保護されるかを把握する必要があります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること.ただし受理するkey, algorithm, recipient, countersignature, payload meaningはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9052を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-10はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-10がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9052はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. COSE_Sign1 arrayで隣接しているため,両header bucketがsignされる</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. COSE signature structureに含まれるのはpayloadだけなので,どちらのbucketもsignできない</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. protected bucketはSig_structureに入る.unprotected valueのsecurity利用には別のbindingが要る</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. 同じlabelがprotected headerにもある場合,unprotected bucketのvalueがprecedenceを持つ</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3はprotected/unprotected bucketを分け,array内の隣接はunprotected mapをauthenticateしません.
+B: Section 4.4のSig_structureはpayload,external dataに加えてprotected attributesを含みます.
+C: 正解です.Sections 3 and 4.4がprotection boundaryを定義し,profileはunprotected valueだけからauthenticated semanticsを推論してはいけません.
+D: Section 3は両bucketにlabelがある場合protected valueを使うとします.ただしapplicationは重複自体を検出すべきです.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがCOSE security structureについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="kidはkey searchを狭めますが,globally unique identityやtrust decisionではありません.">
+        <header><h4>Q2: verifierはunprotected kidから何を推論できるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9052を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">COSE_Sign1 objectはkid=h'17'を含みます.三つのconfigured keyが同じkidを共有しますが,このA2A issuerにauthorizeされるのは一つだけです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 受理するkey, algorithm, recipient, countersignature, payload meaningだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
-          </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3-4 and 10に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. kidをlookup hintとしてapplicable candidateを試し,選択keyのissuer authorizationを別途enforceする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. kidをglobally uniqueとして扱い,identity associationを確認せず最初のmatching keyを選ぶ</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. kidはsecurity-criticalなのでunprotected header bucketには置けないとしてrejectする</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. COSE signatureをverifyする前に,configured keyのどれかとkidが一致すればclaimed issuerをacceptする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.1はkidをnon-unique key-selection hintとします.Section 4.4はverified keyとauthorized signing identityの対応をapplicationに別途確認させます.
+B: Section 3.1はapplicationがkid valueをuniqueと仮定してはならないと明記します.
+C: Section 3.1はkid自体をsecurity criticalとせず,unprotected bucketへ置くことを認めます.
+D: Matching identifierはsignature verificationでもissuer-to-key trust decisionでもありません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このCOSE security structureのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="security operationのalgorithmはCOSE constructionが可能な場合にauthenticateされる必要があります.">
+        <header><h4>Q3: profileのalgorithm placementは受理可能か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: attackerがparameterをprotected headerからunprotected headerへ移しても受理してしまうこと.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">COSE_Sign1 profileはalgをunprotected bucketだけに置きます.verifierはその値からverification algorithmを選びます.requirementはintermediaryがmessageの残りを維持したままalgorithm selectionを変更することの防止です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,payloadがdetached, countersigned, encrypted, nestedのどれかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9052対応をadvertiseしたため,検証せずprocessingを続ける</label>
-          </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 12に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. registered COSE algorithm identifierはIANA registryからintegrity protectionを得るため,この設計をacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. key identifierのauthenticationはseparate unprotected alg valueもauthenticateするため,kidがprotectedならacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. algをunprotectedのままにし,locally allowed algorithmをすべて試して最初に成功したverificationを使う</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. algをprotected headerに置くかauthenticated external dataへbindし,その後profileのallowed-algorithm policyを適用する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Registryはsemantics/code pointを割り当てますが,message内のparameter instanceをprotectしません.
+B: 一つのparameterのprotectionは別unprotected parameterへ拡張されません.
+C: Algorithm trialはdifferent/ambiguous processing ruleを作り,指定authenticated-selection criterionを満たしません.
+D: Section 3.1は可能な場合algをauthenticateするよう要求し,protected headerまたはexternal dataをmechanismとして示します.Algorithm acceptanceはprofile policyです.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: COSE security structureを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="crit自身とcritが示す各parameterにはprotected-header placement ruleがあります.">
+        <header><h4>Q4: verifierはこのcrit valueをどう処理すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9052を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">COSE_Sign1 objectはprotected headerにcrit=[1001]を置きますが,parameter 1001はunprotected bucketだけにあります.A2A profileは1001を理解した場合authorization semanticsが変わると定義します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するkey, algorithm, recipient, countersignature, payload meaning</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. payloadがdetached, countersigned, encrypted, nestedのどれか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-10は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. critがprotectedなので同labelのvalueもauthenticateされるとしてunprotected bucketから1001を読む</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. critが示すlabelがprotected-header bucketにないためfatal processing errorとして扱う</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. critをignoreし,local applicationがunprotected representationを理解するときだけ1001を使う</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 受信後に1001をprotected headerへ移し,modified structureに対してoriginal signatureをverifyする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: critはunderstand必須のprotected parameterを列挙し,同labelのunprotected valueをauthenticateしません.
+B: Section 3.1はこのconditionを明示的にfatal errorとします.
+C: Validなprotected crit listをignoreするとsenderのcritical-processing requirementを無効にします.
+D: Protected header変更はSig_structureを変え,received signatureを事後修復できません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでCOSE security structureを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Sig_structureのためsigner/verifierはidentical external_aadとpayload byte stringを構成する必要があります.">
+        <header><h4>Q5: なぜこのdetached-payload verificationは失敗しなければならないか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: CBOR token, attestation evidence, compact messageがsignature, MAC, encryptionを必要とする場面.観測した欠陥: local key/algorithm policy適用前にunprotected headerやalgorithm hintをtrustすること.</p>
+          <p class="question-premise">signerはdetached payloadと,ASCII bytesのPOST /tasksをexternal_aadにしたCOSE_Sign1を作ります.verifierは同じpayload bytesを使いますがexternal_aadはemptyです.profileはHTTP method/pathをsignatureへbindするよう要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（CBOR dataをsignature, MAC, encryption structureとprotected parameterで保護すること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
-          </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 12に沿って欠陥を解消してからresultを使います.profile rule: security-critical parameterをprotected headerへ置き, keyとalgorithmのapplication profileを定義する.check: content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する.local policy: 受理するkey, algorithm, recipient, countersignature, payload meaning.</div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Sig_structureが異なるため,context-binding ruleを満たす前にexact profile-defined external_aad bytesでverifyする必要がある</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. external_aadはCOSE signing inputに含まれずlocal metadataだけなのでverificationは成功できる</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. payloadを別transportすることはapplication contextもdetachするため,detached payloadではexternal_aadを省略できる</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. COSEはbytesでなくparsed HTTP semanticsをsignするため,verifierはequivalent URL spellingからexternal_aadを再構成する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 4.3 and 4.4は両sideに同じexternal data byte stringを作らせ,Sig_structureはfull payloadの前にそれを含みます.
+B: Section 4.4はexternal_aadをSig_structureに明示的に含めます.
+C: Detached transportが変えるのはpayloadの運搬場所で,signing inputに含むpayload/contextではありません.
+D: COSEはapplication-supplied bytesを使います.複数HTTP spellingをequivalentにするならA2A profileがnormalizationを定義します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: COSE security structureとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="successful COSE verificationはverifierでdefined byte structureをauthenticateします.backend requestへ何が残るか追ってください.">
+        <header><h4>Q6: backend policyが要求するevidenceを与える設計はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはCOSE security structureを別protocol layerと組み合わせます.design noteには「CWTは一般にCOSE protectionを使い, COSE自体はgenericなCBOR security containerである」とあります.</p>
+          <p class="question-premise">A2A gatewayはCOSE_Sign1 requestをverifyし,そのkeyがissuer Iにauthorizeされることを確認します.decoded subとroleをordinary HTTP headerで転送します.backendはresourceを所有し,authenticated issuer,role,payload digest,operation contextを要求します.COSE objectもprotected gateway evidenceも受け取りません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,受理するkey, algorithm, recipient, countersignature, payload meaningは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（content受理前にprotected header, algorithm policy, key selection, payload coverage, signatureまたはMAC resultを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. COSE protection,key,algorithm,payloadを検証し,local policyとoperationでのresultの扱いをprofileに明記する</label>
-          </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-10とSection 12がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Section 4.4 verificationによりre-serialization後も全decoded fieldがauthenticatedのままなのでordinary headerを使う</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. original unprotected kid headerを追加し,backendにissuer,role,payload digest,operation contextをrecoverさせる</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. backendにoriginal COSE inputをverifyさせるか,gatewayをrequired factを明示的に覆うprotected assertionのtrusted issuerとする</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. downstream requestにvalueへのintegrity-protected mappingがなくても,gateway TLSをoriginal issuer/roleのproofとして扱う</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 3 and 4.4はoriginal bytesのauthenticated範囲を定義し,decoded ordinary headerはそのprotectionを継承しません.
+B: Section 3.1のkidはnon-unique lookup hintで,backend-required evidenceのcontainerではありません.
+C: Section 4.4がCOSE verificationを定義し,applicationにkey,identity,authorization checkを要求します.downstream assertionは別のA2A trust-boundary designであり,そのsemanticsをprotectする必要があります.
+D: Gateway TLSはimmediate connectionをauthenticateしますが,original COSE evidenceからdownstream fieldへの未定義mappingはauthenticateしません.</div>
         </div>
       </article>
     </section>

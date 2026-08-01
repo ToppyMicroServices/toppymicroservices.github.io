@@ -33,6 +33,7 @@
       SKILL_NAME: "RFC 8999",
       SKILL_SUBTITLE: "Version-Independent Properties of QUIC",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -132,7 +133,7 @@ A:  RFC 8999 defines the field as opaque.
 B:  each endpoint chooses connection IDs by version-specific methods, and one connection can use different values.
 C:  connection IDs identify delivery context, not a user or authorization subject.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="One reserved value identifies the negotiation packet rather than a usable QUIC version.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Distinguish a usable protocol version from a value reserved by the version-independent wire image.">
         <header><h4>Q6: What does Version 0x00000000 identify?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q6" value="a"> A. A Version Negotiation packet</label>
@@ -154,7 +155,7 @@ A:  only an unsupported long-header version might elicit Version Negotiation.
 B:  the fields have different meanings and the short header has no Version field.
 C:  RFC 8999 explicitly excludes short-header packets as triggers.</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Distinguish parsing a negotiation packet from trusting a downgrade-relevant claim inside it.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Distinguish parsing a negotiation packet from trusting a downgrade-relevant claim inside it.">
         <header><h4>Q8: A client receives a plausible Version Negotiation packet and plans to switch versions. What additional condition matters?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. The packet's long-header form already gives full integrity protection</label>
@@ -167,29 +168,32 @@ A:  a recognizable format is not authentication.
 B:  an endpoint changing version as a result must authenticate the semantic content using the chosen version's mechanism.
 C:  RFC 8999 does not define “first value wins.”</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="An observable property of today's version is not automatically a contract for tomorrow's version.">
-        <header><h4>Q9: A middlebox recognizes QUIC by assuming the fixed bit and TLS-visible behavior of QUIC v1. What is the design problem?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. It ossifies changeable v1 traits and can block otherwise valid future versions</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. It fails to require every endpoint to use the same connection ID forever</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. It permits version negotiation to use a long header</label>
-        </fieldset><div class="explain">**Explanation:**
-A:  Appendix A lists visible v1 traits that may be false in another version; enforcing them creates ossification.
-B:  connection IDs may change.
-C:  Version Negotiation is intentionally recognizable as a long-header packet.</div></div>
-      </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Apply the invariant-set idea without pretending that RFC 8999 defines an Agent-to-Agent protocol.">
-        <header><h4>Q10: An Agent-to-Agent protocol expects multiple future profiles. Which design most closely applies RFC 8999's architectural lesson?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare the enforced observations with the properties RFC 8999 actually makes invariant.">
+        <header><h4>Q9: What is the most accurate review finding?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">This is an architectural analogy. RFC 8999 does not specify Agent-to-Agent messages.</p>
+          <p class="question-premise">A network gateway admits a packet as QUIC only when it has the QUIC v1 fixed bit and exposes the TLS-related traits the gateway learned from v1 traffic. A future version keeps every invariant in RFC 8999 but changes both observations, so the gateway blocks it.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Declare every field and processing step in profile 1 permanently invariant</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Let gateways infer future profile semantics from whatever profile 1 happens to expose</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Standardize only the recognition and negotiation core that must remain stable, and leave other semantics profile-specific</label>
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. The future version is not QUIC because all observable v1 traits are permanent invariants</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. The gateway is correct because deployment practice can add invariants without a specification</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. The gateway has ossified version-specific observations and can obstruct valid version evolution</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. The only problem is that the future version should reuse each v1 connection ID</label>
+        </fieldset><div class="explain">**Explanation:**
+
+RFC 8999 Section 7 and Appendix A warn that middleboxes can attach v1 semantics to observable traits that are not invariant. A version satisfying the document's fixed properties is not made invalid merely because it changes those traits. C identifies the gateway's ossification. B would let observation silently redefine the protocol contract, while D confuses an opaque routing value with a permanent per-connection constant.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Keep dispatch and negotiation stable without moving authorization semantics into an observable envelope.">
+        <header><h4>Q10: Which versioning and verification split best meets all requirements?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profile 1 exposes task type, grant format, and routing fields. Profile 2 must be able to encrypt or restructure them. Gateways need a stable profile identifier and negotiation exchange for dispatch, while backends must validate the version-specific signed grant before authorizing an operation.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Freeze the visible grant fields and let gateways authorize every future profile</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Make observed profile-1 fields invariant and treat gateway parsing as signature validation</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Stabilize identification and negotiation; verify each profile's grant at the backend</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Remove negotiation and let a valid TLS connection select whichever grant syntax arrives</label>
           </fieldset><div class="explain">**Explanation:**
-A:  freezing the entire first profile blocks evolution.
-B: Inferred wire-image contracts create ossification.
-C: A small explicit invariant core preserves negotiation and deployment freedom as an architectural analogy. The exact A2A core remains an application-specification decision, not an RFC 8999 requirement.</div>
+
+RFC 8999 Section 2 keeps only the minimum properties needed to recognize QUIC and negotiate versions, leaving other semantics version-specific. Section 7 also requires a version-changing endpoint to authenticate the semantic content of negotiation by a mechanism defined for the chosen version. C applies that separation by analogy and keeps authorization at the component that understands the signed grant. RFC 8999 does not itself define A2A fields or grant validation; those remain obligations of the A2A profiles.</div>
         </div>
       </article>
     </section>

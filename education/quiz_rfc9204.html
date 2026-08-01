@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9204",
       SKILL_SUBTITLE: "QPACK",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The most important QPACK idea is not the bit layout. It is the transport mismatch that made HPACK unsafe to reuse as-is for HTTP/3.
+            The most important QPACK idea is not the bit layout. It is the transport mismatch that made HPACK unsafe to reuse as-is for HTTP/3.
 
-            **Terms:** **HPACK** assumes ordered delivery suitable for HTTP/2 over a single ordered byte stream. **QPACK** adapts header compression for HTTP/3 over QUIC, where out-of-order delivery matters.
+            **HPACK** assumes ordered delivery suitable for HTTP/2 over a single ordered byte stream. **QPACK** adapts header compression for HTTP/3 over QUIC, where out-of-order delivery matters.
 
-            **Real-world usage:** In practice this helps you explain why HTTP/3 performance tuning is not “HTTP/2 plus UDP,” and why header compression design changed.
+            In practice this helps you explain why HTTP/3 performance tuning is not “HTTP/2 plus UDP,” and why header compression design changed.
 
-            **Options:**
-            - A (incorrect): HPACK's relevant ordering dependency is its shared compression state, not the presence or ordering of TLS records.
-            - B (correct): QPACK separates table updates from field sections and bounds blocking so one delayed update need not stall every HTTP/3 stream.
-            - C (incorrect): HPACK uses connection-wide compression state rather than an isolated table for each stream.
+            QPACK keeps HPACK ideas like static and dynamic tables, but redesigns how state is coordinated so implementations can choose their blocking risk.
 
-            **Related:** QPACK keeps HPACK ideas like static and dynamic tables, but redesigns how state is coordinated so implementations can choose their blocking risk.
+            A: HPACK's relevant ordering dependency is its shared compression state, not the presence or ordering of TLS records.
+            B: QPACK separates table updates from field sections and bounds blocking so one delayed update need not stall every HTTP/3 stream.
+            C: HPACK uses connection-wide compression state rather than an isolated table for each stream.
           </div>
         </div>
       </article>
@@ -124,25 +124,24 @@
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q2" value="a"> A. Dynamic table references that have not been acknowledged yet</label>
             <label class="choice"><input type="checkbox" name="Q2" value="b"> B. Static table references</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Literal representations</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. Literal field lines whose name and value are encoded without a dynamic-table reference</label>
             <label class="choice"><input type="checkbox" name="Q2" value="d"> D. Post-Base references into the dynamic table</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The best way to reason about QPACK is to separate “cheap and safe” references from “more efficient but potentially blocked” references.
+            The best way to reason about QPACK is to separate “cheap and safe” references from “more efficient but potentially blocked” references.
 
-            **Terms:** **static table** references are predefined. **literal** representations carry enough information directly. **dynamic table** references depend on shared evolving state.
+            RFC 9204 Section 2.1 states that static-table references and literal representations without dynamic-table references need no dynamic state and never risk head-of-line blocking. A literal field line can still use a dynamic-table name reference, so option C expressly excludes that case.
 
-            **Real-world usage:** This distinction drives encoder decisions when there is packet loss, reordering, or strict latency targets.
+            This distinction drives encoder decisions when there is packet loss, reordering, or strict latency targets.
 
-            **Options:**
-            - A (incorrect): Unacknowledged dynamic references are exactly the kind that can block decoding.
-            - B (correct): Static table references do not depend on decoder dynamic state.
-            - C (correct): Literals are bigger on the wire but avoid state dependence.
-            - D (incorrect): Post-Base is still a dynamic table reference and can block.
+            A practical encoder often mixes literals, static references, and dynamic references depending on latency tolerance and connection state.
 
-            **Related:** A practical encoder often mixes literals, static references, and dynamic references depending on latency tolerance and connection state.
+            A: Unacknowledged dynamic references are exactly the kind that can block decoding.
+            B: Static table references do not depend on decoder dynamic state.
+            C: Literals are bigger on the wire but avoid state dependence.
+            D: Post-Base is still a dynamic table reference and can block.
           </div>
         </div>
       </article>
@@ -181,18 +180,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Engineers often hear “QPACK reduces head-of-line blocking” and mistakenly conclude that blocking is impossible. It is reduced, not eliminated.
+            Engineers often hear “QPACK reduces head-of-line blocking” and mistakenly conclude that blocking is impossible. It is reduced, not eliminated.
 
-            **Terms:** **Required Insert Count** says how much dynamic table state the decoder must have before it can decode the field section. **Insert Count** is how many entries the decoder currently knows.
+            **Required Insert Count** says how much dynamic table state the decoder must have before it can decode the field section. **Insert Count** is how many entries the decoder currently knows.
 
-            **Real-world usage:** This directly affects tail latency, debugging of header decode stalls, and why encoder choices matter under packet loss.
+            This directly affects tail latency, debugging of header decode stalls, and why encoder choices matter under packet loss.
 
-            **Options:**
-            - A (incorrect): The decoder does not invent a fallback representation on its own.
-            - B (incorrect): Path migration is a QUIC concern, unrelated to QPACK decode readiness.
-            - C (correct): The field section is blocked until the needed dynamic state arrives.
+            QPACK moves the trade-off toward encoder choice. Better compression can still create blocking if the required state is not available in time.
 
-            **Related:** QPACK moves the trade-off toward encoder choice. Better compression can still create blocking if the required state is not available in time.
+            A: The decoder does not invent a fallback representation on its own.
+            B: Path migration is a QUIC concern, unrelated to QPACK decode readiness.
+            C: The field section is blocked until the needed dynamic state arrives.
           </div>
         </div>
       </article>
@@ -208,23 +206,22 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** QPACK is as much about operational limits as about compression format. Blocked-stream limits are a key control surface.
+            QPACK is as much about operational limits as about compression format. Blocked-stream limits are a key control surface.
 
-            **Terms:** **SETTINGS_QPACK_BLOCKED_STREAMS** is a decoder-provided bound on how many streams can be blocked due to missing dynamic table state.
+            **SETTINGS_QPACK_BLOCKED_STREAMS** is a decoder-provided bound on how many streams can be blocked due to missing dynamic table state.
 
-            **Real-world usage:** This setting matters when tuning encoder aggressiveness for mobile loss, prioritization, and latency-sensitive traffic.
+            This setting matters when tuning encoder aggressiveness for mobile loss, prioritization, and latency-sensitive traffic.
 
-            **Options:**
-            - A (correct): This is the direct meaning of the setting.
-            - B (incorrect): Packet sizing is unrelated.
-            - C (incorrect): Trailers are not what this setting limits.
+            Lower blocked-stream tolerance pushes encoders toward safer but larger encodings, such as literals or acknowledged references only.
 
-            **Related:** Lower blocked-stream tolerance pushes encoders toward safer but larger encodings, such as literals or acknowledged references only.
+            A: This is the direct meaning of the setting.
+            B: Packet sizing is unrelated.
+            C: Trailers are not what this setting limits.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="When latency matters more than a small compression gain, compare acknowledged dynamic state with references that might still be in transit.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Compare compression gain with the blocked-stream risk created by dynamic entries still in transit.">
         <header><h4>Q5: An encoder wants the best compression ratio, but the path is lossy and low latency matters. Which strategy is usually safer</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -235,18 +232,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** QPACK is built around a real trade-off, not a single “best” encoding. The encoder has to choose between compression efficiency and latency risk.
+            RFC 9204 Section 2.1.2 explicitly gives the encoder a choice between better compression from in-transit dynamic references and avoiding blocking with acknowledged entries or literals.
 
-            **Terms:** **acknowledged entries** are dynamic table entries known to be available at the decoder. **literals** are bigger but avoid dependency on dynamic state.
+            **acknowledged entries** are dynamic table entries known to be available at the decoder. **literals** are bigger but avoid dependency on dynamic state.
 
-            **Real-world usage:** This shows up in CDN and browser stacks where a few bytes saved are not worth stalling request processing under loss or reordering.
+            This shows up in CDN and browser stacks where a few bytes saved are not worth stalling request processing under loss or reordering.
 
-            **Options:**
-            - A (incorrect): This maximizes compression potential, but it also maximizes blocking risk.
-            - B (correct): This is the safer strategy when latency matters more than squeezing every byte.
-            - C (incorrect): Flow control is not the knob that solves QPACK blocking.
+            QPACK shifts complexity toward encoder policy, where compression gain has to be balanced against blocking risk.
 
-            **Related:** QPACK shifts complexity toward encoder policy, where compression gain has to be balanced against blocking risk.
+            A: This maximizes compression potential, but it also maximizes blocking risk.
+            B: This is the safer strategy when latency matters more than squeezing every byte.
+            C: Flow control is not the knob that solves QPACK blocking.
           </div>
         </div>
       </article>
@@ -257,23 +253,22 @@
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q6" value="a"> A. It carries HTTP request bodies to the peer</label>
             <label class="choice"><input type="radio" name="Q6" value="b"> B. It replaces the QUIC control stream</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. It carries encoder instructions that update decoder-side dynamic table state</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. It updates the decoder's dynamic table</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** QPACK uses dedicated coordination streams so dynamic table state can advance independently from request and response field sections.
+            QPACK uses dedicated coordination streams so dynamic table state can advance independently from request and response field sections.
 
-            **Terms:** The **encoder stream** is a unidirectional stream that carries encoder instructions from encoder to decoder. Those instructions update the dynamic table state.
+            The **encoder stream** is a unidirectional stream that carries encoder instructions from encoder to decoder. Those instructions update the dynamic table state.
 
-            **Real-world usage:** If this stream is mismanaged, header decoding can fail even when the application logic looks correct.
+            If this stream is mismanaged, header decoding can fail even when the application logic looks correct.
 
-            **Options:**
-            - A (incorrect): HTTP bodies travel on request or response streams, not the QPACK encoder stream.
-            - B (incorrect): QPACK streams are specialized, not replacements for all HTTP/3 control traffic.
-            - C (correct): This is the essential job of the encoder stream.
+            QPACK also has a decoder stream in the opposite direction so the encoder can learn what the decoder has processed.
 
-            **Related:** QPACK also has a decoder stream in the opposite direction so the encoder can learn what the decoder has processed.
+            A: HTTP bodies travel on request or response streams, not the QPACK encoder stream.
+            B: QPACK streams are specialized, not replacements for all HTTP/3 control traffic.
+            C: This is the essential job of the encoder stream.
           </div>
         </div>
       </article>
@@ -282,52 +277,50 @@
         <header><h4>Q7: What is the main purpose of the decoder stream in QPACK</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. It returns acknowledgments and decoder feedback that govern the encoder's safe use of dynamic entries</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. It returns feedback for safe dynamic-table use</label>
             <label class="choice"><input type="radio" name="Q7" value="b"> B. It carries application content after each header block has been decompressed</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. It carries acknowledgments only for trailers and is unused for normal field sections</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** QPACK is intentionally designed so the encoder can track decoder readiness. The decoder stream is central to that feedback loop.
+            QPACK is intentionally designed so the encoder can track decoder readiness. The decoder stream is central to that feedback loop.
 
-            **Terms:** The **decoder stream** carries feedback from decoder to encoder, including acknowledgments and related instructions that inform future encoding decisions.
+            The **decoder stream** carries feedback from decoder to encoder, including acknowledgments and related instructions that inform future encoding decisions.
 
-            **Real-world usage:** This matters when tuning whether the encoder can safely reference newer dynamic entries without creating blocked streams.
+            This matters when tuning whether the encoder can safely reference newer dynamic entries without creating blocked streams.
 
-            **Options:**
-            - A (correct): This feedback lets the encoder know which dynamic state is safe to depend on.
-            - B (incorrect): Application payloads do not travel on the decoder stream.
-            - C (incorrect): The stream is not limited to trailers.
+            QPACK works because the encoder can trade compression ratio against the decoder's confirmed state instead of assuming global ordering.
 
-            **Related:** QPACK works because the encoder can trade compression ratio against the decoder's confirmed state instead of assuming global ordering.
+            A: This feedback lets the encoder know which dynamic state is safe to depend on.
+            B: Application payloads do not travel on the decoder stream.
+            C: The stream is not limited to trailers.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Consider what one party could infer by influencing shared compression state and observing encoded sizes.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Consider what one party could infer by influencing shared compression state and observing encoded sizes.">
         <header><h4>Q8: Why does RFC 9204 discuss mutually distrustful entities sharing a connection</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q8" value="a"> A. Because QPACK requires every peer to trust the same DNS resolver</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. Because shared compression state can leak information through encoded sizes and entry reuse</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Shared compression state can leak information through size and entry reuse</label>
             <label class="choice"><input type="radio" name="Q8" value="c"> C. Because HTTP/3 forbids connection reuse across origins entirely</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Security concerns in QPACK are not about breaking encryption directly. They are about what compression reveals under adversarial influence.
+            RFC 9204 Section 7.1 analyzes probing of dynamic-table state and the resulting information leakage.
 
-            **Terms:** A **compression side channel** exists when output size or encoding behavior leaks information about hidden values. Shared compression context makes that more plausible.
+            A **compression side channel** exists when output size or encoding behavior leaks information about hidden values. Shared compression context makes that more plausible.
 
-            **Real-world usage:** Browsers, intermediaries, and shared upstream connections need to reason about whether different parties can affect or observe the same compression state.
+            Browsers, intermediaries, and shared upstream connections need to reason about whether different parties can affect or observe the same compression state.
 
-            **Options:**
-            - A (incorrect): DNS trust is unrelated to the QPACK security model here.
-            - B (correct): This is the actual concern described in the RFC.
-            - C (incorrect): HTTP/3 does not forbid all such reuse in this simplistic way.
+            High-entropy secrets are harder to recover than low-entropy values, but the safe lesson is still to treat sensitive fields cautiously in shared compression contexts.
 
-            **Related:** High-entropy secrets are harder to recover than low-entropy values, but the safe lesson is still to treat sensitive fields cautiously in shared compression contexts.
+            A: DNS trust is unrelated to the QPACK security model here.
+            B: This is the actual concern described in the RFC.
+            C: HTTP/3 does not forbid all such reuse in this simplistic way.
           </div>
         </div>
       </article>
@@ -343,23 +336,22 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** QPACK performance is constrained by memory as well as latency. Table-capacity limits are part of that resource contract.
+            QPACK performance is constrained by memory as well as latency. Table-capacity limits are part of that resource contract.
 
-            **Terms:** **dynamic table capacity** is the amount of space available for entries used in indexed compression on a connection.
+            **dynamic table capacity** is the amount of space available for entries used in indexed compression on a connection.
 
-            **Real-world usage:** This matters for memory budgeting, endpoint hardening, and deciding how much dynamic compression state is worth maintaining.
+            This matters for memory budgeting, endpoint hardening, and deciding how much dynamic compression state is worth maintaining.
 
-            **Options:**
-            - A (incorrect): Stream count is a different transport concern.
-            - B (incorrect): Body size is unrelated to this QPACK setting.
-            - C (correct): This setting bounds dynamic table capacity.
+            A larger table can improve compression ratio, but it also increases state memory and coordination complexity.
 
-            **Related:** A larger table can improve compression ratio, but it also increases state memory and coordination complexity.
+            A: Stream count is a different transport concern.
+            B: Body size is unrelated to this QPACK setting.
+            C: This setting bounds dynamic table capacity.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare the number of concurrently blocked streams with the decoder's advertised bound, then check the specified error scope for exceeding it.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare the number of concurrently blocked streams with the decoder's advertised bound, then check the specified error scope for exceeding it.">
         <header><h4>Q10: A decoder advertised SETTINGS_QPACK_BLOCKED_STREAMS=1. Two request streams then contain field sections whose Required Insert Count exceeds the decoder's Insert Count. What is required when the second stream exceeds the promised limit</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -372,12 +364,11 @@
 
             RFC 9204 Section 2.1.2 defines `SETTINGS_QPACK_BLOCKED_STREAMS` as the decoder's upper bound on streams that can be blocked by unavailable dynamic-table entries. The encoder must stay within that bound.
 
-            **Options:**
-            - A (incorrect): The setting is enforced, not merely advisory; accepting two blocked streams would exceed the advertised bound of one.
-            - B (incorrect): RFC 9204 does not recover from this encoder violation by resetting only the excess request stream.
-            - C (correct): A decoder that encounters more blocked streams than it promised must treat it as `QPACK_DECOMPRESSION_FAILED`.
+            An encoder can avoid risking another blocked stream by referencing only acknowledged dynamic entries or by using static-table or literal representations.
 
-            **Related:** An encoder can avoid risking another blocked stream by referencing only acknowledged dynamic entries or by using static-table or literal representations.
+            A: The setting is enforced, not merely advisory; accepting two blocked streams would exceed the advertised bound of one.
+            B: RFC 9204 does not recover from this encoder violation by resetting only the excess request stream.
+            C: A decoder that encounters more blocked streams than it promised must treat it as `QPACK_DECOMPRESSION_FAILED`.
           </div>
         </div>
       </article>

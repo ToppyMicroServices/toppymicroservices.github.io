@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 4949",
       SKILL_SUBTITLE: "Internet Security Glossary",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,10 +103,9 @@
 
             RFC 4949 defines authentication as verifying a claim that an entity or resource has a particular attribute value. For a login, that attribute is commonly the user's claimed identity.
 
-            **Options:**
-            - A (correct): Authentication is the verification step applied to the claimed identity.
-            - B (incorrect): Authorization grants or evaluates approval to access a resource after relevant attributes are known.
-            - C (incorrect): Identification presents the claimed value, such as a user identifier; it does not by itself verify the claim.
+            Authentication is the verification step applied to the claimed identity.
+            Authorization grants or evaluates approval to access a resource after relevant attributes are known.
+            Identification presents the claimed value, such as a user identifier; it does not by itself verify the claim.
           </div>
         </div>
       </article>
@@ -123,10 +123,9 @@
 
             Authorization is an approval, or the process of granting approval, for an entity to access a resource. The requested operation can be evaluated only after the system has an identity and the applicable policy.
 
-            **Options:**
-            - A (incorrect): Authentication verifies an attribute claim; it does not grant deletion permission.
-            - B (correct): Deciding whether this entity may perform this action is an authorization decision.
-            - C (incorrect): Accounting records or measures activity and is not the permission decision itself.
+            Authentication verifies an attribute claim; it does not grant deletion permission.
+            Deciding whether this entity may perform this action is an authorization decision.
+            Accounting records or measures activity and is not the permission decision itself.
           </div>
         </div>
       </article>
@@ -144,10 +143,9 @@
 
             Confidentiality concerns keeping information from being disclosed to unauthorized entities. It is distinct from preserving correctness and from keeping a service usable.
 
-            **Options:**
-            - A (incorrect): Availability concerns whether an authorized entity can access or use a resource when needed.
-            - B (incorrect): Integrity concerns unauthorized modification or destruction of data.
-            - C (correct): Preventing unauthorized reading is a confidentiality objective.
+            Availability concerns whether an authorized entity can access or use a resource when needed.
+            Integrity concerns unauthorized modification or destruction of data.
+            Preventing unauthorized reading is a confidentiality objective.
           </div>
         </div>
       </article>
@@ -165,15 +163,14 @@
 
             Data integrity is the property that data has not been changed or destroyed in an unauthorized manner. An integrity mechanism can let a receiver detect modification during transit.
 
-            **Options:**
-            - A (incorrect): Confidentiality limits disclosure but does not by itself establish that received data is unchanged.
-            - B (correct): Detecting unauthorized modification is an integrity function.
-            - C (incorrect): Availability concerns access or operation on demand, not whether a message was altered.
+            Confidentiality limits disclosure but does not by itself establish that received data is unchanged.
+            Detecting unauthorized modification is an integrity function.
+            Availability concerns access or operation on demand, not whether a message was altered.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Look for a fresh value whose role is to make each protocol instance unique.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Look for a fresh value whose role is to make each protocol instance unique.">
         <header><h4>Q5: A random or non-repeating value included in a protocol exchange to help detect replay is called a</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -186,10 +183,9 @@
 
             RFC 4949 defines a nonce as a random or non-repeating value included in protocol data, usually to provide liveness and protect against replay. Its freshness, rather than secrecy, is the key property in this use.
 
-            **Options:**
-            - A (correct): A nonce supplies the random or non-repeating value described in the stem.
-            - B (incorrect): A credential carries evidence or attributes used in security decisions; it is not inherently fresh.
-            - C (incorrect): A checksum can detect some data changes but does not inherently make a protocol exchange non-repeating.
+            A nonce supplies the random or non-repeating value described in the stem.
+            A credential carries evidence or attributes used in security decisions; it is not inherently fresh.
+            A checksum can detect some data changes but does not inherently make a protocol exchange non-repeating.
           </div>
         </div>
       </article>
@@ -201,9 +197,29 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **replay attack**.
 
             The glossary defines it as malicious or fraudulent repetition of a valid data transmission, either by its originator or by an interceptor who retransmits it. Freshness mechanisms such as nonces can help a receiver reject previously used protocol data.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate verification of a claimed identity, protection of a forwarded assertion, and permission to act on one resource.">
+        <header><h4>Q7: Which terminology review most accurately identifies the missing security boundary?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A gateway validates a client certificate and forwards `X-Agent-ID` to a backend. Any workload on the internal network can also create that header. The backend deletes a resource solely because the header names its owner.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Treat the gateway certificate check as both authentication and authorization for every backend resource and operation</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Treat any syntactically valid identity header as authenticated, even when an untrusted workload can create the same value</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Separate gateway authentication, protection of the forwarded identity assertion, and the backend's resource-specific authorization decision</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 4949 Section 4 distinguishes the glossary entries for authentication, authorization, and access control. Authentication verifies a claimed identity or attribute; authorization grants permission under a policy; access control enforces that policy. A certificate check at the gateway does not by itself decide whether the authenticated agent may delete this backend resource.
+
+            The backend also needs a trustworthy binding between `X-Agent-ID` and the gateway's verification result. If untrusted workloads can create the same header, syntax alone supplies neither authentication nor integrity. The design may establish a protected gateway-to-backend trust boundary or let the backend verify evidence directly, but RFC 4949 does not select one architecture.
+
+            RFC 4949 is an Informational glossary, not a conformance specification. Its value here is to expose a category error in the design review; it does not make every gateway-based design nonconforming.
           </div>
         </div>
       </article>

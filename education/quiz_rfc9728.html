@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9728","SKILL_SUBTITLE":"OAuth 2.0 Protected Resource Metadata","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9728","SKILL_SUBTITLE":"OAuth 2.0 Protected Resource Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,272 +57,118 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="This metadata is about the protected resource, not the authorization server itself.">
-        <header><h4>Q1: What is RFC 9728 mainly used for</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Keep resource configuration separate from the authorization decision for one request.">
+        <header><h4>Q1: What does OAuth protected resource metadata describe?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. replacing authorization server metadata and token endpoint discovery</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. publishing metadata about a protected resource and its OAuth-related requirements</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. granting access tokens to clients without an authorization server</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Protected resource metadata describes the resource server side of an OAuth deployment. It complements authorization server metadata.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Authorization server metadata remains a separate discovery document with a different subject.
-- B: The protected resource and its OAuth-related signals are the center of this RFC.
-- C: The RFC does not issue tokens and does not remove the need for an authorization server.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. A completed grant that authorizes a client to every listed scope.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. A protected resource's identifier, authorization servers, and capabilities.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. A proof that any listed authorization server is trusted in every application.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. A replacement for access-token validation at the resource server.</label>
+          </fieldset><div class="explain">RFC 9728 Sections 1 and 2 define configuration information that clients and authorization servers can use when interacting with a protected resource. The document can advertise relationships and capabilities, but it neither issues a grant or token nor performs the resource's credential validation and policy decision. Its contents are configuration claims that feed discovery and application trust decisions, not an authorization result.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Bind metadata to the resource the client actually wanted.">
-        <header><h4>Q2: Which checks help avoid protected-resource metadata confusion. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,d" data-difficulty="L2" data-hint="Check which identifier anchors the document and whether the server list is exhaustive.">
+        <header><h4>Q2: Which statements about resource and authorization_servers are correct? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. validate that the resource identifier represents the intended protected resource</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. treat any metadata URL from an error response as trusted without validation</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. retrieve and process metadata through a trustworthy HTTPS path</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. assume every listed authorization server is acceptable for every client</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The client or authorization server must not let an attacker-selected metadata document redefine the resource being accessed.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Resource identity validation prevents metadata for one resource from being used with another.
-- B: An error response can point to metadata, but the document still needs validation.
-- C: HTTPS retrieval protects the metadata path before policy checks are applied.
-- D: Listed authorization servers are inputs for policy, not universal approval for all clients.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. resource is a required protected-resource identifier.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. authorization_servers is required and must enumerate every usable server.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. A resource identifier may use HTTP when the response is signed.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. authorization_servers is optional and may be incomplete or absent when not enumerable.</label>
+          </fieldset><div class="explain">RFC 9728 Sections 1.2 and 2 require an HTTPS `resource` identifier and make `authorization_servers` optional and potentially non-exhaustive. Omitting that list does not mean that no authorization server is usable, while omitting `scopes_supported` does not imply an empty scope set. Signed metadata does not change the resource syntax, so consumers must anchor the document to one resource without treating optional lists as complete.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The resource identifier is the anchor for this metadata.">
-        <header><h4>Q3: Why is the resource identifier security-relevant in RFC 9728</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Insert the registered well-known component before the resource path.">
+        <header><h4>Q3: Where is metadata fetched for resource https://api.example/a2a using the default suffix?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. it names the human account that owns the token</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. it decides whether the user consent screen is attractive</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. it binds the metadata document to the protected resource being accessed</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The resource identifier prevents clients and authorization servers from applying metadata to the wrong resource.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Human account identity is outside the protected resource metadata identifier.
-- B: Consent screen design is not the security role of the resource identifier.
-- C: Binding metadata to the intended resource is the key validation purpose of the identifier.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. https://api.example/a2a/.well-known/oauth-protected-resource</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. https://api.example/oauth-protected-resource/.well-known/a2a</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. https://api.example/.well-known/oauth-protected-resource/a2a</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. https://api.example/.well-known/a2a/oauth-protected-resource</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.1 inserts `/.well-known/oauth-protected-resource` between the authority and the resource path, producing `https://api.example/.well-known/oauth-protected-resource/a2a`. Appending the suffix after `/a2a` or absorbing the path into the suffix changes the registered construction. Preserving the exact path after the well-known component keeps distinct resources on one host separate.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A list of authorization servers is a discovery input, not automatic trust.">
-        <header><h4>Q4: How should authorization_servers in resource metadata be interpreted</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The response must remain bound to the resource the client intended to contact.">
+        <header><h4>Q4: A metadata document's resource value does not match the resource used for discovery. What should the client do?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. as issuer identifiers that may be usable with the resource, subject to client and policy checks</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. as proof that all listed servers must be accepted by every resource request</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. as replacement access tokens for the protected resource</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The field can connect a resource to authorization server issuers. The relying party still checks trust and policy.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: This treats the list as scoped discovery information rather than unconditional approval.
-- B: Every client and deployment still has its own trust and policy requirements.
-- C: Issuer identifiers are not access tokens and cannot authorize a request by themselves.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Do not use the metadata because the resource identifiers must be identical.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Follow the returned resource and repeat discovery until a value matches.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Keep authorization_servers but discard only the resource member.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Accept it when both resources share the same TLS certificate.</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.3 requires exact equality between the returned `resource` and the identifier used for discovery, and prohibits using a mismatching response. Accepting a replacement value from inside the document would let the response redirect its own trust target; deleting only the bad member would still retain claims from that unbound response. A shared certificate authenticates the host connection but does not collapse distinct resource identifiers.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Follow resource discovery before AS metadata and token use.">
-        <header><h4>Q5: Which flow best uses protected resource metadata</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="It begins a discovery flow; it is not itself a credential.">
+        <header><h4>Q5: What does the resource_metadata parameter in WWW-Authenticate provide?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. pick an authorization server first and assume every resource accepts its tokens</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. identify the protected resource, obtain resource metadata, validate it, then use compatible authorization server information under policy</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. skip token validation because the resource metadata endpoint was reachable</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc9728-en-q5-caption">
-            <figcaption id="rfc9728-en-q5-caption">Protected resource metadata discovery flow.</figcaption>
-            <svg viewBox="0 0 772 158" role="img" aria-label="Protected resource metadata discovery flow.">
-              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="95" y="69">Protected</text>
-              <text class="flow-label" x="95" y="90">resource</text>
-              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
-              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
-              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="289" y="69">Resource</text>
-              <text class="flow-label" x="289" y="90">metadata</text>
-              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
-              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
-              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="483" y="69">Validate</text>
-              <text class="flow-label" x="483" y="90">resource ID</text>
-              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
-              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
-              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="677" y="69">Compatible</text>
-              <text class="flow-label" x="677" y="90">AS policy</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** Protected resource metadata helps align the client, resource server, and authorization server relationship. Reachability is not acceptance.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Starting from any authorization server can select a server the resource does not use.
-- B: This sequence keeps resource identity, metadata validation, and authorization server compatibility distinct.
-- C: A reachable metadata endpoint does not validate an access token or authorize a request.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. An access token scoped to the challenged resource.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. A complete authorization-server metadata document inline.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. A proof that the challenged client is registered at the resource.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. A URL from which the client can retrieve protected resource metadata.</label>
+          </fieldset><div class="explain">RFC 9728 Sections 5 and 5.1 define the `resource_metadata` authentication parameter as a URL pointing to the protected resource metadata document and allow it with schemes such as Bearer or DPoP. The parameter does not embed the document, carry an access token, or perform client registration. A client must retrieve the referenced document and then apply the normal metadata validation and trust checks.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Metadata fields can inform policy, but they do not grant permissions.">
-        <header><h4>Q6: Which interpretations of resource metadata are careful. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,c" data-difficulty="L2" data-hint="An advertised capability list is not automatically an instruction to use everything in it.">
+        <header><h4>Q6: Which interpretations of capability metadata are correct? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. scopes_supported means a client may request and receive every scope</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. scope information helps construct requests but final grant and acceptance remain policy decisions</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. sender-constraining metadata makes bearer tokens safe without proof checks</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. supported proof methods such as DPoP or mTLS still require full validation by the profile</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The metadata can advertise support or expectations. It does not skip OAuth grants, token validation, or proof validation.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Supported scopes are not automatic grants to a client.
-- B: Scope metadata can guide request construction, but grant and acceptance depend on policy.
-- C: Sender constraining requires actual proof validation; metadata alone cannot make a bearer token safe.
-- D: DPoP or mTLS support must be followed by the corresponding proof and binding checks.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. A client should request every value in scopes_supported to maximize interoperability.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. Omitted bearer_methods_supported implies no default method and does not prove that none is supported.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Omitted dpop_bound_access_tokens_required has the defined default false.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. Omitted resource_signing_alg_values_supported implies the none algorithm.</label>
+          </fieldset><div class="explain">RFC 9728 Section 2 gives no default or negative implication to omitted `scopes_supported`, but defines omission of `dpop_bound_access_tokens_required` as false. It defines no default signing algorithm and excludes `none` from that algorithm list. Section 7.2 still directs clients to request only the minimum scope needed, so advertised capabilities and omission defaults do not replace least-privilege or algorithm policy.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Signed metadata still needs trusted validation and resource binding.">
-        <header><h4>Q7: A resource publishes signed metadata. What should a verifier do</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="A valid resource document can still contain a network target that must pass the client&#x27;s outbound-request policy.">
+        <header><h4>Q7: Which client behavior is appropriate for this discovered authorization server?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A user-selected A2A endpoint returns protected resource metadata whose resource value exactly matches that endpoint. Its authorization_servers list contains https://169.254.169.254/internal-issuer, an issuer the client has never configured or trusted.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. accept it without checking the resource identifier</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. treat the signature as a complete authorization decision</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. validate signature trust, resource identity, and profile rules before relying on it</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A signature can protect metadata integrity, but the verifier still has to know whose metadata it is and what policy accepts.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Without resource identity validation, metadata can be applied to the wrong resource.
-- B: A signature is not an access-control grant.
-- C: Signature trust, resource identity, and profile rules are all needed before relying on the metadata.
-          </div>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Apply SSRF controls before fetching the issuer's RFC 8414 metadata, without treating resource validation as approval of that target.</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Fetch the issuer metadata because a matching resource value authenticates every authorization_servers entry.</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Send an existing access token to the listed issuer so the internal address can authorize discovery.</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Skip issuer metadata validation because authorization_servers already contains an HTTPS URL.</label>
+          </fieldset><div class="explain">RFC 9728 Section 7.7 identifies fetching authorization-server metadata from an issuer named by resource metadata as an SSRF risk and recommends controls such as blocking internal IP ranges. Exact resource binding under Section 3.3 validates the document's resource identity, not the safety or authority of every embedded network destination. The client must apply outbound-request controls before any RFC 8414 fetch, withhold credentials, validate the issuer metadata, and separately establish the issuer-to-resource trust relationship described in Section 7.6.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The metadata URL and TLS identity must match the resource trust boundary.">
-        <header><h4>Q8: Which transport check is most important when fetching protected resource metadata</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The metadata can enumerate a relationship without defining every application&#x27;s trust decision for it.">
+        <header><h4>Q8: May the client automatically trust this listed authorization server?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A valid protected resource document lists https://as.partner.example in authorization_servers. The client has no out-of-band trust rule, federation policy, or cross-check linking that issuer to the resource.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. use HTTPS validation appropriate for the protected resource identifier and metadata location</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. accept metadata over plain HTTP if the JSON fields look correct</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. ignore certificate mismatch because OAuth tokens are signed</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Metadata can influence where tokens are requested and how resources are addressed, so retrieval must be protected.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: HTTPS validation protects the metadata retrieval boundary and resource identity.
-- B: Plain HTTP lets attackers rewrite policy-relevant discovery data.
-- C: Signed tokens do not protect the metadata document that guides token and resource decisions.
-          </div>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Yes, because appearance in authorization_servers is a universal trust anchor.</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Yes, if the server's RFC 8414 document is reachable over HTTPS.</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Not yet; the application still needs a trusted issuer-to-resource association.</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. No, because RFC 9728 forbids dynamically listed authorization servers.</label>
+          </fieldset><div class="explain">RFC 9728 Section 7.6 explicitly leaves secure determination of an appropriate authorization server out of scope and application dependent. The advertised list can support dynamic discovery, but it is not a universal trust-anchor set; HTTPS and RFC 8414 validation establish configuration for an issuer, not that issuer's authority over this resource. The client must validate both metadata documents and then apply a defined issuer-to-resource trust policy before authorization begins.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="Metadata freshness affects authorization server and scope choices.">
-        <header><h4>Q9: Which operational practices are safe for protected resource metadata. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="b,d" data-difficulty="L3" data-hint="Check who signed the object before applying its conflict precedence.">
+        <header><h4>Q9: Which two actions are required when processing this signed metadata? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A client supports signed_metadata. Plain JSON lists AS1; the signed JWT lists AS2. The JWT signature is valid, but the client has not determined whether its iss is trusted for this resource.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. use advertised metadata locations and refresh behavior with validation</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. cache metadata forever because resource policy never changes</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. reuse one resource metadata document for unrelated resource identifiers</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. treat stale or inconsistent metadata as unusable for security decisions</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Resource metadata can change when resource policy, authorization servers, or supported proof methods change.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Advertised locations and refresh behavior can be useful when validation remains in place.
-- B: Resource policy and authorization server relationships can change, so forever caching is unsafe.
-- C: Reusing one document across unrelated identifiers breaks the resource binding.
-- D: Stale or inconsistent metadata should not drive security-sensitive choices.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Prefer AS2 immediately because a valid signature alone establishes issuer trust.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Validate that the signature key belongs to the issuer and decide whether that issuer is trusted.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Merge AS1 and AS2 before validation so neither source loses information.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. After successful trusted validation, give signed claims precedence over corresponding plain values.</label>
+          </fieldset><div class="explain">RFC 9728 Section 3.3 requires validation of the signature, the issuer's key, and trust in that issuer; mathematical signature validity alone is insufficient. Once supported signed metadata is valid, Section 2.2 gives its corresponding claims precedence rather than permitting an unvalidated union with conflicting plain values. Section 7.9 explains that signed and unsigned metadata can have different trust bases, so signer authorization must be established before applying precedence.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Do not invent capabilities from missing fields.">
-        <header><h4>Q10: If resource metadata does not show a capability required by a profile, what should happen</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Discovery selects configuration; credential validation and the final resource decision still need their own evidence.">
+        <header><h4>Q10: Which end-to-end design correctly composes resource discovery with OAuth and A2A proof?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A client follows resource_metadata, validates the resource value, selects a trusted listed issuer, validates RFC 8414 metadata, and obtains an audience-restricted DPoP-bound token. A gateway verifies the token and DPoP proof, then forwards an unsigned identity header to the policy-owning backend.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. assume support because the protected resource exists</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. treat the capability as unavailable for that profile unless another trusted rule defines it</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. downgrade to an unrelated OAuth flow automatically</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Missing metadata should not silently expand what the resource is assumed to support.
-
-**Related keywords:**
-- **protected resource** : Resource server being accessed with OAuth tokens
-- **resource metadata** : JSON document describing resource identity and policy signals
-- **authorization_servers** : Issuer identifiers for authorization servers used with the resource
-
-**Options:**
-- A: Resource existence does not imply support for every OAuth feature.
-- B: This prevents guessing and keeps profile behavior deterministic.
-- C: Automatic downgrades can bypass the intended resource or proof requirements.
-          </div>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Discovery and a listed issuer make the unsigned backend header equivalent to the original DPoP proof.</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. The flow needs each metadata binding, audience and proof validation, plus protected forwarding and backend authorization.</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. RFC 9728 authorizes the operation once the client successfully fetches both metadata documents.</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Audience restriction is unnecessary because resource metadata already prevents token use at other resources.</label>
+          </fieldset><div class="explain">RFC 9728 Sections 3.3 and 5 bind discovery to the intended resource, Section 7.4 recommends audience-restricted tokens, and Section 7.6 preserves the separate issuer-trust decision. Metadata only configures the flow; it neither issues nor accepts access, and a newly created unsigned header is not bound to the DPoP key or request. Each association and credential must be verified at its intended endpoint, and any derived assertion must remain protected until the backend applies its own authorization policy.</div>
         </div>
       </article>
     </section>

@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9000",
       SKILL_SUBTITLE: "QUIC Transport",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -101,14 +102,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** transport, multiplexed, secure, UDP. QUICはstreamと信頼性, 暗号統合を提供する.
-            **Correct (B):** UDPを基盤にしつつ, 複数streamの多重化と暗号化を組み込んだtransport.
-            **Options:**
+            transport, multiplexed, secure, UDP. QUICはstreamと信頼性, 暗号統合を提供する.
+            UDPを基盤にしつつ, 複数streamの多重化と暗号化を組み込んだtransport.
+
 
             - A (incorrect): QUICはUDP上の独立したtransportであり, TCP connection内で交渉するextensionではありません.
             - B (correct): QUICはUDP datagramを使い, secureなconnectionと複数のstreamを提供します.
             - C (incorrect): QUICはUDP datagramを使いますが, secure connection state, reliable stream, loss recovery, congestion controlを追加します.
-            **Related:** HTTP/3はQUIC上にHTTPを載せる.
+            HTTP/3はQUIC上にHTTPを載せる.
           </div>
         </div>
       </article>
@@ -117,9 +118,9 @@
         <header><h4>Q2: QUIC connection IDの主な目的として正しいのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. address変更後もconnectionを継続しやすくする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. TLS certificateを置き換える</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. requestの完全URIを符号化する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. network address変更後もconnectionを継続する</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. certificate-based server認証を置き換える</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. application requestの完全URIを運ぶ</label>
           </fieldset>
           <figure class="flow-diagram answer-figure" aria-labelledby="rfc9000-ja-q2-caption">
             <figcaption id="rfc9000-ja-q2-caption">QUIC connection ID があると, 古い path の IP:port に縛られず, path が変わっても同じ connection を継続しやすくなります.</figcaption>
@@ -149,14 +150,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** connection ID, migration. connection IDはIPとportの組から独立にconnectionを識別する手段.
-            **Correct (A):** path変更でも同一connectionとして継続でき, LBでのルーティングにも使われる.
-            **Options:**
+            connection ID, migration. connection IDはIPとportの組から独立にconnectionを識別する手段.
+            path変更でも同一connectionとして継続でき, LBでのルーティングにも使われる.
+
 
             - A (correct): connectionを1つのIP:port tupleだけで識別しないため, migrationやNAT rebinding後もpacketを同じconnectionへ対応付けられます.
             - B (incorrect): certificateによるpeer authenticationはTLSの役割であり, connection IDはその代わりになりません.
             - C (incorrect): URIはHTTPなどのapplication protocolが扱い, QUICのtransport identifierには格納しません.
-            **Related:** 一部環境ではconnection IDでpacketをLBへルーティングする.
+            一部環境ではconnection IDでpacketをLBへルーティングする.
           </div>
         </div>
       </article>
@@ -172,77 +173,77 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** RFC 9000 Section 2はQUIC streamをordered byte sequenceと定義しますが, 異なるstreamのbyte間には順序を定義しません.
-            **Correct (C):** stream 4はgapより後のdataをまだ渡せませんが, 独立して受信できたstreams 8と12のdataは渡せます.
-            **Options:**
+            RFC 9000 Section 2はQUIC streamをordered byte sequenceと定義しますが, 異なるstreamのbyte間には順序を定義しません.
+            stream 4はgapより後のdataをまだ渡せませんが, 独立して受信できたstreams 8と12のdataは渡せます.
+
 
             - A (incorrect): QUICにはstreams 8と12をstream 4に従わせるconnection-wideなbyte順序はありません.
             - B (incorrect): stream 4内では順序を守るためgapを飛び越えて渡せませんが, 他のstreamまで待たせる必要はありません.
             - C (correct): stream 4内の順序を保ちながら, その順序をstreams 8と12へ広げない挙動です.
-            **Related:** stream 4のbyte gapはstreams 8と12にin-order deliveryの待ちを強制しません. ただし, congestion controlはconnection全体へ影響し得ます.
+            stream 4のbyte gapはstreams 8と12にin-order deliveryの待ちを強制しません. ただし, congestion controlはconnection全体へ影響し得ます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="各記述をreceiver capacity, network congestion, application securityのどれに属するか分類します.">
-        <header><h4>Q4: QUIC flow controlについて正しいものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="stream単位とconnection単位のどちらの受信limitで停止しているかを特定してください.">
+        <header><h4>Q4: 報告されたblockを解消するcredit更新はどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">senderはstream 8で通知済みのoffset limitに達し, STREAM_DATA_BLOCKEDを送信しました. connection全体のMAX_DATAには十分なcreditが残り, 受信applicationはstream 8のdataをさらに消費済みです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. streamごとのdata量を制限できる</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. connection全体のdata量を制限できる</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. receiverが過負荷にならないためのbackpressureになる</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. アプリの認証を置き換える</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 全streamがconnection creditを使うため, MAX_DATAだけを増やす</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. stream 8のMAX_STREAM_DATA limitを増やす</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. senderにoffsetを再計算させるためstream limitを小さくする</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. stream 8でHTTP/2のWINDOW_UPDATEを送る</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** flow control, backpressure. flow controlはreceiver capacityを守るためのcredit制御.
-            **Correct (A,B,C):** stream単位とconnection単位があり, receiver資源を保護する.
-            **Options:**
-
-            - A (correct): stream-level creditは, 1本のstreamがreceiverの割当量を超えてdataを送ることを防ぎます.
-            - B (correct): connection-level creditは, 全streamを合わせた受信data量を制限します.
-            - C (correct): receiverが処理やbufferを用意できる範囲だけcreditを与えることでbackpressureを実現します.
-            - D (incorrect): flow controlはreceiverのbuffer使用量を制御しますが, application userの認証は行いません.
-            **Related:** flow controlとcongestion controlは別. congestion controlはnetwork capacity側.
+            A: connection creditは枯渇していないため, それだけを増やしてもstream 8のblockは残ります.
+            B: RFC 9000 Section 4.1はstreamとconnectionのlimitを別々に定義します. MAX_STREAM_DATAは指定streamで許容する絶対offsetを増やします.
+            C: 小さいlimitの再通知は効果がなく, senderはlimitを増やさないupdateを無視します.
+            D: WINDOW_UPDATEはHTTP/2のframeです. QUICはMAX_STREAM_DATAとMAX_DATAを使います.
+            判定基準: creditを追加する前に枯渇したlimitを特定します. stream creditとconnection creditは別のreceiver capacity制約を解消します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="stream作成後にどちらのendpointがdataを送れるかで方向性を分類します.">
-        <header><h4>Q5: QUICがサポートするstream typeはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="connection keyを持つことと, 新しいaddressへのreturn pathが到達可能であることを分けてください.">
+        <header><h4>Q5: serverは新しいclient addressをどう扱うべき?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">handshake確認後, serverは既存connectionについて保護を正しく検証できるnon-probing packetを, NAT rebindingと整合する新しいclient IP:portから受信しました. このaddressは未検証です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. bidirectionalとunidirectional</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. connection全体で1本のbyte streamのみ</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 信頼性なしのdatagramのみ</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. packet protectionがreturn-path reachabilityも証明するため検証済みと扱う</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. source addressの変更は常にprotocol違反なのでconnectionを閉じる</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. policyが許せばmigrationを受け入れ, PATH_CHALLENGE/PATH_RESPONSE検証を開始する</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 新addressへ送った任意packetのACKを受ければpath検証成功とする</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** bidirectional stream, unidirectional stream. プロトコル設計に応じて方向性を選べる.
-            **Correct (A):** bidirectional streamでは両endpointが送信でき, unidirectional streamではinitiatorだけが送信できます.
-            **Options:**
-
-            - A (correct): application protocolはmessage flowの方向に応じて2種類のstreamを使い分けられます.
-            - B (incorrect): QUIC connectionは複数の独立したstreamを多重化し, connection全体を1本のbyte streamにはしません.
-            - C (incorrect): QUIC streamは信頼性のあるordered byte sequenceです. unreliable datagramはRFC 9000のbaseline stream modelではありません.
-            **Related:** HTTP/3はunidirectionalなcontrol streamとbidirectionalなrequest streamを併用する.
+            A: authenticなpacketはconnectionとの関連を示しますが, RFC 9000 Section 8.2は新pathのreachabilityに対応するPATH_RESPONSEを要求します.
+            B: Section 9はmigrationを明示的に扱います. 既に検証済みでないpeer addressの変更後はpath validationが必要です.
+            C: Sections 8.2と9.3に沿う処理です. migrationとanti-amplificationの規則を守って新pathへ応答し, 未開始なら検証を開始します.
+            D: Section 8.2.3はACKではpath validationにならないと定めます. unpredictableなPATH_CHALLENGE値の返送が必要です.
+            判定基準: 有効なconnection packetはmigration処理を開始できますが, 新しいaddress pairのreachabilityを確立するのはpath-validation exchangeです.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^udp$" data-difficulty="L1" data-hint="QUICが使うIP transport substrateと, QUIC自身が実装するreliabilityやcongestion controlを区別します.">
-        <header><h4>Q6: QUICが基盤として使うIP transport protocolは何</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="connection continuityとpath validationが何を証明するかを限定し, 別のauthorization inputを評価してください.">
+        <header><h4>Q6: RFC 9000の保証範囲に沿うsecurity reviewはどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <p class="question-premise">A2A gatewayはQUIC connection開始時にagentを認証しますが, source IP addressをauthorization principalとして保存します. 後にconnectionが移動し, 新addressのpath validationに成功しました. gatewayはconnection IDが同じなのでprivileged requestを許可する予定です.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 許可する. path validation成功は新source addressが元のagent本人に属すことも証明する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. migrationをすべて拒否する. RFC 9000はapplication principalを最初のIPへ固定する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. connectionは継続し, path reachabilityではなくsessionまたはapplication identityでauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. 新connection IDを発行した後だけ許可する. connection-ID rotationはprincipalを再認証する</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** UDP. QUICはUDP packetを基盤にし, user-space進化とTCP ossification回避を狙う.
-            **Correct:** UDP.
-            **Why others are wrong:** QUICはTCPではない. SCTPも基盤ではない.
-            **Related:** UDP上でも, QUICは信頼性やcongestion controlをプロトコルとして提供する.
+            A: RFC 9000 Section 8.2が検証するのはaddress pairのreachabilityであり, address背後のapplication principalではありません.
+            B: Section 9はconnection migrationを許します. RFC 9000は最初のsource addressをapplication authorizationに使うよう要求しません.
+            C: transport保証とapplication判断を分離します. connectionを継続しつつ, principal識別用に設計した証拠でauthorizationできます.
+            D: connection IDはroutingとcontinuityを支え, linkability低減にも使われますが, application re-authenticationではありません.
+            判定基準: RFC 9000 Sections 8.2と9が確立するのはpathとconnectionの性質です. IP-based authorizationを要求せず, 採用すべきapplication identity modelも決定しません.
           </div>
         </div>
       </article>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9457", "SKILL_SUBTITLE": "Problem Details for HTTP APIs", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9457", "SKILL_SUBTITLE": "Problem Details for HTTP APIs", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -148,12 +148,12 @@ B: A problem type can define extension members for structured data. Consumers mu
 C: Redefining standard members breaks their specified meanings. status remains an HTTP status code and title remains a summary of the problem type.</div></div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="First decide whether the failures are occurrences of one category or genuinely different categories.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="First decide whether the failures are occurrences of one category or genuinely different categories.">
         <header><h4>Q8: An operation detects several failures. Which response strategy matches RFC 9457 guidance?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. Always return a generic batch problem containing unrelated problem types</label>
           <label class="choice"><input type="radio" name="Q8" value="b"> B. Emit several HTTP status lines so every failure has an independent status</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. Use an extension for repeated same-type failures, but select the most relevant type when failures differ</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. Use a same-type extension; otherwise return the most relevant type</label>
         </fieldset><div class="explain">**Explanation:**
 
 A: A generic container for unrelated problems maps poorly to HTTP status and can make client behavior ambiguous. It is not the universal recommendation.
@@ -161,32 +161,34 @@ B: A single HTTP response has one status line. Problem Details does not create m
 C: A type-specific extension can represent multiple occurrences of the same type. For different types, returning the most relevant or urgent problem is recommended.</div></div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="A type definition is a public interoperability contract, not a container for internal diagnostics.">
-        <header><h4>Q9: Which practices belong in a well-defined Problem Details type? Select all that apply.</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Document its type URI, title, and expected HTTP status</label>
-          <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Define a new type for every ordinary 404 response</label>
-          <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Reuse a registered problem type when its semantics fit</label>
-          <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Make the type URI reveal a stack trace for debugging</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate stable machine-readable semantics from occurrence text and internal diagnostics.">
+        <header><h4>Q9: Which redesign gives clients a stable contract without exposing internals?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An API returns <code>type: about:blank</code>, HTTP 400, and <code>detail: &quot;account locked in AuthService.java:418&quot;</code>. Clients retry or stop by matching the English detail text. The server also wants to convey a lock reason and an unlock time.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Keep <code>about:blank</code> and standardize the Java stack-frame wording for parsers</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Put the lock reason in <code>title</code> and require clients to parse localized titles</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Define a stable problem type and typed extensions, while keeping <code>detail</code> non-sensitive</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. Use a unique <code>instance</code> URI as the problem type and embed diagnostics in its query</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: A new problem type definition must document the type URI, a short title, and the HTTP status code used with it.
-B: A plain HTTP status code is often enough for a generic failure. New types are useful when clients need problem-specific semantics.
-C: RFC 9457 establishes an HTTP Problem Types registry, so reusing a suitable registered type avoids unnecessary incompatible vocabularies.
-D: A type URI identifies a category and may provide documentation. It should not expose implementation details or occurrence-specific secrets.</div></div>
+RFC 9457 Sections 3.1.1 and 3.1.4 make <code>type</code> the primary machine identifier and discourage parsing <code>detail</code>. Section 3.2 provides typed extension members, while Sections 4 and 5 distinguish API problem semantics from debugging data and warn against exposing implementation internals. C gives clients stable fields for reason and unlock time. The other choices turn human or occurrence-specific data into a protocol contract and retain disclosure risk.</div>
+        </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate general HTTP API review guidance from the wire format selected by a particular application protocol.">
-        <header><h4>Q10: An A2A binding already specifies a google.rpc.Status-style HTTP error body. What does RFC 9457 contribute to its design review?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. It silently replaces the binding's specified error body with problem+json</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. It provides a general review model without overriding the binding's wire contract</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. It proves that any logged stack trace is safe when instance is present</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Treat translation, client decisions, and logging as separate boundaries with explicit contracts.">
+        <header><h4>Q10: Which review recommendation preserves interoperability and limits disclosure?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A binding specifies a <code>google.rpc.Status</code>-style error body. A browser-facing gateway translates it to <code>application/problem+json</code>, agents decide whether to retry by parsing <code>detail</code>, and a central logger stores the entire translated object. The <code>instance</code> URI contains a bearer token in its query, while <code>detail</code> contains an internal path.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. Replace the A2A wire contract implicitly because RFC 9457 always overrides other formats</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. Keep retry parsing and full logging because <code>problem+json</code> sanitizes every member</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. Specify the adapter mapping, use stable machine fields, and redact before response and logging</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. Remove the HTTP status and make <code>detail</code> the only authoritative error signal</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: A general HTTP RFC does not silently change an application's specified wire representation. Such a migration requires an explicit protocol decision.
-B: Stable error identifiers, status alignment, extensibility, and disclosure limits are useful review criteria even when the binding uses another error envelope.
-C: instance identifies an occurrence and does not sanitize other members. Stack traces, tokens, internal paths, and log data can still disclose sensitive information.</div></div>
+RFC 9457 does not override another protocol's chosen error envelope. An adapter can use it only through an explicit mapping. Sections 3.1.1, 3.1.4, and 3.2 support stable type and extension semantics instead of parsing <code>detail</code>; Section 5 requires careful review of generated information because Problem Details does not sanitize secrets or implementation data. C addresses the wire, decision, response, and logging boundaries. The HTTP status remains authoritative to generic HTTP software.</div>
+        </div>
       </article>
     </section>
 

@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 1958",
       SKILL_SUBTITLE: "Architectural Principles of the Internet",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 3,
+      PROGRESS_VERSION: 5,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -67,170 +67,164 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate the end-to-end assurance the backend needs from what a protected gateway-to-backend assertion establishes. Also consider the status of RFC 1958.">
-        <header><h4>Q1: Which conclusion most accurately uses RFC 1958 Section 2.3 to review this gateway design?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Distinguish the function Section 2.3 asks reviewers to locate from the trust model that the architecture must define.">
+        <header><h4>Q1: Using RFC 1958 Section 2.3 as a review lens, which conclusion stays within what the RFC can establish?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A edge gateway validates a grant and session-bound proof, then forwards only a protected identity assertion to the backend. The resource-owning backend makes the final authorization decision from that assertion without verifying the original grant or proof.</p>
+          <p class="question-premise">A gateway validates a grant and session-bound proof, then sends the backend a signed assertion containing <code>proof_valid=true</code>, the target resource, and freshness data. The backend owns the resource and makes the final authorization decision, but cannot verify the original grant or proof. The architecture does not state whether the gateway is a trusted security endpoint or how its assertion is bound to the backend request.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. A resource-owning backend must always verify the original grant and proof itself; treating the gateway as a security endpoint violates RFC 1958</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Once the assertion's source and integrity are protected between gateway and backend, every assurance about the original client session transfers as the same end-to-end channel</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Determine whether the gateway is an explicitly trusted security endpoint. If the backend needs assurance about the original client session, justify the assertion as a new trust and binding boundary. RFC 1958 alone does not yield a conformance verdict</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Because the gateway checked the grant and proof before forwarding, the security decision is complete and the verification location cannot affect the authorization trust model</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Section 2.3 makes the design nonconformant because the resource-owning backend must always repeat the original validation</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. The signature and freshness data make the assertion equivalent to the original proof, regardless of its request binding</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Section 2.3 makes the complete function's placement a review question; a defined trusted-gateway model can work, but this RFC does not choose it</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Naming the gateway an application endpoint preserves the original-session guarantee without defining assertion semantics</label>
           </fieldset><div class="explain">**Explanation:**
-A: RFC 1958 Section 2.3 allows an incomplete network function to remain useful as an enhancement; it does not categorically prohibit gateway processing. RFC 1958 is also Informational.
-B: Depending on the mechanism, protection on the gateway-to-backend hop can authenticate the assertion's source and integrity on that hop, but it does not automatically preserve binding to the original client TLS session.
-C: The Section 2.3 end-to-end argument is a review lens for asking whether complete implementation of a function requires application-endpoint knowledge. If the gateway is a trusted security endpoint, the trust model must define the assertion's meaning, authenticity, revocation, and replay handling. If the backend must verify the original session, it needs verifiable evidence or a separate binding design.
-D: Grant validity is one authorization condition; whether this request is bound to the intended secure-channel instance is a separate assurance.</div>
+A: RFC 1958 is Informational design guidance, not a protocol conformance rule, and Section 2.3 does not categorically prohibit intermediary security functions.
+B: An authenticated assertion can be evidence in a trusted-gateway design, but its signature and freshness do not define which request, session, resource, or decision it covers.
+C: Supported. The end-to-end argument asks whether the complete function can be implemented with the required knowledge. Either direct backend verification or reliance on a trusted gateway may be designed, but the latter must define gateway identity and trust, assertion integrity, request and resource binding, freshness, replay handling, and the backend's authorization responsibility. RFC 1958 alone does not choose between those trust models or declare either one conformant.
+D: A component label does not create the missing assurance contract. The architecture still has to define what the assertion proves and where the final check occurs.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate IP reachability from application-level interoperability, then decide whether the gateway is a new endpoint or a transparent intermediary.">
-        <header><h4>Q2: Which review most accurately applies RFC 1958 Sections 2.1-2.3?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Look beyond reachability: who owns the essential translation, and can the stated requirement survive gateway failure?">
+        <header><h4>Q2: Which concern can RFC 1958 Sections 2.1 and 2.3 most directly raise about this design?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Two A2A implementations are reachable over IP, but they can communicate only when one provider's gateway translates task state and authorization semantics. Without that gateway, the endpoints cannot recover the same meaning.</p>
+          <p class="question-premise">A2A endpoints from two providers are IP-reachable, but only one provider's gateway can translate task state and authorization semantics. The stated requirement is that endpoints recover the same meaning after that gateway fails or the provider is changed.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Application intelligence must reside only in physical hosts, so any gateway that translates meaning necessarily violates RFC 1958</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. IP packets are delivered, so connectivity is complete and semantic failure caused by gateway dependence is outside architectural review</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Review whether the dependency fragments global interoperability and end-to-end meaning. A gateway may be an explicit application endpoint, so decide from its failure model and trust boundary</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Selecting one gateway provider for the whole network hides semantic translation in the network and automatically restores end-to-end architecture</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Handling application semantics in a gateway conflicts with the end-to-end principle, even if endpoints can recover meaning after its failure</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Defining the gateway as an application endpoint makes its failure part of endpoint failure, so the recovery requirement no longer applies</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. The single-gateway dependency fails the stated recovery requirement; that dependency, not gateway use itself, is the concern</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. IP reachability satisfies the connectivity goal, so recovery of authorization semantics can remain an undocumented local operation</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2.1-2.3 favor end-to-end intelligence but do not normatively prohibit a particular physical placement.
-B: IP reachability does not establish that A2A message meaning and interoperability survive between endpoints.
-C: The review asks who owns essential application semantics and whether endpoints still interoperate after gateway failure or provider change. If the gateway is an endpoint, its responsibility and trust must be explicit.
-D: Vendor uniformity does not remove the dependency or establish global connectivity and failure isolation.</div>
+A: Sections 2.1 and 2.3 do not normatively forbid gateway processing; a gateway can be an explicit application endpoint.
+B: Classification does not remove the stated failure requirement or explain who reconstructs the semantics.
+C: The supported concern is the mismatch between an essential end-to-end function and its single failure dependency. RFC 1958 does not choose a translation protocol or trust model.
+D: Packet reachability and application-level interoperability are distinct. Section 2.2's discussion of one Internet-layer protocol is not direct support for this application-gateway question, so it is not cited here.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Distinguish the unit checked on each hop from the complete object whose property the receiving application must establish.">
-        <header><h4>Q3: Which integrity design follows RFC 1958 Section 2.3?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The approved object is exact octets, not an unspecified canonical meaning. Trace which check covers that same object.">
+        <header><h4>Q3: Which judgment most accurately uses RFC 1958 Section 2.3 to review integrity?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An agent sends an approved 2 GB artifact. A gateway splits it into chunks and an object store reconstructs it. Every hop uses TLS and chunk checksums, but the backend must determine whether the result is the exact artifact that was approved.</p>
+          <p class="question-premise">An agent approves the exact octet sequence of a 2 GB artifact. A gateway chunks it and an object store reconstructs it. Every hop uses TLS and chunk checksums; the backend must establish that the reconstructed octets equal the approved octets.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Successful TLS and checksum verification on every hop makes end-to-end verification of the reconstructed artifact redundant</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. The backend verifies a digest or signature over the same canonical artifact that was approved, while retaining hop checks for early detection and retransmission</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Recording each chunk's arrival order at the gateway proves end-to-end content integrity from the same operational log</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. The object store's reconstruction-complete event is sufficient, so representation differences between approval and receipt remain outside the application</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Send the backend a record that every hop passed TLS and chunk-checksum checks, and use it as proof of whole-artifact equality</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify at the backend a digest or signature over the approved exact octets, while retaining hop checks for early corruption detection</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Have the gateway sign the reconstructed octets and treat that signature as the original agent's artifact approval</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Check reconstruction completion and size equality, then leave content verification entirely to the storage service</label>
           </fieldset><div class="explain">**Explanation:**
-A: Hop protection covers a segment or chunk, not necessarily the identity of the object across splitting, storage, and reconstruction.
-B: The complete application function is checked using an end-to-end proof with the same canonicalization boundary at approval and receipt. Lower-layer checks remain useful for performance and recovery.
-C: An arrival-order log does not prove content integrity, and the log's own authenticity and completeness would be separate questions.
-D: A completion event describes processing state; it does not establish equality with the approved bytes or meaning.</div>
+A: Per-hop success explains each segment, not necessarily equality of the exact octets across chunking, storage, and reconstruction.
+B: The backend checks the complete required property over the same octet sequence the agent approved. Hop checks remain useful as supporting mechanisms.
+C: A gateway signature proves what the gateway saw, not that those octets are the artifact the agent approved unless a separate binding establishes that relation.
+D: Completion and size are useful operational evidence but do not prove content equality. RFC 1958 does not choose the digest method; this application follows from the stated exact-octet requirement.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Separate authoritative task state from relay state that can be derived again, then trace what survives a relay crash.">
-        <header><h4>Q4: Which changes reflect fate sharing and self-healing state in RFC 1958 Section 2.3? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate the authoritative cursor already held by the task owner from relay mappings that can be reconstructed.">
+        <header><h4>Q4: Using RFC 1958 Section 2.3 as a review lens, which state placement most directly addresses the requirement?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A stateful relay keeps task-to-stream-subscriber mappings only in memory. After a relay restart, the agents and task store remain healthy, but no component can recover where a task should resume, leaving it permanently orphaned.</p>
+          <p class="question-premise">The task owner durably keeps authoritative task state and a resume cursor. A relay cluster holds only subscriber mappings. The requirement is to preserve the authoritative cursor after loss of the entire relay cluster and resume a reconnected stream within 30 seconds.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Keep authoritative task and resume state in the task owner's failure boundary, and derive transient relay mappings from it</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Replicate the same volatile mapping across more relays and claim fate sharing without defining reconstruction or owner state</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Define procedures to derive and repair relay state so its loss causes only a temporary interruption while connectivity remains</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Measure and minimize per-session relay state and its coupling to authoritative task state</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="e"> E. Eliminate recovery by storing every packet and every intermediate state indefinitely at every relay</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Synchronously replicate mappings between relays, with no reconstruction procedure outside the cluster</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Add a durable mapping database updated independently from the task owner's resume cursor</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Rebuild mappings from the task owner's cursor, using relay replication only to help meet the 30-second objective</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Accept a reconnecting agent's cursor as authoritative without validating it against task-owner state</label>
           </fieldset><div class="explain">**Explanation:**
-
-A: Aligning state lifetime with an endpoint or logical task owner prevents a relay-only failure from destroying authoritative state.
-B: Replication can improve availability, but it does not replace fate sharing when the same failure mode and non-reconstructible state remain.
-C: RFC 1958 describes network-maintained state as adaptively repairable and limits its loss to a temporary denial of service when connectivity exists.
-D: Reducing state and cross-component dependencies reduces recovery scope and failure amplification.
-E: Indefinite full retention increases cost and coupling and conflicts with minimizing network state.</div>
+A: This can improve process availability, but the premise includes loss of the whole cluster, which would remove the only mapping source.
+B: A durable store could be justified, but it introduces two authorities and an extra consistency dependency not required by the premise.
+C: Authoritative state shares the task owner's fate, while relay state is self-healing. Replication can still support the recovery-time objective.
+D: Treating the agent cursor as authoritative introduces replay and rollback questions. Section 2.3 guides review of state fate and reconstruction; it does not prescribe a database technology or a 30-second objective.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate claims supported by observed interoperability from untested claims about security and scale.">
-        <header><h4>Q5: What follows from proposal X's results under RFC 1958 Sections 2.4 and 3.14?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Select only the claims that each body of evidence actually evaluates.">
+        <header><h4>Q5: Under RFC 1958 Sections 2.4 and 3.14, which claim-evidence mappings are supported? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <p class="question-premise">Two independent implementations of A2A profile X interoperate under loss, reordering, and version mismatch. Profile Y has a detailed formal model but only one implementation. Neither has been evaluated at Internet scale or under attack.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Because two implementations run, X has established security and Internet-scale behavior and needs no further review before standardization</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Y's formal model always outweighs running code, so X's interoperability result provides no architectural evidence</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. X has stronger engineering evidence for interoperability under the tested conditions, but not for security or scale; specification review and tests of the remaining claims are still needed</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Only the implementation count matters, so test conditions, implementation independence, and observed failures should be excluded from comparison</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="a"> A. X's tests support the claim that two implementations interoperate under the stated fault conditions</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="b"> B. X's tests support untested attack resistance and Internet-scale behavior to the same degree</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="c"> C. Y's model can support modeled properties under its explicitly stated assumptions</label>
+            <label class="choice"><input type="checkbox" name="Q5" value="d"> D. Neither body of evidence alone establishes deployment behavior at the untested scale</label>
           </fieldset><div class="explain">**Explanation:**
-A: Running code is important evidence, but it does not prove unobserved security, scale, or operational properties.
-B: Formal reasoning and implementation feedback are complementary; neither automatically invalidates the other.
-C: Sections 2.4 and 3.14 prioritize feedback from real implementations. The conclusion must remain bounded to tested conditions, with separate evidence for other claims.
-D: Independence and test conditions are central to evaluating interoperability evidence.</div>
+A: Supported. This is an interoperability claim bounded to observed conditions.
+B: Unsupported. It extrapolates to properties that were not evaluated.
+C: Supported. Formal evidence is assessed within its model and assumptions, rather than placed in a single ranking against running code.
+D: Supported. RFC 1958 values implementation feedback, but it does not by itself settle standardization procedure or untested claims.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Decompose success in one lab into host capability, network conditions, node count, and control-traffic cost.">
-        <header><h4>Q6: Which review action follows RFC 1958 Sections 3.1, 3.3, and 3.4?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The issue is not fixed values in isolation, but whether the profile's claimed deployment scope matches its evidence.">
+        <header><h4>Q6: Which conclusion uses RFC 1958 Sections 3.1, 3.3, and 3.4 as a review lens?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A new A2A streaming profile mandates a fixed 200 ms deadline, an 8 MB minimum buffer, and frequent heartbeats. Datacenter tests pass, but mobile agents time out and control traffic dominates with one million idle agents.</p>
+          <p class="question-premise">A profile targets A2A over the public Internet, including mobile agents, but requires a fixed 200 ms deadline, an 8 MB minimum buffer, and frequent heartbeats. Datacenter tests pass; mobile agents time out, and control traffic dominates with one million idle agents.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. Make the successful datacenter values Internet-wide constants and classify endpoints that cannot satisfy them as unsupported</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. Separate required semantics from deployment defaults, measure across different capabilities and networks, and quantify traffic, latency, memory, and cost as node count grows</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. Convert everything into optional parameters and leave combinations and negotiation failures undefined for each operator</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. Defer scale and operating-cost evaluation until after standardization because future hardware might eliminate mobile failures</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Keep the Internet-wide scope and make the successful datacenter values the interoperability baseline</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Redesign and test for the claimed heterogeneous scope, or narrow the scope and the resulting claims</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Make all three values optional and leave disagreement handling to each deployment</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Treat performance and cost as implementation optimizations because functionality passed in one environment</label>
           </fieldset><div class="explain">**Explanation:**
-A: Assuming one homogeneous environment excludes heterogeneity and deployability from the design.
-B: RFC 1958 calls for evaluating heterogeneity, large-scale behavior, performance, and cost together with functionality. It also matters whether a fixed value is protocol semantics or deployment policy.
-C: Adding options does not remove complexity; undefined combinations increase interoperability failures.
-D: Hypothetical future hardware is not evidence that current scaling failures can be ignored.</div>
+A: The observed evidence does not match the Internet-wide claim. A datacenter-scoped profile could potentially justify the values.
+B: The principles expose the mismatch between scope and evidence. They do not categorically ban fixed values.
+C: Optionality without negotiation and failure semantics does not establish interoperability.
+D: Sections 3.3 and 3.4 place scale, performance, and cost inside design review. RFC 1958 does not set the actual deadlines or thresholds.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compare a technical gap the existing mechanism cannot solve with the interoperability cost of migration; novelty and aesthetics are not enough.">
-        <header><h4>Q7: Which conclusion applies RFC 1958 Section 3.2 as a design decision?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Section 3.2 does not prohibit a new design. Ask whether measured benefit justifies duplication and migration cost.">
+        <header><h4>Q7: Which review conclusion follows from RFC 1958 Section 3.2?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Deployed Agent Card discovery already handles the required metadata, caching, and authentication. A proposal represents the same information in an incompatible registry and requires indefinite dual lookup, but identifies no failure the deployed mechanism cannot address.</p>
+          <p class="question-premise">Existing Agent Card discovery is widely deployed. A new mechanism reduced metadata leakage by 60% in tests, but requires 18 months of dual lookup and added implementation. Acceptable residual failure and privacy-benefit thresholds are not yet agreed.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. More choices always improve flexibility, so both mechanisms should become permanently mandatory without a technical difference</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. A deployed mechanism can never be improved, so reviewers should disregard any technical advantage the proposal might later demonstrate</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. Require a concrete technical gap and compare its benefit with interoperability, implementation, and migration costs. Reuse the deployed mechanism absent that case, without excluding demonstrated improvements</label>
-            <label class="choice"><input type="radio" name="Q7" value="d"> D. If the registry schema looks simpler locally, replace the deployed mechanism without measuring ecosystem-wide dual behavior and migration failures</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Exclude the new mechanism regardless of measured privacy benefit because the deployed mechanism serves the same function</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Replace the deployed mechanism because privacy benefit was measured, without evaluating dual-lookup failures or migration cost</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Treat the privacy gain as a possible good technical reason and evaluate it against migration and interoperability cost</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Mandate both mechanisms indefinitely so the cost-benefit threshold no longer needs agreement</label>
           </fieldset><div class="explain">**Explanation:**
-A: Duplicated functions increase implementation branches and the interoperability matrix; option count is not a benefit by itself.
-B: Section 3.2 recommends reuse but explicitly avoids using that argument to reject improvements supported by a good technical reason.
-C: Treating reuse as the default while comparing measurable benefit against migration cost turns the principle into a design decision.
-D: Local schema simplicity does not establish that ecosystem-wide dual behavior and migration are simpler.</div>
+A: Section 3.2 favors reuse but says not to use that argument to reject improvements.
+B: A measured benefit alone does not evaluate ecosystem-wide interoperability and migration risk.
+C: Supported. Privacy, performance, or operational improvement can be a good technical reason; it need not be a function the old design could never perform.
+D: Permanent duplication retains the cost Section 3.2 seeks to avoid. RFC 1958 does not decide whether 60% or 18 months crosses the adoption threshold.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="For each flag, ask whether it has an independent requirement, whether responsibilities can be separated, and whether peers must agree.">
-        <header><h4>Q8: Which profile revisions reflect RFC 1958 Sections 3.5-3.8? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Variation is required. Choose the design that preserves it while reducing the option space and manual coordination.">
+        <header><h4>Q8: Which revision is best supported by RFC 1958 Sections 3.5, 3.6, and 3.8?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile has 14 manually configured flags for retry, compression, signing, and streaming. Some combinations are undefined, operators choose differently, and peers do not confirm choices when connecting.</p>
+          <p class="question-premise">Variation is necessary to serve both low-bandwidth devices and datacenters. The current profile has 14 interacting manual flags; configuration mismatch causes 40% of failures. Three interoperable capability bundles have been tested.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q8" value="a"> A. Collapse duplicate behaviors without distinct requirements and remove undefined flag combinations</label>
-            <label class="choice"><input type="checkbox" name="Q8" value="b"> B. Maximize flexibility by configuring every flag independently at each gateway and coordinating combinations manually between operators</label>
-            <label class="choice"><input type="checkbox" name="Q8" value="c"> C. Separate authorization, transport, and observability responsibilities behind explicit interfaces where they are independent</label>
-            <label class="choice"><input type="checkbox" name="Q8" value="d"> D. Dynamically negotiate only capabilities on which peers must agree and define a safe fallback for unsupported choices</label>
-            <label class="choice"><input type="checkbox" name="Q8" value="e"> E. Prohibit deployment and feedback from an interoperable subset until every optional interaction is complete</label>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Keep all 14 flags and add recommended combinations to an operations guide for manual coordination</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Mandate one datacenter configuration and leave low-bandwidth support to implementation extensions</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Define a mandatory baseline and tested bundles, negotiate only the needed bundle, and specify mismatch behavior</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Define every flag combination as valid and let each operator's local policy determine usability</label>
           </fieldset><div class="explain">**Explanation:**
-
-A: Sections 3.5 and 3.8 favor simple solutions and avoiding unnecessary options and parameters.
-B: Manual choices increase configuration drift and untested combinations, weakening interoperability.
-C: Section 3.6 uses modularity to contain the effects of change and failure for separable responsibilities.
-D: Necessary variation can be negotiated dynamically, but the result and failure behavior must be specified.
-E: Section 3.7 allows an almost complete solution to provide useful implementation feedback instead of waiting indefinitely for perfection.</div>
+A: Guidance alone does not resolve the stated manual-coordination failure.
+B: This reduces options but fails the explicit heterogeneity requirement.
+C: It keeps required variation while reducing option space and manual configuration. The profile still has to define exact bundle and fallback semantics.
+D: A larger valid matrix increases implementation and test burden. Section 3.7's almost-complete solution does not license undefined behavior required for interoperability.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Trace what the client needs to make its first request and what must already be known to obtain that information.">
-        <header><h4>Q9: Which bootstrap review follows RFC 1958 Section 3.11?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="DNS and the Web PKI are the available bootstrap trust. Break the cycle without losing metadata-source authentication.">
+        <header><h4>Q9: After RFC 1958 Section 3.11 identifies the cycle, which bootstrap design meets the stated assumptions?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Fetching an Agent Card requires an OAuth access token. The only way for a client to learn the authorization server and supported authentication scheme is to read that Agent Card. The client has no preconfigured bootstrap information.</p>
+          <p class="question-premise">Fetching an Agent Card requires an OAuth token, but that Card is also the only current source of the token endpoint. The client has no preconfigured issuer; it knows the agent's DNS name and can use DNS and the Web PKI as bootstrap trust.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q9" value="a"> A. Because the Agent Card and token are needed together, aligning their lifetimes makes the design a desirable form of fate sharing</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. Token acquisition and Agent Card retrieval form a circular dependency; make bootstrap information independently available and establish its authenticity separately</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. Retrying the same request often enough lets either service answer first and automatically resolves the dependency</label>
-            <label class="choice"><input type="radio" name="Q9" value="d"> D. Increasing access-token entropy also solves the inability to discover the authorization server as a security property</label>
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Authenticate public bootstrap metadata at the agent origin with the Web PKI, then discover the token endpoint and protected Card</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Accept unsigned metadata without a token and let later token validation retroactively authenticate its source</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Guess candidate issuers from the DNS name and send credentials until one token endpoint succeeds</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Send Card and token requests in parallel, then reuse whichever response succeeds first as bootstrap information</label>
           </fieldset><div class="explain">**Explanation:**
-A: Fate sharing aligns a state's failure boundary; it does not justify mutually unavailable bootstrap dependencies.
-B: The client cannot read the card without a token or find the token issuer without the card. Public authenticity-verifiable metadata, independent discovery, or preconfiguration can break the cycle.
-C: Retrying a request that lacks bootstrap information does not create that information; it only adds load and delay.
-D: Token strength affects credential guessing, not missing issuer discovery.</div>
+A: This breaks the cycle using the trust anchors that the premise makes available.
+B: Breaking the cycle without source authentication permits metadata substitution; a later token does not retroactively authenticate the discovery response.
+C: This risks credential disclosure and issuer confusion.
+D: Parallel requests still lack the information each requires. Section 3.11 identifies the cycle; the concrete metadata format and authentication mechanism come from other specifications and trust policy.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="Evaluate algorithm agility, protection of the identifier, a common suite, and local acceptance policy as separate concerns.">
-        <header><h4>Q10: Which review applies RFC 1958 Sections 6.3-6.5 to a current A2A signature profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Separate what RFC 1958 says from downgrade protections that a current signature protocol must define elsewhere.">
+        <header><h4>Q10: Which conclusion is supported by RFC 1958 Sections 6.3-6.5 alone?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">Profile v1 pins Algorithm A and does not include an algorithm identifier in signed data. A migration proposal selects A or B through an integrity-unprotected header. Secure interoperability between different implementations is required.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Permanently pin A and omit its label to avoid downgrade; no replacement path is needed if A later becomes weak</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Placing the algorithm name in a header is sufficient explicit labeling, so the receiver may accept it even when an attacker can rewrite the header</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Let each implementation choose a disjoint algorithm set and omit a mandatory common suite because agility makes secure interoperability optional</label>
-            <label class="choice"><input type="radio" name="Q10" value="d"> D. Identify the algorithm inside integrity-protected data; define alternatives, migration and downgrade rules, and at least one common suite; restrict actual acceptance using current security evidence and local policy</label>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Pinning A provides the common algorithm, while a later registry entry can supply alternatives and labels without changing the protocol</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. The RFC supports alternatives, labels, sufficient strength, and a common suite; other specifications must handle downgrade</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Explicit labels let each implementation use a disjoint algorithm set, because negotiation can discover that no common suite exists</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. The rewritable header completes explicit labeling, while local policy can detect any unacceptable downgrade after verification</label>
           </fieldset><div class="explain">**Explanation:**
-A: Permanent pinning makes replacement difficult and removes the alternative-algorithm path described in Section 6.3.
-B: A rewritable label cannot prevent downgrade or verification confusion; the identifier must be bound to the protected proof.
-C: Section 6.5 calls for at least one common algorithm or suite so implementations can establish a secure context.
-D: This combines agility, labeling, strength, and a common suite from Sections 6.3-6.5 with explicit negotiation integrity and downgrade handling. RFC 1958 does not establish whether a particular algorithm remains strong today, so current evidence and policy govern acceptance.</div>
+A: Section 6.3 discusses designing for alternative algorithms and explicitly labeling the selected algorithm; a fixed unlabeled choice does not cover both.
+B: Supported. It separates what Sections 6.3-6.5 say from what they leave unspecified.
+C: Section 6.5 calls for a common algorithm or suite so implementations can establish a secure context.
+D: A label's existence does not establish resistance to rewriting. RFC 1958 alone does not specify the cryptographic scope of the label, downgrade prevention, or today's allow-list; those require the signature specification, current security guidance, and local policy.</div>
         </div>
       </article>
     </section>

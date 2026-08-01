@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9111",
       SKILL_SUBTITLE: "HTTP Caching",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Teams often treat every HTML page as just another cacheable document and forget that sensitivity matters more than latency on some endpoints.
+            Teams often treat every HTML page as just another cacheable document and forget that sensitivity matters more than latency on some endpoints.
 
-            **Terms:** **no-store** tells conforming private and shared caches not to store the response. **private** prevents storage by shared caches but still allows a private cache such as a browser to store it.
+            **no-store** tells conforming private and shared caches not to store the response. **private** prevents storage by shared caches but still allows a private cache such as a browser to store it.
 
-            **Real-world usage:** In practice this appears in reviews for account dashboards, admin consoles, and responses whose retention in a private HTTP cache or shared intermediary would create exposure.
+            In practice this appears in reviews for account dashboards, admin consoles, and responses whose retention in a private HTTP cache or shared intermediary would create exposure.
 
-            **Options:**
+
             - A (incorrect): **public** is wrong for personalized financial data because shared caches must not reuse it across users.
             - B (incorrect): **private** prevents storage by shared caches but still permits storage in a browser's private cache, so it does not meet this requirement.
             - C (correct): **no-store** instructs conforming private and shared caches not to store the response, matching the stated cache-retention requirement.
 
-            **Related:** Caching is not only a performance decision. It is also a data-handling decision. RFC 9111 warns that no-store alone is not a reliable or sufficient privacy mechanism against malicious or compromised caches and network eavesdropping.
+            Caching is not only a performance decision. It is also a data-handling decision. RFC 9111 warns that no-store alone is not a reliable or sufficient privacy mechanism against malicious or compromised caches and network eavesdropping.
           </div>
         </div>
       </article>
@@ -129,18 +130,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Many production bugs come from confusing **no-cache** with **no-store**, which leads teams either to over-cache or to disable caching unnecessarily.
+            Many production bugs come from confusing **no-cache** with **no-store**, which leads teams either to over-cache or to disable caching unnecessarily.
 
-            **Terms:** **no-cache** does not mean “do not cache.” It means a stored response must be validated before reuse. **validation** usually uses validators such as **ETag** or **Last-Modified**.
+            **no-cache** does not mean “do not cache.” It means a stored response must be validated before reuse. **validation** usually uses validators such as **ETag** or **Last-Modified**.
 
-            **Real-world usage:** In practice this matters for dashboards and APIs where you want conditional requests and bandwidth savings, but not blind reuse.
+            In practice this matters for dashboards and APIs where you want conditional requests and bandwidth savings, but not blind reuse.
 
-            **Options:**
+
             - A (incorrect): **no-store** prohibits a cache from storing the response; **no-cache** does not impose that storage prohibition.
             - B (correct): A cache may store the response, but before reuse it must forward the request for origin validation and receive a successful response.
             - C (incorrect): Unqualified **no-cache** constrains reuse by both private and shared caches; it does not reserve reuse for private caches.
 
-            **Related:** Revalidation is often the right middle ground between “never store” and “reuse freely.”
+            Revalidation is often the right middle ground between “never store” and “reuse freely.”
           </div>
         </div>
       </article>
@@ -156,18 +157,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Shared caches and private caches often need different reuse windows, but teams frequently publish a single directive and hope every layer behaves the same way.
+            Shared caches and private caches often need different reuse windows, but teams frequently publish a single directive and hope every layer behaves the same way.
 
-            **Terms:** **max-age** applies generally to caches. **s-maxage** is for **shared caches**, such as CDNs and proxy caches.
+            **max-age** applies generally to caches. **s-maxage** is for **shared caches**, such as CDNs and proxy caches.
 
-            **Real-world usage:** This appears when you want edge caching to absorb load while browsers still re-check more aggressively because user-visible freshness matters.
+            This appears when you want edge caching to absorb load while browsers still re-check more aggressively because user-visible freshness matters.
 
-            **Options:**
+
             - A (incorrect): This gives both browsers and shared caches the same 10-minute lifetime.
             - B (correct): Browsers get 60 seconds, while shared caches can reuse for 600 seconds.
             - C (incorrect): **private** blocks shared-cache reuse, which defeats the CDN goal.
 
-            **Related:** Split cache lifetimes are common in API and storefront design where origin load and user freshness have different tolerances.
+            Split cache lifetimes are common in API and storefront design where origin load and user freshness have different tolerances.
           </div>
         </div>
       </article>
@@ -183,18 +184,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Mixed legacy and modern headers are common. Reviewers need to know which signal actually controls behavior instead of reasoning from both at once.
+            Mixed legacy and modern headers are common. Reviewers need to know which signal actually controls behavior instead of reasoning from both at once.
 
-            **Terms:** **Cache-Control** is the primary HTTP caching control surface. **Expires** is an older absolute-time mechanism.
+            **Cache-Control** is the primary HTTP caching control surface. **Expires** is an older absolute-time mechanism.
 
-            **Real-world usage:** You see this when frameworks add default headers, CDNs rewrite responses, or older services still emit legacy metadata.
+            You see this when frameworks add default headers, CDNs rewrite responses, or older services still emit legacy metadata.
 
-            **Options:**
+
             - A (correct): **max-age** is evaluated before **Expires** when calculating the freshness lifetime.
             - B (incorrect): A recipient must ignore **Expires** when the response includes **Cache-Control: max-age**.
             - C (incorrect): Freshness uses the specified precedence order; a cache does not select whichever value yields a longer lifetime.
 
-            **Related:** Prefer explicit, relative freshness policy with **Cache-Control**, because it is clearer and less fragile than clock-based reasoning alone.
+            Prefer explicit, relative freshness policy with **Cache-Control**, because it is clearer and less fragile than clock-based reasoning alone.
           </div>
         </div>
       </article>
@@ -211,19 +212,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Caching discussions often mix up selection metadata, freshness metadata, and validation metadata. The distinction matters for correct debugging.
+            Caching discussions often mix up selection metadata, freshness metadata, and validation metadata. The distinction matters for correct debugging.
 
-            **Terms:** **validators** let a cache ask whether a stored response still matches the current representation. **ETag** and **Last-Modified** are classic validator fields.
+            **validators** let a cache ask whether a stored response still matches the current representation. **ETag** and **Last-Modified** are classic validator fields.
 
-            **Real-world usage:** This is central when troubleshooting unexpected **304 Not Modified** responses or excessive origin traffic from needless full downloads.
+            This is central when troubleshooting unexpected **304 Not Modified** responses or excessive origin traffic from needless full downloads.
 
-            **Options:**
+
             - A (correct): **ETag** is a validator designed for conditional requests.
             - B (incorrect): **Age** estimates time since origin generation or successful validation; it does not compare a representation with current origin state.
             - C (correct): **Last-Modified** can also drive conditional revalidation.
             - D (incorrect): **Vary** nominates request fields that must match when selecting a stored response; it does not compare that response with current origin state.
 
-            **Related:** Selection, freshness, and validation are different phases of cache reasoning. Good debugging separates them.
+            Selection, freshness, and validation are different phases of cache reasoning. Good debugging separates them.
           </div>
         </div>
       </article>
@@ -261,18 +262,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Teams sometimes treat **304** as if it were a body-carrying success response or as if it invalidated the cached entry. Both interpretations are wrong.
+            Teams sometimes treat **304** as if it were a body-carrying success response or as if it invalidated the cached entry. Both interpretations are wrong.
 
-            **Terms:** **304 Not Modified** is a validation result. It says the cache can keep using the stored representation body.
+            **304 Not Modified** is a validation result. It says the cache can keep using the stored representation body.
 
-            **Real-world usage:** In practice this affects reverse proxies, browser devtools interpretation, and origin cost when tuning conditional GET behavior.
+            In practice this affects reverse proxies, browser devtools interpretation, and origin cost when tuning conditional GET behavior.
 
-            **Options:**
+
             - A (incorrect): The 304 supplies validation metadata, not an empty replacement representation; the cache keeps the selected stored body.
             - B (correct): The cache reuses the existing representation body and updates the applicable stored header fields with metadata from the validation response.
             - C (incorrect): The cache must update each identified stored response's header fields with applicable fields supplied by the 304 response.
 
-            **Related:** A successful validation path is often cheaper than a full **200** response, but it still depends on correct validator handling.
+            A successful validation path is often cheaper than a full **200** response, but it still depends on correct validator handling.
           </div>
         </div>
       </article>
@@ -288,23 +289,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Variant confusion is a classic cache bug. People often blame freshness when the real problem is cache key selection.
+            Variant confusion is a classic cache bug. People often blame freshness when the real problem is cache key selection.
 
-            **Terms:** **Vary** tells a cache which request fields influence representation selection. **Accept-Language** is commonly part of language negotiation.
+            **Vary** tells a cache which request fields influence representation selection. **Accept-Language** is commonly part of language negotiation.
 
-            **Real-world usage:** This shows up in multilingual sites, device-adaptive rendering, and compressed/uncompressed content delivery.
+            This shows up in multilingual sites, device-adaptive rendering, and compressed/uncompressed content delivery.
 
-            **Options:**
+
             - A (correct): Without **Vary: Accept-Language**, a cache can wrongly reuse one language variant for another request.
             - B (incorrect): **Age** does not decide variant selection.
             - C (incorrect): **Last-Modified** helps validation, not language-based cache key separation.
 
-            **Related:** **Vary** is about “which stored entry should I pick,” not “is the chosen entry still fresh.”
+            **Vary** is about “which stored entry should I pick,” not “is the chosen entry still fresh.”
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Look for response directives whose definitions explicitly change shared-cache permission for authenticated requests.">
+      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Look for response directives whose definitions explicitly change shared-cache permission for authenticated requests.">
         <header><h4>Q8: Which response directives allow a shared cache to store a response to a request containing Authorization under RFC 9111 Section 3.5 (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -317,20 +318,20 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** “Authenticated” does not automatically mean “uncacheable,” but it does raise the bar. Engineers need to know the difference between default caution and explicit permission.
+            “Authenticated” does not automatically mean “uncacheable,” but it does raise the bar. Engineers need to know the difference between default caution and explicit permission.
 
-            **Terms:** A **shared cache** is reused across clients. For a request containing **Authorization**, RFC 9111 names **must-revalidate**, **public**, and **s-maxage** as response directives that permit shared caching, subject to each directive's requirements.
+            A **shared cache** is reused across clients. For a request containing **Authorization**, RFC 9111 names **must-revalidate**, **public**, and **s-maxage** as response directives that permit shared caching, subject to each directive's requirements.
 
-            **Real-world usage:** This matters for CDNs in front of APIs, token-authenticated content, and service meshes that want to cache some authenticated traffic safely.
+            This matters for CDNs in front of APIs, token-authenticated content, and service meshes that want to cache some authenticated traffic safely.
 
-            **Options:**
+
             - A (correct): **public** explicitly marks the response cacheable and permits shared caching of a response to an authenticated request.
             - B (incorrect): **private** prevents a shared cache from storing the response; it does not grant an authenticated-response exception.
             - C (correct): **s-maxage** permits shared caching while defining the shared-cache maximum age and requiring origin validation after staleness.
             - D (correct): **must-revalidate** permits shared caching but forbids stale reuse until origin validation succeeds.
             - E (incorrect): **no-store** prohibits storage by both private and shared caches.
 
-            **Related:** Security-sensitive caching decisions should be explicit in headers, not inferred from optimistic assumptions.
+            Security-sensitive caching decisions should be explicit in headers, not inferred from optimistic assumptions.
           </div>
         </div>
       </article>
@@ -346,18 +347,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Teams often reach for **private** when they mean “sensitive” or “must not be stored anywhere,” but that is not what the directive says.
+            Teams often reach for **private** when they mean “sensitive” or “must not be stored anywhere,” but that is not what the directive says.
 
-            **Terms:** The unqualified **private** response directive means a shared cache must not store the response. A private cache can still store it subject to the normal caching constraints.
+            The unqualified **private** response directive means a shared cache must not store the response. A private cache can still store it subject to the normal caching constraints.
 
-            **Real-world usage:** This is common in user dashboards, personalized homepages, and BFF-style endpoints that are safe in a browser but not in a CDN.
+            This is common in user dashboards, personalized homepages, and BFF-style endpoints that are safe in a browser but not in a CDN.
 
-            **Options:**
+
             - A (incorrect): An **ETag** can support later validation, but the storage restriction imposed by **private** does not depend on a validator.
             - B (correct): Unqualified **private** prevents storage by shared caches while allowing a private cache to store the response subject to the normal constraints.
             - C (incorrect): Validation before every reuse is the role of unqualified **no-cache**; **private** instead controls storage scope.
 
-            **Related:** If persistence in conforming private caches is also unacceptable, **no-store** is the stronger instruction. Neither directive guarantees message confidentiality.
+            If persistence in conforming private caches is also unacceptable, **no-store** is the stronger instruction. Neither directive guarantees message confidentiality.
           </div>
         </div>
       </article>
@@ -373,18 +374,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Shared reuse is safe only when the representation is user-independent, stable for the stated lifetime, and suitable for retention outside the origin.
+            Shared reuse is safe only when the representation is user-independent, stable for the stated lifetime, and suitable for retention outside the origin.
 
-            **Terms:** **public** explicitly allows storage by shared caches. Versioned static assets are usually excellent shared-cache candidates because identity and mutability are controlled.
+            **public** explicitly allows storage by shared caches. Versioned static assets are usually excellent shared-cache candidates because identity and mutability are controlled.
 
-            **Real-world usage:** CDNs, image delivery, and immutable build artifacts all benefit from clear public cacheability.
+            CDNs, image delivery, and immutable build artifacts all benefit from clear public cacheability.
 
-            **Options:**
+
             - A (correct): A versioned, user-independent asset is ideal for shared reuse.
             - B (incorrect): Personalized content should not be exposed to shared reuse.
             - C (incorrect): Security-sensitive transactional responses are poor candidates for public caching.
 
-            **Related:** “Same URI for everyone” is not enough. You also need stable content and low confidentiality risk.
+            “Same URI for everyone” is not enough. You also need stable content and low confidentiality risk.
           </div>
         </div>
       </article>
@@ -400,23 +401,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Engineers often underestimate the business impact of stale data, especially for inventory, quota, or compliance decisions.
+            Engineers often underestimate the business impact of stale data, especially for inventory, quota, or compliance decisions.
 
-            **Terms:** **must-revalidate** means that once the response becomes stale, a cache cannot keep serving it without successful validation.
+            **must-revalidate** means that once the response becomes stale, a cache cannot keep serving it without successful validation.
 
-            **Real-world usage:** This matters for stock counts, entitlement decisions, feature gates, and financial limits where stale data can cause incorrect actions.
+            This matters for stock counts, entitlement decisions, feature gates, and financial limits where stale data can cause incorrect actions.
 
-            **Options:**
+
             - A (incorrect): **no-store** prohibits storage, which is stronger than the stated policy and removes the intended fresh reuse.
             - B (incorrect): **public** changes cacheability, but it does not impose the required origin validation after the response becomes stale.
             - C (correct): **must-revalidate** does not prohibit storage or fresh reuse, but once stale the response cannot be reused until origin validation succeeds.
 
-            **Related:** Freshness lifetime answers “how long may I reuse this.” Revalidation directives answer “what happens after that time runs out.”
+            Freshness lifetime answers “how long may I reuse this.” Revalidation directives answer “what happens after that time runs out.”
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="First establish whether storage is allowed; then distinguish origin-supplied expiration from cache-assigned expiration.">
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="First establish whether storage is allowed; then distinguish origin-supplied expiration from cache-assigned expiration.">
         <header><h4>Q12: When can heuristic caching become relevant</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -427,18 +428,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Teams sometimes assume “no freshness header” means “never cached,” but caches can still reason heuristically in some cases.
+            Teams sometimes assume “no freshness header” means “never cached,” but caches can still reason heuristically in some cases.
 
-            **Terms:** **heuristic caching** estimates freshness when explicit freshness data is missing. That does not mean “invent anything you want”; it operates within defined limits and response categories.
+            **heuristic caching** estimates freshness when explicit freshness data is missing. That does not mean “invent anything you want”; it operates within defined limits and response categories.
 
-            **Real-world usage:** This appears with legacy services, static pages missing explicit cache headers, and CDN defaults in front of older origins.
+            This appears with legacy services, static pages missing explicit cache headers, and CDN defaults in front of older origins.
 
-            **Options:**
+
             - A (incorrect): Becoming stale does not itself authorize a new heuristic lifetime; the original freshness lifetime might have been explicit.
             - B (correct): When explicit expiration is absent and the response is heuristically cacheable, a cache may assign a heuristic freshness lifetime.
             - C (incorrect): A validator supports revalidation but does not trigger heuristic freshness, especially when an explicit lifetime already applies.
 
-            **Related:** Heuristic caching is a fallback, not a substitute for deliberate cache policy.
+            Heuristic caching is a fallback, not a substitute for deliberate cache policy.
           </div>
         </div>
       </article>
@@ -454,18 +455,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Client request directives are less famous than response directives, so they are easy to misuse in proxy and browser tooling.
+            Client request directives are less famous than response directives, so they are easy to misuse in proxy and browser tooling.
 
-            **Terms:** **min-fresh** is a request preference. It asks for a response that will still be fresh for at least the given number of seconds.
+            **min-fresh** is a request preference. It asks for a response that will still be fresh for at least the given number of seconds.
 
-            **Real-world usage:** This can matter for prefetching, offline-aware clients, and workflows where a response must stay usable for a near-future action.
+            This can matter for prefetching, offline-aware clients, and workflows where a response must stay usable for a near-future action.
 
-            **Options:**
+
             - A (correct): **min-fresh=N** expresses a preference for a response whose freshness lifetime exceeds its current age by at least N more seconds.
             - B (incorrect): An acceptable amount of staleness is expressed by **max-stale**, not **min-fresh**.
             - C (incorrect): **min-fresh** constrains the desired remaining freshness; it does not postpone or forbid validation.
 
-            **Related:** Client directives are about preferences and constraints on reuse, not about rewriting origin policy.
+            Client directives are about preferences and constraints on reuse, not about rewriting origin policy.
           </div>
         </div>
       </article>
@@ -481,23 +482,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Engineers often learn only origin-side directives and forget that clients can also express reuse preferences.
+            Engineers often learn only origin-side directives and forget that clients can also express reuse preferences.
 
-            **Terms:** **max-stale** is a request directive that says the client can tolerate some staleness. It can be unbounded or bounded by a value.
+            **max-stale** is a request directive that says the client can tolerate some staleness. It can be unbounded or bounded by a value.
 
-            **Real-world usage:** This matters for resilient clients, degraded-mode browsing, and systems that value availability over perfect freshness in some workflows.
+            This matters for resilient clients, degraded-mode browsing, and systems that value availability over perfect freshness in some workflows.
 
-            **Options:**
+
             - A (incorrect): The **max-age** request directive constrains acceptable response age; it does not express willingness to accept staleness.
             - B (correct): With a value, **max-stale** bounds how far past freshness the response may be; without one, the client accepts staleness of any age.
             - C (incorrect): A minimum remaining freshness interval is expressed by **min-fresh**, not **max-stale**.
 
-            **Related:** Freshness policy is a negotiation between origin instructions and client tolerance, not a one-sided command channel.
+            Freshness policy is a negotiation between origin instructions and client tolerance, not a one-sided command channel.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q15" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Trace what an intermediary cache knows after a successful state-changing request.">
+      <article class="q card" data-id="Q15" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Trace what an intermediary cache knows after a successful state-changing request.">
         <header><h4>Q15: After receiving a non-error response to an unsafe request such as PUT, how must a cache treat stored responses for the target URI</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -508,18 +509,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Caches are not just passive readers. Unsafe methods can make previously stored responses wrong immediately.
+            Caches are not just passive readers. Unsafe methods can make previously stored responses wrong immediately.
 
-            **Terms:** An **unsafe method** can change server state. **invalidation** means dropping or retiring stored responses that may no longer reflect current origin state.
+            An **unsafe method** can change server state. **invalidation** means dropping or retiring stored responses that may no longer reflect current origin state.
 
-            **Real-world usage:** This is critical after writes in APIs, CMS systems, admin panels, and any product where a fresh read is expected right after an update.
+            This is critical after writes in APIs, CMS systems, admin panels, and any product where a fresh read is expected right after an update.
 
-            **Options:**
+
             - A (incorrect): A successful unsafe request can make a still-fresh stored response incorrect, so its prior freshness lifetime cannot justify continued reuse.
             - B (incorrect): RFC 9111 requires invalidation of the target URI, not merely a shorter period in which the old response remains valid.
             - C (correct): Invalidation means removing matching stored responses or marking them invalid so they require validation before reuse.
 
-            **Related:** Cache invalidation is hard mainly because the dependency graph can be broader than the directly updated URI.
+            Cache invalidation is hard mainly because the dependency graph can be broader than the directly updated URI.
           </div>
         </div>
       </article>
@@ -535,23 +536,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** People often treat **Age** as a mystery proxy field, but it is a practical signal for understanding freshness calculations.
+            People often treat **Age** as a mystery proxy field, but it is a practical signal for understanding freshness calculations.
 
-            **Terms:** **Age** estimates how much time has passed since the response was generated or successfully validated by the origin, as seen through caching layers.
+            **Age** estimates how much time has passed since the response was generated or successfully validated by the origin, as seen through caching layers.
 
-            **Real-world usage:** You read **Age** when debugging CDN behavior, explaining why a response is already close to expiry, or checking whether revalidation is working.
+            You read **Age** when debugging CDN behavior, explaining why a response is already close to expiry, or checking whether revalidation is working.
 
-            **Options:**
+
             - A (correct): **Age** conveys the sender's estimate of seconds since the response was generated or successfully validated at the origin.
             - B (incorrect): **Age** includes time before the current cache received the response; it is not only this cache's residence time.
             - C (incorrect): Remaining freshness is calculated from freshness lifetime and current age; the **Age** field reports current age, not the remaining interval.
 
-            **Related:** **Age** affects freshness math, but it does not by itself decide whether a response may be reused.
+            **Age** affects freshness math, but it does not by itself decide whether a response may be reused.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q17" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate representation content from metadata, then consider how a stored GET response is affected when only metadata returns.">
+      <article class="q card" data-id="Q17" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate representation content from metadata, then consider how a stored GET response is affected when only metadata returns.">
         <header><h4>Q17: How can a 200 response to HEAD affect stored GET responses for the same target URI</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -562,23 +563,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** HEAD is often taught as a curiosity, but it matters when thinking about cheap metadata refresh and cache bookkeeping.
+            HEAD is often taught as a curiosity, but it matters when thinking about cheap metadata refresh and cache bookkeeping.
 
-            **Terms:** **HEAD** returns the headers that would accompany an equivalent GET response without content. After a 200 HEAD response, a cache can update matching selectable GET responses or mark them stale when validators or Content-Length do not match.
+            **HEAD** returns the headers that would accompany an equivalent GET response without content. After a 200 HEAD response, a cache can update matching selectable GET responses or mark them stale when validators or Content-Length do not match.
 
-            **Real-world usage:** This can matter for large objects, CDN metadata refresh, and monitoring systems that need state hints without full download cost.
+            This can matter for large objects, CDN metadata refresh, and monitoring systems that need state hints without full download cost.
 
-            **Options:**
+
             - A (incorrect): Only stored GET responses selectable for the HEAD request are considered, and their validators and Content-Length still govern the result.
             - B (correct): RFC 9111 defines this conditional update-or-invalidate behavior for stored GET responses that could have been selected for the HEAD request.
             - C (incorrect): A HEAD response has no replacement representation body; matching metadata can update a stored GET response without erasing its body.
 
-            **Related:** This is not an unconditional metadata refresh for every stored GET response. Selection, validator, and Content-Length conditions determine whether a stored response is updated or considered stale.
+            This is not an unconditional metadata refresh for every stored GET response. Selection, validator, and Content-Length conditions determine whether a stored response is updated or considered stale.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q18" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The cache needs evidence that partial transfers belong to one representation, not merely semantically similar representations.">
+      <article class="q card" data-id="Q18" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The cache needs evidence that partial transfers belong to one representation, not merely semantically similar representations.">
         <header><h4>Q18: A cache will combine byte ranges obtained while resuming a download. Which validator is suitable for identifying them as the same representation</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -589,18 +590,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Validator strength matters when caches or clients need confidence about exact representation identity, not just approximate sameness.
+            Validator strength matters when caches or clients need confidence about exact representation identity, not just approximate sameness.
 
-            **Terms:** A **strong validator** supports exact representation matching. A **weak validator** is looser and better for semantic equivalence than byte identity.
+            A **strong validator** supports exact representation matching. A **weak validator** is looser and better for semantic equivalence than byte identity.
 
-            **Real-world usage:** This matters for range requests, resumable downloads, artifact delivery, and any flow where exact bytes are important.
+            This matters for range requests, resumable downloads, artifact delivery, and any flow where exact bytes are important.
 
-            **Options:**
+
             - A (incorrect): A weak ETag can identify semantically equivalent representations but does not establish the strong identity required to combine ranges.
             - B (incorrect): **Last-Modified** is not automatically a strong validator; without evidence that it meets strong-validation rules, it is insufficient here.
             - C (correct): A strong ETag is a strong validator, which RFC 9111 requires all ranges to share before a cache combines them.
 
-            **Related:** Good cache design starts by asking what kind of equality the client actually needs.
+            Good cache design starts by asking what kind of equality the client actually needs.
           </div>
         </div>
       </article>
@@ -616,18 +617,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Security reviews go wrong when people over-interpret protocol directives as end-to-end guarantees that cover logs, telemetry, and every implementation detail.
+            Security reviews go wrong when people over-interpret protocol directives as end-to-end guarantees that cover logs, telemetry, and every implementation detail.
 
-            **Terms:** **no-store** is a cache directive. It tells caches not to keep a stored copy. It does not magically erase every other system artifact.
+            **no-store** is a cache directive. It tells caches not to keep a stored copy. It does not magically erase every other system artifact.
 
-            **Real-world usage:** This matters when discussing privacy claims with legal, security, or platform teams. Protocol behavior and system-wide data retention are different layers.
+            This matters when discussing privacy claims with legal, security, or platform teams. Protocol behavior and system-wide data retention are different layers.
 
-            **Options:**
+
             - A (incorrect): **no-store** constrains conforming caches; it does not erase application logs, history mechanisms, telemetry, or copies retained by nonconforming components.
             - B (correct): **no-store** strongly restricts cache storage, but RFC 9111 explicitly says it is not a reliable or sufficient privacy mechanism by itself.
             - C (incorrect): The directive applies to both private and shared caches, including conforming intermediary caches.
 
-            **Related:** Good privacy design combines protocol directives with logging, retention, and storage controls outside HTTP caching itself.
+            Good privacy design combines protocol directives with logging, retention, and storage controls outside HTTP caching itself.
           </div>
         </div>
       </article>
@@ -643,18 +644,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Cache failures are easier to diagnose when you know whether the bug happened during entry selection or after selection during reuse checks.
+            Cache failures are easier to diagnose when you know whether the bug happened during entry selection or after selection during reuse checks.
 
-            **Terms:** **Vary** shapes cache key selection. **ETag** is a validator used after the cache has already chosen a stored response candidate.
+            **Vary** shapes cache key selection. **ETag** is a validator used after the cache has already chosen a stored response candidate.
 
-            **Real-world usage:** In practice, this distinction helps when debugging “wrong variant served” versus “right variant served but not fresh anymore.”
+            In practice, this distinction helps when debugging “wrong variant served” versus “right variant served but not fresh anymore.”
 
-            **Options:**
+
             - A (correct): **Vary** adds nominated request fields to stored-response matching, while **ETag** supports a conditional comparison with origin state after selection.
             - B (incorrect): **ETag** is not a cache-key selector, and **Age** is not a validator.
             - C (incorrect): **private** is a storage/reuse restriction, not a freshness validator.
 
-            **Related:** Good cache design has multiple decision stages. Mixing them together leads to cargo-cult reasoning.
+            Good cache design has multiple decision stages. Mixing them together leads to cargo-cult reasoning.
           </div>
         </div>
       </article>
@@ -671,19 +672,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** A cache policy must combine storage permission, freshness, validation, and audience instead of treating each directive in isolation.
+            A cache policy must combine storage permission, freshness, validation, and audience instead of treating each directive in isolation.
 
-            **Terms:** **public** explicitly marks a response cacheable, although it is unnecessary when the response is already cacheable under the normal rules. **max-age=120** sets the freshness window. **private** and **no-store** conflict with the stated shared-cache policy.
+            **public** explicitly marks a response cacheable, although it is unnecessary when the response is already cacheable under the normal rules. **max-age=120** sets the freshness window. **private** and **no-store** conflict with the stated shared-cache policy.
 
-            **Real-world usage:** This is exactly the kind of quick policy choice engineers make for catalog APIs, anonymous landing data, and search suggestion payloads.
+            This is exactly the kind of quick policy choice engineers make for catalog APIs, anonymous landing data, and search suggestion payloads.
 
-            **Options:**
+
             - A (correct): **public** explicitly marks the response as cacheable, including by a shared cache subject to the other caching constraints.
             - B (incorrect): **no-store** contradicts the requirement to reuse for 120 seconds.
             - C (correct): **max-age=120** makes the response stale after its age exceeds 120 seconds, supplying the requested explicit freshness window.
             - D (incorrect): **private** would block shared-cache reuse and conflict with the public API goal.
 
-            **Related:** Cache policy should reflect data audience, mutation rate, and harm if stale, not just “is it JSON or HTML.”
+            Cache policy should reflect data audience, mutation rate, and harm if stale, not just “is it JSON or HTML.”
           </div>
         </div>
       </article>
@@ -700,18 +701,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Permission to calculate heuristic freshness does not mean that the inferred lifetime satisfies the application's unvalidated-reuse limit. A 30-second limit therefore needs explicit response metadata.
+            Permission to calculate heuristic freshness does not mean that the inferred lifetime satisfies the application's unvalidated-reuse limit. A 30-second limit therefore needs explicit response metadata.
 
-            **Terms:** A cache can assign a **heuristic expiration time** in permitted cases when no explicit expiration is available. The 10% calculation in this scenario is the cache's local policy, not a rule required by RFC 9111. An explicit **max-age** takes precedence over heuristic freshness, while a validator supports conditional revalidation after the response becomes stale.
+            A cache can assign a **heuristic expiration time** in permitted cases when no explicit expiration is available. The 10% calculation in this scenario is the cache's local policy, not a rule required by RFC 9111. An explicit **max-age** takes precedence over heuristic freshness, while a validator supports conditional revalidation after the response becomes stale.
 
-            **Real-world usage:** This arises when a legacy inventory service omits freshness metadata and a CDN supplies a default heuristic. The application owner must replace that default when it permits unvalidated reuse beyond the service's limit.
+            This arises when a legacy inventory service omits freshness metadata and a CDN supplies a default heuristic. The application owner must replace that default when it permits unvalidated reuse beyond the service's limit.
 
-            **Options:**
+
             - A (incorrect): RFC 9111 Section 4.2.2 can permit heuristic freshness, but the local one-day result still violates the application's 30-second limit.
             - B (correct): `Cache-Control: max-age=30` sets an explicit 30-second freshness lifetime. Retaining `Last-Modified` allows conditional revalidation after the response becomes stale.
             - C (incorrect): `public` can make a response cacheable, but it does not set a 30-second freshness lifetime. With no explicit expiration, the local one-day heuristic remains possible.
 
-            **Related:** A heuristic algorithm is deployment policy, not a substitute for an explicit freshness lifetime when the application defines a maximum unvalidated-reuse window.
+            A heuristic algorithm is deployment policy, not a substitute for an explicit freshness lifetime when the application defines a maximum unvalidated-reuse window.
           </div>
         </div>
       </article>
@@ -728,19 +729,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Shared caching works best when audience and representation are stable. Many bad policies come from ignoring either one.
+            Shared caching works best when audience and representation are stable. Many bad policies come from ignoring either one.
 
-            **Terms:** A **shared cache** is worthwhile when many users can safely reuse the same representation. The opposite is session-bound or user-specific content.
+            A **shared cache** is worthwhile when many users can safely reuse the same representation. The opposite is session-bound or user-specific content.
 
-            **Real-world usage:** This question maps directly to CDN onboarding, edge policy reviews, and deciding which endpoints deserve cache effort.
+            This question maps directly to CDN onboarding, edge policy reviews, and deciding which endpoints deserve cache effort.
 
-            **Options:**
+
             - A (correct): Versioned static assets are classic high-value shared-cache targets.
             - B (incorrect): Session-bound pages should not be reused across users.
             - C (correct): Public docs are often stable, public, and broadly reusable.
             - D (correct): Anonymous catalog data is often safe and valuable to share-cache.
 
-            **Related:** Good shared-cache candidates are public, broadly reused, and not overly sensitive to short staleness.
+            Good shared-cache candidates are public, broadly reused, and not overly sensitive to short staleness.
           </div>
         </div>
       </article>
@@ -756,45 +757,41 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Even experienced engineers sometimes remember **304** only as “a cache status code” without understanding the operational consequences.
+            Even experienced engineers sometimes remember **304** only as “a cache status code” without understanding the operational consequences.
 
-            **Terms:** **304 Not Modified** means the cache’s stored representation is still valid for reuse after conditional revalidation.
+            **304 Not Modified** means the cache’s stored representation is still valid for reuse after conditional revalidation.
 
-            **Real-world usage:** This affects browser waterfall analysis, CDN origin traffic, and server-side conditional request implementations.
+            This affects browser waterfall analysis, CDN origin traffic, and server-side conditional request implementations.
 
-            **Options:**
+
             - A (incorrect): **304** does not carry the stored representation body as a replacement payload.
             - B (correct): A 304 tells the cache that the selected stored response can be updated with returned metadata and reused with its existing representation body.
             - C (incorrect): A 304 neither makes the response permanently fresh nor removes the need to satisfy future validation and reuse requirements.
 
-            **Related:** Conditional requests are valuable mainly because they preserve correctness while reducing transfer cost.
+            Conditional requests are valuable mainly because they preserve correctness while reducing transfer cost.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q25" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Check whether cacheability is treated as several independent design axes rather than settled by one header.">
-        <header><h4>Q25: Which review comment shows the strongest RFC 9111 understanding</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q25" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Apply the separate rules for shared storage, request-header selection, and a response that no cache may store.">
+        <header><h4>Q25: Which gateway policy satisfies both response requirements?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A public Agent Card may be stored by shared caches for 10 minutes and varies by Accept-Language. When Authorization is present, the same origin returns a personalized card containing a private endpoint; that response must not be stored by a conforming browser cache or shared cache.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q25" value="a"> A. Specify storage scope, freshness lifetime, and validation behavior independently for this endpoint</label>
-            <label class="choice"><input type="radio" name="Q25" value="b"> B. Set freshness from update frequency, then let each cache infer storage scope and validation behavior</label>
-            <label class="choice"><input type="radio" name="Q25" value="c"> C. Set storage scope from the audience, then let freshness and validation follow from that directive</label>
+            <label class="choice"><input type="radio" name="Q25" value="a"> A. Use public, max-age=600 and Vary: Accept-Language for both; Authorization prevents cross-user reuse</label>
+            <label class="choice"><input type="radio" name="Q25" value="b"> B. Use no-cache on personalized responses; mandatory validation also prevents their initial storage</label>
+            <label class="choice"><input type="radio" name="Q25" value="c"> C. Isolate the public variant with language-aware shared caching, and send the personalized response with no-store</label>
+            <label class="choice"><input type="radio" name="Q25" value="d"> D. Use private, max-age=600 for personalized responses; private prevents browsers and gateways from storing them</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** A sound cache policy ties sensitivity, audience, freshness tolerance, and validation cost to concrete response metadata.
+            A: RFC 9111 Section 3.5 permits some authenticated responses to be shared when an enabling directive is present; Authorization is not an automatic partition key. This policy can expose the personalized representation.
+            B: Section 5.2.2.4 defines no-cache as a reuse constraint, not a storage prohibition.
+            C: The public response can use public, max-age=600, Vary: Accept-Language, and validators. The personalized response uses no-store, which Section 5.2.2.5 directs conforming private and shared caches not to store. Separate representation or route handling prevents the public cache policy from being applied to it.
+            D: Section 5.2.2.7 prevents shared-cache storage, but a private browser cache may store an unqualified private response. That fails the stated no-storage requirement.
 
-            **Terms:** A sound cache review covers **storage scope**, **freshness lifetime**, and **validation strategy**. Those are the three recurring decision points behind most real incidents.
-
-            **Real-world usage:** This is the kind of comment you want in API reviews, CDN change reviews, and security sign-off discussions.
-
-            **Options:**
-            - A (correct): It asks reviewers to make cacheability, freshness lifetime, and validation behavior explicit instead of relying on content type or platform defaults.
-            - B (incorrect): Update frequency informs freshness, but it does not determine who may store the response or what happens after it becomes stale.
-            - C (incorrect): Storage scope does not automatically establish a freshness lifetime or a validation requirement.
-
-            **Related:** Mature caching practice is a design discipline. It combines semantics, risk tolerance, and deployment knowledge.
+            Decision rule: Define the representation boundary first, then apply storage permission, cache-key selection (Section 4.1), freshness, and validation to that representation.
           </div>
         </div>
       </article>

@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6455",
       SKILL_SUBTITLE: "WebSocket protocol",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,16 +101,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** RFC 6455 の WebSocket は, 最初に **HTTP request** を送り, `Upgrade: websocket` などで protocol 切替を要求します. ここが browser, proxy, origin の責務境界になります.
+            RFC 6455 の WebSocket は, 最初に **HTTP request** を送り, `Upgrade: websocket` などで protocol 切替を要求します. ここが browser, proxy, origin の責務境界になります.
 
-            **Correct (C):** 通常の始まり方は, connection upgrade を要求する HTTP request です. その handshake が成立したあとに WebSocket framing へ切り替わります.
+            通常の始まり方は, connection upgrade を要求する HTTP request です. その handshake が成立したあとに WebSocket framing へ切り替わります.
 
-            **選択肢:**
-            - A (incorrect): DNSはserver名の解決に使われますが, WebSocket subprotocolの通知やopening handshakeは行いません.
-            - B (incorrect): RFC 6455はUDP datagramでmessage channelを確立しません.
-            - C (correct): HTTP handshake から始めて protocol を切り替える, という要点を正しく言っています.
+            ここを理解していると, なぜ HTTP/2 では別の bootstrapping が必要になるのかも追いやすくなります.
 
-            **関連:** ここを理解していると, なぜ HTTP/2 では別の bootstrapping が必要になるのかも追いやすくなります.
+            A: DNSはserver名の解決に使われますが, WebSocket subprotocolの通知やopening handshakeは行いません.
+            B: RFC 6455はUDP datagramでmessage channelを確立しません.
+            C: HTTP handshake から始めて protocol を切り替える, という要点を正しく言っています.
           </div>
         </div>
       </article>
@@ -125,21 +125,20 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **`ws`** は plaintext の WebSocket, **`wss`** は TLS 上の WebSocket です. つまり `wss` は confidentiality と integrity の面で `https` に近い期待値を持ちます.
+            **`ws`** は plaintext の WebSocket, **`wss`** は TLS 上の WebSocket です. つまり `wss` は confidentiality と integrity の面で `https` に近い期待値を持ちます.
 
-            **Correct (A):** `ws` と `wss` が正しい組です. `wss` では WebSocket handshake もその後の frame も TLS 上を通ります.
+            `wss`ではopening handshakeとその後のWebSocket frameがTLS上を通り,`ws`とはtransport protectionの有無が異なります.
 
-            **選択肢:**
-            - A (correct): WebSocket 用 scheme を正しく表しています.
-            - B (incorrect): `http` と `https` は HTTP の scheme であり, WebSocket 用ではありません.
-            - C (incorrect): `tcp` と `tls` は transport / security layer の名称で, URI scheme ではありません.
+            `wss` でも app 認証が自動で解決するわけではありません. 守られるのは channel です.
 
-            **関連:** `wss` でも app 認証が自動で解決するわけではありません. 守られるのは channel です.
+            A: WebSocket 用 scheme を正しく表しています.
+            B: `http` と `https` は HTTP の scheme であり, WebSocket 用ではありません.
+            C: `tcp` と `tls` は transport / security layer の名称で, URI scheme ではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="browserはambient credentialを付けられるため, serverはhandshakeを開始したsiteを評価する必要があります.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="browserはambient credentialを付けられるため, serverはhandshakeを開始したsiteを評価する必要があります.">
         <header><h4>Q3: browserからvictimのcookieを使ってprivilegedなWebSocketを開かれるのを避けたい. 関連するcheckはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -150,16 +149,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **Origin header** は browser が送る「この script がどの origin から来たか」の情報です. server 側では allowlist と照合して, 想定外 origin から privileged WebSocket を開けないようにします.
+            RFC 6455 Sections 4.1と4.2.2はbrowserの`Origin` inputとserverのorigin acceptance判断を定めます.server側ではallowlistと照合して,想定外originからprivileged WebSocketを開けないようにします.
 
-            **Correct (B):** browser から victim の cookie を使った接続を防ぎたいなら, **Origin header を allowlist と照合する**のが基本です.
+            browser から victim の cookie を使った接続を防ぎたいなら, **Origin header を allowlist と照合する**のが基本です.
 
-            **選択肢:**
-            - A (incorrect): Origin を無視すると, browser 由来の cross-site 接続を見分ける手掛かりを捨てます.
-            - B (correct): server 側で Origin を検証するのが一般的な防御です.
-            - C (incorrect): `Accept-Language` は言語嗜好の header で, cross-site 制御には使えません.
+            non-browser clientは任意のheader valueを送れるため, Origin checkをclient identityの証明にはできません. app認証とauthorizationは別に必要です.
 
-            **関連:** non-browser clientは任意のheader valueを送れるため, Origin checkをclient identityの証明にはできません. app認証とauthorizationは別に必要です.
+            A: Origin を無視すると, browser 由来の cross-site 接続を見分ける手掛かりを捨てます.
+            B: server 側で Origin を検証するのが一般的な防御です.
+            C: `Accept-Language` は言語嗜好の header で, cross-site 制御には使えません.
           </div>
         </div>
       </article>
@@ -175,16 +173,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** client は **`Sec-WebSocket-Key`** を送り, server はそれを使って **`Sec-WebSocket-Accept`** を計算して返します. これにより, 相手が WebSocket handshake を理解していることを確かめやすくなります.
+            client は **`Sec-WebSocket-Key`** を送り, server はそれを使って **`Sec-WebSocket-Accept`** を計算して返します. これにより, 相手が WebSocket handshake を理解していることを確かめやすくなります.
 
-            **Correct (A):** random value の元になる header を client が送るのは **`Sec-WebSocket-Key`** です.
+            random value の元になる header を client が送るのは **`Sec-WebSocket-Key`** です.
 
-            **選択肢:**
-            - A (correct): client 側の challenge に当たる値です.
-            - B (incorrect): **`Sec-WebSocket-Accept`** は server が返す側です.
-            - C (incorrect): **`Sec-WebSocket-Token`** という標準 header はここでは使いません.
+            ここは app 認証 token の header とは別です. handshake 成立確認と business auth を混同しないことが重要です.
 
-            **関連:** ここは app 認証 token の header とは別です. handshake 成立確認と business auth を混同しないことが重要です.
+            A: client 側の challenge に当たる値です.
+            B: **`Sec-WebSocket-Accept`** は server が返す側です.
+            C: **`Sec-WebSocket-Token`** という標準 header はここでは使いません.
           </div>
         </div>
       </article>
@@ -201,17 +198,14 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** opening handshake, data framing, channel protection, application identityは別のlayerです. connectionがOPENになるとWebSocket frameを使い, client-to-server frameはmaskされ, `wss`ではTLSがchannelを保護します.
+            opening handshake, data framing, channel protection, application identityは別のlayerです. connectionがOPENになるとWebSocket frameを使い, client-to-server frameはmaskされ, `wss`ではTLSがchannelを保護します.
 
-            **Correct (A,B,C):** いずれもRFC 6455のprotocol boundaryを正しく述べています.
+            `wss` を使っても, Origin check や token 検証が不要になるわけではありません. transport protection と app security は別です.
 
-            **選択肢:**
-            - A (correct): HTTP の request/response のまま話し続けるわけではなく, WebSocket framing に切り替わります.
-            - B (correct): `wss` は盗聴や tampering への耐性を高めます.
-            - C (correct): RFC 6455は, TLSの有無にかかわらずclientがserverへ送る全frameのmaskを要求します.
-            - D (incorrect): protocol 自体が app 認証を保証するわけではありません. 認証方式は app と deployment に依存します.
-
-            **関連:** `wss` を使っても, Origin check や token 検証が不要になるわけではありません. transport protection と app security は別です.
+            A: HTTP の request/response のまま話し続けるわけではなく, WebSocket framing に切り替わります.
+            B: `wss` は盗聴や tampering への耐性を高めます.
+            C: RFC 6455は, TLSの有無にかかわらずclientがserverへ送る全frameのmaskを要求します.
+            D: protocol 自体が app 認証を保証するわけではありません. 認証方式は app と deployment に依存します.
           </div>
         </div>
       </article>
@@ -223,11 +217,10 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **`Origin`** header は browser が送る接続元 origin の情報で, server は allowlist と照合して想定外 site からの接続を弾けます.
+            **`Origin`** header は browser が送る接続元 origin の情報で, server は allowlist と照合して想定外 site からの接続を弾けます.
 
-            **Correct:** **Origin**.
 
-            **Why this matters:** `Referer` や cookie ではなく, WebSocket handshake で通常見るのは `Origin` です. 名前を即答できると security review が速くなります.
+            `Referer` や cookie ではなく, WebSocket handshake で通常見るのは `Origin` です. 名前を即答できると security review が速くなります.
           </div>
         </div>
       </article>

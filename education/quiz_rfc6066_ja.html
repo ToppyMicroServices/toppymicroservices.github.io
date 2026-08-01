@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6066",
       SKILL_SUBTITLE: "TLS extensions",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,16 +101,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **TLS extension** は, protocol version を増やさずに追加 capability を交渉する仕組みです. 古い実装が理解できない extension は無視できるように設計されることが重要です.
+            **TLS extension** は, protocol version を増やさずに追加 capability を交渉する仕組みです. 古い実装が理解できない extension は無視できるように設計されることが重要です.
 
-            **Correct (B):** これが最も近い説明です. 拡張を optional capability として交渉できるから, protocol 全体を壊さず進化させられます.
+            optional capabilityをextensionとして交渉できるため,protocol version全体を置き換えずに機能を追加できます.
 
-            **選択肢:**
-            - A (incorrect): certificate関連のextensionはありますが, validationをapplication protocolへ移すframeworkではありません.
-            - B (correct): backward compatibility を保ちながら機能追加する, という本質を表しています.
-            - C (incorrect): optional extensionは, 全peerが新capabilityをsupportしなくても共存できるよう設計されます.
+            拡張が増えるほど attack surface も増えます. だから negotiation の失敗時挙動や security considerations もセットで設計する必要があります.
 
-            **関連:** 拡張が増えるほど attack surface も増えます. だから negotiation の失敗時挙動や security considerations もセットで設計する必要があります.
+            A: certificate関連のextensionはありますが, validationをapplication protocolへ移すframeworkではありません.
+            B: backward compatibility を保ちながら機能追加する, という本質を表しています.
+            C: optional extensionは, 全peerが新capabilityをsupportしなくても共存できるよう設計されます.
           </div>
         </div>
       </article>
@@ -127,31 +127,29 @@
 
             `status_request` extensionは, server certificateのstatus情報をTLS handshake内で配送するために使います. RFC 6066は対応する`CertificateStatus` handshake messageとOCSP response形式を定義しています.
 
-            **選択肢:**
-            - A (incorrect): `trusted_ca_keys`はclientが保持するCA root keyを示します.
-            - B (correct): `status_request`がcertificate status情報を要求するextensionです.
-            - C (incorrect): `client_certificate_url`はclient certificate chainを直接送る代わりにURLを提示するために使います.
+            A: `trusted_ca_keys`はclientが保持するCA root keyを示します.
+            B: `status_request`がcertificate status情報を要求するextensionです.
+            C: `client_certificate_url`はclient certificate chainを直接送る代わりにURLを提示するために使います.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="許可されるname typeとwire表現を確認してください. IP literalとtrailing dotには明示的なruleがあります.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="許可されるname typeとwire表現を確認してください. IP literalとtrailing dotには明示的なruleがあります.">
         <header><h4>Q3: RFC 6066のserver_name HostName encoding ruleに従う値はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. textとしてencodeしたliteral IPv6 address</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. trailing dotなしのASCII textとしてencodeしたliteral IPv6 address</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. trailing dotなしでASCII encodeしたfully qualified DNS hostname</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. trailing dotで終わるUTF-8 DNS hostname</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. trailing dot付きのraw UTF-8としてencodeしたfully qualified DNS hostname</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 6066は`HostName`を, clientが理解するfully qualified DNS hostnameのASCII byte stringとして定義し, trailing dotを認めません. internationalized nameはA-labelを使い, literal IPv4とIPv6 addressはこのfieldに入れられません.
+            RFC 6066 Section 3は`HostName`を, clientが理解するfully qualified DNS hostnameのASCII byte stringとして定義し, trailing dotを認めません. internationalized nameはA-labelを使い, literal IPv4とIPv6 addressはこのfieldに入れられません. ここで問うのは表現ruleの適用なのでL2であり, 設計上のtrade-offは提示されていません.
 
-            **選択肢:**
-            - A (incorrect): literal IP addressは`HostName`から明示的に除外されています.
-            - B (correct): DNS nameとencodingの両constraintを満たします.
-            - C (incorrect): raw UTF-8でもtrailing dot付きでもありません.
+            A: literal IP addressは`HostName`から明示的に除外されています.
+            B: DNS nameとencodingの両constraintを満たします.
+            C: raw UTF-8でもtrailing dot付きでもありません.
           </div>
         </div>
       </article>
@@ -168,17 +166,16 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **unknown extension を無視できる** ことは backward compatibility に重要で, **required / optional の明確化** は failure 時の挙動を決め, **security considerations** は attack surface を明文化します.
+            **unknown extension を無視できる** ことは backward compatibility に重要で, **required / optional の明確化** は failure 時の挙動を決め, **security considerations** は attack surface を明文化します.
 
-            **Correct (A,B,C):** どれも extension negotiation が健全に動くための性質です. 新機能を足しても古い実装が壊れず, 何が必須かも分かり, security 上の注意も追える必要があります.
+            unknown extensionの処理,required/optionalの境界,security considerationsを揃えることで,新機能を追加しても古い実装との相互運用とfailure時の判断を保てます.
 
-            **選択肢:**
-            - A (correct): 未知の extension をどう扱うかは interoperability の土台です.
-            - B (correct): required / optional が曖昧だと negotiation failure の意味が不明になります.
-            - C (correct): extension は attack surface を増やすので, security considerations が欠かせません.
-            - D (incorrect): 「全extensionは安全」と仮定するのは危険です. 拡張は新しいリスクも持ち込みます.
+            extension 設計では, feature そのものより failure mode の定義が interoperability を左右します.
 
-            **関連:** extension 設計では, feature そのものより failure mode の定義が interoperability を左右します.
+            A: 未知の extension をどう扱うかは interoperability の土台です.
+            B: required / optional が曖昧だと negotiation failure の意味が不明になります.
+            C: extension は attack surface を増やすので, security considerations が欠かせません.
+            D: 「全extensionは安全」と仮定するのは危険です. 拡張は新しいリスクも持ち込みます.
           </div>
         </div>
       </article>
@@ -194,16 +191,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** SNIは, サーバが証明書を送る前に, ClientHelloの **server_name** 拡張でクライアントが要求するDNSホスト名を伝えます.
+            SNIは, サーバが証明書を送る前に, ClientHelloの **server_name** 拡張でクライアントが要求するDNSホスト名を伝えます.
 
-            **Correct (B):** RFC 6066では, サーバがserver_nameの情報を, クライアントへ返す適切な証明書の選択に利用できます.
+            RFC 6066では, サーバがserver_nameの情報を, クライアントへ返す適切な証明書の選択に利用できます.
 
-            **選択肢:**
-            - A (incorrect): ALPNはHTTP/2などのアプリケーションプロトコルを識別します. 要求されたホスト名を示す情報ではありません.
-            - B (correct): SNIのserver_nameなら, 証明書を選ぶ時点で仮想ホストを区別できます.
-            - C (incorrect): session ticketはセッション再開用の状態を運びます. 新しい仮想ホスト接続でホスト名を選ぶ情報ではありません.
+            この仕組みにより, 1つのIPアドレスからホスト名ごとに異なる証明書を返す, 名前ベースのHTTPS仮想ホスティングが可能になります.
 
-            **関連:** この仕組みにより, 1つのIPアドレスからホスト名ごとに異なる証明書を返す, 名前ベースのHTTPS仮想ホスティングが可能になります.
+            A: ALPNはHTTP/2などのアプリケーションプロトコルを識別します. 要求されたホスト名を示す情報ではありません.
+            B: SNIのserver_nameなら, 証明書を選ぶ時点で仮想ホストを区別できます.
+            C: session ticketはセッション再開用の状態を運びます. 新しい仮想ホスト接続でホスト名を選ぶ情報ではありません.
           </div>
         </div>
       </article>
@@ -215,9 +211,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **max_fragment_length**.
 
-            constrained clientはRFC 6066が定義するsizeの1つをこのextensionでofferできます. serverは同じrequested valueをechoしてacceptし, 異なる値や許可されない値はspecified ruleに従って`illegal_parameter` failureになります.
+            `max_fragment_length`では,constrained clientがRFC 6066の定義するfragment sizeの1つをofferできます.serverは同じrequested valueをechoしてacceptし,異なる値や許可されない値はspecified ruleに従って`illegal_parameter` failureになります.
           </div>
         </div>
       </article>

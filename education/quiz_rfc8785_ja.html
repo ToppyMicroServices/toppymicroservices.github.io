@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8785", "SKILL_SUBTITLE": "JSON Canonicalization Scheme", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8785", "SKILL_SUBTITLE": "JSON Canonicalization Scheme", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -54,125 +54,129 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="同じdataにも複数の許可されたtext representationがある.">
-        <header><h4>Q1: 通常のJSON serializationだけではshared signature inputとして不十分な理由はどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="同じdataにも複数の正しいtext representationがありうる。">
+        <header><h4>Q1: 通常のJSON serializationだけでは、共通のsignature inputとして不十分な理由はどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. whitespace, property order, escape, number表記が異なりうる</label>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. whitespaceやproperty orderなどで表記が変わりうる</label>
           <label class="choice"><input type="radio" name="Q1" value="b"> B. JSONにはstringやnumber data typeがない</label>
           <label class="choice"><input type="radio" name="Q1" value="c"> C. 全JSON parserが自動的にsignatureをverifyする</label>
         </fieldset><div class="explain">**解説:**
 
-A: 同じparsed dataでもこれらのlegal variationで異なるbyte列になりうる.
+A: 同じparsed dataでも、これらの正しい表記差によって異なるbyte列になりうる。
 B: RFC 8259はstringとnumberを定義する.
-C: parsingとcryptographic verificationは別のoperationである.</div></div>
+C: parseとcryptographic verificationは別の処理である。</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JCSはJSON inputをI-JSON constraintへ狭める.">
-        <header><h4>Q2: JCS implementationがcanonicalization前にrejectすべきinputはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JCSはJSON inputをI-JSONの制約へ絞る。">
+        <header><h4>Q2: JCS implementationがcanonicalizeする前に拒否すべきinputはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q2" value="a"> A. propertyがreverse alphabetical orderで到着したobject</label>
           <label class="choice"><input type="radio" name="Q2" value="b"> B. duplicate property nameを含むobject</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. objectを含むarray</label>
         </fieldset><div class="explain">**解説:**
 
-A: canonicalizationがpropertyをsortするためinput orderはcanonicalでなくてよい.
-B: JCS input objectはduplicate property nameを含んではならない.
-C: arrayはobjectを含められそのobjectはrecursiveに処理される.</div></div>
+A: canonicalizationがpropertyをsortするため、inputの順序はcanonicalでなくてよい。
+B: JCSのinput objectは、重複したproperty名を含んではならない。
+C: arrayはobjectを含められ、そのobjectも再帰的に処理される。</div></div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="canonical outputはpresentation保持ではなく1つのrepresentationを選ぶ.">
-        <header><h4>Q3: JCS outputではJSON token間のwhitespaceをどうする?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="canonical outputは元の見た目を保持せず、一つのrepresentationを選ぶ。">
+        <header><h4>Q3: JCS outputではJSON token間のwhitespaceをどうする？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. 1つのASCII spaceへnormalizeする</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. source textからexactにcopyする</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. emitしない</label>
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. 一つのASCII spaceへnormalizeする</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. source textからそのままcopyする</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. 出力しない</label>
         </fieldset><div class="explain">**解説:**
 
-A: JCSはseparator spaceをemitしない.
-B: JCSはparsed dataを処理しsource formattingを保持しない.
-C: RFC 8785はJSON token間にwhitespaceをemitしないよう要求する.</div></div>
+A: JCSはseparator spaceを出力しない。
+B: JCSはparsed dataを処理し、sourceのformattingを保持しない。
+C: RFC 8785はJSON token間にwhitespaceを出力しないよう要求する。</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="comparisonはlocale independentでunescaped nameに対して行う.">
-        <header><h4>Q4: JCSはJSON object propertyをどうorderする?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="比較はlocaleに依存せず、escape前のnameに対して行う。">
+        <header><h4>Q4: JCSはJSON objectのpropertyをどのように並べる？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q4" value="a"> A. raw property nameをUTF-16 code unitで表しrecursiveにsortする</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. escaped source textをlocale-aware alphabetical orderでsortする</label>
           <label class="choice"><input type="radio" name="Q4" value="c"> C. senderがpropertyをinsertしたorder</label>
         </fieldset><div class="explain">**解説:**
 
-A: JCSはunsigned UTF-16 code-unit比較を使い全child objectをsortする.
-B: locale collationとescape表記ではspecifiedな共通orderにならない.
-C: insertion orderはJCS sorting ruleで置き換える.</div></div>
+A: JCSはunsigned UTF-16 code-unit比較を使い、すべてのchild objectをsortする。
+B: locale固有の照合やescape表記では、仕様どおりの共通順序にならない。
+C: insertion orderはJCSのsorting ruleで置き換えられる。</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="array内objectとarray positionではruleが異なる.">
-        <header><h4>Q5: JCSはarray element orderをどう扱う?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="array内のobjectと、array内の位置ではruleが異なる。">
+        <header><h4>Q5: JCSはarray elementの順序をどう扱う？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. 全elementをserialized byteでsortする</label>
           <label class="choice"><input type="radio" name="Q5" value="b"> B. element orderを保持しnested objectをcanonicalizeする</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. arrayはdeterministicでないためrejectする</label>
         </fieldset><div class="explain">**解説:**
 
-A: element orderの変更はJSON data modelを変える.
-B: arrayはrecursiveにscanされるがelement positionは変更しない.
-C: JCSはfixed element orderを持つarrayをsupportする.</div></div>
+A: elementの順序を変えると、JSON data modelそのものが変わる。
+B: array内も再帰的に処理するが、elementの位置は変えない。
+C: JCSは順序が固定されたarrayを扱える。</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="canonical serializationはsemanticなtext normalizationを意味しない.">
-        <header><h4>Q6: JCS implementationはsigning前にstringへUnicode normalizationを適用してよい?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="canonical serializationは、textの意味上のnormalizationを意味しない。">
+        <header><h4>Q6: JCS implementationは署名前にstringへUnicode normalizationを適用してよい？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. はい, 全stringにNFCがmandatory</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. はい, 2 stringがvisualに同じならよい</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. いいえ, parsed Unicode string dataをas-isで保持する</label>
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. はい、すべてのstringをNFCにする</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. はい、二つのstringが見た目で同じならよい</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. いいえ、parsed string dataを変更しない</label>
         </fieldset><div class="explain">**解説:**
 
-A: RFC 8785は意図的にUnicode normalizationを適用しない.
-B: visual similarityはparsed string dataを変更するruleではない.
-C: string dataの変更はcanonicalize対象valueを変えsignatureを壊しうる.</div></div>
+A: RFC 8785は意図的にUnicode normalizationを適用しない。
+B: 見た目が同じことは、parsed string dataを変更する規則にはならない。
+C: string dataを変えるとcanonicalize対象のvalueが変わり、signatureを壊しうる。</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="JCSはECMAScriptのbinary64 serialization behaviorを選ぶ.">
-        <header><h4>Q7: JCSはJSON numberをどうserializeする?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="parse後の数値と,source JSONに書かれた表記を分けて考える。">
+        <header><h4>Q7: JCSはJSON numberをどのようにserializeする？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. specifiedなECMAScript double-precision number serializationを使う</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. 受信した全digitとexponentをexactに保持する</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. 全numberをquoted decimal stringへ変換する</label>
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. 仕様で定めたECMAScriptのdouble-precision serializationを使う</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. 受信したすべてのdigitとexponentをそのまま保持する</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. すべてのnumberをquoted decimal stringへ変換する</label>
         </fieldset><div class="explain">**解説:**
 
-A: JCSはECMAScript serialization algorithmでnumber表記を固定する.
-B: JCSはparsed numeric valueをcanonicalizeしsource表記を保持しない.
-C: applicationはlarge numberをstringでmodelできるがJCSはJSON typeを勝手に変えない.</div></div>
+A: JCSはECMAScriptのserialization algorithmでnumber表記を固定する。
+B: JCSはparsed numeric valueをcanonicalizeし、sourceの表記は保持しない。
+C: applicationは大きなnumberをstringで表現できるが、JCSがJSON typeを勝手に変えることはない。</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="どちらもinteroperableなcanonical outputに必要なassumptionを破る.">
-        <header><h4>Q8: parsed valueにlone surrogateまたはInfinityがある. compliant JCS implementationはどうする?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="どちらも、相互運用可能なcanonical outputに必要な前提を破る。">
+        <header><h4>Q8: parsed valueにlone surrogateまたはInfinityがある。適合するJCS implementationはどうする？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. valueをreplaceしてsilentに続行する</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. appropriateなerrorでterminateする</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. 両valueをnullとしてserializeする</label>
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. valueを置き換えて黙って続行する</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. 適切なerrorを返して処理を終了する</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. どちらのvalueもnullとしてserializeする</label>
         </fieldset><div class="explain">**解説:**
 
-A: silent replacementはdataを変更しsignature behaviorを曖昧にする.
-B: RFC 8785はinvalid Unicodeとnon-JSON numeric valueでerrorを要求する.
-C: JCSはnullへのlossy conversionを定義しない.</div></div>
+A: 黙って置き換えるとdataが変わり、signatureの動作が曖昧になる。
+B: RFC 8785はinvalid UnicodeとJSON外のnumeric valueに対してerrorを要求する。
+C: JCSはnullへのlossy conversionを定義しない。</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="deterministic representationはbusiness-level equivalenceより狭い.">
-        <header><h4>Q9: 2つのimplementationが同じJCS byteを生成した. 何を結論できる?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. JSON claimは全recipientにauthorizedである</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. 全stringが全languageでsemantically equivalentである</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. 同じconstrained JSON dataのcanonical representationに合意した</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="JCSの出発点は制約済みのparsed data modelであり、不正入力に対する二つのparser解釈を仲裁しない。">
+        <header><h4>Q9: parser差分を防ぐvalidation boundaryはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">署名付きAgent CardのJSONに<code>endpoint</code> propertyが二つある。signature componentはparse時に最初の値を残し、request routerは後の値を残す。teamは両componentで別々にJCSを適用する案を出した。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. どちらかのparserが有効なJCS byteを作れればCardを受理する</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. 重複propertyを辞書順に並べ、routerに一方を選ばせる</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. 入力境界で重複nameを拒否し、検証済みの一つのdata modelを後段で使う</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. parse前にsignatureを検証し、その後は各componentで独立にparseする</label>
         </fieldset><div class="explain">**解説:**
 
-A: canonicalizationはauthorizationをgrantしない.
-B: JCSはcode pointを保持しnatural-languageの意味を解釈しない.
-C: JCSはdeterministic byteを提供するがclaim meaningとtrustはapplicationへ委ねる.</div></div>
+RFC 8785 Section 3.1は、JCS入力objectに重複property nameがあってはならないと定める。canonicalizationは制約済みのparsed dataを対象とし、最初の値と最後の値という競合解釈を同一にはできない。Cはsignature検証とroutingが分岐する前に曖昧さを除く。AとBはJCSに不適合な入力を受け入れ、Dはsignature inputの構築にparse済みdataが必要なJCSでは成立しない。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="JCSはserializationを定義するがどのlogical dataをsignatureへ入れるかは定義しない.">
-        <header><h4>Q10: signed Agent Cardでapplication profileがなお定義すべきboundaryはどれ?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. card表示に使うcolorだけ</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. field presence, signed-object construction, verification policy</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. canonical byteによりkey validationが不要になるrule</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="serializationやsignatureの決定性を問う前に、data modelを確認する。">
+        <header><h4>Q10: 有効なsignatureはissuerが意図したamountを保持している？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A payment grantが<code>amount=9007199254740993</code>をJSON numberで表す。issuer実装はIEEE 754 doubleとしてparseし、丸められた値へJCSを適用して署名する。verifierも同じJCS byteを再現するのでsignatureは有効だが、business layerは別に保持した入力bufferの元decimalを表示する。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. はい。signatureが有効なら保持された全representationの数値は等しい</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. いいえ。範囲外integerを安全にencodeし、署名対象data modelをauthorizeすべき</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. はい。JCSはcanonicalization前に失われたinteger precisionを復元する</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. いいえ。RFC 8785は暗号用途でJSON numberをすべて禁止する</label>
         </fieldset><div class="explain">**解説:**
 
-A: display stylingはcryptographic coverageを決めない.
-B: 全partyが同じlogical objectを構築しJCS周辺で同じacceptance ruleを適用する必要がある.
-C: deterministic byteはsigning keyをauthenticateしない.</div></div>
+RFC 8785 Section 3.1はJCSのnumber dataをIEEE 754 double precisionで表現可能な値に制限し、より高精度の値にはstringを推奨する。Appendix Dはその扱いを説明している。JCSが署名するのはparse後の値であり、先に失われた精度を戻したり、署名されていない別bufferをbindしたりはしない。Bは二つの境界を修正する。Dは強すぎる断定で、許容範囲のJSON numberは利用できる。</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

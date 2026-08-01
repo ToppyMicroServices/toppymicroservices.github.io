@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9110",
       SKILL_SUBTITLE: "HTTP Semantics",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -93,25 +94,25 @@
         <header><h4>Q1: Which topic is HTTP semantics rather than HTTP transport details</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. The meaning of GET being safe and cacheable under defined conditions</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. The defined safety and cacheability semantics of GET</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. How HTTP/2 frames are encoded on the wire</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. How QUIC packets are retransmitted over UDP</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** HTTP semantics remain shared across protocol versions, while framing and transport mechanisms change.
+            HTTP semantics remain shared across protocol versions, while framing and transport mechanisms change.
 
-            **Real-world usage:** API design, proxy behavior, client libraries, and cache review depend on method and response meaning rather than the wire format.
+            API design, proxy behavior, client libraries, and cache review depend on method and response meaning rather than the wire format.
 
-            **Terms:** semantics, transport, method meaning. Semantics describe what a request means and what a response means, regardless of whether it is carried by HTTP/1.1, HTTP/2, or HTTP/3.
-            **Correct (A):** Safety, idempotency, cacheability, and status code meaning are semantic concepts.
-            **Options:**
+            semantics, transport, method meaning. Semantics describe what a request means and what a response means, regardless of whether it is carried by HTTP/1.1, HTTP/2, or HTTP/3.
+            Safety, idempotency, cacheability, and status code meaning are semantic concepts.
+
 
             - A (correct): This is about meaning and allowed effects.
             - B (incorrect): Framing is a transport mapping detail.
             - C (incorrect): QUIC packet behavior is transport protocol detail, not HTTP semantics.
-            **Related:** Keeping semantics stable across versions is why tools like proxies can reason about methods and caching independent of the underlying transport.
+            Keeping semantics stable across versions is why tools like proxies can reason about methods and caching independent of the underlying transport.
           </div>
         </div>
       </article>
@@ -127,16 +128,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Safe is often misread as “the server performs no write,” rather than a property of the action requested by the client.
+            Safe is often misread as “the server performs no write,” rather than a property of the action requested by the client.
 
-            **Terms:** safe method. A safe method has essentially read-only defined semantics: the client does not request or expect a state change. Incidental server-side effects such as logging can still occur.
-            **Correct (A):** GET is defined as safe because its requested semantics are retrieval, even though an implementation can have incidental effects that the client did not request.
-            **Options:**
+            safe method. A safe method has essentially read-only defined semantics: the client does not request or expect a state change. Incidental server-side effects such as logging can still occur.
+            GET is defined as safe because its requested semantics are retrieval, even though an implementation can have incidental effects that the client did not request.
+
 
             - A (correct): GET has safe defined semantics.
             - B (incorrect): POST is not safe. It is generally used to create or process resources and can change server state.
             - C (incorrect): DELETE is not safe. It removes a resource and changes state.
-            **Related:** Safe describes the client's requested semantics, not a guarantee that the server performs no writes internally. It is also separate from cacheability.
+            Safe describes the client's requested semantics, not a guarantee that the server performs no writes internally. It is also separate from cacheability.
           </div>
         </div>
       </article>
@@ -153,17 +154,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Idempotency is commonly confused with identical responses or with a guarantee that every retry is operationally risk-free.
+            Idempotency is commonly confused with identical responses or with a guarantee that every retry is operationally risk-free.
 
-            **Terms:** idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
-            **Correct (A,C):** PUT and DELETE are defined as idempotent. Repeating the same request has the same intended effect as one request, although individual responses and incidental side effects can differ.
-            **Options:**
+            idempotent method. Idempotent means making the same request multiple times has the same intended effect as making it once.
+            PUT and DELETE are defined as idempotent. Repeating the same request has the same intended effect as one request, although individual responses and incidental side effects can differ.
+
 
             - A (correct): PUT replaces the target state with the provided representation, so repeating should converge to the same result.
             - B (incorrect): POST is not idempotent by default. Repeating might create multiple resources or trigger repeated processing.
             - C (correct): DELETE is idempotent. Deleting twice results in the same end state: the resource is gone.
             - D (incorrect): CONNECT establishes a tunnel and is not generally treated as idempotent.
-            **Related:** Idempotency is central for retries, load balancers, and safe recovery from network errors.
+            Idempotency is central for retries, load balancers, and safe recovery from network errors.
           </div>
         </div>
       </article>
@@ -179,66 +180,60 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The status-code class is the first layer of response meaning, before the client applies code-specific behavior.
+            The status-code class is the first layer of response meaning, before the client applies code-specific behavior.
 
-            **Real-world usage:** Clients, gateways, monitoring, and retry logic use status classes to choose broad handling paths before examining a specific code.
+            Clients, gateways, monitoring, and retry logic use status classes to choose broad handling paths before examining a specific code.
 
-            **Terms:** status code class. The first digit indicates a broad category of response semantics.
-            **Correct (B):** 3xx responses are redirections: the client may need to take additional action or use another URI.
-            **Options:**
+            status code class. The first digit indicates a broad category of response semantics.
+            3xx responses are redirections: the client may need to take additional action or use another URI.
+
 
             - A (incorrect): 4xx are client errors.
             - B (correct): 3xx indicates redirection semantics.
             - C (incorrect): 5xx are server errors.
-            **Related:** Redirection is not only 301 and 302. 304 Not Modified is also a 3xx related to cache validation.
+            Redirection is not only 301 and 302. 304 Not Modified is also a 3xx related to cache validation.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Place precondition evaluation in the processing sequence so it does not override an earlier failure and still occurs before the requested state change.">
-        <header><h4>Q5: When should a server evaluate request preconditions such as If-Match</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="First decide the unconditional response; only a request otherwise eligible for success reaches the state precondition.">
+        <header><h4>Q5: Which evaluation order preserves both checks?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A PUT carries <code>If-Match: "v6"</code>, while the selected representation has ETag <code>"v7"</code>. The same request also fails authorization, which the server can determine before processing the request content.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Before checking whether the method, target, authorization, and other normal request conditions would allow success</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only after content processing and the requested state change have both completed</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. After deciding it would otherwise succeed, but before processing content or performing the action</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Evaluate If-Match first and return 412, hiding the authorization result</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply the PUT, then evaluate both conditions against the resulting representation</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Perform normal request checks first; return the authorization failure without applying the PUT</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Ignore authorization whenever If-Match is present because the validator authenticates the client</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Why it matters:** Conditional requests are used both for cache validation and to prevent lost updates. Evaluating them at the wrong stage can change error precedence or allow an action to occur before its guard is checked.
-
-            **Real-world usage:** Document editing, configuration APIs, and administrative updates use If-Match to prevent one client from silently overwriting a newer state.
-
-            **Terms:** A **request precondition** such as **If-Match** makes method execution conditional on the current selected representation. **Normal request checks** are checks that can reject or redirect the request before significant processing.
-
-            **Correct (C):** RFC 9110 says to evaluate received preconditions after successful normal request checks and just before processing request content or performing the method's action, except where the specification excludes evaluation.
-
-            **Options:**
-            - A (incorrect): A redirect or failure detectable before significant processing takes precedence; the server ignores preconditions when the unconditional response would be neither 2xx nor 412.
-            - B (incorrect): Checking after the action is too late to prevent a lost update or another guarded state change.
-            - C (correct): This preserves normal error precedence while applying the condition before the action.
-
-            **Related:** When several conditional fields are present, RFC 9110 Section 13.2.2 defines their evaluation order. Cache-Control directives such as no-store are specified in RFC 9111 instead.
+            A: RFC 9110 Section 13.2.1 says a server ignores received preconditions when the same request without them would produce a status other than 2xx or 412 before content processing.
+            B: Evaluating after the action cannot prevent the stale update that If-Match is intended to guard.
+            C: The independently detectable authorization failure takes precedence, and the server performs no state change. If authorization later succeeds, the precondition is evaluated immediately before content processing or the method action.
+            D: An entity tag identifies representation state; it is not an authentication credential.
+            Decision rule: Determine whether the unconditional request is eligible for success, then evaluate representation preconditions before applying the method.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1" data-hint="Look for the representation metadata field whose value is a media type such as text/html or application/json.">
-        <header><h4>Q6: Which header field indicates the media type of the representation</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="A timeout reports missing response evidence, not whether the upstream state change happened.">
+        <header><h4>Q6: When may the agent automatically repeat this POST?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
+          <p class="question-premise">An agent sends <code>POST /transfers</code> through a gateway. The backend might have committed the transfer, but its response does not reach the gateway before timeout, so the agent receives 504. The HTTP method definition alone does not make this POST idempotent.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Always, because 504 proves the backend never applied the request</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Always, because every failed HTTP request can be retried on a new connection</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Only if application rules make repetition idempotent or prove the first request was not applied</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Never, because RFC 9110 permanently forbids clients from repeating POST</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Why it matters:** Representation metadata fields have nearby names but different roles, so using the wrong one can make a recipient interpret bytes incorrectly.
-
-            **Real-world usage:** API clients, browsers, upload handlers, and security filters use Content-Type when selecting parsers and decoding behavior.
-
-            **Terms:** representation, media type. The media type tells the recipient how to interpret the payload bytes.
-            **Correct:** Content-Type. It describes the format of the representation data.
-            **Why others are wrong:** Content-Length is the size, Accept is a request preference, and Host identifies the target authority. None of those declare payload type.
-            **Related:** Media type parameters like charset can affect decoding and security behavior.
+            A: RFC 9110 Section 15.6.5 defines 504 as the gateway not receiving a timely upstream response. It does not prove the backend performed no action.
+            B: Section 9.2.2 distinguishes automatic retry by method semantics; a lost response does not erase a possible effect.
+            C: Section 9.2.2 permits a client to retry a non-idempotent method only when it knows the request semantics are effectively idempotent or can detect that the original was never applied.
+            D: POST is not universally non-repeatable. An application-specific operation identifier, deduplication contract, or state check can supply the needed knowledge, but RFC 9110 does not invent that contract.
+            Decision rule: Retry depends on evidence about the operation's effect, not on the absence of a response or the validity of the authorization grant.
           </div>
         </div>
       </article>

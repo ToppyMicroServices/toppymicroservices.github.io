@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 3552",
       SKILL_SUBTITLE: "Security Considerationsの書き方",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -93,25 +94,24 @@
         <header><h4>Q1: 良いSecurity Considerations sectionの役割として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. protocol全体を別の言い回しで繰り返す</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. threatとfailure assumptionを暗黙にしたまま全protocol messageを言い換える</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. 現実的な脅威, 前提, mitigationsをspecに結び付けて説明する</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. 設計が安全だと約束する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. attackerとresidual riskを特定せず設計が安全だと宣言する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
             Security Considerations sectionを形式的な付録にすると, 仕様のどこが危険で, 何を前提に安全と判断したのかが伝わりません.
 
-            **用語:** **Security Considerations section** は, protocol や mechanism の security property, threat, failure mode, mitigation を spec に結び付けて説明する節です. 宣伝文句を書く場所ではありません.
+            **Security Considerations section** は, protocol や mechanism の security property, threat, failure mode, mitigation を spec に結び付けて説明する節です. 宣伝文句を書く場所ではありません.
 
-            **Correct (B):** これが役割に最も近いです. 読者はこの節を読んで, 何が守られ, どこに限界があり, どう運用すべきかを判断します.
+            これが役割に最も近いです. 読者はこの節を読んで, 何が守られ, どこに限界があり, どう運用すべきかを判断します.
 
-            **選択肢:**
-            - A (incorrect): 本文の言い換えだけでは, 何が security 上の論点か分かりません.
-            - B (correct): 現実的な脅威, 前提, mitigation を結び付けて説明するのが本筋です.
-            - C (incorrect): 「安全だと約束する」は危険です. security 文書は limitation や residual risk に正直であるべきです.
+            本文の言い換えだけでは, 何が security 上の論点か分かりません.
+            現実的な脅威, 前提, mitigation を結び付けて説明するのが本筋です.
+            「安全だと約束する」は危険です. security 文書は limitation や residual risk に正直であるべきです.
 
-            **関連:** 良い節は implementer と operator の両方が読んで役に立ちます. protocol の美しさではなく, 失敗の仕方を説明できるかが重要です.
+            良い節は implementer と operator の両方が読んで役に立ちます. protocol の美しさではなく, 失敗の仕方を説明できるかが重要です.
           </div>
         </div>
       </article>
@@ -130,22 +130,21 @@
 
             RFC 3552は, threat environment, protocolが提供するsecurity property, residual riskなど, protocolに結び付いた分析を求めます.
 
-            **用語:** **in scope** は設計が考慮するattack, **protection property** はmechanismが実際に提供する性質, **residual risk** はmitigation後にも残るriskです.
+            **in scope** は設計が考慮するattack, **protection property** はmechanismが実際に提供する性質, **residual risk** はmitigation後にも残るriskです.
 
-            **Correct (A,B,C):** RFC 3552はattackのscope, security mechanismが保護する部分と性質, mitigation後のresidual riskを記述するよう求めています.
+            RFC 3552はattackのscope, security mechanismが保護する部分と性質, mitigation後のresidual riskを記述するよう求めています.
 
-            **選択肢:**
-            - A (correct): どのattackを扱い, どれをなぜscope外にするかを読者へ示します.
-            - B (correct): 単に"protected"と書かず, confidentiality, integrity, authenticationなどを区別します.
-            - C (correct): mitigationで全riskが消えるわけではないため, 残る露出を明示します.
-            - D (incorrect): compliance や marketing claim は security analysis ではありません. 安全性を証明する代わりにもなりません.
+            どのattackを扱い, どれをなぜscope外にするかを読者へ示します.
+            単に"protected"と書かず, confidentiality, integrity, authenticationなどを区別します.
+            mitigationで全riskが消えるわけではないため, 残る露出を明示します.
+            compliance や marketing claim は security analysis ではありません. 安全性を証明する代わりにもなりません.
 
-            **関連:** privacyやoperationsの記述も関連する仕様では有用です. ただしRFC 3552にない項目を, このRFC固有のchecklistとして提示すべきではありません.
+            privacyやoperationsの記述も関連する仕様では有用です. ただしRFC 3552にない項目を, このRFC固有のchecklistとして提示すべきではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="影響が限定的なprotocolでも, そう判断した理由をreview可能にする必要があります.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="影響が限定的なprotocolでも, そう判断した理由をreview可能にする必要があります.">
         <header><h4>Q3: draftに"security considerationsはない"と書きたい. より良い対応として近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -158,16 +157,15 @@
 
             小さなprotocol変更でも, deployment, 他protocolとの組み合わせ, misuseによってriskが生じます. 根拠のない「考慮事項なし」は, その前提を隠します.
 
-            **用語:** **residual risk** は mitigation 後にも残るリスク, **assumption** は安全性が成り立つ前提条件です.
+            **residual risk** は mitigation 後にも残るリスク, **assumption** は安全性が成り立つ前提条件です.
 
-            **Correct (A):** これが最も誠実な書き方です. 影響が小さいならその理由を書き, どんな前提でそう言えるのか, 何が残るのかを明示すべきです.
+            これが最も誠実な書き方です. 影響が小さいならその理由を書き, どんな前提でそう言えるのか, 何が残るのかを明示すべきです.
 
-            **選択肢:**
-            - A (correct): 影響, 前提, 残余リスクを短くでも示せば, 読み手は判断できます.
-            - B (incorrect): 外部参照だけでは, このprotocol固有の相互作用と前提を分析できません.
-            - C (incorrect): 一般的なcontrolの列挙では, このprotocolが生むthreatや残る露出を説明できません.
+            影響, 前提, 残余リスクを短くでも示せば, 読み手は判断できます.
+            外部参照だけでは, このprotocol固有の相互作用と前提を分析できません.
+            一般的なcontrolの列挙では, このprotocolが生むthreatや残る露出を説明できません.
 
-            **関連:** 「特に新しいリスクは増やさない」と書くとしても, その文を支える前提を 1 行でいいので添えるのが実務的です.
+            「特に新しいリスクは増やさない」と書くとしても, その文を支える前提を 1 行でいいので添えるのが実務的です.
           </div>
         </div>
       </article>
@@ -183,21 +181,20 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** レビュー可能なセキュリティ分析は, 何を守りどの性質を必要とするか, 攻撃者の能力と信頼の前提, 鍵管理, 対策後に残る残余リスクを示します.
+            レビュー可能なセキュリティ分析は, 何を守りどの性質を必要とするか, 攻撃者の能力と信頼の前提, 鍵管理, 対策後に残る残余リスクを示します.
 
-            **Correct (B):** この改訂なら, レビュー担当者が保護の主張と成立条件を検証できます. 防御機構を, 保護対象, 脅威, 運用上の前提, 設計が除去しないリスクへ結び付けているためです.
+            この改訂なら, レビュー担当者が保護の主張と成立条件を検証できます. 防御機構を, 保護対象, 脅威, 運用上の前提, 設計が除去しないリスクへ結び付けているためです.
 
-            **選択肢:**
-            - A (incorrect): アルゴリズム名だけでは, 必要なセキュリティ特性, 脅威モデル, 鍵のライフサイクル, 導入前提を確定できません.
-            - B (correct): 列挙した各要素によって, 想定する環境に対する保護の主張を具体的に評価できます.
-            - C (incorrect): 暗号スイートだけでは, 認証, 鍵管理, 端点の侵害, 可用性, あらゆる運用形態を扱えません.
+            アルゴリズム名だけでは, 必要なセキュリティ特性, 脅威モデル, 鍵のライフサイクル, 導入前提を確定できません.
+            列挙した各要素によって, 想定する環境に対する保護の主張を具体的に評価できます.
+            暗号スイートだけでは, 認証, 鍵管理, 端点の侵害, 可用性, あらゆる運用形態を扱えません.
 
-            **関連:** RFC 3552は, 下位層のセキュリティプロトコルに期待するサービスと, 組み合わせたシステムが得る性質を明記し, 残余リスクも明確に説明するよう求めています.
+            RFC 3552は, 下位層のセキュリティプロトコルに期待するサービスと, 組み合わせたシステムが得る性質を明記し, 残余リスクも明確に説明するよう求めています.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="mitigationの対象, cost, 限界が読み手に分かるかを見てください.">
+      <article class="q card" data-id="Q5" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="mitigationの対象, cost, 限界が読み手に分かるかを見てください.">
         <header><h4>Q5: mitigationを述べるとき, 良いguidanceが持ちやすい性質はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -211,17 +208,16 @@
 
             mitigation名の列挙だけでは, 実装者はdeploymentに適するか判断できません. 対象, cost, limitationまで示す必要があります.
 
-            **用語:** **mitigation** は threat を下げるための具体策, **tradeoff** は性能や運用負荷との交換条件, **out of scope** はその対策では守らない範囲です.
+            **mitigation** は threat を下げるための具体策, **tradeoff** は性能や運用負荷との交換条件, **out of scope** はその対策では守らない範囲です.
 
-            **Correct (A,B,C):** 良い guidance は, 何に効くのか, どんなコストがあるのか, 何は解決しないのかをセットで説明します.
+            良い guidance は, 何に効くのか, どんなコストがあるのか, 何は解決しないのかをセットで説明します.
 
-            **選択肢:**
-            - A (correct): 防御対象が不明だと, その対策を選ぶ理由も検証方法も定まりません.
-            - B (correct): tradeoff を書くと, deploy 可否を現場が判断しやすくなります.
-            - C (correct): scope を明確にすると, その外側を別対策で補う必要が分かります.
-            - D (incorrect): security は絶対保証ではありません. 「不可能」と言い切る guidance は危険です.
+            防御対象が不明だと, その対策を選ぶ理由も検証方法も定まりません.
+            tradeoff を書くと, deploy 可否を現場が判断しやすくなります.
+            scope を明確にすると, その外側を別対策で補う必要が分かります.
+            security は絶対保証ではありません. 「不可能」と言い切る guidance は危険です.
 
-            **関連:** たとえば「TLS を使う」と書くなら, 何の threat を下げるのか, endpoint compromise は防がないのか, 鍵運用は別途必要か, まで触れると強くなります.
+            たとえば「TLS を使う」と書くなら, 何の threat を下げるのか, endpoint compromise は防がないのか, 鍵運用は別途必要か, まで触れると強くなります.
           </div>
         </div>
       </article>
@@ -233,17 +229,9 @@
           <div class="explain">
             **Explanation:**
 
-            security文書では, 誰をattackerと見なし, 何ができると想定するかが後続の分析を決めます.
+            threat modelは, 対象asset, attacker capability, trust assumption, 対象外を記述します. RFC 3552はこれらの前提を使い, 検討すべきattackとcountermeasureの適用範囲を明らかにします.
 
-            **実務での機会:** protocol reviewやincident analysisでは, mitigationが対象attackerとdeploymentをcoverするかthreat modelで判断します.
-
-            **用語:** **threat model** は attacker, capability, asset, trust boundary, assumption をまとめた考え方です. 何を怖がる仕様なのかを定義します.
-
-            **Correct:** **threat model**.
-
-            **Why this matters:** 同じ mechanism でも threat model が違えば, 十分な対策も変わります. passive observer を想定するのか, active MITM を想定するのかで必要な記述は別です.
-
-            **関連:** security considerations を読むときは, 「threat model は明示されているか」「暗黙の前提は何か」を最初に探すと理解が速くなります.
+            passive observationに十分なcontrolでも, messageをinsert, delete, modifyできるactive attackerには不十分な場合があります. したがってcountermeasureの妥当性は, 明示したthreat modelとdeploymentから切り離して評価できません.
           </div>
         </div>
       </article>
@@ -253,18 +241,18 @@
         <div class="body">
           <p class="question-premise">Agent間の不正利用を調査するため, request, session proof, task contextを完全な形で長期保存する案があります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. log storeをauthenticationで保護するとだけ書けば, loggingのsecurity analysisとして十分である</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. loggingはattackなので禁止するとだけ書き, incident detectionやauditへの影響はscope外にする</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. log accessにauthenticationを要求し, confidentiality, integrity, retention, failure impactは未文書のdeployment defaultへ任せる</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. complete requestのloggingを禁止し, 記録しなければthreatは消えるとしてdetection goalとresidual riskを省略する</label>
             <label class="choice"><input type="radio" name="Q7" value="c"> C. 検出対象, log自体のassetとattacker, confidentiality・integrity・availability control, 保存範囲, residual riskを明記する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            RFC 3552の中心は, mechanism名ではなくthreat modelと結果のsecurity propertyを説明することです. loggingは攻撃検出を支えるcontrolである一方, 高価値な情報集合, 改ざん対象, resource-exhaustion経路にもなります.
+            RFC 3552 Sections 2.3, 3, and 5の中心は, mechanism名だけで済ませず, system-security goal, 明示的なthreat model, 適用するcountermeasure, residual riskを説明することです. loggingは攻撃検出を支えるcontrolである一方, 高価値な情報集合, 改ざん対象, resource-exhaustion経路にもなります.
 
-            - A (incorrect): authenticationは「誰がaccessを試みたか」の一部しか扱いません. 過剰権限, credential compromise, data exfiltration, log injection, deletion, storage exhaustion, retention後の残存riskが未分析です.
-            - B (incorrect): RFC 3552はsystemを全attackから免疫にすることを求めず, out-of-scope threatとcountermeasureを説明するよう求めます. 一律禁止ではoperational requirementとのtrade-offを評価できません.
-            - C (correct): 何を検出するためのlogか, 何を守るか, attackerが何をできるか, control後に何が残るかを明示すれば, implementerが必要性とriskをreviewできます.
+            authenticationは「誰がaccessを試みたか」の一部しか扱いません. 過剰権限, credential compromise, data exfiltration, log injection, deletion, storage exhaustion, retention後の残存riskが未分析です.
+            RFC 3552はsystemを全attackから免疫にすることを求めず, out-of-scope threatとcountermeasureを説明するよう求めます. 一律禁止ではoperational requirementとのtrade-offを評価できません.
+            何を検出するためのlogか, 何を守るか, attackerが何をできるか, control後に何が残るかを明示すれば, implementerが必要性とriskをreviewできます.
 
             この観点では「loggingをattackとみなす」は省略しすぎです. 正確には, **log collectionをattack surfaceおよびprivacy-sensitive assetとしてthreat modelへ含める**ということです. 記録するfield, raw valueを避ける方法, retention, access control, redaction, tamper evidence, failure時の挙動をdeploymentごとに決めます.
           </div>

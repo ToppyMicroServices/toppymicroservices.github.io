@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9052","SKILL_SUBTITLE":"COSE: Structures and Process","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9052","SKILL_SUBTITLE":"COSE: Structures and Process","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what COSE security structure provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 9052 make COSE security structure sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Protected and unprotected header buckets carry parameters, but only authenticated inputs can support security decisions.">
+        <header><h4>Q1: Which COSE header statement is correct?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 9052 and claims that using COSE security structure automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An A2A profile uses COSE_Sign1 and must know which header values are covered by the signature.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. protecting CBOR data with signature, MAC, or encryption structures and explicit protected parameters; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. protecting CBOR data with signature, MAC, or encryption structures and explicit protected parameters, while which keys, algorithms, recipients, countersignatures, and payload meanings are acceptable remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWT commonly uses COSE protection, while COSE itself is the generic CBOR security container; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9052 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Both header buckets are signed because they appear next to each other in the COSE_Sign1 array</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Neither bucket can be signed; only the payload is part of the COSE signature structure</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. The protected bucket is in Sig_structure; an unprotected value needs a separate authenticated binding for security use</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. The unprotected bucket takes precedence whenever the same label is also present in protected headers</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-10 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-10 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 9052 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Section 3 defines separate protected and unprotected buckets; adjacency does not authenticate the unprotected map.
+B: Section 4.4 includes protected attributes as well as the payload and external data in Sig_structure.
+C: Correct. Sections 3 and 4.4 define the protection boundary; a profile must not infer authenticated semantics from an unprotected value alone.
+D: Section 3 says the protected value is used if a label appears in both buckets, though applications should detect that duplication.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for COSE security structure. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="kid narrows a key search; it is not a globally unique identity or a trust decision.">
+        <header><h4>Q2: What may the verifier infer from an unprotected kid?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 9052 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">A COSE_Sign1 object contains kid=h'17'. Three configured keys share that kid, but only one is authorized for this A2A issuer.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which keys, algorithms, recipients, countersignatures, and payload meanings are acceptable and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: CWT commonly uses COSE protection, while COSE itself is the generic CBOR security container</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Place security-critical parameters in protected headers and define the application profile for keys and algorithms</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Use kid as a lookup hint, try the applicable candidates, and separately enforce the selected key's issuer authorization</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Treat kid as globally unique and select the first matching key without checking its identity association</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Reject because kid is security-critical and therefore can never appear in the unprotected header bucket</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept the claimed issuer once any configured key has a matching kid, before verifying the COSE signature</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3-4 and 10 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Section 3.1 says kid is a non-unique key-selection hint. Section 4.4 separately requires the application to pair the verified key with an authorized signing identity.
+B: Section 3.1 explicitly says applications must not assume kid values are unique.
+C: Section 3.1 permits kid in the unprotected bucket because it is not itself security critical.
+D: A matching identifier is not signature verification or an issuer-to-key trust decision.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this COSE security structure review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="The algorithm used for a security operation must be authenticated when the COSE construction can authenticate it.">
+        <header><h4>Q3: Is the profile's algorithm placement acceptable?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: letting an attacker move a parameter from protected to unprotected headers without changing acceptance. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A COSE_Sign1 profile places alg only in the unprotected bucket. The verifier selects its verification algorithm from that value. The requirement is to prevent an intermediary from changing the algorithm selection while preserving the rest of the message.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document whether payloads are detached, countersigned, encrypted, or nested as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify protected headers, algorithm policy, key selection, payload coverage, and signature or MAC result before accepting content</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: CWT commonly uses COSE protection, while COSE itself is the generic CBOR security container</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 9052 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept the design because every registered COSE algorithm identifier has integrity protection from the IANA registry</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept it when kid is protected, since authentication of a key identifier also authenticates any unprotected alg value</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Keep alg unprotected and try all locally allowed algorithms, using the first verification that succeeds</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Put alg in protected headers or bind it through authenticated external data, then apply the profile's allowed-algorithm policy</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 12 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: A registry assigns semantics and code points; it does not protect a parameter instance in a message.
+B: Protection of one parameter does not extend to a separate unprotected parameter.
+C: Algorithm trial can create a different or ambiguous processing rule and does not meet the stated authenticated-selection criterion.
+D: Section 3.1 requires alg to be authenticated where the ability exists and identifies protected headers or external data as the mechanisms. Algorithm acceptance remains profile policy.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing COSE security structure, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="crit itself and every parameter it names have protected-header placement requirements.">
+        <header><h4>Q4: How should the verifier process this crit value?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 9052 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">A COSE_Sign1 object places crit=[1001] in protected headers, but parameter 1001 appears only in the unprotected bucket. The A2A profile says 1001 changes authorization semantics when understood.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which keys, algorithms, recipients, countersignatures, and payload meanings are acceptable</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify protected headers, algorithm policy, key selection, payload coverage, and signature or MAC result before accepting content</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Whether payloads are detached, countersigned, encrypted, or nested</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Protecting CBOR data with signature, MAC, or encryption structures and explicit protected parameters</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Read 1001 from the unprotected bucket because crit is protected and therefore authenticates any value carrying the named label</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Treat this as a fatal processing error because a label named by crit is not present in the protected-header bucket</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Ignore crit and use 1001 only if the local application already understands its unprotected representation</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Move 1001 into protected headers after receipt and verify the original signature against the modified structure</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-10 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: crit lists protected parameters that must be understood; it does not authenticate an unprotected value with the same label.
+B: Section 3.1 explicitly makes this condition a fatal error.
+C: Ignoring a valid protected crit list defeats the sender's critical-processing requirement.
+D: Changing protected headers changes Sig_structure and cannot retroactively repair the received signature.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when COSE security structure is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Signer and verifier must construct identical external_aad and payload byte strings for Sig_structure.">
+        <header><h4>Q5: Why must this detached-payload verification fail?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when CBOR tokens, attestation evidence, or compact messages need signature, MAC, or encryption. Observed defect: trusting unprotected headers or algorithm hints before enforcing local key and algorithm policy.</p>
+          <p class="question-premise">The signer creates COSE_Sign1 with a detached payload and external_aad equal to the ASCII bytes of POST /tasks. The verifier uses the same payload bytes but supplies an empty external_aad. The profile requires the HTTP method and path to be bound to the signature.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (protecting CBOR data with signature, MAC, or encryption structures and explicit protected parameters), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (place security-critical parameters in protected headers and define the application profile for keys and algorithms) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (CWT commonly uses COSE protection, while COSE itself is the generic CBOR security container), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Sig_structure differs, so verification must use the exact profile-defined external_aad bytes before the request can meet the context-binding rule</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Verification can succeed because external_aad is never included in the COSE signing input and serves only as local metadata</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Verification can omit external_aad when the payload is detached, since transporting payload separately also detaches its application context</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. The verifier should reconstruct external_aad from any equivalent URL spelling because COSE signs the parsed HTTP semantics rather than bytes</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 12 supports resolving the defect before relying on the result. The profile rule is: place security-critical parameters in protected headers and define the application profile for keys and algorithms. The check is: verify protected headers, algorithm policy, key selection, payload coverage, and signature or MAC result before accepting content. The local policy is: which keys, algorithms, recipients, countersignatures, and payload meanings are acceptable.</div>
+A: Sections 4.3 and 4.4 require both sides to construct the same external data byte string, and Sig_structure includes it before the full payload.
+B: Section 4.4 explicitly includes external_aad in Sig_structure.
+C: Detached transport changes where the payload is carried, not the payload or external context included in the signing input.
+D: COSE consumes application-supplied bytes. The A2A profile must define normalization if multiple HTTP spellings are to be equivalent.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should COSE security structure be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="A successful COSE verification authenticates a defined byte structure at the verifier; trace what survives into the backend request.">
+        <header><h4>Q6: Which design gives the backend the evidence required by its policy?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines COSE security structure with another protocol layer. Its design note says: CWT commonly uses COSE protection, while COSE itself is the generic CBOR security container.</p>
+          <p class="question-premise">An A2A gateway verifies a COSE_Sign1 request and confirms that its key is authorized for issuer I. It forwards decoded sub and role in ordinary HTTP headers. The backend owns the resource and requires authenticated issuer, role, payload digest, and operation context. It does not receive the COSE object or protected gateway evidence.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which keys, algorithms, recipients, countersignatures, and payload meanings are acceptable unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify protected headers, algorithm policy, key selection, payload coverage, and signature or MAC result before accepting content) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which keys, algorithms, recipients, countersignatures, and payload meanings are acceptable), perform the required check (verify protected headers, algorithm policy, key selection, payload coverage, and signature or MAC result before accepting content), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Use the ordinary headers because Section 4.4 verification causes all decoded fields to remain authenticated after reserialization</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Add the original unprotected kid header, allowing the backend to recover issuer, role, payload digest, and operation context</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Let the backend verify the original COSE inputs, or make the gateway a trusted issuer of a protected assertion that explicitly covers the required facts</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Treat gateway TLS as proof of the original issuer and role, even if the downstream request carries no integrity-protected mapping to those values</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 2-10 and Section 12 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: Sections 3 and 4.4 define which original bytes are authenticated; decoded ordinary headers do not inherit that protection.
+B: Section 3.1 says kid is a non-unique lookup hint, not a container for the backend's required evidence.
+C: Section 4.4 supplies COSE verification and requires application checks for key, identity, and authorization. The downstream assertion is a separate A2A trust-boundary design and must protect its stated semantics.
+D: Gateway TLS authenticates the immediate connection, not an unstated mapping from original COSE evidence to downstream fields.</div>
         </div>
       </article>
     </section>

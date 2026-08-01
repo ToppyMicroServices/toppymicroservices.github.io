@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8693", "SKILL_SUBTITLE": "OAuth 2.0 Token Exchange", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8693", "SKILL_SUBTITLE": "OAuth 2.0 Token Exchange", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,14 +57,14 @@
       <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate the subject token from the optional acting party.">
         <header><h4>Q1: Which input identifies the security principal on whose behalf a token exchange is requested?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. requested_token_type</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. subject_token with subject_token_type</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. issued_token_type</label>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. requested_token_type with the desired output token type</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. subject_token with its subject_token_type</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. actor_token with its actor_token_type</label>
         </fieldset><div class="explain">**Explanation:**
 
 A: This indicates the desired output token type, not the subject principal.
 B: The subject token represents the party that is the subject of the requested token.
-C: This is returned in the response to identify the issued token type.</div></div>
+C: This identifies an optional acting party rather than the subject principal.</div></div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="The optional acting-party credential needs an explicit token type.">
         <header><h4>Q2: Which optional credential and type-parameter pairing is valid in a token exchange request?</h4><span class="type">Multiple Choice</span></header>
@@ -143,36 +143,40 @@ C: Scope expresses requested privileges and is not an actor-chain structure.</di
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q8" value="a"> A. Yes, possession of any subject token is sufficient</label>
           <label class="choice"><input type="radio" name="Q8" value="b"> B. Yes, actor_token automatically grants impersonation</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. No, delegation or impersonation is an authorization-policy decision</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. No, authorization policy decides whether to permit it</label>
         </fieldset><div class="explain">**Explanation:**
 
 A: The authorization server must validate tokens and authorize the requested exchange.
 B: An actor token identifies an actor but does not bypass exchange policy.
 C: RFC 8693 provides the exchange framework without granting every requested authority transition.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="The response can issue an access token without granting long-lived renewal capability.">
-        <header><h4>Q9: Must a successful token exchange response include a refresh token?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. No, refresh_token is optional</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. Yes, every exchanged token must be renewable</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. Yes, but only when actor_token is absent</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Keep the subject of the authorization distinct from the party currently acting.">
+        <header><h4>Q9: Which authorization and audit interpretation matches the issued token?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway exchanges Alice's subject token together with its own actor token. The issued token has <code>sub=alice</code>, <code>act.sub=gateway-7</code>, a backend audience, and a reduced scope. The backend policy must preserve who performed the call on whose behalf.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. Record Alice as the only actor because the top-level <code>sub</code> replaces actor information</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. Treat the token as impersonation and give the gateway every right Alice possesses</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Treat gateway-7 as the current actor for Alice and enforce the issued audience and scope</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. Ignore the actor chain after cryptographic validation because it is only diagnostic text</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: The authorization server may issue one but successful exchange does not require it.
-B: RFC 8693 does not require renewal rights for every exchange.
-C: Actor-token presence does not create a mandatory refresh-token response.</div></div>
+RFC 8693 Section 1.1 distinguishes delegation, where the actor keeps its identity while acting for the subject, from impersonation. Section 4.1 defines the top-level <code>act</code> claim as the current actor and permits nested prior actors. C preserves that distinction and the token's target restrictions. A and D discard security-relevant actor context; B converts a constrained delegation into broader impersonation.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Preserve who is the subject, who is acting, and where the token may be used.">
-        <header><h4>Q10: An agent exchanges a user token for a downstream service token. Which profile check is essential?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. Copy every upstream scope without evaluating the downstream audience</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. Validate subject and actor chains, constrain audience and scope, and apply exchange policy</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. Treat the new token as proof that the downstream action succeeded</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Trace which artifact the backend can verify and the channel or context to which each artifact is bound.">
+        <header><h4>Q10: May the backend treat the exchanged token as proof of the original client session?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client sends a grant and a session-bound proof to a gateway. The gateway validates both, exchanges the grant for an audience-restricted bearer access token containing its <code>act</code> claim, and calls the backend over a different TLS connection. The backend receives no original proof, exporter value, or other binding to the client session.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. Yes; any successful token exchange transfers every property of the input session</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. Yes; the <code>act</code> claim cryptographically binds the token to the client's TLS connection</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. No; the token can carry delegated authority, but the original session binding is not preserved here</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. No; RFC 8693 forbids gateways from exchanging tokens for backend services</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: Blind scope propagation can grant privileges inappropriate for the target service.
-B: These checks prevent token transformation from silently widening authority or losing accountability.
-C: A token authorizes or represents access context and is not evidence that an operation completed.</div></div>
+RFC 8693 Section 1 limits the specification to a basic token-exchange protocol and leaves token security characteristics, proof-of-possession, and the deployment trust model to profiles or policy. A valid exchange can authorize the backend call under the issued token's audience, scope, subject, and actor semantics; it does not manufacture evidence of a different TLS session. C separates those guarantees. D is false: a resource server exchanging a received token for a backend token is an explicit use case.</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

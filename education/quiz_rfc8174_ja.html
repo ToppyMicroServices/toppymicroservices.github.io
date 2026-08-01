@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 8174",
       SKILL_SUBTITLE: "BCP 14の大文字小文字の更新",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -117,21 +118,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.
+            must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.
 
-            **判断のポイント:** 規範語が **ALL CAPS** で書かれ, 文書がBCP 14の解釈を宣言していれば, 特別なキーワードの意味を一意に適用できます. どちらかが曖昧だと, mustの重さが読み手によって変わります.
+            規範語が **ALL CAPS** で書かれ, 文書がBCP 14の解釈を宣言していれば, 特別なキーワードの意味を一意に適用できます. どちらかが曖昧だと, mustの重さが読み手によって変わります.
 
-            **Correct (B):** BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい. RFC 8174 は, まさにこの曖昧性を減らすための文書です.
+            BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい. RFC 8174 は, まさにこの曖昧性を減らすための文書です.
 
-            **Options:**
+            セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する. だから RFC 2119 と RFC 8174 は, 仕様を書く人だけでなく読む人にも効く RFC です.
 
-            - A (incorrect): 小文字mustを必ず規範語として読む根拠は, 文書が明示しない限り成立しない.
-
-            - B (correct): これが最も起きやすい問題. 同じ仕様を読んでも結論が分岐する.
-
-            - C (incorrect): 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.
-
-            **Related:** セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する. だから RFC 2119 と RFC 8174 は, 仕様を書く人だけでなく読む人にも効く RFC です.
+            A: 小文字mustを必ず規範語として読む根拠は, 文書が明示しない限り成立しない.
+            B: これが最も起きやすい問題. 同じ仕様を読んでも結論が分岐する.
+            C: 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.
           </div>
         </div>
       </article>
@@ -147,19 +144,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** MUST, 規範語, BCP 14ボイラープレート, 大文字小文字.
+            MUST, 規範語, BCP 14ボイラープレート, 大文字小文字.
 
-            **Correct (A):** RFC 8174のボイラープレートは, 列挙した語がすべて大文字で現れる場合に限り, BCP 14の定義どおりに解釈すると宣言します. 宣言と大文字のキーワードを揃えることで, 意図が明確になります.
+            RFC 8174のボイラープレートは, 列挙した語がすべて大文字で現れる場合に限り, BCP 14の定義どおりに解釈すると宣言します. 宣言と大文字のキーワードを揃えることで, 意図が明確になります.
 
-            **Options:**
+            文書が別の規則を明示的に定義することはできますが, RFC 8174の標準ボイラープレートが小文字にもBCP 14の意味を与えるとは説明できません.
 
-            - A (correct): すべて大文字のMUSTが大文字条件を満たし, ボイラープレートがBCP 14の解釈を宣言します.
-
-            - B (incorrect): RFC 8174の標準ボイラープレートでは, 小文字のmustにBCP 14の特別な意味は与えられません.
-
-            - C (incorrect): 例は動作を説明できますが, 必須の適合条件を宣言する代わりにはなりません.
-
-            **Related:** 文書が別の規則を明示的に定義することはできますが, RFC 8174の標準ボイラープレートが小文字にもBCP 14の意味を与えるとは説明できません.
+            A: すべて大文字のMUSTが大文字条件を満たし, ボイラープレートがBCP 14の解釈を宣言します.
+            B: RFC 8174の標準ボイラープレートでは, 小文字のmustにBCP 14の特別な意味は与えられません.
+            C: 例は動作を説明できますが, 必須の適合条件を宣言する代わりにはなりません.
           </div>
         </div>
       </article>
@@ -176,21 +169,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** 曖昧性, BCP 14キーワード, MUST, SHOULD. RFC 8174の狙いは, キーワードの読み方を明示して, 要件を一意に読むこと.
+            曖昧性, BCP 14キーワード, MUST, SHOULD. RFC 8174の狙いは, キーワードの読み方を明示して, 要件を一意に読むこと.
 
-            **Correct (A,C,D):** どれも読みのブレを減らし, 適合判定を可能にする.
 
-            **Options:**
+            レビューでは, "このMUSTはどう試験する" と "このSHOULDの例外は何" を確認する.
 
-            - A (correct): MUST/SHOULD/MAYの意味の前提を固定できる.
-
-            - B (incorrect): 何が要件で何が説明かが不明になり, 実装差が増える.
-
-            - C (correct): MUSTがテスト可能なら, 実装とレビューが収束しやすい.
-
-            - D (correct): SHOULDは例外を許す. 例外が曖昧だと, SHOULDが実質MAYになる.
-
-            **Related:** レビューでは, "このMUSTはどう試験する" と "このSHOULDの例外は何" を確認する.
+            A: MUST/SHOULD/MAYの意味の前提を固定できる.
+            B: 何が要件で何が説明かが不明になり, 実装差が増える.
+            C: MUSTがテスト可能なら, 実装とレビューが収束しやすい.
+            D: SHOULDは例外を許す. 例外が曖昧だと, SHOULDが実質MAYになる.
           </div>
         </div>
       </article>
@@ -206,19 +193,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **SHOULD** はBCP 14キーワードです. RFC 8174の「すべて大文字」という規則を採用した文書では, 小文字の **should** は通常の英語の意味を持ちます.
+            **SHOULD** はBCP 14キーワードです. RFC 8174の「すべて大文字」という規則を採用した文書では, 小文字の **should** は通常の英語の意味を持ちます.
 
-            **Correct (B):** RFC 8174が定義するBCP 14の特別な意味は, すべて大文字の表記だけに与えられます. 文書が別の規則を定義することはできますが, この定型文だけでは小文字の **should** は規範的 **SHOULD** になりません.
+            RFC 8174が定義するBCP 14の特別な意味は, すべて大文字の表記だけに与えられます. 文書が別の規則を定義することはできますが, この定型文だけでは小文字の **should** は規範的 **SHOULD** になりません.
 
-            **選択肢:**
+            BCP 14キーワードを使わない規範文も書けますが, その要件は小文字の綴りから推測させず, 本文で明確にする必要があります.
 
-            - A (incorrect): すべて大文字という条件があるため, 大文字小文字は解釈に影響します. あらゆる表記を規範語にする宣言ではありません.
-
-            - B (correct): 文書が小文字に別の意味を明示しない限り, 通常の英語として読みます.
-
-            - C (incorrect): 小文字にすると別のBCP 14キーワードへ変わるのではなく, この規則では特別なBCP 14の意味を失います.
-
-            **関連:** BCP 14キーワードを使わない規範文も書けますが, その要件は小文字の綴りから推測させず, 本文で明確にする必要があります.
+            A: すべて大文字という条件があるため, 大文字小文字は解釈に影響します. あらゆる表記を規範語にする宣言ではありません.
+            B: 文書が小文字に別の意味を明示しない限り, 通常の英語として読みます.
+            C: 小文字にすると別のBCP 14キーワードへ変わるのではなく, この規則では特別なBCP 14の意味を失います.
           </div>
         </div>
       </article>
@@ -234,19 +217,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** BCP 14, 規範セクション, MUST. RFC 8174とRFC 2119の文脈では, MUSTのようなキーワードで適合要件を表現する.
+            BCP 14, 規範セクション, MUST. RFC 8174とRFC 2119の文脈では, MUSTのようなキーワードで適合要件を表現する.
 
-            **Correct (B):** MUSTが動作をmandatoryと示し, 参照した構文がimplementation-independentでtestableなconditionを与えます.
+            MUSTが動作をmandatoryと示し, 参照した構文がimplementation-independentでtestableなconditionを与えます.
 
-            **Options:**
+            正当な例外がある場合は, circularなescape clauseではなく, 理由と適用conditionを示してSHOULDを使います.
 
-            - A (incorrect): 標準ボイラープレートでは通常の日本語に埋め込んだ「方がよい」にBCP 14の特別な意味はなく, normative forceが不明確です.
-
-            - B (correct): すべて大文字のMUSTが宣言済みのBCP 14意味を持ち, 具体的なconditionへ適用されています.
-
-            - C (incorrect): SHOULDは例外を許しますが, この文は例外を選ぶ実質的なconditionを示していません.
-
-            **Related:** 正当な例外がある場合は, circularなescape clauseではなく, 理由と適用conditionを示してSHOULDを使います.
+            A: 標準ボイラープレートでは通常の日本語に埋め込んだ「方がよい」にBCP 14の特別な意味はなく, normative forceが不明確です.
+            B: すべて大文字のMUSTが宣言済みのBCP 14意味を持ち, 具体的なconditionへ適用されています.
+            C: SHOULDは例外を許しますが, この文は例外を選ぶ実質的なconditionを示していません.
           </div>
         </div>
       </article>
@@ -258,13 +237,13 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** optional behavior, 規範語, MAY. BCP 14では, itemがtruly optionalな場合にMAYを使います.
+            optional behavior, 規範語, MAY. BCP 14では, itemがtruly optionalな場合にMAYを使います.
 
-            **Correct:** MAYはimplementationがその動作を含めるか省くかを選べることを示します. 仕様に定めがあれば, 異なる選択をしたpeer同士でもinteroperateする必要があります.
+            MAYはimplementationがその動作を含めるか省くかを選べることを示します. 仕様に定めがあれば, 異なる選択をしたpeer同士でもinteroperateする必要があります.
 
-            **Why others are wrong:** MUSTは絶対要件です. SHOULDは正当な例外を許す推奨です. どちらもfeature自体が自由選択という意味ではありません.
+            MUSTは絶対要件です. SHOULDは正当な例外を許す推奨です. どちらもfeature自体が自由選択という意味ではありません.
 
-            **Related:** optional featureでも, peerがその有無を検出し, 未対応時にどう動くかというinteroperability boundaryは定義します.
+            optional featureでも, peerがその有無を検出し, 未対応時にどう動くかというinteroperability boundaryは定義します.
           </div>
         </div>
       </article>

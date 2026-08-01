@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5056","SKILL_SUBTITLE":"On the Use of Channel Bindings to Secure Channels","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5056","SKILL_SUBTITLE":"On the Use of Channel Bindings to Secure Channels","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what channel binding provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 5056 make channel binding sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Identify the two protocol layers that must agree on the binding; do not confuse that fact with permission to invoke an operation.">
+        <header><h4>Q1: What security question can a channel binding answer?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 5056 and claims that using channel binding automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An agent authenticates with a SASL mechanism inside a TLS connection. The profile wants to detect an attacker that terminates TLS and relays the application authentication over a different TLS connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. deciding whether upper-layer authentication is bound to the same secure channel instance; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. deciding whether upper-layer authentication is bound to the same secure channel instance, while acceptable peer identity, authorization, and mechanism negotiation policy remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9266 gives a TLS 1.3 channel binding type, while RFC 5056 explains the general model; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 5056 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Whether the authenticated agent is authorized to invoke the requested A2A operation</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Whether the application-layer authentication and each peer refer to the same secure-channel instance</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Whether the TLS certificate remains within its validity interval and certification path constraints</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Whether two authenticated application messages express the same business transaction</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-3 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-3 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 5056 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Authorization is a separate application or deployment decision.
+B: RFC 5056 Sections 2 and 3 define channel binding as tying application-layer authentication to a secure channel so both peers can establish that they observed the same binding. This can expose a channel-relay attack.
+C: Certificate path validation is not the channel-binding function described by RFC 5056.
+D: Business-message equivalence requires application semantics that a channel binding does not supply.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for channel binding. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Interoperability depends on both the selected type and an unambiguous byte representation; nesting also has a defined selection rule.">
+        <header><h4>Q2: How should a profile bind authentication in nested channels?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 5056 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A connection has two nested secure channels of the same channel-binding type. Independent implementations also serialize the selected binding data before comparing it.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only acceptable peer identity, authorization, and mechanism negotiation policy and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 9266 gives a TLS 1.3 channel binding type, while RFC 5056 explains the general model</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Name the channel binding type and specify exactly which channel data is compared</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Use the outermost channel and allow each implementation to choose its native object encoding</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Concatenate every nested binding and compare the resulting implementation-specific structures</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Name the binding type, use the innermost channel when the same type is nested, and define one canonical octet encoding</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Use whichever channel completed most recently and treat locally successful encodings as equivalent</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Section 4 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: RFC 5056 Section 2.1 selects the innermost instance for nested channels of the same type and requires a canonical octet encoding.
+B: RFC 5056 does not define concatenation as the nesting rule, and implementation-specific structures are not an interoperable comparison value.
+C: This applies all three Section 2.1 requirements relevant to the scenario: identify the type, select the innermost same-type channel, and use canonical bytes.
+D: Completion order and local success do not establish that both peers compared the same binding.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this channel binding review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="First decide which two channel endpoints the backend claims were bound. Then inspect whether its evidence was derived by those endpoints or asserted across another trust boundary.">
+        <header><h4>Q3: What can the backend conclude from a forwarded binding value?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: comparing a value copied through application metadata instead of deriving it from the channel. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A gateway terminates the client TLS connection, derives a channel binding, and forwards that value in an ordinary HTTP header over a separate gateway-to-backend TLS connection. The backend wants to claim that its own application authentication is bound directly to the client TLS channel.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how failed binding affects session acceptance as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify that the binding data came from the same channel instance used by the peer</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 9266 gives a TLS 1.3 channel binding type, while RFC 5056 explains the general model</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 5056 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. It may make the direct-binding claim because both network hops use TLS and the binding value is unchanged</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. It may make the claim if the gateway authenticated the client, even when the forwarded header is not integrity-protected as a gateway assertion</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. It must reject every gateway architecture because channel bindings permit only end-to-end transports</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. No. The header proves neither direct client-backend binding nor its own integrity; use backend-verifiable evidence or a protected gateway assertion</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 8 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: Two TLS hops are two channel instances; copying a value does not merge their endpoints.
+B: Gateway authentication can support a delegated trust model, but an unprotected header does not establish an authentic gateway assertion to the backend.
+C: RFC 5056 does not prohibit trusted intermediaries; it requires the security claim to match the channel and application authentication actually bound.
+D: RFC 5056 Sections 3 and 8 require the application authentication and channel-binding construction to be analyzed together. A gateway assertion can be a valid separate design, but its trust boundary and integrity are local profile responsibilities.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing channel binding, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The required property is not merely stable peer identity; it is whether a proof may be replayed after establishing another channel.">
+        <header><h4>Q4: Which kind of binding fits a per-session replay requirement?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 5056 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">A profile requires an authentication proof captured on one secure-channel session to fail after either peer establishes a new session, even when the same server certificate is used.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Acceptable peer identity, authorization, and mechanism negotiation policy</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify that the binding data came from the same channel instance used by the peer</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How failed binding affects session acceptance</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Deciding whether upper-layer authentication is bound to the same secure channel instance</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. An endpoint binding, because certificate continuity is the profile's decisive property</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. A unique channel binding whose value changes across the sessions under review</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Either kind, because application authentication makes binding uniqueness irrelevant</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. An endpoint binding plus a longer validity interval, so the proof remains stable during reconnection</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-3 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: RFC 5056 Section 2.1 distinguishes endpoint bindings, which can identify a channel endpoint across multiple channel instances, from unique bindings.
+B: A binding must be unique across the sessions relevant to the threat model to detect replay on a re-established channel; Section 8.1 warns about non-unique bindings in such cases.
+C: Application authentication is necessary, but it does not turn a reused channel-binding value into a per-session value.
+D: Increasing the lifetime strengthens continuity, the opposite of the stated replay criterion.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when channel binding is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The binding comparison may occur outside the channel that created the value, but the transport of the comparison still has a security requirement.">
+        <header><h4>Q5: What is missing when binding data is compared on a separate exchange?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a SASL, token, or application proof must be tied to the protected connection. Observed defect: treating hostname, token audience, or unauthenticated metadata as if it were channel binding data.</p>
+          <p class="question-premise">Two agents derive the same channel-binding type from a secure channel. They later send their binding values to an A2A coordinator over a separate exchange whose messages can be modified in transit. The coordinator treats equality as proof of the original binding.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (deciding whether upper-layer authentication is bound to the same secure channel instance), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (name the channel binding type and specify exactly which channel data is compared) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9266 gives a TLS 1.3 channel binding type, while RFC 5056 explains the general model), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Nothing, because equality of correctly derived values authenticates every later carrier of those values</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Only confidentiality, because modified binding messages cannot affect the equality result</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Integrity-protect the separate exchange and authenticate each reporter so the coordinator can attribute the compared values</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. A second endpoint binding, because two binding types automatically authenticate the coordinator exchange</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 8 supports resolving the defect before relying on the result. The profile rule is: name the channel binding type and specify exactly which channel data is compared. The check is: verify that the binding data came from the same channel instance used by the peer. The local policy is: acceptable peer identity, authorization, and mechanism negotiation policy.</div>
+A: Correct derivation does not protect a different exchange that carries the value.
+B: RFC 5056 Section 3 requires at least integrity when a separate protected exchange is used; the coordinator also needs application authentication to know whose observation it is comparing.
+C: This preserves the integrity of the comparison and supplies the identity association required by the channel-binding model.
+D: Adding another value does not authenticate an attacker-modifiable carrier.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should channel binding be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Name the verifier of each guarantee: token validity, client-channel binding, gateway assertion authenticity, and resource authorization need not terminate at the same component.">
+        <header><h4>Q6: Which gateway design preserves an accurate security claim?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines channel binding with another protocol layer. Its design note says: RFC 9266 gives a TLS 1.3 channel binding type, while RFC 5056 explains the general model.</p>
+          <p class="question-premise">A gateway validates an agent grant and verifies that the agent's authentication is bound to the client-to-gateway channel. A backend owns the requested resource and makes the final authorization decision over a different TLS connection. The backend receives only a gateway-generated assertion.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes acceptable peer identity, authorization, and mechanism negotiation policy unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify that the binding data came from the same channel instance used by the peer) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (acceptable peer identity, authorization, and mechanism negotiation policy), perform the required check (verify that the binding data came from the same channel instance used by the peer), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Make the gateway a trusted verifier and protect an assertion binding its result to client identity and request context; the backend still applies resource authorization</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Forward the original binding bytes and let the backend describe them as its own channel binding because both hops are within one deployment</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Treat a valid grant as proof of channel binding and omit the gateway's binding result from the assertion</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Treat a successful gateway binding as final resource authorization because it proves both agent identity and operation permission</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 2-3 and Section 8 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 5056 Sections 3 and 8 support the gateway's client-channel claim, while the protected assertion and backend authorization are explicit composition and local trust decisions. The backend must not relabel the gateway-observed channel as a direct client-to-backend channel.
+B: Administrative proximity does not change the endpoints or instance from which binding data was derived.
+C: Grant validation and channel binding answer independent questions; one does not imply the other.
+D: Binding authentication to a channel does not grant permission to a backend-owned resource.</div>
         </div>
       </article>
     </section>

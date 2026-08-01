@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8693", "SKILL_SUBTITLE": "OAuth 2.0 Token Exchange", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8693", "SKILL_SUBTITLE": "OAuth 2.0 Token Exchange", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -54,125 +54,129 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="subject tokenとoptionalなacting partyを分ける.">
-        <header><h4>Q1: token exchangeが誰のためにrequestされたかをidentifyするinputはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="subject tokenと任意のacting partyを分ける。">
+        <header><h4>Q1: token exchangeの対象となるprincipalを示すinputはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. requested_token_type</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. subject_tokenとsubject_token_type</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. issued_token_type</label>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. 希望する出力token typeを示すrequested_token_type</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. subject_tokenと対応するsubject_token_type</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. actor_tokenと対応するactor_token_type</label>
         </fieldset><div class="explain">**解説:**
 
-A: これはdesired output token typeを示しsubject principalではない.
-B: subject tokenはrequested tokenのsubjectとなるpartyを表す.
-C: これはresponseでissued token typeをidentifyする.</div></div>
+A: これは希望する出力token typeを示し、subject principalではない。
+B: subject tokenは、要求するtokenのsubjectとなるpartyを表す。
+C: これは任意のacting partyを示すもので、subject principalではない。</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="optionalなacting-party credentialにはexplicitなtoken typeが必要である.">
-        <header><h4>Q2: token exchange requestでvalidなoptional credentialとtype parameterのpairはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="任意のacting-party credentialにも、明示的なtoken typeが必要である。">
+        <header><h4>Q2: token exchange requestで正しいcredentialとtype parameterの組合せはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q2" value="a"> A. subject_tokenとactor_token_type</label>
           <label class="choice"><input type="radio" name="Q2" value="b"> B. requested_token_typeとactor_token_type</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. actor_tokenとactor_token_type</label>
         </fieldset><div class="explain">**解説:**
 
-A: subject credentialにはsubject_token_typeを使う.
-B: requested output typeとactor-token typingは独立している.
-C: authorization serverがoptional credentialを解釈するためactor tokenのtypeが必要である.</div></div>
+A: subject credentialには<code>subject_token_type</code>を使う。
+B: 要求する出力typeとactor tokenのtypeは別の項目である。
+C: authorization serverが任意のactor credentialを解釈するには、そのtoken typeが必要である。</div></div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="requested tokenがどこまたは誰向けかを表す.">
-        <header><h4>Q3: resource parameterとaudience parameterが表すものはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="要求するtokenをどこで、または誰向けに使うかを考える。">
+        <header><h4>Q3: resource parameterとaudience parameterは何を表す？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q3" value="a"> A. requested tokenのtarget service</label>
           <label class="choice"><input type="radio" name="Q3" value="b"> B. original grantをapproveしたhuman user</label>
           <label class="choice"><input type="radio" name="Q3" value="c"> C. output tokenのcryptographic algorithm</label>
         </fieldset><div class="explain">**解説:**
 
-A: clientがintended resource serverまたはlogical audienceをidentifyできる.
-B: subjectはsubject tokenとclaimがidentifyしresourceやaudience parameterではない.
-C: これらのtarget parameterはtoken algorithm selectionのためではない.</div></div>
+A: 要求するtokenの対象resource serverまたはlogical audienceを示す。
+B: subjectを示すのはsubject tokenとそのclaimであり、resource・audience parameterではない。
+C: token algorithmの選択は、このtarget parameterの目的ではない。</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 8693はtarget-specificなtoken exchange errorを定義する.">
-        <header><h4>Q4: requestedされたaudienceとresourceの組合せがpolicy上広すぎる. appropriateなerrorはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 8693には、token exchangeのtargetに固有のerrorがある。">
+        <header><h4>Q4: 要求されたaudienceとresourceの組合せをpolicy上許容できない。適切なerrorはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q4" value="a"> A. 全targetはgrantなのでinvalid_grant</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. invalid_target</label>
           <label class="choice"><input type="radio" name="Q4" value="c"> C. tokenがlargeなのでtemporarily_unavailable</label>
         </fieldset><div class="explain">**解説:**
 
-A: 問題はinput grantとは限らずrequested target setである.
-B: このerrorはrequested resourceまたはaudienceの組合せがinvalidまたはunacceptableであることを示す.
-C: targetのpolicy rejectionはtemporary availability failureではない.</div></div>
+A: 問題は要求されたtargetの組合せであり、必ずしもinput grantではない。
+B: 要求されたresourceまたはaudienceの組合せを受け入れられないことを示す。
+C: targetのpolicy上の拒否は、一時的なavailability failureではない。</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="token_typeとissued tokenのstructural typeは別の問いに答える.">
-        <header><h4>Q5: issued_token_type response parameterはclientに何を伝える?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="token_typeとissued tokenの構造上のtypeは、別の問いに答える。">
+        <header><h4>Q5: issued_token_type response parameterはclientへ何を伝える？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. 現在どのactorがtokenを使うか</label>
           <label class="choice"><input type="radio" name="Q5" value="b"> B. resource serverがtokenをacceptしたか</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. issueされたtokenのtype identifier</label>
         </fieldset><div class="explain">**解説:**
 
-A: actor identityはissued_token_typeではなくactなどのclaimで表す.
-B: token exchange responseは後のresource-server acceptanceより前である.
-C: responseはrequested typeと異なる場合もissued token typeを明示する.</div></div>
+A: actor identityは<code>act</code>などのclaimで表し、<code>issued_token_type</code>ではない。
+B: token exchange responseの時点では、resource serverが後でtokenを受理するかは決まらない。
+C: responseは、要求したtypeと異なる場合も、発行したtokenのtypeを明示する。</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="nested act claimはearlier actorを保持しouter levelがcurrentである.">
-        <header><h4>Q6: act claimを持つJWTでtop-levelのact memberは何を表す?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="入れ子のact claimは過去のactorを保持し、外側が現在のactorになる。">
+        <header><h4>Q6: act claimを持つJWTで、top-levelのact memberは何を表す？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q6" value="a"> A. subjectのためにactingするcurrent actor</label>
           <label class="choice"><input type="radio" name="Q6" value="b"> B. target resource server</label>
           <label class="choice"><input type="radio" name="Q6" value="c"> C. original authorization serverだけ</label>
         </fieldset><div class="explain">**解説:**
 
-A: top-level act claimはdelegation chainのpresent actorをidentifyする.
-B: targetはactor claimではなくaudienceまたはresource情報に入る.
-C: act claimはacting partyをmodelしissuer-only fieldではない.</div></div>
+A: top-levelの<code>act</code> claimは、delegation chainの現在のactorを示す。
+B: targetはaudienceまたはresource情報に属し、actor claimではない。
+C: <code>act</code> claimはacting partyを表すもので、issuer専用のfieldではない。</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="chainをunordered listへflattenしない.">
-        <header><h4>Q7: delegation chainが伸びたときearlier actorをどう表す?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="chainを順序のないlistへ平坦化しない。">
+        <header><h4>Q7: delegation chainが伸びたとき、過去のactorをどう表す？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. 全previous actorをnewest actorでreplaceする</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. prior act claimをnew act claim内へnestする</label>
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. 過去のactorをすべて最新のactorで置き換える</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. それまでのact claimを新しいact claimの中へ入れ子にする</label>
           <label class="choice"><input type="radio" name="Q7" value="c"> C. actorをscope stringへcopyする</label>
         </fieldset><div class="explain">**解説:**
 
-A: historyをdropするとpolicyとauditに必要なdelegation pathを失う.
-B: nested act objectでcurrent actorとprior actorの順を表す.
-C: scopeはrequested privilegeを表しactor-chain structureではない.</div></div>
+A: historyを捨てると、policyとauditに必要なdelegation pathを失う。
+B: 入れ子の<code>act</code> objectで、現在のactorから過去のactorへの順序を表す。
+C: scopeは要求されたprivilegeを表し、actor chainの構造ではない。</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="protocolはinputとoutputを運びauthorization serverがpolicyを適用する.">
-        <header><h4>Q8: RFC 8693は全token exchangeをpermitted delegationにする?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="protocolはinputとoutputを定め、authorization serverがpolicyを適用する。">
+        <header><h4>Q8: RFC 8693を使えば、どのtoken exchangeもdelegationとして許可される？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. はい, 任意subject tokenのpossessionで十分</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. はい, actor_tokenが自動的にimpersonationをgrantする</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. いいえ, delegationまたはimpersonationはauthorization-policy decisionである</label>
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. はい、任意のsubject tokenを所持していればよい</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. はい、actor_tokenが自動的にimpersonationを許可する</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. いいえ、許可するかはauthorization policyが決める</label>
         </fieldset><div class="explain">**解説:**
 
-A: authorization serverはtokenをvalidateしrequested exchangeをauthorizeする必要がある.
-B: actor tokenはactorをidentifyするがexchange policyをbypassしない.
-C: RFC 8693はexchange frameworkを提供するが全requested authority transitionをgrantしない.</div></div>
+A: authorization serverはtokenを検証し、要求されたexchangeをauthorizeする必要がある。
+B: actor tokenはactorを示すが、exchange policyを迂回しない。
+C: RFC 8693はexchange frameworkを提供するが、要求されたauthority transitionをすべて許可するわけではない。</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="responseはlong-lived renewal capabilityをgrantせずaccess tokenをissueできる.">
-        <header><h4>Q9: successfulなtoken exchange responseはrefresh tokenを含む必要がある?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. いいえ, refresh_tokenはoptional</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. はい, 全exchanged tokenはrenewableである必要がある</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. はい, actor_tokenがabsentの場合だけ</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="authorizationのsubjectと、現在actionを実行するactorを分けて考える。">
+        <header><h4>Q9: 発行されたtokenに合うauthorization・audit上の解釈はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">gatewayがAliceのsubject tokenと自分のactor tokenを交換する。発行tokenには<code>sub=alice</code>、<code>act.sub=gateway-7</code>、backend向けaudience、縮小されたscopeがある。backend policyは、誰が誰に代わってcallしたかを保持する必要がある。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. top-levelの<code>sub</code>がactor情報を置き換えるため、Aliceだけをactorとして記録する</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. impersonationとして扱い、Aliceが持つ全権限をgatewayへ与える</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. gateway-7をAliceのために動く現在のactorとし、発行tokenのaudienceとscopeを適用する</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. actor chainはdiagnostic textにすぎないため、暗号検証後は無視する</label>
         </fieldset><div class="explain">**解説:**
 
-A: authorization serverはissueできるがsuccessful exchangeに必須ではない.
-B: RFC 8693は全exchangeにrenewal rightを要求しない.
-C: actor-token presenceはmandatoryなrefresh-token responseを作らない.</div></div>
+RFC 8693 Section 1.1は、actorが自分のidentityを保ってsubjectのために動くdelegationと、impersonationを区別する。Section 4.1ではtop-levelの<code>act</code>を現在のactorとし、過去のactorを入れ子で表せる。Cはこの区別とtokenの宛先制約を保持する。AとDはsecurity上必要なactor contextを失い、Bは限定されたdelegationをより広いimpersonationへ変えてしまう。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="誰がsubjectで誰がactingしtokenをどこで使えるかを保持する.">
-        <header><h4>Q10: agentがuser tokenをdownstream service tokenへexchangeする. essentialなprofile checkはどれ?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. downstream audienceを評価せず全upstream scopeをcopyする</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. subjectとactor chainをvalidateしaudienceとscopeをconstrainしてexchange policyを適用する</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. new tokenをdownstream action成功のproofとして扱う</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="backendが検証できるartifactと、各artifactがbindされるchannel・contextを追う。">
+        <header><h4>Q10: backendは交換後のtokenを元client sessionのproofとして扱ってよい？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">clientがgrantとsession-bound proofをgatewayへ送る。gatewayは両方を検証し、grantをaudience-restrictedなbearer access tokenへ交換して、自分の<code>act</code> claimを入れる。その後、別のTLS connectionでbackendを呼ぶ。backendは元のproof、exporter値、client sessionとの他のbindingを受け取らない。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. よい。成功したtoken exchangeは入力sessionの全propertyを移転する</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. よい。<code>act</code> claimがtokenをclientのTLS connectionへ暗号的にbindする</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. 不可。tokenはdelegated authorityを運べるが、ここでは元sessionのbindingを保持していない</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. 不可。RFC 8693はgatewayがbackend用tokenを交換することを禁止する</label>
         </fieldset><div class="explain">**解説:**
 
-A: blindなscope propagationはtarget serviceに不適切なprivilegeをgrantしうる.
-B: これらのcheckでtoken transformationによるsilentなauthority拡大やaccountability喪失を防ぐ.
-C: tokenはaccess contextを表すがoperation完了のevidenceではない.</div></div>
+RFC 8693 Section 1は、仕様の範囲を基本的なtoken exchange protocolに限定し、tokenのsecurity特性、proof-of-possession、deploymentのtrust modelをprofileやpolicyに委ねる。有効な交換tokenは、そのaudience・scope・subject・actorの意味に従ってbackend callをauthorizeできるが、別TLS sessionのevidenceを新たに作るわけではない。Cは二つの保証を分離する。Dは誤りで、resource serverが受領tokenをbackend用tokenへ交換する例は明示されている。</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

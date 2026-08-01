@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6585",
       SKILL_SUBTITLE: "Additional HTTP Status Codes",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The point of RFC 6585 is not “more status codes for trivia.” It is to improve interoperability when generic responses such as 400, 403, or 503 hide the next action clients should take.
+            The point of RFC 6585 is not “more status codes for trivia.” It is to improve interoperability when generic responses such as 400, 403, or 503 hide the next action clients should take.
 
-            **Terms:** **status codes** are part of the protocol contract between server and client. A **more precise** status code narrows the meaning of the failure and suggests a better retry or recovery strategy.
+            **status codes** are part of the protocol contract between server and client. A **more precise** status code narrows the meaning of the failure and suggests a better retry or recovery strategy.
 
-            **Real-world usage:** In practice this helps API gateways, SDKs, browsers, and operators distinguish rate limiting, precondition failures, header-size problems, and captive-portal interception.
+            In practice this helps API gateways, SDKs, browsers, and operators distinguish rate limiting, precondition failures, header-size problems, and captive-portal interception.
 
-            **Options:**
-            - A (incorrect): RFC 6585 adds a few targeted codes. It does not replace the whole status-code space.
-            - B (correct): This is the core motivation of the RFC.
-            - C (incorrect): The RFC is not defining a new auth scheme.
+            A specialized status code is useful when its more precise meaning leads the client to a better recovery or retry action.
 
-            **Related:** A specialized status code is useful when its more precise meaning leads the client to a better recovery or retry action.
+            A: RFC 6585 adds a few targeted codes. It does not replace the whole status-code space.
+            B: This is the core motivation of the RFC.
+            C: The RFC is not defining a new auth scheme.
           </div>
         </div>
       </article>
@@ -129,18 +129,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** `428 Precondition Required` is easy to confuse with generic conflict handling, but the RFC frames it around making clients use conditional requests to avoid the lost-update problem.
+            `428 Precondition Required` is easy to confuse with generic conflict handling, but the RFC frames it around making clients use conditional requests to avoid the lost-update problem.
 
-            **Terms:** A **precondition** is something like `If-Match` that must evaluate successfully before the method is applied. A **lost update** happens when one client overwrites another client's newer change without realizing it.
+            A **precondition** is something like `If-Match` that must evaluate successfully before the method is applied. A **lost update** happens when one client overwrites another client's newer change without realizing it.
 
-            **Real-world usage:** This shows up in document editing APIs, config stores, and admin panels where multiple actors may update the same resource.
+            This shows up in document editing APIs, config stores, and admin panels where multiple actors may update the same resource.
 
-            **Options:**
-            - A (correct): Requiring a conditional update makes the client identify the version it intends to change, preventing a stale write from silently replacing a newer one.
-            - B (incorrect): Per-minute quota exceedance is the domain of `429 Too Many Requests`, optionally with timing guidance such as `Retry-After`.
-            - C (incorrect): Network login interception is what `511 Network Authentication Required` is for; it is not a lost-update condition.
+            The important design move is not merely returning an error, but forcing the client to prove which version it intended to update.
 
-            **Related:** The important design move is not merely returning an error, but forcing the client to prove which version it intended to update.
+            A: Requiring a conditional update makes the client identify the version it intends to change, preventing a stale write from silently replacing a newer one.
+            B: Per-minute quota exceedance is the domain of `429 Too Many Requests`, optionally with timing guidance such as `Retry-After`.
+            C: Network login interception is what `511 Network Authentication Required` is for; it is not a lost-update condition.
           </div>
         </div>
       </article>
@@ -156,18 +155,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** The value of `428 Precondition Required` lies in the recovery path. It should steer the client toward a conditional request, not a blind retry loop.
+            The value of `428 Precondition Required` lies in the recovery path. It should steer the client toward a conditional request, not a blind retry loop.
 
-            **Terms:** A **validator** is metadata such as an `ETag` that helps identify a specific version of a representation. `If-Match` is a conditional header commonly used to say “apply this update only if the resource still matches this validator.”
+            A **validator** is metadata such as an `ETag` that helps identify a specific version of a representation. `If-Match` is a conditional header commonly used to say “apply this update only if the resource still matches this validator.”
 
-            **Real-world usage:** This is the difference between safe collaborative editing and accidental data loss in dashboards, CMS tools, and admin APIs.
+            This is the difference between safe collaborative editing and accidental data loss in dashboards, CMS tools, and admin APIs.
 
-            **Options:**
-            - A (incorrect): Retrying without a precondition leaves the lost-update risk unchanged.
-            - B (correct): This follows the RFC's intended fix.
-            - C (incorrect): `503 Service Unavailable` is not a substitute for missing preconditions.
+            A server that emits 428 should usually help the client understand which conditional mechanism it expects, rather than making the client guess.
 
-            **Related:** A server that emits 428 should usually help the client understand which conditional mechanism it expects, rather than making the client guess.
+            A: Retrying without a precondition leaves the lost-update risk unchanged.
+            B: This follows the RFC's intended fix.
+            C: `503 Service Unavailable` is not a substitute for missing preconditions.
           </div>
         </div>
       </article>
@@ -202,18 +200,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** Teams often blur per-client throttling with whole-service overload. RFC 6585 gives `429 Too Many Requests` so that clients can distinguish “you are over the limit” from “the service is down.”
+            Teams often blur per-client throttling with whole-service overload. RFC 6585 gives `429 Too Many Requests` so that clients can distinguish “you are over the limit” from “the service is down.”
 
-            **Terms:** **429 Too Many Requests** is about request-rate or quota policy for the client. **503 Service Unavailable** is about broader service availability. **511 Network Authentication Required** is about local network access mediation, not ordinary API auth.
+            **429 Too Many Requests** is about request-rate or quota policy for the client. **503 Service Unavailable** is about broader service availability. **511 Network Authentication Required** is about local network access mediation, not ordinary API auth.
 
-            **Real-world usage:** This affects SDK retry logic, dashboards, rate-limit observability, and whether on-call engineers page the whole service team or just adjust one tenant's traffic profile.
+            This affects SDK retry logic, dashboards, rate-limit observability, and whether on-call engineers page the whole service team or just adjust one tenant's traffic profile.
 
-            **Options:**
-            - A (correct): This is the best fit when the service is healthy but the client exceeded a limit.
-            - B (incorrect): 503 implies a service-level availability problem rather than a client-specific quota issue.
-            - C (incorrect): 511 is for captive portals or intercepting proxies.
+            If clients cannot tell quota exhaustion from server unavailability, they either retry too aggressively or route the incident to the wrong team.
 
-            **Related:** If clients cannot tell quota exhaustion from server unavailability, they either retry too aggressively or route the incident to the wrong team.
+            A: This is the best fit when the service is healthy but the client exceeded a limit.
+            B: 503 implies a service-level availability problem rather than a client-specific quota issue.
+            C: 511 is for captive portals or intercepting proxies.
           </div>
         </div>
       </article>
@@ -230,19 +227,18 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** `Retry-After` matters because a status code alone often says only “not now.” Well-designed clients also need timing guidance.
+            `Retry-After` matters because a status code alone often says only “not now.” Well-designed clients also need timing guidance.
 
-            **Terms:** **Retry-After** is a response header that indicates when the client may retry. It can be expressed as **delay-seconds** or as an **HTTP date**, depending on the response semantics.
+            **Retry-After** is a response header that indicates when the client may retry. It can be expressed as **delay-seconds** or as an **HTTP date**, depending on the response semantics.
 
-            **Real-world usage:** This shapes SDK backoff policy, browser behavior, and API client fairness during rate limiting or temporary outages.
+            This shapes SDK backoff policy, browser behavior, and API client fairness during rate limiting or temporary outages.
 
-            **Options:**
-            - A (correct): This is one of the most useful roles of `Retry-After`.
-            - B (incorrect): `Retry-After` is not limited to integer seconds. An HTTP date is also valid.
-            - C (correct): This is exactly why the header improves client behavior.
-            - D (incorrect): It is helpful, but not universally mandatory on every 429 or 503.
+            A precise backoff hint is often the difference between graceful recovery and a retry storm.
 
-            **Related:** A precise backoff hint is often the difference between graceful recovery and a retry storm.
+            A: This is one of the most useful roles of `Retry-After`.
+            B: `Retry-After` is not limited to integer seconds. An HTTP date is also valid.
+            C: This is exactly why the header improves client behavior.
+            D: It is helpful, but not universally mandatory on every 429 or 503.
           </div>
         </div>
       </article>
@@ -259,24 +255,23 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** `431 Request Header Fields Too Large` is not only about one bad header line. The RFC allows it for either a single oversized header field or an oversized set of headers.
+            `431 Request Header Fields Too Large` is not only about one bad header line. The RFC allows it for either a single oversized header field or an oversized set of headers.
 
-            **Terms:** A **header field** is one named header entry. The **request header section** is the total set of request headers sent with the message.
+            A **header field** is one named header entry. The **request header section** is the total set of request headers sent with the message.
 
-            **Real-world usage:** This is common with cookie bloat, oversized auth tokens, forwarding chains, and proxy limits that are lower than application developers expect.
+            This is common with cookie bloat, oversized auth tokens, forwarding chains, and proxy limits that are lower than application developers expect.
 
-            **Options:**
-            - A (correct): The code can cover the total header set being too large.
-            - B (incorrect): Syntax errors are not the defining point here, and the issue is not limited to one field.
-            - C (correct): The RFC encourages the response to identify the offending field when that is possible.
-            - D (incorrect): Oversized bodies are a different problem from oversized headers.
+            Good 431 handling helps teams debug whether the problem lives in cookies, auth middleware, proxy forwarding, or client header construction.
 
-            **Related:** Good 431 handling helps teams debug whether the problem lives in cookies, auth middleware, proxy forwarding, or client header construction.
+            A: The code can cover the total header set being too large.
+            B: Syntax errors are not the defining point here, and the issue is not limited to one field.
+            C: The RFC encourages the response to identify the offending field when that is possible.
+            D: Oversized bodies are a different problem from oversized headers.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask whether replaying this response to a different request or tenant could transfer a request-specific failure to the wrong client.">
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Ask whether replaying this response to a different request or tenant could transfer a request-specific failure to the wrong client.">
         <header><h4>Q7: A shared cache in front of your API sees a 429 for one tenant's token. Which handling best matches RFC 6585</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -287,45 +282,43 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** One subtle but important part of RFC 6585 is cache behavior. These responses are not meant to become shared reusable facts about unrelated requests.
+            RFC 6585 Section 4 says a 429 response MUST NOT be stored by a cache.
 
-            **Terms:** A **shared cache** can reuse a stored response across multiple users or clients. **request-specific conditions** include missing preconditions, quota state, header-size mistakes, or captive-portal network state.
+            A **shared cache** can reuse a stored response across multiple users or clients. **request-specific conditions** include missing preconditions, quota state, header-size mistakes, or captive-portal network state.
 
-            **Real-world usage:** This matters in CDNs, reverse proxies, and API gateways where accidental reuse of a 429 or 428 can create tenant bleed, misleading failures, or very confusing support tickets.
+            This matters in CDNs, reverse proxies, and API gateways where accidental reuse of a 429 or 428 can create tenant bleed, misleading failures, or very confusing support tickets.
 
-            **Options:**
-            - A (incorrect): Replaying one tenant's 429 to other clients is exactly the kind of mistake the RFC tries to avoid.
-            - B (correct): RFC 6585 says these specific responses must not be stored by caches.
-            - C (incorrect): Rewriting protocol errors into 200 hides semantics and breaks client logic.
+            Status codes are not just UI messages. They also guide intermediaries, and that includes telling caches what not to reuse.
 
-            **Related:** Status codes are not just UI messages. They also guide intermediaries, and that includes telling caches what not to reuse.
+            A: Replaying one tenant's 429 to other clients is exactly the kind of mistake the RFC tries to avoid.
+            B: RFC 6585 says these specific responses must not be stored by caches.
+            C: Rewriting protocol errors into 200 hides semantics and breaks client logic.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="During an attack, compare the value of a detailed response with the server resources required to generate it.">
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="During an attack, compare the value of a detailed response with the server resources required to generate it.">
         <header><h4>Q8: During a request flood or header-bomb attack, which operational choice is most consistent with RFC 6585</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q8" value="a"> A. The server must return 429 or 431 for every bad request, even if that spends more resources</label>
             <label class="choice"><input type="radio" name="Q8" value="b"> B. The server should always replace 429 and 431 with 503, regardless of the cause</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. The server may decide that dropping connections or taking other defensive action is better than spending work on detailed responses</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. The server may drop connections when detailed responses would consume needed resources</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** RFC 6585 includes a pragmatic security note: sometimes the most accurate status code is not the most operationally sound thing to emit under attack.
+            RFC 6585 Section 7 says a server under attack is not required to emit these status codes and can take other action, such as dropping connections. This permits, but does not require, dropping connections.
 
-            **Terms:** A **request flood** or **header-bomb** attack tries to consume server resources. A **defensive action** can include dropping the connection or otherwise refusing to spend more CPU on a detailed response.
+            A **request flood** or **header-bomb** attack tries to consume server resources. A **defensive action** can include dropping the connection or otherwise refusing to spend more CPU on a detailed response.
 
-            **Real-world usage:** This matters in DDoS mitigation, bot control, and edge-proxy defense where response generation itself may be expensive enough to worsen the incident.
+            This matters in DDoS mitigation, bot control, and edge-proxy defense where response generation itself may be expensive enough to worsen the incident.
 
-            **Options:**
-            - A (incorrect): The RFC explicitly leaves room for cheaper defensive behavior.
-            - B (incorrect): 503 is not a universal replacement for all attack-related failures.
-            - C (correct): This is the RFC-consistent operational mindset.
+            Precise semantics are valuable, but survivability comes first when the response itself becomes part of the attack cost.
 
-            **Related:** Precise semantics are valuable, but survivability comes first when the response itself becomes part of the attack cost.
+            A: The RFC explicitly leaves room for cheaper defensive behavior.
+            B: 503 is not a universal replacement for all attack-related failures.
+            C: This is the RFC-consistent operational mindset.
           </div>
         </div>
       </article>
@@ -341,23 +334,22 @@
           <div class="explain">
             **Explanation:**
 
-            **Why it matters:** `511 Network Authentication Required` is one of the easiest RFC 6585 codes to misuse. It is not a generic “authentication failed” response for ordinary origin applications.
+            `511 Network Authentication Required` is one of the easiest RFC 6585 codes to misuse. It is not a generic “authentication failed” response for ordinary origin applications.
 
-            **Terms:** An **intercepting proxy** or **captive portal** sits on the network path and blocks broader access until the user satisfies some local network-login requirement. An **origin API** is the actual target application server.
+            An **intercepting proxy** or **captive portal** sits on the network path and blocks broader access until the user satisfies some local network-login requirement. An **origin API** is the actual target application server.
 
-            **Real-world usage:** This distinction matters in Wi-Fi onboarding, hotel portals, enterprise guest networks, and browsers or operating systems trying to detect network mediation cleanly.
+            This distinction matters in Wi-Fi onboarding, hotel portals, enterprise guest networks, and browsers or operating systems trying to detect network mediation cleanly.
 
-            **Options:**
-            - A (incorrect): Origin application session problems are not what 511 is for.
-            - B (correct): This is the intended deployment model.
-            - C (incorrect): Cache staleness is unrelated to 511.
+            If an app uses 511 for normal login failures, clients will misunderstand both the layer and the recovery path.
 
-            **Related:** If an app uses 511 for normal login failures, clients will misunderstand both the layer and the recovery path.
+            A: Origin application session problems are not what 511 is for.
+            B: This is the intended deployment model.
+            C: Cache staleness is unrelated to 511.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Use the field identified in the 431 response to decide what must change before an otherwise equivalent request can succeed.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Use the field identified in the 431 response to decide what must change before an otherwise equivalent request can succeed.">
         <header><h4>Q10: A client receives 431 Request Header Fields Too Large, and the response identifies its Cookie field as too large. Which retry most directly follows RFC 6585</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -370,12 +362,11 @@
 
             RFC 6585 Section 5 says that `431 Request Header Fields Too Large` means the server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing their size; when one field is at fault, the response should identify it.
 
-            **Options:**
-            - A (correct): It changes the condition named by the response before retrying.
-            - B (incorrect): `If-Match` addresses a precondition and lost-update risk; it does not reduce an oversized header field.
-            - C (incorrect): Waiting is useful for rate limiting, but time does not make an unchanged Cookie field smaller.
+            A 431 response must not be stored by a cache, so a later corrected request is evaluated rather than answered from that error response.
 
-            **Related:** A 431 response must not be stored by a cache, so a later corrected request is evaluated rather than answered from that error response.
+            A: It changes the condition named by the response before retrying.
+            B: `If-Match` addresses a precondition and lost-update risk; it does not reduce an oversized header field.
+            C: Waiting is useful for rate limiting, but time does not make an unchanged Cookie field smaller.
           </div>
         </div>
       </article>

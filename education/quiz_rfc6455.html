@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 6455",
       SKILL_SUBTITLE: "The WebSocket Protocol",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,10 +103,9 @@
 
             RFC 6455 opens a WebSocket connection with an HTTP/1.1 request containing an upgrade offer. Only after the server returns a valid handshake response does the connection enter the OPEN state and begin WebSocket framing.
 
-            **Options:**
-            - A (incorrect): DNS may resolve the server name, but it does not advertise WebSocket subprotocols or perform the opening handshake.
-            - B (incorrect): RFC 6455 does not establish its message channel with a UDP datagram.
-            - C (correct): An HTTP request carrying `Upgrade: websocket` is the specified opening form.
+            A: DNS may resolve the server name, but it does not advertise WebSocket subprotocols or perform the opening handshake.
+            B: RFC 6455 does not establish its message channel with a UDP datagram.
+            C: An HTTP request carrying `Upgrade: websocket` is the specified opening form.
           </div>
         </div>
       </article>
@@ -123,15 +123,14 @@
 
             RFC 6455 registers `ws` for WebSocket and `wss` for WebSocket over a TLS-protected connection. These are WebSocket URI schemes; the opening handshake still uses HTTP semantics.
 
-            **Options:**
-            - A (correct): `ws` and `wss` are the registered WebSocket scheme pair.
-            - B (incorrect): `http` and `https` identify HTTP resources rather than WebSocket resources.
-            - C (incorrect): TCP and TLS name protocol layers, not the URI schemes requested here.
+            A: `ws` and `wss` are the registered WebSocket scheme pair.
+            B: `http` and `https` identify HTTP resources rather than WebSocket resources.
+            C: TCP and TLS name protocol layers, not the URI schemes requested here.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A browser can attach ambient credentials, so the server must evaluate which site initiated the handshake.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="A browser can attach ambient credentials, so the server must evaluate which site initiated the handshake.">
         <header><h4>Q3: A server wants to prevent a browser from using a victim's cookies to open a privileged WebSocket. Which check is relevant</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -142,14 +141,13 @@
           <div class="explain">
             **Explanation:**
 
-            A browser handshake includes `Origin`, which identifies the origin of the script establishing the connection. A server can compare it with expected origins and reject an unacceptable browser origin, commonly with HTTP 403.
-
-            **Options:**
-            - A (incorrect): Ignoring `Origin` discards the protocol's signal for detecting unauthorized cross-origin browser use.
-            - B (correct): An allowlist check addresses the browser-origin condition in the scenario.
-            - C (incorrect): `Accept-Language` expresses language preferences and says nothing about the initiating site.
+            RFC 6455 Sections 4.1 and 4.2.2 define the browser `Origin` input and the server's origin-acceptance decision. A server can compare it with expected origins and reject an unacceptable browser origin, commonly with HTTP 403.
 
             This check does not authenticate non-browser clients, which can supply arbitrary header values; application authentication and authorization remain separate controls.
+
+            A: Ignoring `Origin` discards the protocol's signal for detecting unauthorized cross-origin browser use.
+            B: An allowlist check addresses the browser-origin condition in the scenario.
+            C: `Accept-Language` expresses language preferences and says nothing about the initiating site.
           </div>
         </div>
       </article>
@@ -167,10 +165,9 @@
 
             The client sends a base64-encoded 16-byte random value in `Sec-WebSocket-Key`. The server combines the encoded value with the fixed GUID, hashes it, and returns the result in `Sec-WebSocket-Accept`.
 
-            **Options:**
-            - A (correct): `Sec-WebSocket-Key` is the request field supplying the client's input.
-            - B (incorrect): `Sec-WebSocket-Accept` is the response field derived by the server.
-            - C (incorrect): RFC 6455 does not define `Sec-WebSocket-Token` for this handshake step.
+            A: `Sec-WebSocket-Key` is the request field supplying the client's input.
+            B: `Sec-WebSocket-Accept` is the response field derived by the server.
+            C: RFC 6455 does not define `Sec-WebSocket-Token` for this handshake step.
           </div>
         </div>
       </article>
@@ -189,11 +186,10 @@
 
             The opening handshake, data framing, channel protection, and application identity are separate layers. Once open, the protocol uses WebSocket frames; client-to-server frames are masked, while TLS on `wss` protects the channel.
 
-            **Options:**
-            - A (correct): Messages after the handshake are carried in WebSocket frames rather than ordinary HTTP request/response messages.
-            - B (correct): A correctly authenticated TLS connection for `wss` protects against passive observation and in-transit modification.
-            - C (correct): RFC 6455 requires every frame sent from a client to a server to be masked, even when TLS is used.
-            - D (incorrect): WebSocket does not define the application's user-authentication policy.
+            A: Messages after the handshake are carried in WebSocket frames rather than ordinary HTTP request/response messages.
+            B: A correctly authenticated TLS connection for `wss` protects against passive observation and in-transit modification.
+            C: RFC 6455 requires every frame sent from a client to a server to be masked, even when TLS is used.
+            D: WebSocket does not define the application's user-authentication policy.
           </div>
         </div>
       </article>
@@ -205,7 +201,6 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **Origin**.
 
             In a browser opening handshake, `Origin` identifies the origin of the script that requested the connection. The server can reject origins it does not accept, but it must not treat this client-supplied field as proof of identity for a non-browser client.
           </div>

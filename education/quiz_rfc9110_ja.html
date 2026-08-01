@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9110",
       SKILL_SUBTITLE: "HTTP Semantics",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -93,7 +94,7 @@
         <header><h4>Q1: 次のうち, HTTPのtransport詳細ではなくHTTPのセマンティクス(意味/ルール)に当たる話題はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. GETがsafeであり条件によりcache可能という意味</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. GETに定義されたsafetyとcacheabilityのsemantics</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTP/2フレームのwire上のエンコード</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. QUIC packetをUDP上でloss recoveryする方法</label>
           </fieldset>
@@ -123,24 +124,24 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** HTTP semanticsはprotocol version間で共通ですが, framingとtransport mechanismは変わります.
+            HTTP semanticsはprotocol version間で共通ですが, framingとtransport mechanismは変わります.
 
-            **実務での機会:** API設計, proxy動作, client library, cache reviewではwire formatでなくmethodとresponseの意味を扱います.
+            API設計, proxy動作, client library, cache reviewではwire formatでなくmethodとresponseの意味を扱います.
 
-            **Terms:** semantics(セマンティクス), transport, methodの意味. ここでのセマンティクスは, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味/ルール"の話.
+            semantics(セマンティクス), transport, methodの意味. ここでのセマンティクスは, HTTP/1.1, HTTP/2, HTTP/3のどの運び方でも共通に成り立つ"意味/ルール"の話.
 
-            **Protocol boundary:** HTTP/1.1のtext line, HTTP/2のframe, HTTP/3のQUIC streamではwire表現が異なりますが, GETのsafeやidempotentといったmethod semanticsは共通です.
+            HTTP/1.1のtext line, HTTP/2のframe, HTTP/3のQUIC streamではwire表現が異なりますが, GETのsafeやidempotentといったmethod semanticsは共通です.
 
-            **Correct (A):** safe, idempotent, cacheable, status codeの意味はセマンティクスの中心です. これは transport が変わっても変わらない, HTTP そのものの意味づけです.
+            safe, idempotent, cacheable, status codeの意味はセマンティクスの中心です. これは transport が変わっても変わらない, HTTP そのものの意味づけです.
 
-            **Options:**
+
 
             - A (correct): methodの意味と許される副作用の話.
 
             - B (incorrect): framingはtransport mappingの話.
             - C (incorrect): QUICのpacket挙動はtransportの話.
 
-            **Related:** セマンティクスが分離されているから, プロキシやキャッシュは下位 transport と独立に判断できます. RFC 9110, 9112, 9113, 9114 を役割ごとに読むと全体像がつながります.
+            セマンティクスが分離されているから, プロキシやキャッシュは下位 transport と独立に判断できます. RFC 9110, 9112, 9113, 9114 を役割ごとに読むと全体像がつながります.
           </div>
         </div>
       </article>
@@ -156,21 +157,21 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** safeは"serverが一切writeしない"という実装条件ではなく, clientが要求するactionの性質です.
+            safeは"serverが一切writeしない"という実装条件ではなく, clientが要求するactionの性質です.
 
-            **実務での機会:** crawler, prefetch, link checker, cache最適化では, user確認なしに自動実行してよいmethodかを判断します.
+            crawler, prefetch, link checker, cache最適化では, user確認なしに自動実行してよいmethodかを判断します.
 
-            **Terms:** safe method. safeはdefined semanticsが本質的にread-onlyで, clientがstate changeを要求・期待しないことです. loggingなどclientが要求していない付随効果はあり得ます.
+            safe method. safeはdefined semanticsが本質的にread-onlyで, clientがstate changeを要求・期待しないことです. loggingなどclientが要求していない付随効果はあり得ます.
 
-            **Correct (A):** GETは取得を要求するsafe methodです. implementation内部で付随効果が起き得ることとは両立します.
+            GETは取得を要求するsafe methodです. implementation内部で付随効果が起き得ることとは両立します.
 
-            **Options:**
+
 
             - A (correct): GETのdefined semanticsはsafeです.
             - B (incorrect): POSTは一般に状態変化を伴いsafeではない.
             - C (incorrect): DELETEは削除でありsafeではない.
 
-            **Related:** safeはclientが要求するsemanticsの性質で, server内部に一切writeがないという保証ではありません. cacheableとも別概念です.
+            safeはclientが要求するsemanticsの性質で, server内部に一切writeがないという保証ではありません. cacheableとも別概念です.
           </div>
         </div>
       </article>
@@ -187,13 +188,13 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** idempotencyは同一responseや, 全retryが運用上無条件に安全という保証と混同されやすい概念です.
+            idempotencyは同一responseや, 全retryが運用上無条件に安全という保証と混同されやすい概念です.
 
-            **Terms:** idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.
+            idempotent method. 同じリクエストを複数回送っても, 意図する効果が1回と同じになる性質.
 
-            **Correct (A,C):** PUTとDELETEはidempotentとして定義されます. 同じrequestを繰り返したときのintended effectが1回と同じという意味で, 各responseや付随効果まで同じとは限りません.
+            PUTとDELETEはidempotentとして定義されます. 同じrequestを繰り返したときのintended effectが1回と同じという意味で, 各responseや付随効果まで同じとは限りません.
 
-            **Options:**
+
 
             - A (correct): PUTは置き換えなので繰り返しても収束する.
 
@@ -203,7 +204,7 @@
 
             - D (incorrect): CONNECTはトンネル確立で, 一般にidempotent扱いではない.
 
-            **Related:** idempotencyはretry, LB, ネットワーク障害時の復旧設計で重要.
+            idempotencyはretry, LB, ネットワーク障害時の復旧設計で重要.
           </div>
         </div>
       </article>
@@ -219,69 +220,61 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** status-code classは, clientがcode固有の処理を行う前に読むresponse meaningの第一層です.
+            status-code classは, clientがcode固有の処理を行う前に読むresponse meaningの第一層です.
 
-            **実務での機会:** client, gateway, monitoring, retry logicは, 個別codeを見る前にstatus classで大きな処理経路を選びます.
+            client, gateway, monitoring, retry logicは, 個別codeを見る前にstatus classで大きな処理経路を選びます.
 
-            **Terms:** status code class. 先頭の数字は仕様上の大分類を示す.
-            **Correct (B):** 3xxはredirectionで, クライアントが追加の動作や別URIの使用を求められる.
+            status code class. 先頭の数字は仕様上の大分類を示す.
+            3xxはredirectionで, クライアントが追加の動作や別URIの使用を求められる.
 
-            **Options:**
+
 
             - A (incorrect): 4xxがclient error.
             - B (correct): 3xxがredirection.
             - C (incorrect): 5xxがserver error.
-            **Related:** 304 Not Modifiedも3xxで, cache validationの文脈で使われる.
+            304 Not Modifiedも3xxで, cache validationの文脈で使われる.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="preconditionが先に見つかった別failureを上書きせず, かつrequested stateを変える前に評価される位置を考えてください.">
-        <header><h4>Q5: If-Matchなどのrequest preconditionは, serverがいつ評価すべきか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="まずunconditional responseを決め, ほかの条件で成功可能なrequestだけがstate preconditionへ進みます.">
+        <header><h4>Q5: 両方のcheckを保つ評価順はどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">PUTには<code>If-Match: "v6"</code>があり, selected representationのETagは<code>"v7"</code>です. 同じrequestはauthorizationにも失敗し, serverはrequest content処理前にそれを判定できます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. method, target, authorizationなど, 通常のrequest条件で成功できるかを確認する前</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. content処理とrequested state changeの両方を完了した後</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. ほかの条件では成功すると判断した後, content処理またはaction実行の前</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. If-Matchを先に評価して412を返し, authorization結果を隠す</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. PUTを適用してからresulting representationに対し両条件を評価する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 通常のrequest checkを先に行い, PUTを適用せずauthorization failureを返す</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. If-Matchがある場合, validatorがclientを認証するためauthorizationを無視する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **判断のポイント:** conditional requestはcache validationだけでなくlost update防止にも使います. 評価時点を誤ると, errorの優先順を変えたりguard確認前にactionを実行したりします.
-
-            **実務での機会:** document編集, 設定変更API, admin画面で, If-Matchを使って新しいstateの上書き事故を防ぎます.
-
-            **用語:** **request precondition**は, **If-Match**などで現在のselected representationを条件にmethod実行をguardする仕組みです. **normal request check**は, significant processing前にrejectやredirectを決められる確認です.
-
-            **Correct (C):** RFC 9110は, 除外条件を除き, normal request check成功後かつrequest content処理またはmethod actionの直前にpreconditionを評価するよう定めています.
-
-            **Options:**
-            - A (incorrect): significant processing前に分かるredirectやfailureが優先されます. unconditional responseが2xxでも412でもない場合, serverはpreconditionを無視します.
-            - B (incorrect): action後ではlost updateなどのstate changeを防ぐには遅すぎます.
-            - C (correct): normal error precedenceを保ちつつaction前にconditionを適用できます.
-
-            **Related:** conditional fieldが複数ある場合の評価順はRFC 9110 Section 13.2.2が定めます. no-storeなどCache-Control directiveはRFC 9111の範囲です.
+            A: RFC 9110 Section 13.2.1は, conditionなしの同じrequestがcontent処理前に2xxまたは412以外となる場合, preconditionを無視すると定めます.
+            B: action後の評価ではIf-Matchが守るべきstale updateを防げません.
+            C: 独立に判定できるauthorization failureが優先され, state changeは行いません. authorization成功時はcontent処理またはmethod actionの直前にpreconditionを評価します.
+            D: entity tagはrepresentation stateの識別子でありauthentication credentialではありません.
+            判定基準: unconditional requestが成功可能かを先に決め, その後method適用前にrepresentation preconditionを評価します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^content-type$" data-difficulty="L1" data-hint="text/htmlやapplication/jsonのようなmedia typeを値に持つrepresentation metadata fieldを探してください.">
-        <header><h4>Q6: representationのmedia typeを示すheader fieldはどれ</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="timeoutが示すのはresponse evidenceの欠如であり, upstream state changeの未実行ではありません.">
+        <header><h4>Q6: agentがこのPOSTを自動的に再送できるのはいつ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type a header field name" />
+          <p class="question-premise">agentはgateway経由で<code>POST /transfers</code>を送りました. backendはtransferをcommit済みかもしれませんがresponseがtimeout前にgatewayへ届かず, agentは504を受けました. HTTP method定義だけではこのPOSTはidempotentではありません.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 常に可能. 504はbackendがrequestを適用していない証明だから</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 常に可能. failed HTTP requestはnew connectionで再送できるから</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. application ruleで反復がidempotentになるか, 初回未適用を証明できる場合だけ</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. 決して不可能. RFC 9110はclientによるPOST再送を永久に禁止するから</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **判断のポイント:** representation metadata fieldは名前が近くても役割が違い, 選択を誤るとrecipientがbyte列を誤解釈します.
-
-            **実務での機会:** API client, browser, upload handler, security filterは, parserとdecode処理を選ぶときContent-Typeを使います.
-
-            **Terms:** representation, media type. media typeはpayloadの解釈方法を受信側に伝える.
-
-            **Correct:** Content-Type.
-            **Why others are wrong:** Content-Lengthはサイズ, Acceptは希望, Hostはauthority. payloadの型を宣言しない.
-
-            **Related:** charsetなどのparameterはデコードや安全性に影響する.
+            A: RFC 9110 Section 15.6.5の504はgatewayがtimely upstream responseを受けなかったことを示すだけで, backendがactionをしていない証明ではありません.
+            B: Section 9.2.2はmethod semanticsでautomatic retryを区別します. response消失は既に起きたeffectを消しません.
+            C: Section 9.2.2は, request semanticsが実質idempotentとclientが知るか, 初回未適用を検出できる場合に限りnon-idempotent methodのretryを認めます.
+            D: POSTは普遍的に再送不能ではありません. operation ID, deduplication contract, state checkなどが必要なknowledgeを提供できますが, RFC 9110自体はそのcontractを作りません.
+            判定基準: retryはresponse不在やauthorization grantのvalidityではなく, operation effectについての証拠で決めます.
           </div>
         </div>
       </article>

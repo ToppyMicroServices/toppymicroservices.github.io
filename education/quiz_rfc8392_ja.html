@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="CWT claims tokenが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 8392のCWT claims tokenだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="CWTの表現・保護手順と,application profileが選ぶclaim setを分けて考えてください.">
+        <header><h4>Q1: RFC 8392とA2A CWT profileの責務を正しく分けた説明はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 8392を参照し,CWT claims tokenを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">constrainedなA2A profileがcompactなauthorization claimを必要とし,COSEで保護したCWTを使う予定です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. constrainedまたはbinary protocol環境でJWT-like claimをcompactなCBOR形式で表すこと.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. constrainedまたはbinary protocol環境でJWT-like claimをcompactなCBOR形式で表すこと.ただしどのCWT claimを必須, ignore, security criticalにするかはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWTはJWTに由来するが, JSON/JOSE serializationではなくCBORとCOSEを使う.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8392を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 3-7はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 3-7がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 8392はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. RFC 8392がregistered claimを定義するため,conformingなCWTはSection 3.1の7 claimをすべて含めなければならない</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. RFC 8392はsigned CWTだけを有効なconstructionとし,claims setをCBOR mapにするかはprofileが選ぶ</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8392はCWT claimの表現とCOSE-basedな作成・検証を定義し,profileが使用するclaimとrequiredになる条件を定義する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8392が定義するのはcompactなinteger claim keyだけで,COSE処理とclaims setのCBOR typeはすべてprofileに委ねる</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3はregistered claim一式をmandatoryにしていません.applicationが使用するclaimとrequiredかどうかを定義します.
+B: Sections 7.1 and 7.2はsigned,MACed,encrypted CWTを扱い,CWT Claims SetはCBOR mapです.
+C: Sections 3 and 7がこの境界を定義します.interoperableな表現・保護処理はRFCから,claim profileはapplicationから得ます.
+D: RFC 8392はCBOR claims setとCOSE処理を規定しており,それらを未定義のままprofileへ委ねません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがCWT claims tokenについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="applicationがCBOR itemをCWTと認識する方法はCWT tagだけかを確認してください.">
+        <header><h4>Q2: receiverはこのuntagged CWTを拒否しなければならないか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 8392を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A message schemaはfield 4にCWTを置くと定義しています.fieldにはuntagged COSE_Sign1 objectがあり,receiverはschema上の位置からtypeを認識できます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. どのCWT claimを必須, ignore, security criticalにするかだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: CWTはJWTに由来するが, JSON/JOSE serializationではなくCBORとCOSEを使う</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. compactなclaim keyを選び, consuming profileで必須のclaimを定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
-          </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3 and 7に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. application contextでtypeが固定されていても,全CWTはCOSE object tagに加えてCBOR tag 61を持つ必要があるため拒否する</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. tag 61がないことだけでは拒否しない.application contextでもCWTを識別でき,tagがある場合はSection 6の構造に従う</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. tag 61の省略によりunprotected CWT表現へ変わるため,claims setとしてCOSE検証なしに受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. schema上の位置でもCBOR tagでもtypeを確立できないため,field 4の中にapplication/cwt media typeを必須とする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 6はCWT tagをoptionalとし,application contextやmedia typeもCWTを識別する方法として説明します.
+B: Section 6に沿う処理です.tag 61がある場合はtagged COSE objectをprefixしますが,tagがなくてもSection 7.2の検証は省略しません.
+C: objectの識別とcryptographic validationは別です.untagged COSE objectにも該当するCOSE検証を行います.
+D: Section 6はapplication/cwtを一つの方法として示しますが,message内のmandatory fieldにはしていません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このCWT claims tokenのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="有効なCBOR/COSE objectであることは,application-required claimの判定完了を意味しません.">
+        <header><h4>Q3: resource serverはRFC 8392 Section 7.2の手順だけでauthorizeしてよいか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: COSE protection,issuer,audience,time,required claimのprofileを強制せずCWTを受理すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">CWTはvalidなCBOR mapで,COSE_Sign1 signatureも検証済みです.A2A profileはaudがこのresourceを示し,expが有効期間内であることを要求しますが,validatorはどちらも未確認です.authorizationには両条件が必要です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,CWTをmedia type, context, explicit tagのどれで示すかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. COSE protection, required claim, issuer, audience, time, application profile requirementを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: CWTはJWTに由来するが, JSON/JOSE serializationではなくCBORとCOSEを使う</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 8392対応をadvertiseしたため,検証せずprocessingを続ける</label>
-          </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 8に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Section 7.2はvalid CWT Claims Setを得た時点で終わるため,registered claimのsemanticsもすべてvalidとしてauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. signing keyがconfigured issuerのものなら,issuer trustによって未確認のaudienceとexpirationも補えるためauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Section 3がrequired claim setをRFC 8392のscope外にするため,audまたはexpを含むCWTをすべてrejectする</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Section 7.2を完了した後にprofileのaud/exp ruleを適用する.cryptographic validityだけでは指定されたauthorization条件を満たさない</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 7.2はCBOR/COSE constructionを検証しますが,claim setやoperationのauthorization policyを選びません.
+B: Section 8はCWT creatorのauthenticationと,claimがoperationに受理可能かの判断を分けています.
+C: Section 3はapplicationがregistered claimをrequiredとして処理することを認めます.profile-definedであることはclaimをinvalidにしません.
+D: Sections 3 and 7.2の二段階を適用します.Sections 3.1.3 and 3.1.4がaud/exp semanticsを取り込み,このprofileがそれらをrequiredにしています.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: CWT claims tokenを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="RFC 8392のunknown claimに対するdefaultは,application requirementがない場合に限られます.">
+        <header><h4>Q4: 二つ目のimplementationはclaim 500をどう扱うべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 8392を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">A2A profileはprivate claim 500をrequiredなoperation classと定義し,値を認識できないrequestをrejectします.一方のimplementationは理解しますが,もう一方はgenericなunknown-claim ruleで無視します.interoperableなauthorizationが判定基準です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. どのCWT claimを必須, ignore, security criticalにするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. COSE protection, required claim, issuer, audience, time, application profile requirementを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. CWTをmedia type, context, explicit tagのどれで示すか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. constrainedまたはbinary protocol環境でJWT-like claimをcompactなCBOR形式で表すこと</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 3-7は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. claim 500をprofile-requiredとして扱い,semanticsまたは値を理解できなければrejectする.この場合はgeneric ignore ruleを適用しない</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. application profileがrequiredにしていても,RFC 8392はunregistered claimをすべてignoreさせるためCOSE検証後に無視する</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 共通claim definitionなしで処理を続けられるよう,claim 500をlocalに最も近いregistered integer keyへmapする</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. tokenをacceptし,operation-class checkをaudit logへ回してauthorization boundaryではunknown-claim behaviorを維持する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3はapplication requirementがない場合にunknown claimをignoreし,同時にapplicationが理解・処理すべきclaimを定義すると述べます.このprofileがそのrequirementを与えます.
+B: Section 3の条件を落とした読み方であり,profileが指定したauthorization ruleを無効にします.
+C: Claim keyは定義されたsemanticsを識別します.一方的なremappingは別の非互換profileを作ります.
+D: Loggingはpre-authorizationの判定基準を満たしません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでCWT claims tokenを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="MACが検証できるかだけでなく,どのpartyがvalid MACを作成できるかを確認してください.">
+        <header><h4>Q5: verifierはclaimed issuerについて何を結論できるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: constrained deviceやattestation formatがcompactなsigned claimを必要とする場面.観測した欠陥: compactなCBOR encodingだけでclaimがtrustworthyになると考えること.</p>
+          <p class="question-premise">5台のdeviceが同じsymmetric COSE MAC keyを共有しています.MACed CWTはiss=device-Aと主張し,MAC検証にも成功します.authorization ruleは他のgroup memberではなくdevice-Aがclaimを作成したevidenceを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（constrainedまたはbinary protocol環境でJWT-like claimをcompactなCBOR形式で表すこと）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（compactなclaim keyを選び, consuming profileで必須のclaimを定義する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（CWTはJWTに由来するが, JSON/JOSE serializationではなくCBORとCOSEを使う）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
-          </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 8に沿って欠陥を解消してからresultを使います.profile rule: compactなclaim keyを選び, consuming profileで必須のclaimを定義する.check: COSE protection, required claim, issuer, audience, time, application profile requirementを確認する.local policy: どのCWT claimを必須, ignore, security criticalにするか.</div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. iss valueはprotected claims set内で一台を示すため,verified MACはdevice-Aをauthenticateする</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. MACがauthenticateするのはgroup keyの所持でありunique memberではない.このruleには別のorigin evidenceを持つkeying設計が必要である</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. cti claimはdevice-Aをcryptographically identifyできるため,unique token identifierを追加すれば不足するorigin authenticationを得られる</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. CWT tagはMAC keyをissuer nameへbindするため,tag 61をprefixすればdevice-Aと他deviceを区別できる</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Integrityは外部者によるiss変更を防ぎますが,group MAC keyを持つ全memberが同様にvalidな値を作れます.
+B: Section 8はrecipientがclaimsを組み立てたpartyをauthenticateし,そのpartyをtrustするよう求めます.shared group keyだけではscenarioのper-device origin条件を満たしません.
+C: Section 3.1.7のctiはtoken identifierであり,どのgroup memberが生成したかのproofではありません.
+D: Section 6のtag 61はobjectをCWTと識別するもので,creatorを識別しません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: CWT claims tokenとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="COSE検証が終わる地点と,新しいtrust boundaryを越えてbackendが実際に受け取るevidenceを追ってください.">
+        <header><h4>Q6: backendはforwardされたclaimを元のCWT evidenceとして扱えるか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはCWT claims tokenを別protocol layerと組み合わせます.design noteには「CWTはJWTに由来するが, JSON/JOSE serializationではなくCBORとCOSEを使う」とあります.</p>
+          <p class="question-premise">A2A gatewayがCWTを検証し,aud=gatewayを確認して,subとoperationを含むplain JSONだけをresource-owning backendへ転送します.backendはauthenticated gateway connectionでJSONを受け取りますが,CWTもaudience,issuer,validation timeを覆うgateway assertionも受け取りません.backend policyはこのbackend operation向けのevidenceを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,どのCWT claimを必須, ignore, security criticalにするかは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（COSE protection, required claim, issuer, audience, time, application profile requirementを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（どのCWT claimを必須, ignore, security criticalにするか）を定義し,必要なcheck（COSE protection, required claim, issuer, audience, time, application profile requirementを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
-          </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 3-7とSection 8がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Section 7.2が成功すれば,その後に選択したclaimをどの形式へserializeしてもprotected CWTと等価になるためacceptする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. aud=gatewayはそのgatewayが到達できる全backendをauthorizeし,A2A profileのaudience modelには依存しないためacceptする</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. JSONを元のCWT evidenceとは呼ばない.protected gateway assertionを発行するか,backendがaudience policyで検証できるevidenceを渡す</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. CWTは最終resource-owning applicationだけが検証できるため,gateway mediationをRFC 8392非適合としてrejectする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 7.2 and 8によるCWTの保護とorigin authenticationはverifierまでです.選択したplaintext fieldはその保護を自動継承しません.
+B: Section 3はrequired claimとaudienceの使い方をapplication profileへ委ねます.指定されたbackend criterionはaud=gatewayだけでは満たされません.
+C: RFC processingとcomposition policyを分離します.gatewayを明示的な新trust boundaryにできますが,assertionはbackendが依存するsemanticsとprotectionを持つ必要があります.
+D: RFC 8392はCWT processingを定義しますが,trusted gateway architectureを禁止しません.profileがtrustとauthorization boundaryを定義します.</div>
         </div>
       </article>
     </section>

@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 7515", "SKILL_SUBTITLE": "JSON Web Signature", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 7515", "SKILL_SUBTITLE": "JSON Web Signature", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,14 +57,14 @@
       <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="applicationの意味を推論する前にexactなsigning inputを確認する.">
         <header><h4>Q1: validなJWSがcryptographically protectするものはどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. JWS objectを囲む全JSON member</label>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. unsigned metadataを含むenclosing application objectの全JSON member</label>
           <label class="choice"><input type="radio" name="Q1" value="b"> B. JWS signing inputとして使うencoded protected headerとpayload</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. payload内の全claimのtrustworthiness</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. payload内の全claimのtruth,authorization meaning,freshness</label>
         </fieldset><div class="explain">**解説:**
 
-A: coverされるのはJWS signing inputであり任意のenclosing dataではない.
-B: signatureまたはMACはprotected-headerとpayloadのrepresentationに対して計算する.
-C: cryptographic integrityだけではapplication claimを受理してよいか決まらない.</div></div>
+coverされるのはJWS signing inputであり任意のenclosing dataではない.
+signatureまたはMACはprotected-headerとpayloadのrepresentationに対して計算する.
+cryptographic integrityだけではapplication claimを受理してよいか決まらない.</div></div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="protected headerとunprotected headerのcontainerを比べる.">
         <header><h4>Q2: security-relevantなJOSE header parameterのintegrityが必要な場合どこに置く?</h4><span class="type">単一選択</span></header>
@@ -74,9 +74,9 @@ C: cryptographic integrityだけではapplication claimを受理してよいか�
           <label class="choice"><input type="radio" name="Q2" value="c"> C. unsignedなouter JSON objectだけ</label>
         </fieldset><div class="explain">**解説:**
 
-A: Protected Headerのbyteはsigning inputに含まれる.
-B: Unprotected Header parameterはintegrity protectedではない.
-C: outer objectはapplicationがsigned payloadへ明示的に含めない限りcoverされない.</div></div>
+Protected Headerのbyteはsigning inputに含まれる.
+Unprotected Header parameterはintegrity protectedではない.
+outer objectはapplicationがsigned payloadへ明示的に含めない限りcoverされない.</div></div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="lookup hintとtrust decisionを区別する.">
         <header><h4>Q3: JWSの&quot;kid&quot; header parameterのroleはどれ?</h4><span class="type">単一選択</span></header>
@@ -86,9 +86,9 @@ C: outer objectはapplicationがsigned payloadへ明示的に含めない限りc
           <label class="choice"><input type="radio" name="Q3" value="c"> C. 使用するkeyをidentifyするhint</label>
         </fieldset><div class="explain">**解説:**
 
-A: key identifierだけではownershipやtrustを確立しない.
-B: algorithm policyとkey identificationは別のdecisionである.
-C: RFC 7515はkidをhintと定義しstructureをspecifiedしない.</div></div>
+key identifierだけではownershipやtrustを確立しない.
+algorithm policyとkey identificationは別のdecisionである.
+RFC 7515はkidをhintと定義しstructureをspecifiedしない.</div></div>
       </article>
       <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="cryptographyの成功とalgorithmのacceptabilityは別のvalidation stepである.">
         <header><h4>Q4: JWSがmathematicalにはverifyできるがlocal policyでdisabledなalgorithmを使う. 受理すべき?</h4><span class="type">単一選択</span></header>
@@ -98,9 +98,9 @@ C: RFC 7515はkidをhintと定義しstructureをspecifiedしない.</div></div>
           <label class="choice"><input type="radio" name="Q4" value="c"> C. はい, kidがpresentでknown verification keyへresolveできればよい</label>
         </fieldset><div class="explain">**解説:**
 
-A: RFC 7515はalgorithmがapplicationにacceptableであることを要求する.
-B: JWSはcryptographic validationとapplication acceptance checkの両方を通って初めてvalidになる.
-C: key hintはdisallowed algorithmをauthorizeしない.</div></div>
+RFC 7515はalgorithmがapplicationにacceptableであることを要求する.
+JWSはcryptographic validationとapplication acceptance checkの両方を通って初めてvalidになる.
+key hintはdisallowed algorithmをauthorizeしない.</div></div>
       </article>
       <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="criticalはparameterをignoreして安全に続行できないことを示す.">
         <header><h4>Q5: protected headerに&quot;crit&quot;で列挙されたextensionがありverifierは理解できない. どうする?</h4><span class="type">単一選択</span></header>
@@ -110,11 +110,11 @@ C: key hintはdisallowed algorithmをauthorizeしない.</div></div>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. extensionをunprotected headerへ移す</label>
         </fieldset><div class="explain">**解説:**
 
-A: critでnamedされた全parameterを理解し処理する必要がある.
-B: unknown critical parameterのignoreはcritの目的を損なう.
-C: verifierはsigning inputを壊さずsenderのprotected headerを書換えられない.</div></div>
+critでnamedされた全parameterを理解し処理する必要がある.
+unknown critical parameterのignoreはcritの目的を損なう.
+verifierはsigning inputを壊さずsenderのprotected headerを書換えられない.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="unprotected headerとmultiple signatureを比べる.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="各serializationのsyntaxが持てるmemberを確認する.">
         <header><h4>Q6: Compact SerializationとJSON Serializationを区別するstatementはどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q6" value="a"> A. Compact Serializationはper-signature unprotected headerをsupportする</label>
@@ -122,11 +122,11 @@ C: verifierはsigning inputを壊さずsenderのprotected headerを書換えら�
           <label class="choice"><input type="radio" name="Q6" value="c"> C. JSON Serializationはunprotected headerとmultiple signatureを表現できる</label>
         </fieldset><div class="explain">**解説:**
 
-A: Compact SerializationにはJWS Unprotected Headerがない.
-B: multiple signatureはgeneral JSON serializationが提供する.
-C: これらはcompact formではなくJWS JSON serializationのcapabilityである.</div></div>
+Compact SerializationにはJWS Unprotected Headerがない.
+multiple signatureはgeneral JSON serializationが提供する.
+これらはcompact formではなくJWS JSON serializationのcapabilityである.</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC 7515はminimumを示しどのsignatureを必須にするかはapplicationが選ぶ.">
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 7515はminimumを示しどのsignatureを必須にするかはapplicationが選ぶ.">
         <header><h4>Q7: general JWS JSON objectが3つのsignatureを持ちapplicationは特定2 signerを要求する. どのvalidation ruleを使う?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. 任意の1 signatureがvalidなら全applicationを満たす</label>
@@ -134,9 +134,9 @@ C: これらはcompact formではなくJWS JSON serializationのcapabilityであ
           <label class="choice"><input type="radio" name="Q7" value="c"> C. 最初のsignatureを他をcheckせず受理する</label>
         </fieldset><div class="explain">**解説:**
 
-A: RFC 7515は少なくとも1つを要求するがapplicationは特定または複数signatureを要求できる.
-B: どのsignature valueをvalidate必須にするかapplicationが決めbase minimumより増やせる.
-C: array positionはapplicationのsigner policyを定義しない.</div></div>
+RFC 7515は少なくとも1つを要求するがapplicationは特定または複数signatureを要求できる.
+どのsignature valueをvalidate必須にするかapplicationが決めbase minimumより増やせる.
+array positionはapplicationのsigner policyを定義しない.</div></div>
       </article>
       <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="remote key retrievalはtransportとserver identityのtrust boundaryを作る.">
         <header><h4>Q8: verifierが&quot;jku&quot; URLからJWK Setを取得する. なおrequiredなcheckはどれ?</h4><span class="type">単一選択</span></header>
@@ -146,11 +146,11 @@ C: array positionはapplicationのsigner policyを定義しない.</div></div>
           <label class="choice"><input type="radio" name="Q8" value="c"> C. JWSにsignatureがあるためcertificate validationをdisableする</label>
         </fieldset><div class="explain">**解説:**
 
-A: RFC 7515はintegrity-protectedな取得とTLS server identity validationを要求する.
-B: hintのmatchだけではtrusted key sourceを確立しない.
-C: attacker-controlled key sourceならmatching keyとsignatureを提供できる.</div></div>
+RFC 7515はintegrity-protectedな取得とTLS server identity validationを要求する.
+hintのmatchだけではtrusted key sourceを確立しない.
+attacker-controlled key sourceならmatching keyとsignatureを提供できる.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="integrityとsigner-key possessionをauthorityとfreshnessから分ける.">
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="integrityとsigner-key possessionをauthorityとfreshnessから分ける.">
         <header><h4>Q9: Agent CardのJWS validation成功だけでは確立しないものはどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q9" value="a"> A. selected keyでsigning inputとsignatureがmatchすること</label>
@@ -158,21 +158,27 @@ C: attacker-controlled key sourceならmatching keyとsignatureを提供でき�
           <label class="choice"><input type="radio" name="Q9" value="c"> C. signerがadvertised agentについてauthorizedでcardがcurrentであること</label>
         </fieldset><div class="explain">**解説:**
 
-A: これはsuccessful validationのcore cryptographic resultである.
-B: Protected Header contentはsigning inputに参加する.
-C: authority, issuer binding, audience, freshnessにはapplication-profile ruleが必要である.</div></div>
+これはsuccessful validationのcore cryptographic resultである.
+Protected Header contentはsigning inputに参加する.
+authority, issuer binding, audience, freshnessにはapplication-profile ruleが必要である.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="generic containerが意図的にopenにするchoiceをprofileが閉じる必要がある.">
-        <header><h4>Q10: A2A profileはJWSをどう安全に使うべき?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. 各receiverがsigned fieldとtrusted keyを独自にinferする</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. payload, protected header, algorithm, key trust, claim validationを定義する</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. valid signatureを全endpointへのauthorizationとして扱う</label>
-        </fieldset><div class="explain">**解説:**
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="最初にsigning inputのexactなbyteを特定し, routingまたはacceptanceに使うfieldのうちその外側にあるものを探してください.">
+        <header><h4>Q10: RFC 7515から導けるreview conclusionはどれか</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">Agent Card wrapperにvalidなJWSとunsignedな`target`, `valid-until` memberがあります. signed payloadはagentを識別しますが, gatewayは外側の2 memberでroutingとauthorizationを判断します. expected keyとalgorithmによるvalidationは成功しました.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. valid JWS signatureは同じapplication message内で隣接するenclosing JSON memberも保護するため受理する</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. validation後にouter memberをin-memory protected headerへcopyすればoriginal signing inputへ遡及的に追加される</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. decision fieldを発行前にsigned contentへ入れ, profileでmeaning,key trust,algorithm,freshnessをvalidateする</label>
+          </fieldset>
+          <div class="explain">**解説:**
 
-A: 独自のinferenceは非互換でunsafeなacceptance decisionを生む.
-B: JWSはcryptographic containerを提供しapplication profileがacceptance semanticsを定義する.
-C: JWS validityはcross-resource authorizationをgrantしない.</div></div>
+RFC 7515 Section 5.2がsignatureをvalidateする対象はJWS Signing Input, つまりencoded protected headerとpayloadです. JWSに隣接するだけのJSON memberはそのinputに入りません. validation後に移動またはcopyしても, signerがcoverしたbyteは変わりません.
+
+application profileはroutingやauthorizationの意味を持つfieldを決め, signing前にintegrity-protected contentへ置き, acceptable algorithmとtrusted keyを定義する必要があります. Section 5.2ではcryptographic validationが成功しても, algorithm acceptabilityはapplication decisionです.
+
+JWS validationだけではclaim semanticsやfreshnessも決まりません. RFC 7515 Section 10.10はreplay protectionをapplication concernとして扱い, 例としてunique message identifierをsigned contentへ入れprior useを確認する方法を示します. したがってvalid signatureはsigned assertionには必要ですが, このwrapperのacceptanceには十分ではありません.</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

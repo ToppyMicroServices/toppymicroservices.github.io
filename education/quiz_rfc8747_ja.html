@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8747","SKILL_SUBTITLE":"CWT Proof-of-Possession Key Semantics","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8747","SKILL_SUBTITLE":"CWT Proof-of-Possession Key Semantics","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="CWT confirmation keyが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 8747のCWT confirmation keyだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="cnf claimは一つのconfirmation keyを識別し,application profileがrequiredなconfirmation methodを選びます.">
+        <header><h4>Q1: RFC 8747と整合するcnf profile ruleはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 8747を参照し,CWT confirmation keyを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A profileはproof of possessionを要求し,COSE_Key,Encrypted_COSE_Key,kid confirmation memberをsupportします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. CBOR向けconfirmation semanticsでCWT内にproof-of-possession key情報を表すこと.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. CBOR向けconfirmation semanticsでCWT内にproof-of-possession key情報を表すこと.ただしrelying applicationがsupportするproof methodとkey confirmation formatはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8747はJWTのproof-of-possessionの考え方をCWTとCOSE-based token ecosystemへ対応させる.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8747を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
-          </fieldset><div class="explain">**解説:**
-A: Section 3はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Section 3がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 8747はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. recipientが好むrepresentationを選べるよう,COSE_KeyとEncrypted_COSE_Keyを同じcnfへ置く</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 各registered memberは独立したproof-of-possession keyを表すため,一つのcnf mapへ複数presenter keyを置く</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. cnfで一つのproof-of-possession keyを表し,A2A applicationがrequiredかつ理解すべきconfirmation memberを定義する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. applicationがmemberをrequiredにしていない場合でも,recipientにすべてのunknown cnf memberをrejectさせる</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.1はcnf value内でCOSE_KeyとEncrypted_COSE_Keyのうち最大一つだけを認めます.
+B: Section 3.1はcnf valueが一つのproof-of-possession keyだけを表すとし,追加keyには別途定義したclaimを使います.
+C: 正解です.Section 3.1がone-key structureを定義し,required confirmation-member setはcontext dependentとします.
+D: Application requirementがない場合,Section 3.1はunrecognized confirmation memberをignoreさせます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがCWT confirmation keyについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="kidはkey lookup identifierであり,keyを運ぶこともpossessionをdemonstrateすることもしません.">
+        <header><h4>Q2: kidだけを含むcnfは何を確立するか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 8747を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">CWTはcnf={kid:h'01ab'}を含みます.recipientはまだkey lookupもA2A proof protocolも実行していません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. relying applicationがsupportするproof methodとkey confirmation formatだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 8747はJWTのproof-of-possessionの考え方をCWTとCOSE-based token ecosystemへ対応させる</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. COSEとCBOR ruleに合う形でconfirmation keyまたはkey referenceをCWT profileへencodeする</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
-          </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3.1-3.5に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. application-specificにkeyを識別する.recipientはkeyを取得し,profile-defined proofを別途検証する</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 対応private/symmetric keyを知るpartyだけがkidを生成できるためpossessionを証明する</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. complete public keyをcompactに運ぶため,recipientはkid bytesからCOSE_Keyを直接再構成する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. application-specific key lookupなしでCWT issuerとpresenterが同一entityだとauthenticateする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.4はkidをapplication-specific identifierとし,recipientがidentified keyを取得してpossessionを確認できることを必要とします.
+B: Identifierはcopyできます.possessionは別のcryptographic protocolで確立します.
+C: Section 3.4はkidのinternal key encodingを定義しません.
+D: CWTのissuer protectionとpresenterによるconfirmation-key proofは別operationです.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このCWT confirmation keyのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="cnf claimはkeyについてのissuer statementであり,実際のfresh proofはconsuming protocolが提供します.">
+        <header><h4>Q3: resource serverはこのCWTをbearer tokenとして扱ってよいか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: COSEを検証してもconfirmation keyのholder proofを別途要求しないこと.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">CWTはvalidで,cnfにCOSE_Keyを含みます.A2A profileはaccessをsender-constrainedとし,request nonceに対するfresh proofを要求します.resource serverはCWTをvalidateしましたが,confirmation keyによるsignature,MAC,その他proofを受け取っていません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,key referenceがlocal, public, encrypted, profile-definedのどれかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. CWTを検証し, presenterが参照されたconfirmation keyを保持することを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 8747はJWTのproof-of-possessionの考え方をCWTとCOSE-based token ecosystemへ対応させる</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 8747対応をadvertiseしたため,検証せずprocessingを続ける</label>
-          </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 4に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. protected cnf claimにCOSE_Keyを置けばcurrent presenterのprivate-key controlを証明するためacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. COSE_Keyをissuer signing keyと比較し,issuer signatureをpresenter proofとして兼用してacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. RFC 8747がcomplete nonce exchangeをcnf claim内に定義するため,CWTをmalformedとしてrejectする</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. まだauthorizeしない.profileのfresh proofを実行し,cnf keyでverifyしてからrequestをsender-constrainedとして扱う</label>
+          </fieldset><div class="explain">**Explanation:**
+A: cnf valueはissuerのconfirmation-key statementを運び,このrequestに対するpresenter proofではありません.
+B: Token-issuer authenticationとconfirmation-key possessionは,profileが同じkey/proofに安全に定義しない限り別です.
+C: Section 3.5はnonce communicationとproof transportをusing protocolへ意図的に委ねます.
+D: Sections 3.5 and 4はclaimed keyについてcurrentでreplay-resistantなproofをsurrounding protocolに要求します.指定A2A profileが判定基準です.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: CWT confirmation keyを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="cnf mapは一つのkeyを表し,standard key representationの同時使用を制限します.">
+        <header><h4>Q4: validatorはこのcnf valueをどう扱うべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 8747を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">protected CWTは同じcnf mapにCOSE_KeyとEncrypted_COSE_Keyを含みます.decode/decryptすると異なるpublic keyになります.profileは一つのunambiguous presenter keyを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. relying applicationがsupportするproof methodとkey confirmation format</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. CWTを検証し, presenterが参照されたconfirmation keyを保持することを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. key referenceがlocal, public, encrypted, profile-definedのどれか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. CBOR向けconfirmation semanticsでCWT内にproof-of-possession key情報を表すこと</label>
-          </fieldset><div class="explain">**解説:**
-A: Section 3は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. confidentialityがplaintext COSE_Keyよりprecedenceを与えるためEncrypted_COSE_Keyを選ぶ</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. profile proof用にどちらかを選ばず,cnf structure ruleによりtokenをrejectする</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 両keyでproof verificationを試し,どちらか成功すればcnfをalternative-key listとしてacceptする</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. CBOR map orderがissuerのpreferred keyを定義するため,最初のmemberを選ぶ</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.1はこれらのmember間にprecedence ruleを定義しません.
+B: Section 3.1はCOSE_KeyとEncrypted_COSE_Keyのうち最大一つを認め,cnfが一つのproof-of-possession keyを表すとします.
+C: mapをalternativeとして扱うとdefined semanticsを変え,implementationごとに異なるkeyを選べます.
+D: CBOR map orderはconfirmation-method preference signalではありません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでCWT confirmation keyを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="symmetric proof keyはsecret materialであり,integrity protectionだけではtoken observerから隠れません.">
+        <header><h4>Q5: signed-only CWTはこのsymmetric confirmation keyに十分か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: constrained-device tokenをpresenterがcontrolするkeyへbindする場面.観測した欠陥: proof-of-possession semanticsを含むCWTをbearer tokenとして受理すること.</p>
+          <p class="question-premise">issuerはkey valueを含むsymmetric COSE_Keyをcnfへ置き,CWTをsignしますがencryptしません.intermediaryはtokenを読めます.profileはそのsymmetric keyのexclusive possessionに依存します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（CBOR向けconfirmation semanticsでCWT内にproof-of-possession key情報を表すこと）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（COSEとCBOR ruleに合う形でconfirmation keyまたはkey referenceをCWT profileへencodeする）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 8747はJWTのproof-of-possessionの考え方をCWTとCOSE-based token ecosystemへ対応させる）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
-          </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 4に沿って欠陥を解消してからresultを使います.profile rule: COSEとCBOR ruleに合う形でconfirmation keyまたはkey referenceをCWT profileへencodeする.check: CWTを検証し, presenterが参照されたconfirmation keyを保持することを確認する.local policy: relying applicationがsupportするproof methodとkey confirmation format.</div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 不十分.integrityに加え,symmetric keyのconfidentialityを保つencrypted profileを使う</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 十分.CWTがplaintextでもvalid issuer signatureはreaderがsymmetric keyを知ることを防ぐ</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. kidも含めればvisible symmetric key bytesがnon-secret metadataへ変わるため十分である</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 不十分.symmetric confirmation keyは禁止されるためasymmetric COSE_Keyへ置き換える</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 4はCWT内のsymmetric keyにorigin authentication/integrityだけでなくconfidentiality protectionも要求します.
+B: Signatureは変更をdetectしますが,signed payloadをconcealしません.
+C: Identifier追加はexposed key valueを除去も隠蔽もしません.
+D: RFC 8747はappropriateにprotectされるsymmetric proof-of-possession keyを認めます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: CWT confirmation keyとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="fresh proofが誰に対して作られ,backend requestへbindされるかを確認してください.">
+        <header><h4>Q6: backendがこれをend-to-end proof of possessionと呼ぶ前に何を要求すべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはCWT confirmation keyを別protocol layerと組み合わせます.design noteには「RFC 8747はJWTのproof-of-possessionの考え方をCWTとCOSE-based token ecosystemへ対応させる」とあります.</p>
+          <p class="question-premise">A2A agentはgateway nonceをsignしてCWT cnf keyのpossessionを証明します.gatewayは別requestでCWTとboolean pop_ok=trueをbackendへforwardします.backend policyはbackend operationへbindされたcurrent proofを要求し,gateway exchangeのreplayをrejectします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,relying applicationがsupportするproof methodとkey confirmation formatは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（CWTを検証し, presenterが参照されたconfirmation keyを保持することを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（relying applicationがsupportするproof methodとkey confirmation format）を定義し,必要なcheck（CWTを検証し, presenterが参照されたconfirmation keyを保持することを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
-          </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Section 3とSection 4がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. trusted gatewayへのfresh proofは全downstream operationでもfreshかつparty-boundのままなのでpop_okをacceptする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. CWTだけを再検証する.protected cnf claimが不足するbackend nonceとrequest bindingも提供する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. backend-bound proofを要求するか,gatewayをtrusted verifierとしnonce,parties,operation,freshness semanticsを持つprotected assertionを発行させる</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. RFC 8747がproof transport,challenge content,participating-party bindingを固定するため,original gateway signatureをそのままforwardしてacceptする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 4はcurrent/replay-resistant proofを要求し,protocolがproof keyをparticipating partiesへlinkすると述べます.new hopはcontextを変えます.
+B: cnf claimはkeyをidentifyしますが,このrequestのbackend challengeやproofを含みません.
+C: Sections 3.5 and 4はproof protocolをapplicationへ委ねます.trust boundaryとprotected assertion semanticsが明示されればどちらも判定基準を満たせます.
+D: RFC 8747はnonce communication,signed-nonce transport,universal party-binding methodを意図的に定義しません.</div>
         </div>
       </article>
     </section>

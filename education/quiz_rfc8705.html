@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8705","SKILL_SUBTITLE":"OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8705","SKILL_SUBTITLE":"OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what OAuth mTLS binding provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 8705 make OAuth mTLS binding sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Client authentication at the authorization server and sender-constraining an access token are distinct mechanisms.">
+        <header><h4>Q1: Is this access token certificate-bound?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 8705 and claims that using OAuth mTLS binding automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">A confidential A2A client authenticates to the authorization server with the PKI mutual-TLS method. The issued access token contains no certificate association, and introspection returns no certificate thumbprint.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. authenticating OAuth clients with mutual TLS and binding access tokens to certificate material; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. authenticating OAuth clients with mutual TLS and binding access tokens to certificate material, while accepted client certificate authorities, subject constraints, and token audience policy remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 7800 defines confirmation-key semantics, while RFC 8705 applies certificate binding in OAuth deployments; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 8705 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Yes; mutual-TLS client authentication at the token endpoint implicitly sender-constrains every token issued on that connection</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Yes; a PKI-validated client certificate lets the resource server reconstruct the missing token association from the client_id</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. No binding is shown; Section 2 client authentication and Section 3 certificate-bound access tokens are complementary but distinct</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. No OAuth client may use this token because RFC 8705 requires certificate-bound access tokens whenever mutual TLS is available</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-3 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-3 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 8705 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Section 1 states that mutual-TLS client authentication and certificate-bound access tokens are distinct mechanisms and need not be used together.
+B: Section 3 requires an association accessible to the protected resource, such as x5t#S256 in the token or introspection metadata.
+C: Correct. Section 2 authenticates the client to authorization-server endpoints; Section 3 constrains token use at the protected resource.
+D: RFC 8705 defines both mechanisms but does not make certificate binding mandatory for every OAuth token.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for OAuth mTLS binding. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="At the resource server, the certificate can be a proof-of-possession key without also being a PKI client identity.">
+        <header><h4>Q2: Should the resource server reject this public client solely because its certificate is self-signed?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 8705 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">A public A2A client has a certificate-bound access token. It presents the same self-signed certificate on the mutual-TLS connection to the resource server, and the certificate thumbprint matches the token.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only accepted client certificate authorities, subject constraints, and token audience policy and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 7800 defines confirmation-key semantics, while RFC 8705 applies certificate binding in OAuth deployments</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Issue tokens with certificate confirmation data and define how the TLS client certificate reaches the resource server</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Not for that reason alone; in this use the resource server verifies possession and the token binding, not a PKI trust chain for the client certificate</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Reject it because certificate-bound tokens are available only to confidential clients authenticated with a CA-issued certificate</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Accept it without token validation because matching a self-signed certificate already proves the access token is active and authorized</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Require the authorization server to use the same certificate as its server certificate before comparing the token thumbprint</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3 and 6 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Sections 4 and 6.2 describe certificate-bound tokens for public clients and explain that the resource server need not validate the client-certificate trust chain for this proof-of-possession use.
+B: Section 4 explicitly permits public clients to use certificate-bound tokens with self-signed certificates.
+C: Certificate possession is one input; the resource server still validates the access token and applies authorization policy.
+D: The authorization server's TLS server certificate is unrelated to the client's proof-of-possession certificate.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this OAuth mTLS binding review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="The backend must know that certificate metadata came from the trusted TLS terminator for this connection.">
+        <header><h4>Q3: May the backend use the forwarded certificate header for RFC 8705 binding?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: checking the token but not checking the current TLS client certificate against the token binding. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A reverse proxy terminates mutual TLS and appends X-Client-Cert before forwarding to the resource server. External clients can also send X-Client-Cert, and the proxy does not remove an existing value. The resource server must bind the token to the certificate authenticated on this connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how revocation or certificate rotation affects existing tokens as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Verify that the presented client certificate matches the certificate binding in the access token</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 7800 defines confirmation-key semantics, while RFC 8705 applies certificate binding in OAuth deployments</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 8705 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Use the first header value because the proxy appends the certificate it observed after any client-supplied value</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Use either value whose thumbprint matches the token because a match proves which hop authenticated the certificate</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat the header as advisory and authorize when either the token or the forwarded certificate passes its separate validation</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Reject this channel; strip client values, authenticate proxy-to-backend certificate metadata, then compare that certificate to the token</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 7 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: A client-controlled value can be selected as the supposed TLS certificate, defeating the binding to the proxy-authenticated connection.
+B: An attacker with a stolen bound token can inject its expected thumbprint without proving possession of the corresponding private key.
+C: Section 3 requires both token validation and a match with the certificate obtained from the TLS layer; the checks are not alternatives.
+D: Section 6.5 permits TLS termination but leaves secure certificate-metadata conveyance out of scope. The profile must secure that hop before Section 3's comparison is meaningful.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing OAuth mTLS binding, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The binding is to a specific certificate encoding, not merely to a continuing account or subject name.">
+        <header><h4>Q4: Can the client reuse the old access token after certificate rotation?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 8705 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">An A2A client rotates from certificate C1 to C2. C2 has the same subject name and public-key algorithm, but different DER bytes. Its access token contains x5t#S256 for C1. The resource server requires an RFC 8705 certificate match.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Accepted client certificate authorities, subject constraints, and token audience policy</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Verify that the presented client certificate matches the certificate binding in the access token</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How revocation or certificate rotation affects existing tokens</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Authenticating OAuth clients with mutual TLS and binding access tokens to certificate material</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Reuse the token because the subject name represents the same OAuth client and is more stable than a certificate thumbprint</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Obtain a token bound to C2; the protected resource compares the presented certificate with the certificate associated with the token</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Reuse the token if C1 and C2 use the same signature algorithm, since x5t#S256 identifies an algorithm family</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Rewrite the token's x5t#S256 value at the resource server after validating that both certificates have the same subject</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-3 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Section 3.1 defines x5t#S256 as the SHA-256 hash of the certificate's DER encoding, not of its subject name.
+B: Section 6.3 notes that certificate updates invalidate access tokens bound to the previous certificate and can be handled by obtaining a new token.
+C: The confirmation value identifies a certificate thumbprint, not an algorithm family.
+D: Altering a protected token claim would invalidate its protection and replace the authorization server's binding decision.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when OAuth mTLS binding is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Capability and client-intent metadata do not prove that a particular token contains a certificate binding.">
+        <header><h4>Q5: Does the registration flag establish that this token is sender-constrained?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a confidential OAuth client or resource request must be constrained to a client certificate. Observed defect: terminating TLS at a proxy without preserving trustworthy client-certificate information to the resource server.</p>
+          <p class="question-premise">Client metadata sets tls_client_certificate_bound_access_tokens=true. The client then calls the token endpoint without mutual TLS, and the authorization server returns an access token with no x5t#S256 or equivalent introspection metadata. Resource policy accepts only certificate-bound tokens.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (authenticating OAuth clients with mutual TLS and binding access tokens to certificate material), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (issue tokens with certificate confirmation data and define how the TLS client certificate reaches the resource server) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 7800 defines confirmation-key semantics, while RFC 8705 applies certificate binding in OAuth deployments), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. No; inspect the issued token's binding evidence and reject it under the stated resource policy if no certificate association exists</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes; the client metadata value converts every later token into a certificate-bound token even on a non-mutual-TLS request</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes; authorization-server capability metadata and client-intent metadata together replace the Section 3 certificate comparison</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; RFC 8705 requires the authorization server to return an error for every non-mutual-TLS request from such a client</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 7 supports resolving the defect before relying on the result. The profile rule is: issue tokens with certificate confirmation data and define how the TLS client certificate reaches the resource server. The check is: verify that the presented client certificate matches the certificate binding in the access token. The local policy is: accepted client certificate authorities, subject constraints, and token audience policy.</div>
+A: Sections 3.3 and 3.4 define capability and intent metadata. The binding of a particular token still comes from the association described in Section 3.
+B: Section 3.4 says that, after a non-mutual-TLS request, issuing an error or an unbound token is at the authorization server's discretion.
+C: Metadata negotiation does not replace the protected resource's certificate-to-token comparison in Section 3.
+D: Section 3.4 deliberately leaves this authorization-server choice open; the resource server can still enforce its own bound-token policy.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should OAuth mTLS binding be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Compare the certificate named by the token with the certificate on each TLS hop, then identify where a new assertion is needed.">
+        <header><h4>Q6: How can the backend preserve the intended sender constraint?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines OAuth mTLS binding with another protocol layer. Its design note says: RFC 7800 defines confirmation-key semantics, while RFC 8705 applies certificate binding in OAuth deployments.</p>
+          <p class="question-premise">An A2A agent presents a token bound to certificate C_agent on mutual TLS to a gateway. The gateway opens a separate mutual-TLS connection to the backend using C_gateway and forwards the original token. Backend policy requires proof that the caller of this backend operation possesses C_agent's private key.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes accepted client certificate authorities, subject constraints, and token audience policy unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (verify that the presented client certificate matches the certificate binding in the access token) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (accepted client certificate authorities, subject constraints, and token audience policy), perform the required check (verify that the presented client certificate matches the certificate binding in the access token), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Compare the token thumbprint with C_gateway because the gateway is the immediate TLS client and any valid upstream certificate binding transfers to that hop</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Skip the certificate comparison after the gateway reports success, while continuing to describe the backend check as direct RFC 8705 proof of C_agent possession</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Either terminate the RFC 8705 resource role at the trusted gateway and issue a protected downstream assertion, or securely convey C_agent evidence under an explicitly defined proxy profile</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Forward C_agent in an unprotected header and compare its thumbprint, since the token's signed x5t#S256 value authenticates the header source</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 2-3 and Section 7 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: Section 3 binds the token to C_agent. C_gateway is a different certificate on a different TLS connection.
+B: Gateway trust can support a new architecture, but the backend must not mislabel a gateway assertion as direct proof from its own TLS layer.
+C: Sections 3 and 6.5 delimit the RFC mechanism and the unspecified proxy hop. Either design can be profiled, but the trust boundary and protected metadata must be explicit.
+D: A signed thumbprint in the token does not prove that an unprotected forwarded certificate value came from the TLS terminator.</div>
         </div>
       </article>
     </section>

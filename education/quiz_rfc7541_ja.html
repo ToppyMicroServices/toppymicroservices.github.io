@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7541",
       SKILL_SUBTITLE: "HPACK",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -94,12 +95,12 @@
         <header><h4>Q1: HPACKの主目的として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. headerをend to endで暗号化する</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. transport security protocolなしでHTTP/2 headerをend-to-end encryptする</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. indexingを使ってheader sizeを減らす</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLSなしでserver authenticityを保証する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. HTTP/2 serverをauthenticateしcertificateとpeer identity validationを置き換える</label>
           </fieldset>
           <figure class="flow-diagram answer-figure" aria-labelledby="rfc7541-ja-q1-caption">
-            <figcaption id="rfc7541-ja-q1-caption">HPACK は, よく出る header を table に置き, 毎回文字列を丸ごと送らず index や短い表現で参照する仕組みです. RFC を読むときも, 「生の header を送る」のではなく「table を共有しながら参照する」と捉えると分かりやすくなります.</figcaption>
+            <figcaption id="rfc7541-ja-q1-caption">HPACKはheader fieldをtableへ置き, indexまたは短いliteral表現で参照します. encoderとdecoderは同じtable stateを使ってheader listを復元します.</figcaption>
             <svg viewBox="0 0 760 190" role="img" aria-label="HPACK の encoder と decoder が table を使って header を圧縮する図">
               <rect class="flow-box" x="20" y="54" width="170" height="78" rx="12"></rect>
               <text class="flow-text" x="105" y="79">HTTP header</text>
@@ -122,19 +123,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** header compression, static table, dynamic table, indexing. HPACK は, 頻出する header field を table に寄せ, その table を index で参照して wire 上の bytes を減らす仕組みです.
+            RFC 7541 Sections 2.3と2.4で, HPACKはindexed representationとliteral representationを使ってheader listをencodeします. static tableは仕様で固定され, dynamic tableはconnection上で同期されます. 既存entryを参照することでrepeated header byteを減らすことが目的です.
 
-            **判断のポイント:** HPACKではencoderとdecoderが同じtable状態を同期させながらheader blockを処理します. 各field representationがliteralを送るのか, 既存indexを参照するのかを追うとstate transitionが明確になります.
-
-            **Correct (B):** 既知の header field を table 参照や短い literal で表し, wire 上のサイズを減らすのが主目的です. だから HPACK は帯域効率と遅延の改善に効きます.
-
-            **Options:**
-
-            - A (incorrect): header の **暗号化** は TLS の役割です. HPACK は圧縮であって, 秘密を守る仕組みではありません.
-            - B (correct): table参照とcompactなliteral表現で冗長なheader byteを減らし, decoderが同じheader listを復元できるようにします.
-            - C (incorrect): server authenticity は TLS や certificate validation の仕事で, HPACK は保証しません.
-
-            **Related:** HTTP/3 では ordered delivery 前提が変わるため, HPACK ではなく **QPACK** が使われます.
+            HPACKはcompression formatであり, confidentialityやserver authenticationを提供しません. それらはtransport securityとpeer-validation policyの別の責務です.
           </div>
         </div>
       </article>
@@ -149,18 +140,15 @@
           </fieldset>
           <div class="explain">
             **Explanation:**
-            **Terms:** dynamic table, connection state
-            **Correct (C):** requestやresponseのheader blockにより追加やevictが発生する
-            **Options:**
-            - A (incorrect): static tableは仕様で固定
-            - B (incorrect): HPACKとは無関係
-            - C (correct): dynamic tableはconnectionごとの状態
-            **Related:** stateずれはdecompression failureやprotocol errorの原因になる
+
+            RFC 7541 Section 2.3.2のdynamic tableは, header blockを処理する間にentryが追加またはevictされるconnection固有のstateです. encoderとdecoderは対応するstateを維持し, ずれればindexed referenceを正しく復元できません.
+
+            Section 2.3.1のstatic tableはentryとindexが仕様で固定されています. DNS cacheはHPACKのencoding contextではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="field nameだけでなく, 値に再利用可能なcredentialまたはsession identifierが含まれるかで分類します.">
+      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="field nameだけでなく, 値に再利用可能なcredentialまたはsession identifierが含まれるかで分類します.">
         <header><h4>Q3: 再利用可能なcredentialまたはsession materialを含み, never-indexed表現が妥当な例はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -172,17 +160,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** **never indexed**を指定したliteral header fieldは, compression tableへ入れないsensitiveな値に使います. RFC 7541はcredentialやcookieを代表例として挙げます.
+            **never indexed**を指定したliteral header fieldは, compression tableへ入れないsensitiveな値に使います. RFC 7541はcredentialやcookieを代表例として挙げます.
 
-            **Correct (A,C,D):** これらの例は, 漏れると再利用され得るbearer tokenまたはsession materialを含みます.
+            これらの例は, 漏れると再利用され得るbearer tokenまたはsession materialを含みます.
 
-            **Options:**
-            - A (correct): bearer tokenは再利用可能なcredentialであり, compression stateへ保持すると露出面が増えます.
-            - B (incorrect): このmedia-type preferenceは, 問題の例ではcredentialやsession identifierではありません.
-            - C (correct): session cookieは後続requestをauthorizeし得るため, secretとして扱います.
-            - D (correct): responseが設定するsession identifierも, 同種の再利用可能なsecretです.
+            bearer tokenは再利用可能なcredentialであり, compression stateへ保持すると露出面が増えます.
+            このmedia-type preferenceは, 問題の例ではcredentialやsession identifierではありません.
+            session cookieは後続requestをauthorizeし得るため, secretとして扱います.
+            responseが設定するsession identifierも, 同種の再利用可能なsecretです.
 
-            **Related:** sensitivityは値とthreat modelで決まります. field nameだけを一律の規則として使うべきではありません.
+            sensitivityは値とthreat modelで決まります. field nameだけを一律の規則として使うべきではありません.
           </div>
         </div>
       </article>
@@ -192,22 +179,21 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. decoderのSETTINGS_HEADER_TABLE_SIZE limit</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. static tableに定義されたentry数</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. 1つのHTTP/2 frame fragmentの最大size</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. static tableのentry数とHPACK index address spaceの組合せ</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. header-block fragmentを運ぶ1つのHTTP/2 frameのpayload上限</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** HTTP/2ではdecoderが**SETTINGS_HEADER_TABLE_SIZE**でmaximumを提示します. encoderは現在値をそれより小さくできますが, 上限を超えられません.
+            HTTP/2ではdecoderが**SETTINGS_HEADER_TABLE_SIZE**でmaximumを提示します. encoderは現在値をそれより小さくできますが, 上限を超えられません.
 
-            **Correct (A):** acknowledgeされたsettingが, encoderのdynamic tableに対するprotocol上のmaximumです.
+            acknowledgeされたsettingが, encoderのdynamic tableに対するprotocol上のmaximumです.
 
-            **Options:**
-            - A (correct): decoderがpersistent compression stateとmemory commitmentを制約できます.
-            - B (incorrect): static tableは別の固定tableであり, そのentry数はdynamic table capacityを決めません.
-            - C (incorrect): header blockは複数frameにまたがり得るため, frame payload sizeはdynamic table capacityの上限ではありません.
+            decoderがpersistent compression stateとmemory commitmentを制約できます.
+            static tableは別の固定tableであり, そのentry数はdynamic table capacityを決めません.
+            header blockは複数frameにまたがり得るため, frame payload sizeはdynamic table capacityの上限ではありません.
 
-            **Related:** encoderはheader blockの先頭でdynamic table size updateを送り, 許容上限以下のcurrent sizeを示せます.
+            encoderはheader blockの先頭でdynamic table size updateを送り, 許容上限以下のcurrent sizeを示せます.
           </div>
         </div>
       </article>
@@ -219,18 +205,17 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** string literalには, octet列をHPACK固定の**Huffman** codeで符号化したかを示すflagがあります.
+            string literalには, octet列をHPACK固定の**Huffman** codeで符号化したかを示すflagがあります.
 
-            **Correct:** **Huffman**.
 
-            **Why this matters:** RFC 7541 Appendix Bが1つのstatic tableを定義するため, connectionごとにcodeを学習または交渉しません. decoderはpaddingとend-of-stringの規則も検証します.
+            RFC 7541 Appendix Bが1つのstatic tableを定義するため, connectionごとにcodeを学習または交渉しません. decoderはpaddingとend-of-stringの規則も検証します.
 
-            **Related:** literalをHuffman符号化するかと, そのheader fieldをdynamic tableへindexするかは別の判断です.
+            literalをHuffman符号化するかと, そのheader fieldをdynamic tableへindexするかは別の判断です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="attackerがguessを変え, 結果のencoded lengthだけを繰り返し観測する状況を考えます.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="attackerがguessを変え, 結果のencoded lengthだけを繰り返し観測する状況を考えます.">
         <header><h4>Q6: secretとattackerが影響できるdataを同じ圧縮文脈で扱うと起き得る典型リスクはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -241,17 +226,36 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** **compression oracle**は, attackerが入力の一部へ影響し, 同じcompression context内のsecretとの関係によるencoded lengthの変化を観測できる状況です.
+            **compression oracle**は, attackerが入力の一部へ影響し, 同じcompression context内のsecretとの関係によるencoded lengthの変化を観測できる状況です.
 
-            **Correct (C):** lengthを繰り返し比較すると, attacker-controlledなguessがsecretと構造を共有するか推定できる場合があります.
+            lengthを繰り返し比較すると, attacker-controlledなguessがsecretと構造を共有するか推定できる場合があります.
 
-            **Options:**
-            - A (incorrect): side channelはsize behaviorを通じて情報を漏らしますが, HPACKがTLS traffic keyをheader blockへ入れるわけではありません.
-            - B (incorrect): TLS recordはauthenticationできます. authenticated transportでもlength oracleは別の観測面として残り得ます.
-            - C (correct): RFC 7541のsecurity considerationsが扱うprobing riskです.
+            side channelはsize behaviorを通じて情報を漏らしますが, HPACKがTLS traffic keyをheader blockへ入れるわけではありません.
+            TLS recordはauthenticationできます. authenticated transportでもlength oracleは別の観測面として残り得ます.
+            RFC 7541のsecurity considerationsが扱うprobing riskです.
 
-            **Related:** never-indexed表現やcompression contextの分離で一部のriskを減らせますが, attacker influenceを明示的に分析する必要があります.
+            never-indexed表現やcompression contextの分離で一部のriskを減らせますが, attacker influenceを明示的に分析する必要があります.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="mutually distrustfulなsenderが1つのdynamic tableを共有し, valueへ影響し, encoded lengthを観測できるか確認してください.">
+        <header><h4>Q7: RFC 7541に最も整合するmitigation reviewはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">proxyがmutually distrustfulなagentを1本のHTTP/2 connectionへmultiplexします. agentはchosen request headerを注入し, encoded block lengthを観測できます. victim requestはlow-entropyなsession cookieを持ち, `Authorization`だけがnever indexedです.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. TLSはheader valueとcompressed lengthの両方をauthenticated peerから隠すため, cookieのindexingを続ける</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. 全agentで1つのcompression contextを保ったままdynamic tableを拡大し, attacker guessを多くのentryへ混ぜる</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. cookieもsensitiveとして全HPACK hopでindexingを避け, 実装可能ならentityごとにcompression accessを分離する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+RFC 7541 Sections 7.1と7.1.1はこのattacker modelを直接扱います. mutually distrustfulなentityがcompression contextを共有し, 一方がencoded fieldへ影響しlengthを観測できる状況です. TLSはcontentを保護しますがdynamic-table probingに使えるlengthは残り, low-entropy secretほど推測されやすくなります.
+
+Sections 7.1.2と7.1.3はcompressionの制約を求め, idealにはfieldを構築するentityごとにdynamic-table accessを分離します. CookieとAuthorizationはnever-indexed literalを選び得るsensitive valueの例です. Section 6.2.3はHPACKでre-encodeするintermediaryにもnever-indexed representationの維持を要求します.
+
+never-indexingはliteral lengthを隠さず, 全side channelを解決するものではありません. dynamic tableへの挿入と再利用を防ぐため, remaining length exposureやcompressionをterminate/recreateするhopは別途threat analysisが必要です.</div>
         </div>
       </article>
     </section>

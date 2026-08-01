@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8725","SKILL_SUBTITLE":"JSON Web Token Best Current Practices","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8725","SKILL_SUBTITLE":"JSON Web Token Best Current Practices","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JWT BCPが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 8725のJWT BCPだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="tokenのalg valueはaccepted algorithm setを広げる権限ではなく,policyと照合するinputです.">
+        <header><h4>Q1: RFC 8725に沿うalgorithm-selection behaviorはどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 8725を参照し,JWT BCPを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A verifierのlibraryはRS256とES256をsupportします.このtoken profileが許すのはES256だけですが,incoming tokenはalg=RS256を宣言し,有効なRS256 signatureを持ちます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること.ただしこのendpointで受理するtoken kindとclaimを定めるprofileはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8725を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-3はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-3がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 8725はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. libraryがimplementするalgorithmでsignatureがvalidならalgorithm verificationを満たすためacceptする</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. callerがallowed setを選び,このprofileとkeyに許されたalgorithmでcryptographic operationを行う必要があるためrejectする</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. signature validityはprofile allowlistより優先されるため,algorithm differenceを記録してacceptする</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. local profileがalgorithm名を管理できるよう,RS256 signature bytesを維持したままES256でverificationをretryする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.1はlibraryがcallerにsupported setを指定させ,その外のalgorithmをoperationに使わないよう要求します.
+B: 正解です.Section 3.1はheader algorithm,実際のoperation,keyにassociated algorithmの一致も要求します.
+C: selected profile外で成功したoperationは,そのprofileに対するsuccessful validationではありません.
+D: Verificationにはsignatureを実際に生成したalgorithmが必要で,inputのrelabelではprofile mismatchを修復できません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがJWT BCPについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="異なるJWT kindは用途説明だけでなく,substitutionがfailureになるvalidation ruleを必要とします.">
+        <header><h4>Q2: cross-JWT confusionに対処するprofile変更はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 8725を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">一つのissuerがA2A access tokenとAgent Card attestationの両方を同じkeyでsignします.現在はaudienceもoptional claimも同じため,どちらのtokenも他方のvalidatorを通ります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. このendpointで受理するtoken kindとclaimを定めるprofileだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
-          </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3.1-3.12に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 一つのvalidation ruleを維持し,callerにtoken endpointとAgent Card endpointのどちらから取得したか覚えさせる</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. human-readable purpose claimを追加するがoptionalのままとし,claimがないtokenも引き続きacceptする</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. 両classに同じtyp valueを使い,authorization effectの違いはdocumentationで区別する</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. mutually exclusive ruleを定義し,distinct typ,claim,audience,key,issuerで別class tokenをrejectさせる</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Endpoint provenanceは失われたり混同されたりし,token classをcryptographically/semanticallyにexclusiveにはしません.
+B: optional discriminatorではwrong validatorにtokenをrejectさせられません.
+C: Section 3.11はnew JWT useにexplicit typingを推奨し,type再利用はそのdiscriminatorを失わせます.
+D: Section 3.12は異なるJWT kindがconfuseされ得るときmutually exclusive ruleを要求し,これらの分離方法を列挙します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このJWT BCPのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="generic issuer signature ruleだけでなく,authorize対象operationのruleでtokenを評価してください.">
+        <header><h4>Q3: gatewayはAgent Card attestationをaccess tokenとしてacceptすべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: あるissuerやtoken classのtokenを別contextで受理すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">attestationはtrusted issuer Iが正しくsignし,aud=gatewayでunexpiredです.access-token endpointもIをtrustします.access-token profileはtyp=a2a-access+jwtとscope=task.writeを要求しますが,attestationはtyp=a2a-card+jwtでscopeを持ちません.authorizationにはaccess-token profileが必要です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,keyをissuerへどうscopeしrotationするかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 8725対応をadvertiseしたため,検証せずprocessingを続ける</label>
-          </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 2に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. issuer,audience,lifetime,signatureがvalidで両token classに共通する十分なpropertyなのでacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. trusted issuerならscope=task.writeを発行できたはずなので,decoded claimsへ追加してacceptする</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. access-token ruleでrejectする.別JWT kindのvalid protectionはrequired type/claim ruleを満たさない</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. RFC 8725では一issuerが複数kindのJWTを安全に発行できないため,issuer Iの全JWTをrejectする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Sections 2.8 and 3.12がこのsubstitution riskを扱います.shared valid propertyはclass-specific ruleを消しません.
+B: verifierはsignature verification後にauthorization claimをinventしてissuerへ帰属できません.
+C: 正解です.Sections 3.11 and 3.12がexplicit typingとmutually exclusive ruleを支え,指定access-token profileが判定基準です.
+D: Section 3.12はvalidation ruleが確実に分離するなら,一issuerが異なるkindを発行する構成を認めます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: JWT BCPを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="correctly signed URLでもserver-side lookupに対するattacker-controlled inputになり得ます.">
+        <header><h4>Q4: jku URLをdereferenceする前にsignature verificationだけで十分か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 8725を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">multi-issuer A2A gatewayはsigned JWTのjkuを読み,そのURLからverification keyを取得します.trusted issuerはconfiguredですが,jkuでは任意HTTPS hostを許します.security requirementはattacker-directedなinternal serviceへのrequestを禁止します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. このendpointで受理するtoken kindとclaimを定めるprofile</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. keyをissuerへどうscopeしrotationするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること</label>
-          </fieldset><div class="explain">**解説:**
-A: Sections 2-3は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 不十分.許可するkey locationをvalidated issuerまたはallowlistへbindし,network access前にlookup inputをvalidateする</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 十分.JWTがsignature valueを持てばverification keyの探索に使うHeader Parameterもすでにtrustworthyである</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. HTTPSなら十分.WebPKIはJWT authorがinternalまたはunintended destinationを選ぶことを防ぐ</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 先にURLをfetchし,key retrieval後にissuerをvalidateする.issuer-key bindingはrequest後にだけ評価できる</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 3.10はlookupに使うclaim/headerのvalidationまたはsanitizationを要求し,injection/SSRF mitigationとしてallowlistingを挙げます.
+B: Key lookupはsignature authenticity確立前に起きます.attacker-controlled lookup inputはunverified signatureからtrustを継承しません.
+C: HTTPSは選択したserverをauthenticateしますが,そのdestinationがapplicationに許可されることは示しません.
+D: configured issuer-to-key-location bindingはattacker-controlled network requestより前に確認できます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでJWT BCPを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="各keyをintended algorithmへbindし,tokenにpublic-key bytesをsymmetric secretとして再解釈させないでください.">
+        <header><h4>Q5: verifierはこのHS256 tokenをどう扱うべきか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: API gateway, authorization server, serviceが複数sourceのJWTを検証する場面.観測した欠陥: algorithm confusion, cross-JWT confusion, weak key, wrong audience tokenの受理.</p>
+          <p class="question-premise">A2A profileはissuer IのRSA public keyによるRS256だけをacceptします.libraryはHS256もimplementします.attackerはalg=HS256とし,公開RSA public-key bytesをHMAC secretとしてHMACを計算します.判定基準はprofileのRS256 issuer authenticationです.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（既知のJWT implementation/deployment failureに対してJWT acceptance ruleをレビューすること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
-          </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 2に沿って欠陥を解消してからresultを使います.profile rule: explicit typing, token kind分離, short lifetime, 曖昧でないissuer/audience valueを使う.check: claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける.local policy: このendpointで受理するtoken kindとclaimを定めるprofile.</div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 同じkey materialはissuer Iにtrustedなので,supplied RSA bytesでHS256をverifyする</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. そのreinterpretation前にrejectする.algorithmをRS256へ限定し,configured RSA keyをassigned algorithmだけに使う</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. library capabilityとのcompatibilityを保つためHS256とRS256を両方試し,成功したoperationでacceptする</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. iss=Iでaudienceが一致すれば,claim validationがsignature algorithmの違いを補えるためacceptする</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 2.1がこのalgorithm confusion classを説明します.public keyをattackerが利用できるsymmetric secretへ再解釈してはいけません.
+B: Section 3.1はcaller-selected algorithm setとkeyごとの一algorithmをcryptographic operation時に確認させます.
+C: libraryの全algorithmを試すと,tokenがprofile外のvalidation modeを選べます.
+D: Claim validationは必要ですが,selected algorithm/keyによるissuer authenticationを置き換えません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: JWT BCPとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="gateway boundaryを越えてtoken kind,issuer,audience,validation contextを保持してください.signature successは一つのfactにすぎません.">
+        <header><h4>Q6: 指定authorization criterionを満たすgateway-to-backend設計はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはJWT BCPを別protocol layerと組み合わせます.design noteには「RFC 7519はJWTを定義し, RFC 8725は現代deploymentでの安全な使い方を説明する」とあります.</p>
+          <p class="question-premise">gatewayは同一issuerのaccess JWTとsession-binding JWTをacceptします.一つのgeneric ruleでsignatureをverifyし,X-Agentにsubだけをforwardします.backendはそのheaderからtask.writeをauthorizeします.backend policyはbackend自身向けaccess tokenと,このrequestに対するindependently validなsession-binding proofを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,このendpointで受理するtoken kindとclaimを定めるprofileは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（このendpointで受理するtoken kindとclaimを定めるprofile）を定義し,必要なcheck（claim処理前にallowed algorithmとkeyをissuerおよびtoken kindへ紐付ける）を行い,そのresultをoperationがどう使うか記載する</label>
-          </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-3とSection 2がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. shared issuerとvalid signatureから一sub valueで両token kindを推論できるためX-Agentを維持する</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. explicit typingだけでgateway resultがtransferするため,両方のoriginal typ stringをprotectionなしでX-Agentへ追加する</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. どちらかのJWT kindをvalidateし,何を保証するかはbackendに選ばせる.local authorizationでgeneric validationを修復できる</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. kind別validatorでissuer/audienceを確認し,両結果をprotected assertionで伝えるかoriginal proofをbackendで検証する</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Subject valueはtoken class,audience,scope,session-binding evidenceを運びません.
+B: Section 3.11のtypingはvalidation時のconfusionを防ぎますが,unprotected downstream headerはvalidated resultを保持しません.
+C: Section 3.12はauthorization policyがconsumptionする前にwrong-kind JWTをmutually exclusive ruleでrejectさせます.
+D: Sections 3.8, 3.9, 3.11, and 3.12がJWT checkを定義します.protected downstream assertionとfinal authorization ruleはA2A trust-boundary choiceであり,RFC 8725が自動生成する保証ではありません.</div>
         </div>
       </article>
     </section>

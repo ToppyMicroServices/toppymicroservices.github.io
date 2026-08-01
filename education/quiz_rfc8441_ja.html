@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 8441",
       SKILL_SUBTITLE: "HTTP/2でのWebSocket bootstrapping",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,18 +101,9 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** HTTP/1.1の`Upgrade`はconnection全体を切り替えますが, HTTP/2ではstream単位でWebSocketを開始できる仕組みが必要です.
+            RFC 8441はCONNECTを拡張し, 1本のHTTP/2 stream上でWebSocketを開始します. requestは`:protocol` pseudo-headerを使い, streamで動かすapplication protocolを明示します.
 
-            **用語:** **extended CONNECT** は, HTTP/2 上で tunnel 的な接続を張るための拡張です. HTTP/1.1 の `Upgrade` model をそのまま持ち込めないため, 別の bootstrap が必要になります.
-
-            **Correct (B):** HTTP/2 で WebSocket を bootstrapping する中心的な仕組みは **extended CONNECT** です.
-
-            **選択肢:**
-            - A (incorrect): HTTP/1.1 の `Upgrade` header そのものを中心にはできません.
-            - B (correct): RFC 8441 の要点をそのまま表しています.
-            - C (incorrect): DNS SRV record は WebSocket bootstrap の中心機構ではありません.
-
-            **関連:** 「WebSocket の意味」は同じでも, **どう始めるか** は HTTP version によって変わります.
+            これはconnection全体を切り替えるHTTP/1.1 `Upgrade` exchangeとは異なります. DNS service discoveryはserviceの所在を示せても, HTTP/2 streamやWebSocket semanticsを成立させません.
           </div>
         </div>
       </article>
@@ -127,23 +119,14 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** HTTP/2では複数のstreamを1本のconnectionで多重化できるため, WebSocketごとにtransport connectionを占有する必要がありません.
+            RFC 8441の各WebSocketはHTTP/2 streamに対応し, 複数streamが1本のtransport connectionを共有できます. したがってWebSocketごとに専用TCP connectionが必須になるわけではありません.
 
-            **用語:** **multiplexing** は, 1 本の HTTP/2 connection 上で複数 stream を並行利用することです. HTTP/1.1 のように WebSocket ごとに専用 TCP connection を増やす前提から外れられます.
-
-            **Correct (C):** HTTP/2 では 1 connection 上で stream を多重化できるので, WebSocket ごとに専用 TCP connection へ縛られる度合いを下げられます.
-
-            **選択肢:**
-            - A (incorrect): encryption の必要自体はなくなりません.
-            - B (incorrect): HTTP の semantics が消えるわけでもありません.
-            - C (correct): multiplexing の実利を正しく述べています.
-
-            **関連:** 実際の deploy では proxy, load balancer, backpressure の設計も変わるので, 単なる記法差以上の意味があります.
+            multiplexingはtransport security, HTTP setup semantics, 成功response後のWebSocket framingを不要にはしません. 変わるのはconnectionの共有方法であり, 他layerの保証ではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint=":protocol pseudo-headerは, extended CONNECT streamで使用するapplication protocolを識別します.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint=":protocol pseudo-headerは, extended CONNECT streamで使用するapplication protocolを識別します.">
         <header><h4>Q3: extended CONNECTでWebSocketを開始するとき, :protocol pseudo-headerに入れる値はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -154,18 +137,7 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** extended CONNECTでは, streamで使用するapplication protocolを`:protocol` pseudo-headerで明示します.
-
-            **用語:** extended CONNECTではtarget protocolを示すために **`websocket`** という値をsignalします. `http`や`tls`では意味が変わります.
-
-            **Correct (A):** WebSocket を作るなら signal すべき値は **`websocket`** です.
-
-            **選択肢:**
-            - A (correct): target protocol を正しく表します.
-            - B (incorrect): `http` はここで伝えたい protocol 値ではありません.
-            - C (incorrect): `tls` は transport/security layer 名であり, WebSocket の target protocol 値ではありません.
-
-            **関連:** bootstrapping が変わっても, 何を話したい tunnel なのかを intermediaries に伝える必要は残ります.
+            RFC 8441は`:protocol: websocket`により, extended CONNECT streamで動かすprotocolを識別します. `http`は外側のHTTP protocol, `tls`はchannel-security protocolを表すため, どちらもこのstreamへWebSocket semanticsを要求する値ではありません.
           </div>
         </div>
       </article>
@@ -182,24 +154,14 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** RFC 8441が変更するのはHTTP/2上のbootstrapです. WebSocket framing, Origin policy, application authorizationの責務は残ります.
+            RFC 8441が変更するのはHTTP bootstrapであり, WebSocket application protocolそのものではありません. 成功response後はWebSocket framingとopcodeがstreamを規定し, browser Origin validation, application authentication, authorizationも別の責務として残ります.
 
-            **用語:** **bootstrapping** は接続開始手順, **WebSocket semantics** は message framing や app security のような接続成立後も続く性質です.
-
-            **Correct (A,B,C):** bootstrapping は変わっても, WebSocket の message framing, browser Origin check, app 認証/authorization は引き続き重要です.
-
-            **選択肢:**
-            - A (correct): 接続後の framing 規則は依然として重要です.
-            - B (correct): browserはOriginを送り, serverは自身のorigin policyに従ってvalidateします.
-            - C (correct): app 認証と authorization は protocol が自動で解決しません.
-            - D (incorrect): HTTP/1.1 の `Connection` header 前提は HTTP/2 ではそのまま持ち込めません.
-
-            **関連:** 「HTTP/2 になったから secure」ではなく, bootstrap と app semantics を別々に review するのが実務的です.
+            一方, HTTP/1.1の`Connection` headerはこのHTTP/2 exchangeへ持ち込みません. 新しいbootstrapをsecurityやauthorizationの自動的な保証として扱うと, protocol layerの境界を越えてしまいます.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="HTTP/2 peerがextended CONNECTへ明示的にopt inしているかを確認してから経路を選びます.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="HTTP/2 peerがextended CONNECTへ明示的にopt inしているかを確認してから経路を選びます.">
         <header><h4>Q5: proxyがHTTP/2のみ対応でUpgradeをblockする. WebSocketに起きることとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -210,18 +172,9 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** HTTP/1.1の`Upgrade`がblockされている事実だけでは, RFC 8441の利用可否は決まりません. HTTP/2 peerがextended CONNECT対応をadvertiseしているかを別に確認します.
+            HTTP/1.1 `Upgrade`がblockされている事実だけでは, RFC 8441の利用可否は決まりません. clientはHTTP/2 peerがextended CONNECT対応をadvertiseしたかを別に確認し, 対応済みならそのbootstrapを使います. 未対応なら別のsupport済み経路を選ぶか失敗させる必要があります.
 
-            **用語:** **H2 bootstrapping** とは, HTTP/2 上で extended CONNECT を使って WebSocket 的な接続を成立させる考え方です.
-
-            **Correct (B):** peerが対応settingをadvertiseしていれば, HTTP/1.1 `Upgrade`の代わりにextended CONNECTを使えます.
-
-            **選択肢:**
-            - A (incorrect): 通常のGETだけではWebSocket framingとsemanticsは成立しません.
-            - B (correct): 対応settingを受け取ったpeerには, extended CONNECTでbootstrapできます.
-            - C (incorrect): `Connection`と`Upgrade`はHTTP/1.1のconnection-specific fieldであり, HTTP/2 stream内ではこの方法で使えません.
-
-            **関連:** deploy の失敗理由を正しく切り分けるには, 「HTTP/1.1 の制限」なのか「HTTP/2 bootstrapping 未対応」なのかを分けて考える必要があります.
+            通常のGETはWebSocket framing semanticsを成立させません. またHTTP/1.1の`Connection`と`Upgrade` fieldをHTTP/2 streamへ移植することもできません.
           </div>
         </div>
       </article>
@@ -233,13 +186,28 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** extended CONNECTはpeerの明示的なopt-in後にだけ利用できます. clientは対応settingを受信する前に`:protocol` pseudo-headerを送れません.
+            RFC 8441 Section 3は`SETTINGS_ENABLE_CONNECT_PROTOCOL`をextended CONNECTへのpeer opt-inとして定義します. serverは値1をadvertiseし, clientはそのsettingを受信する前に`:protocol` pseudo-headerを送れません.
 
-            **用語:** **SETTINGS_ENABLE_CONNECT_PROTOCOL** はextended CONNECT対応をadvertiseするsettingです.
+            このsettingが有効にするのはCONNECTの拡張形式です. target protocolを選ぶものではなく, request側がCONNECT methodと`:protocol`を使って指定します.
+          </div>
+        </div>
+      </article>
 
-            **Correct:** **SETTINGS_ENABLE_CONNECT_PROTOCOL**. serverが値1を送ることで対応を示します.
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="client-relay間とrelay-origin間のHTTP/2 connectionを分けて評価します.">
+        <header><h4>Q7: RFC 8441が支持するrelayの判断はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A2A relayはclientにextended CONNECT対応をadvertiseしています. 一方, relayからoriginへの別のHTTP/2 connectionでは対応がadvertiseされていません. relayはclientのWebSocket requestをどう扱うか判断する必要があります.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. client側のsettingが経路全体を許可するため, 同じextended CONNECTを転送する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. 通常のGETへ置き換え, 成功responseを同等のWebSocket tunnelとして扱う</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. upstream peerが対応するbootstrapを使い, 対応を仮定できなければ失敗させる</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
 
-            **関連:** settingが有効にするのはCONNECTの拡張形式です. request自体はCONNECT methodを使い, target application protocolを`:protocol`で示します.
+            設計レビューとして妥当なのはCです. `SETTINGS_ENABLE_CONNECT_PROTOCOL`は, 特定のHTTP/2 connection上でpeerが示すopt-inです. RFC 8441 Section 3により, relayはupstream peerから対応のadvertiseを受けるまで, そのupstream connectionで`:protocol`を送れません.
+
+            Sections 4と5がextended CONNECT requestとWebSocketへのmappingを定義しており, 通常のGETと一般的な成功responseでは同じsemanticsになりません. originが実際に対応する別のupstream方式をrelayが使うことはできますが, client側のsettingは別hopを許可も記述もしません. Section 7もintermediaryの利用を扱いますが, 1本のconnectionのsettingを経路全体のcapabilityにはしていません.
           </div>
         </div>
       </article>

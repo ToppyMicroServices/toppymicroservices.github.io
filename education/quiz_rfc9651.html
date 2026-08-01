@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9651","SKILL_SUBTITLE":"Structured Field Values for HTTP","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9651","SKILL_SUBTITLE":"Structured Field Values for HTTP","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what HTTP Structured Fields provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 9651 make HTTP Structured Fields sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Check the field definition before choosing a Structured Fields parser for an existing field.">
+        <header><h4>Q1: Can an implementation reinterpret this legacy field as a Structured Field?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 9651 and claims that using HTTP Structured Fields automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">X-Agent-Role was defined years ago with bespoke comma-separated syntax and does not reference RFC 9651 or RFC 8941. A new implementation wants to parse it as a Dictionary without changing the field specification.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. giving new HTTP fields common data types and algorithms for parsing and serialization; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. giving new HTTP fields common data types and algorithms for parsing and serialization, while the semantics of the field name and what each member or parameter means remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9651 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. No; the field must explicitly opt in through its definition, so changing the parser alone would redefine existing wire syntax.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Yes, if all values seen in production happen to parse as a Dictionary under RFC 9651.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Yes, because RFC 9651 automatically replaces the syntax of every HTTP field published before it.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. No, unless the field is first converted to a trailer, because Structured Fields cannot appear in headers.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-4 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 2-4 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 9651 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: RFC 9651 Section 1 says the mechanism applies only to fields that explicitly opt in and is not intended to redefine existing fields.
+B: Accidental compatibility of observed values does not change the normative field definition or guarantee that all producers share the new interpretation.
+C: Section 1 expressly rejects automatic redefinition. RFC 9651 supplies reusable syntax only when a field specification selects it.
+D: Structured Headers are a primary use case. Header placement is not the missing condition; explicit specification is.
+Decision rule: Parser selection follows the field's defining specification; it cannot silently create a new protocol contract.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for HTTP Structured Fields. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="Ask what an implementation still needs to parse and apply the new field consistently.">
+        <header><h4>Q2: What is missing from this new field definition?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 9651 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">A draft says only: Agent-Limits is a Structured Field using RFC 9651 and may appear in requests. Implementers disagree about whether its value is an Item, List, or Dictionary and how invalid limits are handled.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only the semantics of the field name and what each member or parameter means and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Choose the top-level field type and serialize values exactly according to the structured field algorithms</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Only an example serialization; the parser can infer all normative semantics from a representative field value.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Only an IANA registration; registration automatically selects the top-level type and error behavior.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Only a maximum byte size; RFC 9651 otherwise defines every application meaning for new fields.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. The definition must identify header or trailer use, top-level type, value semantics, constraints, and consequences when constraints fail.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 2 and 4 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Examples help readers but cannot choose application semantics or failure consequences for every valid and invalid value.
+B: A registry entry identifies a field but does not supply the field-specific contract required by RFC 9651 Section 2.
+C: Operational size limits matter, but Section 2 also requires the type, meaning, constraints, and handling of violations.
+D: RFC 9651 Section 2 lists these definition duties. They are what let independent parsers produce the same abstract value and application outcome.
+Decision rule: Structured Fields standardizes common syntax; the field specification still owns its complete application contract.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this HTTP Structured Fields review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Compare behavior with the defined parsing algorithm rather than with a locally convenient repair.">
+        <header><h4>Q3: How should the gateway handle this malformed field?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: different parsers accept different invalid values for the same security-sensitive field. The parsed result controls an A2A security decision.</p>
+          <p class="question-premise">Agent-Policy is defined as a Dictionary Structured Header. It contains an unterminated String. One gateway inserts a closing quote and accepts admin=true, while another fails parsing and ignores the field.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document whether a field is a header, trailer, or both as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Fail parsing according to the structured algorithm instead of inventing tolerant repairs</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 9651 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Use the repaired value if the HTTP message signature is valid, because signatures authorize tolerant parsing.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Fail parsing and ignore the entire field; accepting a guessed repair creates divergent and potentially unsafe interpretations.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Drop only the malformed member and process admin=true, because Dictionary members are independent after a syntax error.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Select either behavior through local policy, because RFC 9651 intentionally leaves parser error recovery unspecified.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Sections 1.1 and 6 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: A signature does not define missing syntax, and changing signed input can invalidate the signature. Parser behavior still must follow the field definition.
+B: RFC 9651 Sections 1.1 and 2.2 make strict failure intentional: a parsing failure causes the entire field to be ignored.
+C: The parser has not produced a Dictionary from which a safe member can be selected. Partial recovery is not the defined error behavior.
+D: Section 1.2 requires parsing behavior indistinguishable from the algorithms. Local tolerance is not an allowed alternative outcome.
+Decision rule: Canonical interoperability comes from one strict parse result, not from different components guessing how a malformed sender intended to write the field.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing HTTP Structured Fields, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Apply the default rule for unknown Dictionary keys, then ask whether the field specification explicitly overrides it.">
+        <header><h4>Q4: May this receiver reject an unknown Dictionary member?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 9651 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">Agent-Capabilities is defined as a Dictionary Structured Header. Its specification defines keys run and stream but says nothing about unknown keys. A receiver rejects the entire request when it sees audit=?1.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. The semantics of the field name and what each member or parameter means</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Fail parsing according to the structured algorithm instead of inventing tolerant repairs</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Whether a field is a header, trailer, or both</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Giving new HTTP fields common data types and algorithms for parsing and serialization</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes, because a security-sensitive field must reject every extension even when its specification is silent.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Yes, because an unknown Dictionary key always makes Structured Field parsing fail.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Not under the stated definition; recipients ignore unknown members by default, and a reject-on-unknown rule must be specified explicitly.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. No, and the receiver must execute the unknown capability because ignoring a member would lose forward compatibility.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 2-4 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Security sensitivity can justify a stricter field definition, but it does not silently change the processing rule of an already specified field.
+B: A syntactically valid unknown member can parse successfully. Unknown application meaning is distinct from a Structured Fields syntax error.
+C: RFC 9651 Sections 2.3 and 3.2 say unknown Dictionary members are ignored unless the field specification specifically disallows them.
+D: Ignoring means not acting on the member. Forward compatibility does not authorize behavior whose semantics the receiver does not understand.
+Decision rule: Extensibility policy is part of the field definition: default-ignore preserves evolution, while reject-on-unknown must be an explicit protocol choice.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when HTTP Structured Fields is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Use the Structured Fields RFC named by the field definition, not merely the newest parser available in one deployment.">
+        <header><h4>Q5: Can this extension add the Date type to the existing field?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a new HTTP header or trailer needs interoperable parsing across clients, servers, and intermediaries. Observed defect: allowing different parsers to accept different invalid values for the same security-sensitive field.</p>
+          <p class="question-premise">Agent-State is defined as a Structured Header by normatively referencing RFC 8941. An extension adds an expires parameter using the RFC 9651 Date type because current gateways have upgraded parsers.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (giving new HTTP fields common data types and algorithms for parsing and serialization), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (choose the top-level field type and serialize values exactly according to the structured field algorithms) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. No; an extension remains limited to types in the RFC referenced by the field, so the field definition must be revised or versioned before using Date.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes; upgrading a parser to RFC 9651 automatically upgrades every field definition it processes, even when the field cites RFC 8941.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes; if expires is optional, RFC 8941 implementations will preserve the unknown Date value until upgraded application logic uses it.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; Date is prohibited in parameters for every Structured Field and can only be a top-level Item under RFC 9651.</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Sections 1.1 and 6 supports resolving the defect before relying on the result. The profile rule is: choose the top-level field type and serialize values exactly according to the structured field algorithms. The check is: fail parsing according to the structured algorithm instead of inventing tolerant repairs. The local policy is: the semantics of the field name and what each member or parameter means.</div>
+A: RFC 9651 Section 2.4 says extensions are limited to the types in the specific Structured Fields RFC referenced by the field. RFC 8941 recipients would treat Date syntax as invalid.
+B: A parser upgrade can make previously invalid syntax parse, which Section 2.4 identifies as a risk; it does not rewrite the field's contract.
+C: An RFC 8941 parser does not recognize the Date syntax and can fail the entire field before application logic sees an optional parameter.
+D: RFC 9651 permits Date as a bare item, including a parameter value when a field definition based on RFC 9651 allows it.
+Decision rule: Syntax evolution requires an explicit field-definition transition that accounts for old recipients, not deployment-specific parser capability.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should HTTP Structured Fields be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="Keep wire parsing, signature verification, and authorization as three separately specified decisions.">
+        <header><h4>Q6: Which profile rule makes this signed A2A field interoperable?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines HTTP Structured Fields with another protocol layer. Its design note says: RFC 9651 supports HTTP field authors, while RFC 9110 supplies the broader HTTP semantics those fields live in.</p>
+          <p class="question-premise">An agent sends repeated Agent-Context header lines through a combining proxy. The backend parses the result, reconstructs a preferred serialization, verifies a message signature, and authorizes from role and scope members.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes the semantics of the field name and what each member or parameter means unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (fail parsing according to the structured algorithm instead of inventing tolerant repairs) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (the semantics of the field name and what each member or parameter means), perform the required check (fail parsing according to the structured algorithm instead of inventing tolerant repairs), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept any value that the backend can serialize, because a valid Structured Fields abstract value also proves the sender's signature and authorization intent.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Require the proxy to preserve original whitespace exactly, because RFC 9651 defines only one permitted serialization for every abstract value.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Verify the signature after dropping unknown members, because extensibility rules make omitted members irrelevant to every signature scheme.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Define the field's referenced RFC, placement, top-level type, constraints, and error handling; separately define signature coverage and the authorization meaning of parsed members.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 2-4 and Sections 1.1 and 6 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 9651 parsing establishes an abstract value, not signer identity or permission. Authorization cannot be inferred from syntactic success.
+B: Section 1.2 allows serializers to vary when the result parses correctly. HTTP also permits combining appropriate field lines, so exact whitespace is not the general contract.
+C: Ignoring an unknown member for field semantics does not mean it can be removed from a cryptographic input. Signature processing follows its own covered-component rules.
+D: RFC 9651 Sections 2, 2.4, and 4 define the syntax contract and version boundary. Signature and authorization layers must specify how they consume that result.
+Decision rule: A robust composition names the bytes or abstract value each layer consumes and never treats successful parsing as cryptographic or authorization evidence.</div>
         </div>
       </article>
     </section>

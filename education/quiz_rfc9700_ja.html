@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9700", "SKILL_SUBTITLE": "OAuth 2.0 Security Best Current Practice", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9700", "SKILL_SUBTITLE": "OAuth 2.0 Security Best Current Practice", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,26 +57,26 @@
       <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="broad pattern matchingはcodeやtokenをattackerへredirectしうる.">
         <header><h4>Q1: authorization serverはregistered redirect URIとrequest valueをどう比較すべき?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. definedされたlocalhost port例外を除きexact string matchingを使う</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. 同じtop-level domain下の任意URIを受理する</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. registered pathのsubstring matchを使う</label>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. native appのlocalhost port例外を除き、exact matchする</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. 同じregistrable domain・portの任意のURIをmatchする</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. pathをpercent-decodeしてregistered URIとprefix matchする</label>
         </fieldset><div class="explain">**解説:**
 
 A: exact matchingでattacker-controlledなURI variationへのauthorization response送信を防ぐ.
 B: domain-level matchingは広すぎattacker-controlled hostやpathを含みうる.
-C: substring comparisonは意図しないredirect targetを受理する.</div></div>
+C: decode後のprefix matchでは、exactに登録されていないrequest URIまで受理しうる。</div></div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="authorization codeをobserveまたはinterceptするattackerを考える.">
         <header><h4>Q2: authorization code flowでPKCEが重要な理由はどれ?</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. clientが保存する全access tokenをencryptする</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. code redemptionをchallengeを作ったclient instanceへbindする</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. redirect URI validationをreplaceする</label>
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. clientが保存するaccess tokenとrefresh tokenをencryptする</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. code redemptionをchallenge送信元のinstanceへbindする</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. exact redirect検査とclient authenticationを置き換える</label>
         </fieldset><div class="explain">**解説:**
 
 A: PKCEはcode redemptionをverifierへbindするものでstorage encryptionではない.
 B: interceptされたcodeは対応するcode verifierなしではredeemできない.
-C: PKCEとexact redirect matchingは別のattack pathを扱い両方必要である.</div></div>
+C: PKCEはexact redirect matchingや、適用される場合のclient authenticationを置き換えない。</div></div>
       </article>
       <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="このgrantはuser passwordをclientへexposeする.">
         <header><h4>Q3: Resource Owner Password Credentials grantに対するRFC 9700の立場はどれ?</h4><span class="type">単一選択</span></header>
@@ -150,29 +150,33 @@ A: open redirectはdestination controlの問題でTLS capability limitationで�
 B: open redirectはtrusted URIをredirect trampolineへ変えうる.
 C: client typeとredirect endpointがopenかは独立している.</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="codeはauthorization request contextへbindされたままである必要がある.">
-        <header><h4>Q9: validなauthorization codeがwrong clientまたはwrong redirect URIと共に提示された. token endpointはどうする?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. scopeを減らしてtokenをissueする</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. resource serverに後で判断させる</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. redemption requestをrejectする</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="authorization responseを、flow開始時に選んだauthorization serverへbindする。">
+        <header><h4>Q9: authorization-server mix-upの境界を直接閉じる変更はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">clientは一つのredirect URIで二つのauthorization serverをsupportする。<code>state</code>は検証するが、redirect上のuntrustedな<code>as</code> query parameterからtoken endpointを選ぶ。authorization responseのissuer identifierは検証せず、serverごとのredirect URIも使わない。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. redirect logicを維持し、wrong issuerの検出をresource serverへ任せる</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. authorization serverの選択方法を変えず、access tokenのentropyを増やす</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. issuer identificationを検証するか、開始serverにbindした別redirectを使う</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. どちらのtoken endpointでもcodeをredeemできるようTLS certificate検査を無効にする</label>
         </fieldset><div class="explain">**解説:**
 
-A: scope reductionでは壊れたclientまたはredirect bindingを修復できない.
-B: token endpointはtoken issue前にinvalid code redemptionをrejectする必要がある.
-C: authorization codeはauthorization requestで使ったclientとredirect contextへbindされる.</div></div>
+RFC 9700 Section 4.4.2は、authorization responseのissuer identification、またはauthorization serverごとに異なるredirect URIをmix-up countermeasureとする。Cはresponseをflow開始時のserverへbindする。endpoint選択がattacker-controlled input由来なら、<code>state</code>だけではserverを認証できない。Aは検出が遅すぎ、Bはissuer bindingを変えず、Dはserver authenticationを失わせる。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="protocol labelだけではBCPのmitigationが自動で有効にならない.">
-        <header><h4>Q10: A2A deploymentはOAuth supportへRFC 9700をどう適用すべき?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. OAuth 2.0をadvertiseしflowとreplayのchoiceをすべてimplicitにする</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. allowed flow, redirect check, PKCE, token binding, refresh-token handlingをprofileする</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. TLSだけで全OAuth attackを防ぐと扱う</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="audience restrictionはtokenを使える場所を、sender constraintはreplayできる主体を制限する。">
+        <header><h4>Q10: TLSの保証を過大評価せず、replay経路を塞ぐcontrol setはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">agentがpayment API向けaudienceに限定されたbearer access tokenを受け取る。tokenはTLS-terminating gatewayを通り、gatewayはAuthorization field全体をcentral logへ書く。全hopはTLSだが、log readerは期限内にtokenをcopyして同じpayment APIを呼べる。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. audience restrictionが対象APIでのreplayを防ぐため、全量loggingを維持する</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. 独立したTLS hopがtokenを元agentへbindするため、bearer tokenを維持する</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. tokenのloggingを防ぎ、必要な脅威ではsender-constrained access tokenを使う</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. audience restrictionを外し、bearer tokenの短いlifetimeだけに依存する</label>
         </fieldset><div class="explain">**解説:**
 
-A: unspecifiedなchoiceは非一貫でobsoleteなsecurity profileを生む.
-B: deployment profileがBCP controlをinteroperableなendpoint behaviorへ落とす必要がある.
-C: TLSだけではcode injection, mix-up, redirect abuse, stolen-token replayを防げない.</div></div>
+RFC 9700 Sections 2.2.1と4.10.1は、盗まれたtokenのmisuseを減らすため、mutual TLSやDPoPでbindしたsender-constrained access tokenを推奨する。audience restrictionも有用だが、そのaudienceではcopyされたbearer tokenを使える。hop-by-hop TLSが保護するのはtransit中であり、gatewayがlogへ書いた後ではない。Cは不要なdisclosureを除き、脅威とecosystemが必要とする場合にはtokenだけの所持を不十分にする。A、B、Dはreplay経路を残す。</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

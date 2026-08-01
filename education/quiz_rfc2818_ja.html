@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 2818",
       SKILL_SUBTITLE: "HTTP over TLS (HTTPS)",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,16 +101,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **HTTPS** は **HTTP over TLS** です. つまり application protocol は HTTP のままで, transport の下に TLS が入ります. その結果, confidentiality, integrity, server authentication を期待できる, という理解が土台になります.
+            **HTTPS** は **HTTP over TLS** です. つまり application protocol は HTTP のままで, transport の下に TLS が入ります. その結果, confidentiality, integrity, server authentication を期待できる, という理解が土台になります.
 
-            **Correct (B):** これが一番正確です. `https` は「HTTP を TLS 上で運ぶ」ことを示し, client は通常 certificate 検証を通じて server identity を確認します.
+            `https` はHTTPをTLS上で運ぶことを示し,clientはcertificate検証と参照identityの照合を通じて接続先serverを確認します.
 
-            **選択肢:**
-            - A (incorrect): 同じ host が `http` と `https` の両方を提供することは普通です. `https` scheme は `http` 提供の禁止までは意味しません.
-            - B (correct): scheme の意味と TLS の役割を正しく言い表しています.
-            - C (incorrect): Base64 は単なる encoding です. HTTPS の本質である encryption や certificate validation とは無関係です.
+            HTTPS を使っていても, cert validation を無効化すると server authentication は崩れます. 「TLS を張った」だけで安心しないことが重要です.
 
-            **関連:** HTTPS を使っていても, cert validation を無効化すると server authentication は崩れます. 「TLS を張った」だけで安心しないことが重要です.
+            A: 同じ host が `http` と `https` の両方を提供することは普通です. `https` scheme は `http` 提供の禁止までは意味しません.
+            B: scheme の意味と TLS の役割を正しく言い表しています.
+            C: Base64 は単なる encoding です. HTTPS の本質である encryption や certificate validation とは無関係です.
           </div>
         </div>
       </article>
@@ -125,16 +125,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **default port** は URL に port が明示されていないときに scheme から補われる既定値です. `https://example.com` は `https://example.com:443` と同じ接続先を指す想定で扱われます.
+            **default port** は URL に port が明示されていないときに scheme から補われる既定値です. `https://example.com` は `https://example.com:443` と同じ接続先を指す想定で扱われます.
 
-            **Correct (A):** `https` の既定 port は **443** です. URL に port が書かれていなければ, client はこの値を前提に接続先を解釈します.
+            `https` の既定 port は **443** です. URL に port が書かれていなければ, client はこの値を前提に接続先を解釈します.
 
-            **選択肢:**
-            - A (correct): `https` の既定値です.
-            - B (incorrect): **80** は `http` の既定 port です. ここを混同すると scheme downgrade の説明まで曖昧になります.
-            - C (incorrect): **22** は SSH でよく使われる port であり, HTTPS の既定値ではありません.
+            port を明示しない URL でも, origin 比較では既定 port が効きます. `https://example.com` と `https://example.com:443` を同じ origin とみなす理由もここにあります.
 
-            **関連:** port を明示しない URL でも, origin 比較では既定 port が効きます. `https://example.com` と `https://example.com:443` を同じ origin とみなす理由もここにあります.
+            A: `https` の既定値です.
+            B: **80** は `http` の既定 port です. ここを混同すると scheme downgrade の説明まで曖昧になります.
+            C: **22** は SSH でよく使われる port であり, HTTPS の既定値ではありません.
           </div>
         </div>
       </article>
@@ -151,22 +150,21 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **confidentiality** は盗み見の防止, **integrity** は改ざん検知/防止, **server authentication** は接続相手が想定した server かを確認することです. 一方で **authorization** は「その user が何をしてよいか」を決める application 側の判断です.
+            **confidentiality** は盗み見の防止, **integrity** は改ざん検知/防止, **server authentication** は接続相手が想定した server かを確認することです. 一方で **authorization** は「その user が何をしてよいか」を決める application 側の判断です.
 
-            **Correct (A,B,C):** TLS は transport 上の channel を保護するので, passive observer に対する confidentiality, wire 上の改ざんに対する integrity, certificate に基づく server authentication を提供します.
+            TLS は transport 上の channel を保護するので, passive observer に対する confidentiality, wire 上の改ざんに対する integrity, certificate に基づく server authentication を提供します.
 
-            **選択肢:**
-            - A (correct): 通信内容を第三者が読む難易度を上げる, という意味で TLS の中核です.
-            - B (correct): transit 中の tampering を防ぎ, 検知できるようにします.
-            - C (correct): certificate 検証を通じて, 接続先 server の identity を確認します.
-            - D (incorrect): authorization は app, API, business rule の責務です. TLS は「誰に何を許すか」までは決めません.
+            TLS は secure channel を作りますが, secure application を自動生成してくれるわけではありません. authz, input validation, session 設計は別途必要です.
 
-            **関連:** TLS は secure channel を作りますが, secure application を自動生成してくれるわけではありません. authz, input validation, session 設計は別途必要です.
+            A: 通信内容を第三者が読む難易度を上げる, という意味で TLS の中核です.
+            B: transit 中の tampering を防ぎ, 検知できるようにします.
+            C: certificate 検証を通じて, 接続先 server の identity を確認します.
+            D: authorization は app, API, business rule の責務です. TLS は「誰に何を許すか」までは決めません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="credentialを運ぶrequestより前に, どの入力がsecurity boundaryを変えるかを特定してください.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="credentialを運ぶrequestより前に, どの入力がsecurity boundaryを変えるかを特定してください.">
         <header><h4>Q4: user inputから送信先URLを作り, access tokenを付けることがある. HTTP downgradeを防ぐvalidation policyはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -177,12 +175,11 @@
           <div class="explain">
             **Explanation:**
 
-            scheme validationはsensitive requestを送る前に行う必要があります. trusted hostでも`http` URLなら, tokenを含む最初のrequestがTLS protectionの外へ出ます.
+            RFC 2818 Section 2.3はHTTP over TLSのURI schemeを`https`と定め,`http`と区別します.scheme validationはsensitive requestを送る前に行う必要があり,`http` URLならtokenを含む最初のrequestがTLS protectionの外へ出ます.
 
-            **選択肢:**
-            - A (incorrect): redirectは最初のinsecure requestを送った後にしか届かず, そのrequestを保護できません.
-            - B (incorrect): host validationは送信先を絞りますが, 許可hostへのplaintext transportを防ぎません.
-            - C (correct): tokenを付ける前に送信先とschemeを検証すれば, scenarioのdowngrade pathを閉じられます.
+            A: redirectは最初のinsecure requestを送った後にしか届かず, そのrequestを保護できません.
+            B: host validationは送信先を絞りますが, 許可hostへのplaintext transportを防ぎません.
+            C: tokenを付ける前に送信先とschemeを検証すれば, scenarioのdowngrade pathを閉じられます.
           </div>
         </div>
       </article>
@@ -198,16 +195,15 @@
           <div class="explain">
             **Explanation:**
 
-            **用語:** **distinct URI scheme** とは, `http` と `https` が別々の scheme として定義されている, という意味です. scheme が違えば既定 port も origin も扱いが変わります.
+            **distinct URI scheme** とは, `http` と `https` が別々の scheme として定義されている, という意味です. scheme が違えば既定 port も origin も扱いが変わります.
 
-            **Correct (A):** `https` は `http` とは異なる URI scheme です. 単なるフラグではなく, URL 解釈と security expectation が変わります.
+            `https` は `http` とは異なる URI scheme です. 単なるフラグではなく, URL 解釈と security expectation が変わります.
 
-            **選択肢:**
-            - A (correct): これが RFC 2818 を読むときの基本前提です.
-            - B (incorrect): HTTPS を使っても Basic 認証は必須ではありません. auth scheme は別レイヤの選択です.
-            - C (incorrect): `https` scheme 自体が cross-origin redirect を一律禁止するわけではありません.
+            scheme の違いは same-origin policy や cookie scope の議論にも影響します. URL の先頭文字列以上の意味を持っています.
 
-            **関連:** scheme の違いは same-origin policy や cookie scope の議論にも影響します. URL の先頭文字列以上の意味を持っています.
+            A: これが RFC 2818 を読むときの基本前提です.
+            B: HTTPS を使っても Basic 認証は必須ではありません. auth scheme は別レイヤの選択です.
+            C: `https` scheme 自体が cross-origin redirect を一律禁止するわけではありません.
           </div>
         </div>
       </article>
@@ -219,9 +215,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Correct:** **iPAddress**.
 
-            RFC 2818はserverをIP addressで指定するURIについて, certificateに`iPAddress` subjectAltNameが存在し, URIのaddressとexact matchすることを求めます. DNS hostnameには`dNSName`を使います.
+            RFC 2818 Section 3.1はserverをIP addressで指定するURIについて, certificateに`iPAddress` subjectAltNameが存在し, URIのaddressとexact matchすると記述しています. DNS hostnameには`dNSName`を使います. RFC 2818はInformationalなので, これは同文書のendpoint-identification手順を説明するものであり, 文書statusを独立したInternet Standards適合性として扱うものではありません.
           </div>
         </div>
       </article>

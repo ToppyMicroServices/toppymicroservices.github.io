@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9266", "SKILL_SUBTITLE": "Channel Bindings for TLS 1.3", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9266", "SKILL_SUBTITLE": "Channel Bindings for TLS 1.3", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -102,7 +102,7 @@ A: The value identifies a TLS connection instance, not a stable server identity.
 B: RFC 9266 provides the RFC 5056 connection-level form of uniqueness.
 C: The base channel binding does not distinguish upper-layer stream or mechanism instances.</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="The connection binding does not separate multiple upper-layer mechanism instances.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The connection binding does not separate multiple upper-layer mechanism instances.">
         <header><h4>Q5: One TLS connection carries an upper-layer authentication exchange. Which lifecycle matches RFC 9266?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. Reuse the connection for later mechanisms when they share the same username</label>
@@ -112,7 +112,7 @@ C: The base channel binding does not distinguish upper-layer stream or mechanism
 
 A: User identity does not create cryptographic separation between mechanism instances.
 B: The value is non-secret and lacks per-mechanism instance separation.
-C: RFC 9266 requires this lifecycle because its binding is only connection-unique.</div></div>
+C: RFC 9266 Section 4.1 requires one authentication-mechanism instance per TLS connection and immediate connection closure when the upper-layer protocol concludes.</div></div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="The document updates the mandatory-to-implement binding for TLS 1.3.">
         <header><h4>Q6: What must a TLS 1.3 implementation support if it implements channel binding?</h4><span class="type">Multiple Choice</span></header>
@@ -130,7 +130,7 @@ C: Application-specific fingerprints are not the registered interoperable bindin
         <header><h4>Q7: When is tls-exporter defined with respect to master secrets?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. For every legacy TLS connection regardless of extensions</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. When the handshake produces unique master secrets, always true for TLS 1.3</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. When the handshake has unique master secrets, including TLS 1.3</label>
           <label class="choice"><input type="radio" name="Q7" value="c"> C. Only after the application sends a bearer token</label>
         </fieldset><div class="explain">**Explanation:**
 
@@ -153,7 +153,7 @@ C: RFC 9266 says the binding is not defined when renegotiation is enabled.</div>
       <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Channel identity and application authorization are separate layers.">
         <header><h4>Q9: Does a matching tls-exporter value prove an application&#x27;s authorization policy was satisfied?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. No, it proves a channel association used by an upper-layer protocol</label>
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. No, it proves only an upper-layer channel association</label>
           <label class="choice"><input type="radio" name="Q9" value="b"> B. Yes, because the TLS server selected the user&#x27;s scope</label>
           <label class="choice"><input type="radio" name="Q9" value="c"> C. Yes, if the connection uses a public certificate</label>
         </fieldset><div class="explain">**Explanation:**
@@ -162,17 +162,17 @@ A: The upper layer must still authenticate principals and evaluate authorization
 B: TLS exporters do not carry OAuth scope decisions.
 C: Certificate validation and application authorization remain distinct from the exporter value.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The base binding is connection-wide and does not name an application session.">
-        <header><h4>Q10: An A2A protocol multiplexes many independent sessions over one TLS connection. What additional design issue arises?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. The exporter automatically creates a distinct value for each A2A session</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. The profile needs explicit per-session separation or a one-instance lifecycle</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. The sessions no longer need application authentication</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Check whether the proposed lifecycle stays within the binding's defined connection scope.">
+        <header><h4>Q10: Under RFC 9266 Section 4.1, which design-review conclusion is correct?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An A2A profile proposes to multiplex independent authentication-mechanism instances over one TLS connection and use the same RFC 9266 tls-exporter binding for each instance.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. The design conforms because the connection exporter automatically gains a distinct context for every A2A mechanism instance</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. The design violates the lifecycle: use at most one mechanism instance on that connection and close it when the exchange ends</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. The design conforms whenever application authentication succeeds because authorization supplies the missing binding context</label>
         </fieldset><div class="explain">**Explanation:**
 
-A: RFC 9266 fixes one connection binding and does not add session context.
-B: Without separation, a connection-level binding can be replayed across upper-layer instances.
-C: Multiplexing and channel binding do not replace principal authentication.</div></div>
+A: RFC 9266 Section 4.1 fixes a connection-level binding and does not derive per-instance context.
+B: Section 4.1 says applications using tls-exporter MUST NOT use it for more than one authentication-mechanism instance per TLS connection and MUST close that connection immediately after the upper-layer protocol concludes. A different profiled binding construction may be considered for multiplexing, but it would not be this RFC 9266 tls-exporter lifecycle.
+C: Application authentication and authorization do not change the channel-binding construction or its lifecycle.</div></div>
       </article>
     </section>
     <section class="card panel" aria-label="Quiz results"><button type="button" id="bottomShowAnswers">Show all answers</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

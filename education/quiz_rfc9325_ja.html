@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9325","SKILL_SUBTITLE":"TLS/DTLSを安全に使うための推奨事項","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9325","SKILL_SUBTITLE":"TLS/DTLSを安全に使うための推奨事項","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="TLS deployment BCPが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9325のTLS deployment BCPだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="まず,新しいtransport protocolなのか,TLSを再利用するapplication protocolなのかを区別します.">
+        <header><h4>Q1: この新しいA2A application protocolに合うTLS version方針はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9325を参照し,TLS deployment BCPを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">このprotocolはTCP上でTLSをchannel securityとして再利用し,現在のTLS libraryとの広い相互運用性を必要とします.新しいtransport protocol自体を定義するものではありません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること.ただし期待するauthenticated identityとauthorizationへのmappingはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9325を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 新規設計のprotocolはすべてTLS 1.2を組み込めないため,TLS 1.3だけを必須にする.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 既存libraryとの相互運用性が必要な場合,TLS 1.3は任意なのでTLS 1.2だけを必須にする.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. TLS 1.2とTLS 1.3を組み込み,利用可能ならTLS 1.3を優先し,それ以前のversionはnegotiationしない.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. TLS 1.3を最初に提示するが,legacy agentが失敗した場合はTLS 1.1までfallbackする.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-5はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 3-5がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9325はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: RFC 9325 Section 3.1.1のTLS/DTLS 1.3だけを使う規則は,新しいtransport protocolに対するものです.TLSを再利用する新しいapplication protocolには別の規則があります.
+B: Section 3.1.1はTLS 1.2のsupportを要求し,TLS 1.3のsupportを推奨しますが,TLS 1.2だけを目標方針にはしていません.
+C: Section 3.1.1は相互運用性のため両versionを組み込み,TLS 1.3を実装する場合は優先し,TLS 1.1以前をnegotiationしないよう求めます.
+D: Section 3.1.1はTLS 1.0とTLS 1.1のnegotiationを禁止します.互換性はこのdowngrade pathの根拠になりません.
+判断軸: 実際に設計するprotocolの種類へ規則を適用し,version floorとnegotiation preferenceを明記します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがTLS deployment BCPについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="TLS確立前にattackerがupgrade signalを除去した場合の結果を確認します.">
+        <header><h4>Q2: このdynamic TLS upgradeをどうdeployすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9325を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A control protocolにはSTARTTLS相当のupgradeだけがあります.現在のagentはupgrade responseがないとplaintextのまま続行します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 期待するauthenticated identityとauthorizationへのmappingだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. TLSをnegotiationできない場合にplaintextを禁止し,connectionを失敗させるstrict local policyを提供して有効にする.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. application authenticationがstrippingを補うため,grantが認証済みならplaintextを続行する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. upgradeを1回再試行し,peerがextension未対応の場合はplaintextで続行する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. strict upgradeの規則はpublic web browserだけに適用されるため,private networkではplaintextを許可する.</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3-4に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: RFC 9325 Section 3.2は,dynamic upgradeだけを持つprotocolにstrict local policyを要求し,管理者がそれを使ってTLS未確立時のplaintextを禁止するよう求めます.
+B: grantは保護されていない通信のconfidentialityやintegrityを回復しません.Section 3.2はsecure channel確立前のstrippingとcommand injectionを対象にします.
+C: 再試行後のfallbackもdowngrade条件を残します.必要なのはupgradeを試した事実ではなく,TLSで保護された最終状態です.
+D: Section 3.2はdynamic upgradeだけを持つprotocolについて規定します.networkの所在だけで指定されたdowngrade riskは消えません.
+判断軸: upgradeだけが経路なら,受理条件は保護された状態へ到達することです.upgrade失敗はconnection失敗です.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このTLS deployment BCPのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="1個のticket key侵害が,不要に広い過去のresumptionを露出させるかで評価します.">
+        <header><h4>Q3: このsession ticket設計に対する適切なreview指摘はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: use TLSだけを書き, version, algorithm, validation, downgrade behaviorを書かないこと.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">gateway fleetは1個のsession-ticket encryption keyを90日間共有します.ticketも90日間有効で,退役gatewayはincident分析のため古いkeyを保持します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,operational exceptionをどう承認, monitor, retireするかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9325対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 最初のfull handshakeがTLS 1.3なら,後のticket管理でforward secrecyが弱まることはないため受理する.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 共有keyは維持し,ticket confidentialityはkey lifetimeと独立なのでticket identifierだけ短くする.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. audit recoveryのため古いkeyを保持し,同じfleet-wide keyでもう一度ticketをencryptする.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. resumption情報の認証と暗号化,定期的なkey rotationと破棄,rotationに対応した有限のticket lifetimeを要求する.</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 7に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: RFC 9325 Section 3.4はresumptionを別のhandshakeとして扱い,ticket key侵害がforward secrecyの利益を失わせ得ると説明します.
+B: identifier長は露出期間を制限しません.Section 3.4が重視するのは強いticket暗号化,key rotation,key破棄,妥当な有効期間です.
+C: 侵害時に利用可能な古いkeyの保持は,有効期間終了時の破棄要件に反します.同じkeyによる二重化もtrust windowを直しません.
+D: Section 3.4がこれらのcontrolを直接示します.目的はresumptionが最初のhandshakeのsecurity propertyを弱めないことです.
+判断軸: session ticketは最初のhandshake有無ではなく,secretとその露出期間でreviewします.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: TLS deployment BCPを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="early requestのどれがreplay-safeかを定めるapplication protocol仕様があるか確認します.">
+        <header><h4>Q4: このstate-changing A2A operationでTLS 1.3 0-RTTを使えるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9325を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">agentはcreditを移転するnon-idempotent taskを0-RTT dataとして送ります.A2A profileにはTLS 1.3を使うとの記載しかなく,replay処理や対象operationを定めていません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 期待するauthenticated identityとauthorizationへのmapping</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. operational exceptionをどう承認, monitor, retireするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. grantが期限内なら使える.authorization validityはrequestがreplayされていないことも証明する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. 現在のprofileでは使えない.0-RTTには,replayの結果を含め,適切で安全な利用条件を定める明示的なprotocol ruleが必要である.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. serverがTLS session ticketを保存すれば使える.ticketの一意性によりearly-data requestは1回だけ実行される.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. RFC 9325はapplication protocolの0-RTTを恒久的に禁止するため,すべてのA2A operationで使えない.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-5は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: grant validityとreplay resistanceは独立です.認可済みrequestの複製でも同じstate changeを複数回起こせます.
+B: RFC 9325 Section 3.10は,適切で安全な条件を説明する明示的仕様がなければapplicationが0-RTTを避けるよう求めます.このprofileにはその規則がありません.
+C: session ticketはresumptionを可能にしますが,application-levelのexactly-once recordではありません.replay-awareなoperation ruleが別途必要です.
+D: Section 3.10は一律禁止ではありません.明示的なapplication仕様が安全な利用を定めれば0-RTTを利用できます.
+判断軸: 判定条件はTLS 1.3そのものではなく,明示的なprotocol ruleと対象operationのreplay-safeな処理です.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでTLS deployment BCPを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="terminatorの後方componentへidentityを割り当てる前に,2本のTLS connectionのendpointを特定します.">
+        <header><h4>Q5: このgateway終端TLSからbackendが結論できることは何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: public service, API, internal control planeがminimum TLS security requirementを文書化する場面.観測した欠陥: TLSを使うと言いながらobsolete version, weak algorithm, broken certificate validationを有効に残すこと.</p>
+          <p class="question-premise">mutual TLSはagentをgatewayへ認証します.gatewayはbackendへ別のTLS connectionを開き,client certificateから転記したunsigned X-Agent-Identity headerを送ります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（deployment済みTLS/DTLS configurationを現在のsecurity recommendationでレビューすること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 2区間がそれぞれTLSを使うため,backendとagentの間にend-to-end mutual TLSが成立する.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. gatewayがRFC 9325のcipher checkを通過すれば,backendはheaderをclient certificateとして扱える.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 各TLS channelだけが保護される.gateway越しのidentity assertionには別のintegrity protectionが必要である.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. TLSをintermediaryで終端することはBCPで禁止されるため,backendには利用可能なsecurity propertyがない.</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 7に沿って欠陥を解消してからresultを使います.profile rule: obsolete versionを無効にし, certificateとkey-management ruleを文書化したdeployment profileを出す.check: supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する.local policy: 期待するauthenticated identityとauthorizationへのmapping.</div>
+A: 2本のhop-by-hop TLS channelは1本のTLS channelになりません.第2区間で認証されるendpointはgatewayであり,元agentではありません.
+B: cipherとversionのcheckはchannelを保護しますが,unsigned application headerを以前のchannelに関する真正な主張にはしません.
+C: RFC 9325 Section 5.1はTLS authenticationをTLS communicationのendpointについて定義します.systemはgateway assertionの保護と信頼を別途定める必要があります.
+D: RFC 9325はgatewayでのTLS終端を禁止していません.問題はintermediary自体ではなく,新しいtrust boundaryを越えるclaimです.
+判断軸: 各identity claimを認証したchannelへ対応付け,boundaryを越えるassertionの保護とtrustを明記します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: TLS deployment BCPとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="transport configuration,early-data replay,application proof,backend authorizationを別々に評価します.">
+        <header><h4>Q6: この高impact A2A pathに十分なcomposition ruleはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはTLS deployment BCPを別protocol layerと組み合わせます.design noteには「RFC 8446はTLS 1.3を定義し, RFC 9325はTLS/DTLS deployment全体のsecure-use recommendationを示す」とあります.</p>
+          <p class="question-premise">gatewayはTLS 1.3 resumptionを使い,0-RTT taskを受ける場合があります.grantとsession-bound proofを検証し,resource判断を行うbackendへidentity assertionを転送します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,期待するauthenticated identityとauthorizationへのmappingは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（期待するauthenticated identityとauthorizationへのmapping）を定義し,必要なcheck（supported TLS version, strong cipher suite, certificate validation, safe resumption behaviorを強制する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. ticket keyとlifetimeを管理し,明示的なreplay-safe task ruleがある場合だけ0-RTTを許可し,実際のsession contextでproofを検証し,backendが使うgateway assertionを保護する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 有効なgrantを0-RTT利用許可とみなし,運用簡略化のためticket keyを再利用し,backendはgateway hostnameから元sessionを推定する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. 0-RTTは無効にするが共有ticket keyは無期限に維持し,requestが何らかのTLS connectionで届けば転送identityを受理する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. RFC 9325のversionとcipher floorを満たせば,TLS endpoint authenticationが両判断を提供するためapplication proofとbackend trust ruleを省略する.</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 3-5とSection 7がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 9325 Sections 3.4と3.10はresumptionとearly dataを扱い,Section 5.1はTLS security serviceをendpointへ限定します.grant,proof,resource authorizationは独立したapplication checkです.
+B: grantはreplay safetyもTLS session identityも提供しません.長期間共有するticket keyはSection 3.4の露出制御にも反します.
+C: early dataを除くことは1個のriskを直しますが,ticket key windowとgateway越しidentity assertionは未評価のままです.
+D: このBCPはtransport-security floorであり,authorization protocolではありません.proof inputやbackend trust modelを暗黙に定義できません.
+判断軸: compositionを受理するには,各保証についてendpoint,freshnessまたはreplay rule,verification input,final decision ownerを特定します.</div>
         </div>
       </article>
     </section>

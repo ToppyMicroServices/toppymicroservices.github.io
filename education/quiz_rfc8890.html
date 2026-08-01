@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8890","SKILL_SUBTITLE":"The Internet is for End Users","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8890","SKILL_SUBTITLE":"The Internet is for End Users","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,271 +57,118 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Identify whose interests are being optimized.">
-        <header><h4>Q1: What is the central review lens of RFC 8890</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="d" data-difficulty="L1" data-hint="Its publication status matters to the kind of conclusion a reviewer can draw.">
+        <header><h4>Q1: How should RFC 8890 be used in a protocol review?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. prefer the simplest deployment for network operators in every conflict</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. evaluate Internet standards by their effect on end users, especially when interests conflict</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. ban intermediaries and service providers from all protocol designs</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** RFC 8890 adds a review lens. It asks whether choices serve the people and organizations ultimately affected by the Internet.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Operator simplicity can matter, but it is not automatically the controlling interest.
-- B: The end-user effect and conflict analysis are the heart of this RFC.
-- C: The RFC does not ban intermediaries or providers; it asks designers to evaluate their effect on end users.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. As a wire-format specification whose fields determine conformance.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. As a cryptographic profile that makes user harm impossible.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. As a universal veto whenever any stakeholder reports inconvenience.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. As Informational IAB guidance for reviewing effects on human end users.</label>
+          </fieldset><div class="explain">RFC 8890 is Informational IAB guidance, not a wire-format specification or protocol conformance standard. Sections 2-4 provide a lens for identifying human users, substantiating impacts, and comparing trade-offs; they do not turn every asserted harm into an automatic veto. A review should use the document to improve its evidence and choices without describing the result as RFC 8890 compliance.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="End users can be direct or indirect and may not control infrastructure.">
-        <header><h4>Q2: Which statements fit the RFC 8890 view of end users. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L1" data-hint="Look beyond the actor operating a protocol endpoint to the humans whose activities and interests are affected.">
+        <header><h4>Q2: Who counts as an end user in RFC 8890? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. they can be people or organizations that ultimately use or are affected by a system</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. they are always the same party as the service operator</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. their interests can differ from deployers, vendors, gateways, or intermediaries</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. only browser users count as end users</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The end-user concept is broader than a login account or a browser session. It is about who ultimately benefits or is harmed.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: This matches the broad end-user lens used for standards review.
-- B: Operators and end users can overlap, but they often have different incentives.
-- C: Conflicting incentives are exactly why the RFC asks for explicit end-user analysis.
-- D: End users appear in many contexts, not only web browsers.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. A human whose activity is supported by the protocol, even through software acting indirectly.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. The corporation deploying an A2A gateway, simply because it owns the endpoint.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. A person affected by networked data processing even when that person does not operate the system.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. The router, agent process, or daemon itself rather than any represented human.</label>
+          </fieldset><div class="explain">RFC 8890 Section 2 uses `end user` for human beings, including people represented by software and people affected indirectly, such as subjects of photographs or sensor-equipped spaces. An organization remains a stakeholder and a group of humans, but its operator role does not itself become the human end user; likewise, an agent may represent a person without being that person. Reviews must map protocol roles to the represented and affected humans before weighing interests.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Start with effects, not with the mechanism name.">
-        <header><h4>Q3: A protocol adds a new gateway service. What should a reviewer ask first under RFC 8890</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The recommendation is about whom IETF decisions should favor, not about denying that other parties have legitimate needs.">
+        <header><h4>Q3: What priority does RFC 8890 recommend when stakeholder interests genuinely conflict?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. whether the gateway makes provider operations cheaper</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. whether the gateway creates a new market category</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. who is helped, who is harmed, and whether affected users retain agency</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The first question is not whether the component is fashionable or convenient. It is what effect it has on end users.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Provider cost can be relevant, but it is incomplete without user impact.
-- B: A market category does not demonstrate user benefit or protection.
-- C: Help, harm, and agency put the review on the end-user effect rather than provider narrative.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Always favor the party that deploys the largest infrastructure.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Favor human end users over other parties while examining the actual conflict and alternatives.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat all measurable deployment gains as sufficient evidence of user benefit.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Let specification-editor convenience decide when technical consensus is difficult.</label>
+          </fieldset><div class="explain">RFC 8890 Sections 1 and 3 recommend favoring end users when their interests genuinely conflict with those of other parties, and Section 4 describes how to investigate the effects. Deployment control, scale, bandwidth, latency, author convenience, and process needs are not sufficient priorities by themselves. The recommendation applies after identifying the affected humans, establishing the conflict, and comparing realistic alternatives.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Convenience for one stakeholder may move costs to another.">
-        <header><h4>Q4: When does provider convenience become a design concern under RFC 8890</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate measurable system success from how power and harm are distributed among people.">
+        <header><h4>Q4: Why is a higher adoption rate alone insufficient evidence of an end-user-positive design?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. when it imposes hidden cost, reduced choice, or new risk on end users</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. whenever it reduces the number of configuration files</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. only when every provider and every user has identical interests</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The RFC does not reject operational convenience. It rejects treating provider convenience as enough when users carry the downside.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Hidden cost, reduced choice, and new risk are concrete user-impact concerns.
-- B: Fewer configuration files may help operations, but the user effect still has to be evaluated.
-- C: The point is to handle conflict, not to wait for perfect alignment.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. RFC 8890 rejects every quantitative measurement as irrelevant.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Adoption is useful only when one vendor controls all clients.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Scale metrics can increase while the technology reduces user control or shifts harm onto users.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Adoption automatically proves the interests of operators and users are identical.</label>
+          </fieldset><div class="explain">RFC 8890 Section 3 does not reject measurement; it warns that deployment or other selected success metrics can hide whether technology empowers users or asserts power over them. Higher adoption neither eliminates stakeholder conflicts nor proves that affected humans retain agency, safe alternatives, or acceptable exposure. Operational metrics therefore need accompanying evidence about switching, control, and negative impacts.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Map stakeholders before choosing the mechanism.">
-        <header><h4>Q5: Which review flow best applies the end-user lens</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The technical community cannot assume its own experience represents all affected people.">
+        <header><h4>Q5: What is the strongest review method when designers claim a change is good for users?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. choose the provider-preferred design and write a short privacy note afterward</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. identify stakeholders, identify conflicts, evaluate end-user impact, then justify the selected trade-off</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. treat any technically elegant mechanism as end-user positive</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc8890-en-q5-caption">
-            <figcaption id="rfc8890-en-q5-caption">End-user review flow.</figcaption>
-            <svg viewBox="0 0 772 158" role="img" aria-label="End-user review flow.">
-              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="95" y="79">Stakeholders</text>
-              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
-              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
-              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="289" y="69">Conflict</text>
-              <text class="flow-label" x="289" y="90">identified</text>
-              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
-              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
-              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="483" y="69">End-user</text>
-              <text class="flow-label" x="483" y="90">impact</text>
-              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
-              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
-              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="677" y="69">Justified</text>
-              <text class="flow-label" x="677" y="90">trade-off</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** A defensible standards argument makes the trade-off visible before the mechanism is treated as acceptable.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: A note written after the decision can miss the actual conflict.
-- B: This sequence makes stakeholder conflict and end-user impact part of the decision.
-- C: Technical elegance does not by itself show benefit or reduced harm for users.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Analyze likely impacts and engage specifically affected communities through accessible feedback channels.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Accept the claim when all protocol authors agree, because they have unique insight into user welfare.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Require affected users to join the normal IETF mailing list before their concerns count.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Measure only latency because subjective effects cannot be considered in standards work.</label>
+          </fieldset><div class="explain">RFC 8890 Section 4.1 says technical designers have no unique insight into what is good for users and calls for impact analysis, consultation, outreach on affected communities' terms, and suitable feedback mechanisms. Requiring those communities to attend the IETF's usual venues would not meet that goal. Technical metrics remain useful, but a claimed user benefit needs evidence from the affected population rather than intent or internal consensus alone.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="The RFC is guidance for reasoning, not an automatic veto button.">
-        <header><h4>Q6: Which statements are careful uses of RFC 8890. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Consider user representation, switching, and needs internal to the standards process.">
+        <header><h4>Q6: Which design observations align with RFC 8890? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. any feature requested by a user group must always be standardized</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. the document supports explicit analysis of benefit, harm, agency, and conflict</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. end-user language can replace security and privacy review</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. a design can still proceed when trade-offs are documented and justified</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** RFC 8890 improves review quality. It does not remove the need for evidence, security review, privacy review, and technical constraints.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Requests matter, but standards still need feasibility, interoperability, and harm analysis.
-- B: Explicit analysis of benefit, harm, agency, and conflict is the intended use.
-- C: End-user analysis complements security and privacy review; it does not replace them.
-- D: Trade-offs can be acceptable when they are visible, justified, and revisited as needed.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. A user agent is useful only when one implementation is mandatory for every service.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. A distinct user-agent role can limit service access and enable users to switch implementations.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Architectural purity should override user interests whenever it simplifies a diagram.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. Editor convenience and internal process needs should not be prioritized over end-user needs.</label>
+          </fieldset><div class="explain">RFC 8890 Section 4.2 uses the browser user-agent role to illustrate representation, service access, user choice, and the value of multiple implementations with lower switching costs. Section 4.5 separately warns against prioritizing architectural purity or document-author convenience for their own sake. The relevant question is whether the architecture gives humans meaningful representation and alternatives, not merely whether it is tidy for implementers.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Software can act for users while also carrying other incentives.">
-        <header><h4>Q7: How should a reviewer treat agents, gateways, or intermediaries that act on a user’s behalf</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Do not stop at the organization that owns the agent or at the software process executing requests.">
+        <header><h4>Q7: Whose interests must this A2A review examine as end-user interests?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A company deploys an agent that summarizes employee messages and sends results to customers. The gateway operator calls the company the sole end user because it pays for the service.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. assume they always represent the end user perfectly</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. ignore them because only endpoint devices matter</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. check whether their incentives, defaults, and control points align with end-user interests</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Intermediaries can help users, but they can also concentrate control or hide decisions. The review should inspect incentives.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Assuming perfect representation hides conflicts of interest.
-- B: Control points outside the endpoint can strongly affect users.
-- C: Incentives, defaults, and control points are concrete ways to test whether the component serves users.
-          </div>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Only the paying company, because ownership determines end-user status.</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Only the agent process, because it directly invokes the protocol.</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. The affected humans, including employees, message subjects, and customer users.</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. Only the gateway operator, because it controls the network endpoint.</label>
+          </fieldset><div class="explain">RFC 8890 Section 2 requires the review to look past organizational and software roles to the human beings represented or affected. The paying company and network operator are stakeholders, but payment or deployment does not make an organization the only end user, and an agent is not itself a human. The analysis must trace the people represented, observed, acted upon, or otherwise affected and keep their potentially different interests visible.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="One user-facing benefit can conflict with another.">
-        <header><h4>Q8: What is the right stance when privacy, safety, usability, and interoperability pull in different directions</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="A review needs concrete effects and alternatives before it can claim either safety or violation.">
+        <header><h4>Q8: What is the justified RFC 8890 review finding for this logging proposal?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A operator proposes indefinite logging of full prompts and tool outputs to simplify debugging. The review records no retention need, misuse scenario, affected people, less-invasive alternative, or consultation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. state the conflict and justify the trade-off using user impact and evidence</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. pick the easiest implementation and call it neutral</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. remove the user-impact discussion because trade-offs are subjective</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** User interests are not always simple. A good review explains why one trade-off is acceptable under the expected conditions.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: This keeps the trade-off visible and reviewable.
-- B: Implementation ease is not neutral when it changes user risk or choice.
-- C: Subjective difficulty is a reason to write the analysis more clearly, not to omit it.
-          </div>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. The proposal lacks impact analysis; identify affected humans, harms, benefits, and alternatives first.</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Logging is automatically non-conforming because RFC 8890 is a binding privacy protocol.</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Logging is automatically acceptable because operator debugging benefits eventual users.</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. The only relevant question is whether storage uses strong encryption.</label>
+          </fieldset><div class="explain">RFC 8890 Sections 4.1 and 4.3 call for engagement with affected communities and evidence about negative impact instead of bare assertions of either harm or benefit. Because the document is Informational, it does not create a categorical logging rule; equally, a possible operational benefit does not justify unlimited content or retention. Encryption protects one property but does not answer questions about collection, secondary use, or power, so the proposal needs a specific purpose, feasible alternatives, and a documented trade-off.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="A useful design document names the affected users and the chosen trade-off.">
-        <header><h4>Q9: Which text belongs in an RFC 8890-informed design review. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="b,d" data-difficulty="L3" data-hint="Neither group stops being an end user merely because their interests differ.">
+        <header><h4>Q9: Which two actions fit RFC 8890 when two groups of end users have conflicting needs? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A fraud-control feature helps buyers recover stolen funds but publishes seller identity data in jurisdictions where disclosure can cause physical harm. Both groups present credible evidence.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. the end users affected and the interests the design is meant to protect</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. a statement that operator cost is the only relevant deployment factor</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. a claim that all users benefit without describing the evidence</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. why unavoidable trade-offs are acceptable or what future condition should revisit them</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** A review that only asserts benefit is hard to evaluate. The reader needs affected parties, evidence, and change triggers.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Naming affected users and protected interests makes the review concrete.
-- B: Operator cost may matter, but it is not the only factor in this framework.
-- C: A broad benefit claim without evidence is not useful review text.
-- D: Explaining trade-offs and revisit conditions makes the decision auditable.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Choose the larger group without considering severity or alternatives.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Compare alternatives that minimize negative impact across both groups, including the most harmful deployment environments.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Treat sellers as service providers rather than humans, so their interests do not enter the review.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. If a genuine compromise remains unavoidable, document the evidence, reasoning, and rejected alternatives.</label>
+          </fieldset><div class="explain">RFC 8890 Section 4.4 calls for minimizing negative impact, considering environments where users can be harmed, and thoroughly documenting unavoidable compromises. Group size alone does not capture severity, and Section 2 allows one person to occupy several roles, so a seller does not cease to be a human end user. Both groups must remain in the analysis while reviewers compare less-harmful alternatives and make residual trade-offs explicit.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Unknowns should become review conditions, not marketing claims.">
-        <header><h4>Q10: If end-user impact is uncertain, what should the specification do</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="d" data-difficulty="L4" data-hint="Valid credentials can secure an operation while leaving the human-impact choice unresolved.">
+        <header><h4>Q10: Which conclusion properly combines protocol security with an RFC 8890 review?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A gateway validates OAuth grants and session-bound proofs. To improve abuse response, one mandatory broker receives every task body and retains it for all participating services. Users cannot choose another broker or export their history; affected workers were not consulted.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. state that the design is unquestionably user-first</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. record the uncertainty, expected impact, and conditions that would trigger a revisit</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. delete the concern until deployment data exists</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Uncertainty is normal. The important part is to keep it visible and actionable rather than hiding it.
-
-**Related keywords:**
-- **end user** : Human or organization that ultimately uses or is affected by the Internet
-- **agency** : Ability to understand and influence outcomes
-- **trade-off** : Design choice where interests conflict
-
-**Options:**
-- A: Overclaiming turns uncertainty into an unsupported assertion.
-- B: This gives readers a concrete way to monitor whether the design remains acceptable.
-- C: Deleting the concern prevents later reviewers from knowing what to watch.
-          </div>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Valid grants prove that the broker design advances every end user's interests.</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Session binding eliminates concerns about concentration, retention, and user choice.</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. RFC 8890 makes centralized brokers categorically non-conforming in every architecture.</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Security may be valid, but human impacts, concentration, alternatives, and trade-offs still require review.</label>
+          </fieldset><div class="explain">A valid grant and session-bound proof establish protocol properties such as permission and credential-to-session binding; they do not establish net human benefit, data-governance quality, or switching freedom. RFC 8890 is Informational and does not categorically ban the architecture. Sections 2 and 4.1-4.4 instead require an independent review of direct and indirect human users, community evidence, negative impacts, and unavoidable conflicts alongside the cryptographic analysis.</div>
         </div>
       </article>
     </section>

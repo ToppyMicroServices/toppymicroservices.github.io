@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9001",
       SKILL_SUBTITLE: "Using TLS to Secure QUIC",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,18 +103,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** QUIC には TLS に似た独自 handshake がある, と誤解されがちです. ここを正すのが最初の一歩です.
+            QUIC には TLS に似た独自 handshake がある, と誤解されがちです. ここを正すのが最初の一歩です.
 
-            **用語:** **TLS 1.3** は cryptographic handshake と key schedule を担います. **QUIC** は transport と packet 保護の枠組みを担います.
+            **TLS 1.3** は cryptographic handshake と key schedule を担います. **QUIC** は transport と packet 保護の枠組みを担います.
 
-            **実務での機会:** bug が TLS library 由来か, QUIC transport 実装由来か, あるいは両者のつなぎ込み由来かを切り分けるときに重要です.
+            bug が TLS library 由来か, QUIC transport 実装由来か, あるいは両者のつなぎ込み由来かを切り分けるときに重要です.
 
-            **選択肢:**
+
             - A (incorrect): TLS 1.3 を置き換えるわけではありません.
             - B (correct): RFC 9001 の中心を正しく捉えています.
             - C (incorrect): それは QPACK の領域です.
 
-            **関連:** RFC 9001 は「QUIC が TLS を使う」と言うだけでなく, どう噛み合わせるかを operational に説明する文書です.
+            RFC 9001 は「QUIC が TLS を使う」と言うだけでなく, どう噛み合わせるかを operational に説明する文書です.
           </div>
         </div>
       </article>
@@ -129,18 +130,18 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** Initial, Handshake, 1-RTT というラベルだけ覚えても, 実装や debug にはつながりません.
+            Initial, Handshake, 1-RTT というラベルだけ覚えても, 実装や debug にはつながりません.
 
-            **用語:** **encryption level** は, handshake の進み具合に応じた保護レベルです. それぞれ別の秘密情報と packet 保護文脈に結びつきます.
+            **encryption level** は, handshake の進み具合に応じた保護レベルです. それぞれ別の秘密情報と packet 保護文脈に結びつきます.
 
-            **実務での機会:** どの frame がどの段階で送れるか, なぜ decrypt 失敗が起きるかを考えるときに必要です.
+            どの frame がどの段階で送れるか, なぜ decrypt 失敗が起きるかを考えるときに必要です.
 
-            **選択肢:**
+
             - A (incorrect): HTTP semantics ではありません.
             - B (incorrect): key schedule を置き換えるものでもありません.
             - C (correct): これが operational な理解です.
 
-            **関連:** encryption level で考えると, QUIC setup を 1 本の直線ではなく段階ごとの保護切り替えとして理解しやすくなります.
+            encryption level で考えると, QUIC setup を 1 本の直線ではなく段階ごとの保護切り替えとして理解しやすくなります.
           </div>
         </div>
       </article>
@@ -149,7 +150,7 @@
         <header><h4>Q3: QUIC の transport parameter とは何か</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. TLS handshake の中で運ばれる, QUIC transport 向けの設定値</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. TLS handshakeで運ぶQUIC transport設定値</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. TLS certificate を HTTP header へ載せ替える仕組み</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. cipher suite を DNS で公告する仕組み</label>
           </fieldset>
@@ -176,23 +177,23 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** transport parameter は TLS handshake に載るので, TLS の generic option だと思い込むと誤ります.
+            transport parameter は TLS handshake に載るので, TLS の generic option だと思い込むと誤ります.
 
-            **用語:** **transport parameter** は QUIC-specific な設定値です. ただし交換の場は TLS handshake の中です.
+            **transport parameter** は QUIC-specific な設定値です. ただし交換の場は TLS handshake の中です.
 
-            **実務での機会:** peer mismatch, flow control, 設定値の食い違いを調べるときに, 「TLS が運ぶが QUIC が解釈する」という構図が役立ちます.
+            peer mismatch, flow control, 設定値の食い違いを調べるときに, 「TLS が運ぶが QUIC が解釈する」という構図が役立ちます.
 
-            **選択肢:**
+
             - A (correct): 場所と意味を正しく言えています.
             - B (incorrect): HTTP header とは無関係です.
             - C (incorrect): DNS で運ぶ話ではありません.
 
-            **関連:** 境界をまたぐ概念は, 「どこを通るか」と「誰が意味づけするか」を分けて覚えると崩れません.
+            境界をまたぐ概念は, 「どこを通るか」と「誰が意味づけするか」を分けて覚えると崩れません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="early dataはconfidentialityだけでなくreplayの観点から評価し, application operationを繰り返して安全か確認してください.">
+      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="early dataはconfidentialityだけでなくreplayの観点から評価し, application operationを繰り返して安全か確認してください.">
         <header><h4>Q4: QUIC における 0-RTT について, 一般に正しいものはどれか. 複数選択</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -204,19 +205,19 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 0-RTTのlatency benefitは, application operationが受けるreplay riskと同時に評価する必要があります.
+            0-RTTのlatency benefitは, application operationが受けるreplay riskと同時に評価する必要があります.
 
-            **用語:** **0-RTT** は handshake 完了前に application data を送る仕組みです. **replay** は同じ early data が再受理される危険です.
+            **0-RTT** は handshake 完了前に application data を送る仕組みです. **replay** は同じ early data が再受理される危険です.
 
-            **実務での機会:** cached GET, idempotent API, login shortcut などで, 早さを優先するか replay 安全性を優先するかの判断に出ます.
+            cached GET, idempotent API, login shortcut などで, 早さを優先するか replay 安全性を優先するかの判断に出ます.
 
-            **選択肢:**
+
             - A (correct): 速度向上と replay risk はセットです.
             - B (incorrect): write operation が勝手に安全になるわけではありません.
             - C (correct): replay-safe な操作に限るのが基本です.
             - D (incorrect): server 側 policy は依然として必要です.
 
-            **関連:** 0-RTT は transport 最適化ですが, 安全に使えるかどうかは application semantics 次第です.
+            0-RTT は transport 最適化ですが, 安全に使えるかどうかは application semantics 次第です.
           </div>
         </div>
       </article>
@@ -232,149 +233,129 @@
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** packet protectionがQUICに組み込まれていても, certificate authenticationとkey scheduleはTLSの責務です.
+            packet protectionがQUICに組み込まれていても, certificate authenticationとkey scheduleはTLSの責務です.
 
-            **用語:** **certificate authentication** と **key schedule** は TLS 1.3 が定める仕組みです. QUIC はその結果を transport に組み込みます.
+            **certificate authentication** と **key schedule** は TLS 1.3 が定める仕組みです. QUIC はその結果を transport に組み込みます.
 
-            **実務での機会:** bug が certificate validation policy なのか, packet 処理なのかを切り分けるときに役立ちます.
+            bug が certificate validation policy なのか, packet 処理なのかを切り分けるときに役立ちます.
 
-            **選択肢:**
+
             - A (incorrect): これは QUIC transport の話です.
             - B (incorrect): connection ID policy も QUIC transport の領域です.
             - C (correct): ここは TLS 由来の責務です.
 
-            **関連:** 大事なのは「暗号に関係しているか」ではなく, 「その意味やルールを誰が定義しているか」です.
+            大事なのは「暗号に関係しているか」ではなく, 「その意味やルールを誰が定義しているか」です.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="TLS handshake byteが独立したTLS record streamではなくQUIC CRYPTO frameでどう運ばれるか確認してください.">
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="QUICのTLS handshake interfaceを,通常のTLS-over-transport構成と比較してください.">
         <header><h4>Q6: QUIC が通常の TLS record layer をそのまま wire 上に見せないのはなぜか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. TLS handshake messageをQUICのCRYPTO frameで運び, 独立したTLS record layerを送らないから</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. TLS handshakeをCRYPTO frameで運び, TLS record layerを使わないから</label>
             <label class="choice"><input type="radio" name="Q6" value="b"> B. UDP では TLS record を使うことが Internet 的に禁止されているから</label>
             <label class="choice"><input type="radio" name="Q6" value="c"> C. QUIC は connection 完了まで全部 plaintext handshake だから</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **判断のポイント:** 「QUIC は TLS over UDP」という雑な理解を修正するために必要なポイントです.
+            「QUIC は TLS over UDP」という雑な理解を修正するために必要なポイントです.
 
-            **用語:** 伝統的な **TLS record layer** は TLS over TCP の wire format です. QUIC では TLS handshake data は **CRYPTO frame** などを通じて packet 処理へ統合されます.
+            伝統的な **TLS record layer** は TLS over TCP の wire format です. QUIC では TLS handshake data は **CRYPTO frame** などを通じて packet 処理へ統合されます.
 
-            **実務での機会:** parser 実装, observability, Wireshark 的な見方, stack の責務説明で重要です.
+            parser 実装, observability, Wireshark 的な見方, stack の責務説明で重要です.
 
-            **選択肢:**
+
             - A (correct): architecture を正しく表しています.
             - B (incorrect): そういう禁止はありません.
             - C (incorrect): QUIC は最後まで plaintext のままではありません.
 
-            **関連:** 「TLS を使う」と「TLS record をそのまま流す」は同じ意味ではありません.
+            「TLS を使う」と「TLS record をそのまま流す」は同じ意味ではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="transport parameterはQUIC stateを成立させます. peer間でそのstateの見方が食い違うと何が起こるか考えてください.">
-        <header><h4>Q7: transport parameter が欠けていたり, 期待と食い違っていたりすると, 何が起きやすいか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="rejectionで無効になるのは送信byteだけでなく, early streamを作った前提です.">
+        <header><h4>Q7: 0-RTTが拒否された後, clientは何をresetする?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">clientはQUIC connectionをresumeし, 2本のrequest streamを作ってapplication dataを0-RTTで送りました. serverはEncryptedExtensionsでearly_dataを省略し, 0-RTTを拒否しました.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. application が自動で HTTP/1.1 に downgrade する</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. peer 同士の QUIC transport 前提が揃わず, connection failure に繋がり得る</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. certificate trust にしか影響せず, transport には影響しない</label>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. streamとapplication stateを保ち, 未到達の0-RTT packetだけを1-RTTで再送する</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. application streamは独立しているためQUIC packet numberだけをresetする</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 影響する全streamと, それらへ結び付くapplication stateをresetする</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. serverが0-RTTを拒否した時点で必ずPROTOCOL_VIOLATIONとしてconnectionを閉じる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **判断のポイント:** transport parameter を単なる付随情報だと思うと, setup failure の本丸を見逃します.
-
-            **用語:** **negotiated state** とは, handshake を通じて両 peer が共有した前提です. transport parameter はその中心にあります.
-
-            **実務での機会:** interop test, version skew, flow-control 関連の事故で, 「設定した」ではなく「相手にどう伝わったか」を確認する必要があります.
-
-            **選択肢:**
-            - A (incorrect): HTTP downgrade の話に直結するわけではありません.
-            - B (correct): transport の前提不一致は setup failure の原因になります.
-            - C (incorrect): transport そのものに大きく影響します.
-
-            **関連:** negotiation 系の bug は, 設定ファイルを見るだけではなく, 実際に合意された値を見るのが近道です.
+            A: application protocol, transport parameter, streamの前提がnew connectionでは異なり得るため, byte再送だけでは不十分です.
+            B: 無効になるstateはpacket numberingより広く, early streamに結び付いたapplication stateも含みます.
+            C: RFC 9001 Section 4.6.2は0-RTT rejection時, application stateを含む全streamのresetを要求します.
+            D: rejectionは定義済みの結果であり, それ自体はprotocol違反ではありません. serverは拒否した0-RTT packetを処理してはなりません.
+            判定基準: early-dataの各前提は0-RTT acceptanceを条件とし, rejectionならその前提で作ったstreamとapplication stateをrollbackします.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="packetのroutingに使う識別子ではなく, server identityを検証してhandshakeへ結びつける仕組みを探してください.">
-        <header><h4>Q8: QUIC における server authentication が最終的に依存しているのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="QUICがhandshake後のTLS CertificateRequestを許すか確認し, TLS認証とapplication認証を分けてください.">
+        <header><h4>Q8: このon-demand client認証をどう再設計する?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">QUIC serverはclient certificateを要求せずTLS handshakeを完了しました. 後にagentが1本のmultiplexed streamでprivileged operationを呼ぶと, serverはpost-handshake TLS CertificateRequestを送る予定です.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. clientがpacket number spaceの正当性を独自に信頼すること</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. connection lifetimeを通してconnection IDが変化しないこと</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. TLSのcertificate validationとauthenticated handshake transcript</label>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. stream IDでCertificateRequestとoperationを対応付けられるため現設計を保つ</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. handshake中にcertificateを要求するか, operation用のapplication-layer認証を別に定義する</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. CertificateRequestをQUIC STREAM frameで送ればpost-handshake TLS認証ではなくなる</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. CertificateRequest前にconnection IDをrotateし, 新しい認証contextを作る</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **判断のポイント:** connection ID や packet 保護が見えてくると, identity 保証まで QUIC transport が担うように錯覚しやすいです.
-
-            **用語:** **certificate validation** と **authenticated handshake transcript** が, server identity の根拠です. transport identifier はその代わりにはなりません.
-
-            **実務での機会:** 「encrypted packet が来ているから相手は本物だろう」という危うい議論を避けるときに重要です.
-
-            **選択肢:**
-            - A (incorrect): packet number は認証の根拠ではありません.
-            - B (incorrect): connection ID は continuity や routing に関わりますが, identity の根拠ではありません.
-            - C (correct): TLSはcertificate chainを検証し, authenticated transcriptによってserver identityを現在のhandshakeへ結びつけます.
-
-            **関連:** QUIC の transport feature は便利ですが, trust の根は TLS 側にあると押さえておくと整理しやすいです.
+            A: TLS post-handshake authenticationはconnection scopeであり, multiplexingのため発端のapplication eventと確実に対応付けられません.
+            B: RFC 9001 Section 4.4はhandshake中のclient認証要求を許しますが, post-handshake CertificateRequestを禁止します. application認証は別の有効な設計です.
+            C: TLS handshake messageはCRYPTO frameで運びます. CertificateRequest byteをSTREAM frameへ移しても有効な認証protocolにはなりません.
+            D: connection IDはtransport identifierであり, 新しいTLS handshakeや認証境界ではありません.
+            判定基準: handshake-time TLS client認証か明示的なapplication mechanismを選びます. QUICはoperation起点のpost-handshake CertificateRequestを許しません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="暗号のstate machineとQUIC transportのstate machineを別々に切り分け, 両者が接する箇所を確認してください.">
-        <header><h4>Q9: handshake failure を切り分ける見方として最も良いのはどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="grant validity, TLS confidentiality, replay-safe executionは独立した判定です.">
+        <header><h4>Q9: QUIC 0-RTT replayを考慮したacceptance policyはどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A2A gatewayは署名済みで期限内のgrantをQUIC 0-RTTで受け入れます. 許可対象はcredit transferで, replay-safeではありません. A2A profileは有効なgrantで呼べることだけを定め, 0-RTT ruleやreplay mitigationを定義していません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q9" value="a"> A. TLS handshakeと, QUICのtransport parameter・encryption levelを両方確認する</label>
-            <label class="choice"><input type="radio" name="Q9" value="b"> B. TLS library が成功を返したなら, QUIC setup failure は起こり得ない</label>
-            <label class="choice"><input type="radio" name="Q9" value="c"> C. QUIC での failure は常に certificate validation を切れば直る</label>
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. 有効なsignatureがあればreplay requestはunauthorizedになるため受け入れる</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. ticket recoveryがexactly-once semanticsを与えるためTLS ticketごとに1回受け入れる</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. application protocolがreplay-safeな処理を定義・強制するまでこのoperationを0-RTTから除外する</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. gatewayが現在のclient source addressを検証すれば受け入れる</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **判断のポイント:** RFC 9001 の難しさは, failure が TLS だけでも QUIC だけでもなく, その境界に出ることがある点です.
-
-            **用語:** **cryptographic handshake** と **QUIC-specific state** は密接ですが同一ではありません. 両方が整って初めて接続が成立します.
-
-            **実務での機会:** browser, server, proxy の incident で, 「TLS は進んでいるのに接続が成立しない」状況を読む枠組みとして使えます.
-
-            **選択肢:**
-            - A (correct): 一番実務的で, RFC 9001 的な見方です.
-            - B (incorrect): QUIC 側の不整合は依然として起こり得ます.
-            - C (incorrect): validation を切るのは fix ではなく, security model を壊します.
-
-            **関連:** setup failure を見るときは, どの layer の前提が破れたかをまず特定するのが近道です.
+            A: replayは有効なsignatureとgrantを保ったままauthorized state changeを繰り返せます. grant validityはreplay detectionではありません.
+            B: session ticketはresumptionを可能にしますが, RFC 9001はapplicationのexactly-once executionを与えません.
+            C: RFC 9001 Section 9.2はapplication protocolに0-RTT利用とreplay protectionの記述を求めます. ruleがなければ除外する方針が適合します.
+            D: address validationはamplificationを制限しreachabilityを示しますが, capture済みearly requestのreplayを防ぎません.
+            判定基準: application profileがreplay consequenceを定義し, 対象operationがpolicyを満たす場合だけ0-RTTを受理します. grant, channel, replayは独立に検査します.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC 9001はpeerが始めたkey phaseのacknowledgmentと受信側のsend phaseを連動させています. 必要な順序を確認してください.">
-        <header><h4>Q10: endpointがpeerからpacketを受信した. そのKey Phaseはendpointが最後に送信したphaseと異なり, new keyで正常にdecryptできた. このpacketをacknowledgeする前に何をしなければならないか</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="peer起点のphaseを確認するacknowledgmentは対応するsend phaseでprotectする必要があります.">
+        <header><h4>Q10: key-update state machineに沿うendpoint挙動はどれ?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">endpointはnext receive keyで1-RTT packetの保護を正常に解除しました. そのKey Phaseはendpointが最後に送信したpacketのphaseと異なります. trigger packetはまだacknowledgeしていません.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q10" value="a"> A. old send keyでacknowledgment packetを送り, peerの受信確認後にsend keyを更新する</label>
             <label class="choice"><input type="radio" name="Q10" value="b"> B. send keyを新しいphaseへ更新し, そのupdated keyでacknowledgmentをprotectする</label>
             <label class="choice"><input type="radio" name="Q10" value="c"> C. 先にTLS KeyUpdate messageを送り, QUIC send keyは以前のphaseに残したままにする</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. QUICはpeer起点のkey phaseを先に受理しないためpacketを破棄する</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            RFC 9001 Section 6.2では, 異なるKey Phaseのpacketを正常に処理できたことはpeerがkey updateを開始したことを示します. receiverはそのpacketをacknowledgeする前に, 対応するsend keyを更新しなければなりません.
-
-            **選択肢:**
-            - A (incorrect): old keyでprotectしたacknowledgmentでは, responderが新しいkey phaseへ移ったことを確認できません.
-            - B (correct): updated keyでprotectしたacknowledgmentが, peer起点のkey update完了を知らせます.
-            - C (incorrect): QUICはTLS KeyUpdate messageの仕組みを置き換えており, TLS KeyUpdate messageの送信はconnection errorです.
-
-            **関連:** endpointは通常のpacket送信timingに従ってよく, 要求されるのは即時送信ではなく, 次のacknowledgmentをどのkeyでprotectするかです.
+            A: old keyでprotectしたacknowledgmentではresponderがnew phaseへ移ったことを確認できません.
+            B: RFC 9001 Section 6.2はupdated keyで受信したpacketをacknowledgeする前にsend keyを更新するよう要求します.
+            C: QUICはTLS KeyUpdate messageを使わず, Section 8.4ではその受信をconnection errorとします.
+            D: 必要な確認後はpeerがupdateを開始できます. next keyで正常に処理できればresponse procedureを開始します.
+            判定基準: 通常のpacket送信timingは保てますが, trigger packetへの次のacknowledgmentはupdated send keyでprotectします.
           </div>
         </div>
       </article>

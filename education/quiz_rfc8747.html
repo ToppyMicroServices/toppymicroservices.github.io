@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8747","SKILL_SUBTITLE":"Proof-of-Possession Key Semantics for CWTs","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8747","SKILL_SUBTITLE":"Proof-of-Possession Key Semantics for CWTs","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what CWT confirmation key provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 8747 make CWT confirmation key sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The cnf claim identifies one confirmation key; the application profile decides which confirmation method it requires.">
+        <header><h4>Q1: Which cnf profile rule is consistent with RFC 8747?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 8747 and claims that using CWT confirmation key automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">An A2A profile requires proof of possession and supports the COSE_Key, Encrypted_COSE_Key, and kid confirmation members.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. expressing proof-of-possession key information inside a CWT using CBOR-friendly confirmation semantics; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. expressing proof-of-possession key information inside a CWT using CBOR-friendly confirmation semantics, while which proof method and key confirmation formats are supported by the relying application remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8747 mirrors JWT proof-of-possession ideas for CWT and COSE-based token ecosystems; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 8747 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Put COSE_Key and Encrypted_COSE_Key together in cnf so the recipient can select whichever representation it prefers</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Put several presenter keys in one cnf map because each registered member represents an independent proof-of-possession key</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Represent one proof-of-possession key in cnf and define which confirmation member the A2A application requires and understands</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Require recipients to reject every unknown cnf member even when the application has not made that member required</label>
           </fieldset><div class="explain">**Explanation:**
-A: Section 3 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Section 3 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 8747 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Section 3.1 permits at most one of COSE_Key and Encrypted_COSE_Key in the cnf value.
+B: Section 3.1 says the cnf value represents only a single proof-of-possession key; applications needing additional keys use separately defined claims.
+C: Correct. Section 3.1 defines the one-key structure and leaves the required confirmation-member set context dependent.
+D: In the absence of application requirements, Section 3.1 says unrecognized confirmation members are ignored.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for CWT confirmation key. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A kid is a lookup identifier for a key; it neither carries the key nor demonstrates its possession.">
+        <header><h4>Q2: What does cnf containing only kid establish?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 8747 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">A CWT contains cnf={kid:h'01ab'}. The recipient has not yet looked up a key or run the A2A proof protocol.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which proof method and key confirmation formats are supported by the relying application and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 8747 mirrors JWT proof-of-possession ideas for CWT and COSE-based token ecosystems</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Encode the confirmation key or key reference in the CWT profile consistently with COSE and CBOR rules</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. It identifies the proof-of-possession key in an application-specific way; the recipient still obtains that key and verifies a protocol-defined proof</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. It proves possession because a kid can be produced only by a party that knows the corresponding private or symmetric key</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. It carries the complete public key in compact form, so the recipient reconstructs a COSE_Key directly from the kid bytes</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. It authenticates the CWT issuer and presenter as the same entity without any application-specific key lookup</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3.1-3.5 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Section 3.4 defines kid as an application-specific identifier and requires the recipient to be able to obtain the identified key and confirm possession.
+B: An identifier can be copied; possession is established by a separate cryptographic protocol.
+C: Section 3.4 does not define an internal key encoding for kid.
+D: The issuer's protection of the CWT and the presenter's proof of the confirmation key are distinct operations.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this CWT confirmation key review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="The cnf claim is an issuer statement about a key; the consuming protocol supplies the actual, fresh proof.">
+        <header><h4>Q3: May the resource server treat this CWT as a bearer token?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: validating COSE but failing to require a separate holder proof for the confirmation key. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">The CWT is valid and contains a COSE_Key in cnf. The A2A profile says access is sender-constrained and requires a fresh proof over the request nonce. The resource server validates the CWT but receives no signature, MAC, or other proof made with the confirmation key.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document whether key references are local, public, encrypted, or profile-defined as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Validate the CWT and then verify that the presenter proves possession of the referenced confirmation key</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 8747 mirrors JWT proof-of-possession ideas for CWT and COSE-based token ecosystems</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 8747 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept because placing a COSE_Key in a protected cnf claim proves that the current presenter controls its private key</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept after comparing the COSE_Key to the issuer's signing key, since the issuer signature can double as presenter proof</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Reject the CWT as malformed because RFC 8747 defines the complete nonce exchange inside the cnf claim itself</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Do not authorize yet; run the profile's fresh proof and verify it with the cnf key before treating the request as sender-constrained</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 4 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: The cnf value conveys the issuer's confirmation-key statement; it is not the presenter's proof for this request.
+B: Token-issuer authentication and possession of the confirmation key are separate unless a profile explicitly and safely makes them the same key and proof.
+C: Section 3.5 intentionally leaves nonce communication and proof transport to the using protocol.
+D: Sections 3.5 and 4 require the surrounding protocol to provide current, replay-resistant proof for the claimed key. The stated A2A profile supplies that criterion.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing CWT confirmation key, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A cnf map represents one key and restricts simultaneous standard key representations.">
+        <header><h4>Q4: How should the validator handle this cnf value?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 8747 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">A protected CWT contains both COSE_Key and Encrypted_COSE_Key members in the same cnf map. They decrypt or decode to different public keys. The profile requires a single unambiguous presenter key.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which proof method and key confirmation formats are supported by the relying application</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Validate the CWT and then verify that the presenter proves possession of the referenced confirmation key</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Whether key references are local, public, encrypted, or profile-defined</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Expressing proof-of-possession key information inside a CWT using CBOR-friendly confirmation semantics</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Prefer Encrypted_COSE_Key because confidentiality gives that member precedence over a plaintext COSE_Key</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Reject the token under the cnf structure rule rather than selecting either key for the profile's proof</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Try proof verification with both keys and accept if either succeeds, treating cnf as an alternative-key list</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Select the first member in CBOR map order because encoding order defines the issuer's preferred key</label>
           </fieldset><div class="explain">**Explanation:**
-A: Section 3 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Section 3.1 defines no precedence rule between these members.
+B: Section 3.1 permits at most one of COSE_Key and Encrypted_COSE_Key and says cnf represents one proof-of-possession key.
+C: Treating the map as alternatives changes the defined semantics and can let implementations select different keys.
+D: CBOR map order is not a confirmation-method preference signal.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when CWT confirmation key is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="A symmetric proof key is secret material; integrity protection alone does not hide it from token observers.">
+        <header><h4>Q5: Is the signed-only CWT adequate for this symmetric confirmation key?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a constrained-device token must be bound to a key controlled by the presenter. Observed defect: accepting the CWT as a bearer token even though it contains proof-of-possession semantics.</p>
+          <p class="question-premise">The issuer puts a symmetric COSE_Key, including its key value, in cnf and signs the CWT but does not encrypt it. Intermediaries can read the token. The profile relies on exclusive possession of that symmetric key.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (expressing proof-of-possession key information inside a CWT using CBOR-friendly confirmation semantics), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (encode the confirmation key or key reference in the CWT profile consistently with COSE and CBOR rules) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 8747 mirrors JWT proof-of-possession ideas for CWT and COSE-based token ecosystems), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. No; add confidentiality for the symmetric key while retaining integrity, using an appropriate encrypted confirmation-key profile</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes; a valid issuer signature prevents readers from learning the symmetric key even when the CWT remains plaintext</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes if the kid is also present, because a key identifier converts visible symmetric key bytes into non-secret metadata</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; symmetric confirmation keys are prohibited, so the profile must replace the key with an asymmetric COSE_Key</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 4 supports resolving the defect before relying on the result. The profile rule is: encode the confirmation key or key reference in the CWT profile consistently with COSE and CBOR rules. The check is: validate the CWT and then verify that the presenter proves possession of the referenced confirmation key. The local policy is: which proof method and key confirmation formats are supported by the relying application.</div>
+A: Section 4 says symmetric keys carried in a CWT require confidentiality protection as well as origin authentication and integrity protection.
+B: A signature detects modification but does not conceal the signed payload.
+C: Adding an identifier does not remove or hide the exposed key value.
+D: RFC 8747 permits symmetric proof-of-possession keys when they are protected appropriately.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should CWT confirmation key be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Determine to whom the fresh proof was made and whether that proof is bound to the backend's request.">
+        <header><h4>Q6: What must the backend require before calling this end-to-end proof of possession?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines CWT confirmation key with another protocol layer. Its design note says: RFC 8747 mirrors JWT proof-of-possession ideas for CWT and COSE-based token ecosystems.</p>
+          <p class="question-premise">An A2A agent proves possession of the CWT cnf key by signing a gateway nonce. The gateway then forwards the CWT and a boolean pop_ok=true to a backend on a separate request. Backend policy requires a current proof bound to the backend operation and rejects replay of a gateway exchange.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which proof method and key confirmation formats are supported by the relying application unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (validate the CWT and then verify that the presenter proves possession of the referenced confirmation key) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which proof method and key confirmation formats are supported by the relying application), perform the required check (validate the CWT and then verify that the presenter proves possession of the referenced confirmation key), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept pop_ok because any fresh proof to a trusted gateway remains fresh and party-bound for every downstream operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Verify only the CWT again; the protected cnf claim supplies the missing backend nonce and request binding</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Require a backend-bound proof, or define the gateway as a trusted verifier that issues a protected assertion carrying nonce, parties, operation, and freshness semantics</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Forward the original gateway signature and accept it unchanged because proof transport, challenge content, and participating-party binding are fixed by RFC 8747</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Section 3 and Section 4 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: Section 4 requires current, replay-resistant proof and notes that protocols link the proof key to participating parties; a new hop changes that context.
+B: The cnf claim identifies the key but does not contain the backend's challenge or proof for this request.
+C: Sections 3.5 and 4 leave the proof protocol to the application. Either composition can meet the stated criterion if its trust boundary and protected assertion semantics are explicit.
+D: RFC 8747 intentionally does not define nonce communication, signed-nonce transport, or a universal party-binding method.</div>
         </div>
       </article>
     </section>

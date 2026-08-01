@@ -43,6 +43,7 @@
       SKILL_NAME: "RFC 2119 Key Words (BCP 14)",
       SKILL_SUBTITLE: "MUST / SHOULD / MAY, etc.",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -106,7 +107,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (key word):**
+            RFC 2119 Section 1 reserves MUST for an absolute requirement of the specification; SHOULD (Section 3) permits justified exceptions, and MAY (Section 5) makes the behavior optional.
+
 
             - `MUST`: mandatory for conformance.
 
@@ -114,13 +116,9 @@
 
             - `MAY`: optional; implementers can choose.
 
-            **Options:**
-
-            - A: `MUST` makes validation mandatory for every conforming implementation, matching the premise.
-
-            - B: `SHOULD` permits a carefully justified exception, so validation would not be unconditional.
-
-            - C: `MAY` makes validation optional and therefore does not establish a conformance requirement.
+            A: `MUST` makes validation mandatory for every conforming implementation, matching the premise.
+            B: `SHOULD` permits a carefully justified exception, so validation would not be unconditional.
+            C: `MAY` makes validation optional and therefore does not establish a conformance requirement.
           </div>
         </div>
       </article>
@@ -136,19 +134,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (key word):**
+            RFC 2119 Section 3 uses SHOULD when there may be valid reasons to ignore an item, but only after the full implications are understood and carefully weighed.
+
 
             `SHOULD` means “do this in general,” but exceptions can exist and must be justified.
 
-            **Options:**
-
-            - A: `MUST` removes the exception path and would make a constrained implementation non-conformant.
-
-            - B: `MAY` expresses permission, but not the strong general expectation in the premise.
-
-            - C: `SHOULD` states the general expectation while allowing a carefully considered exception.
-
             A specification should also describe what can justify an exception so implementers can assess it consistently.
+
+            A: `MUST` removes the exception path and would make a constrained implementation non-conformant.
+            B: `MAY` expresses permission, but not the strong general expectation in the premise.
+            C: `SHOULD` states the general expectation while allowing a carefully considered exception.
           </div>
         </div>
       </article>
@@ -159,24 +154,21 @@
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. The words "must", "should", and "may" are to be interpreted as described in RFC 2119</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. The words MUST, SHOULD, and MAY are to be interpreted as described in RFC 2119</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. The key words MUST, SHOULD, MAY, etc. are to be interpreted as described in BCP 14 (RFC 2119, RFC 8174)</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Normative key words are interpreted under BCP 14 (RFC 2119 and RFC 8174)</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Definition (key terms):**
+            RFC 8174 Section 2 updates the convention: under the standard BCP 14 boilerplate, the defined meanings apply only to the all-capitals forms.
+
 
             - **BCP 14**: the policy for interpreting RFC 2119 key words, updated by RFC 8174.
 
             - **ALL CAPS**: RFC 8174 clarifies that the normative meanings apply when written in uppercase.
 
-            **Options:**
-
-            - A: Lowercase words do not automatically carry the BCP 14 meanings under RFC 8174.
-
-            - B: Uppercase is appropriate, but this wording omits the RFC 8174 update and the BCP 14 reference.
-
-            - C: It names BCP 14 and both RFCs, making the intended interpretation and casing rule explicit.
+            A: Lowercase words do not automatically carry the BCP 14 meanings under RFC 8174.
+            B: Uppercase is appropriate, but this wording omits the RFC 8174 update and the BCP 14 reference.
+            C: It names BCP 14 and both RFCs, making the intended interpretation and casing rule explicit.
           </div>
         </div>
       </article>
@@ -186,13 +178,14 @@
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. Implementations MUST do X, except when they cannot</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. Implementations SHOULD do X; implementations that do not MUST document the reason</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Implementations SHOULD do X; exceptions MUST be documented</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Implementations MAY do X; it is recommended</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Definition (key words):**
+            RFC 2119 Section 3 supplies the exception-aware SHOULD, while Section 1 supplies the separate mandatory requirement to document an exception.
+
 
             - `SHOULD`: do this unless there is a justified exception.
 
@@ -200,13 +193,9 @@
 
             - `MAY`: optional.
 
-            **Options:**
-
-            - A: “Except when they cannot” leaves the exception undefined and makes conformance difficult to test.
-
-            - B: `SHOULD` expresses the default, while the separate `MUST` makes documentation of a deviation testable.
-
-            - C: `MAY` makes X optional; the informal word “recommended” does not restore a normative expectation.
+            A: “Except when they cannot” leaves the exception undefined and makes conformance difficult to test.
+            B: `SHOULD` expresses the default, while the separate `MUST` makes documentation of a deviation testable.
+            C: `MAY` makes X optional; the informal word “recommended” does not restore a normative expectation.
           </div>
         </div>
       </article>
@@ -225,25 +214,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (key ideas):**
+            RFC 2119 Sections 1–5 assign distinct strengths to the keywords, and Section 6 says they should be used carefully and sparingly where interoperability or harm requires them; vague or contradictory conditions prevent consistent conformance decisions.
+
 
             - **Normative**: affects conformance (what must be implemented).
 
             - **Testable**: a reviewer can objectively decide pass/fail.
 
-            **Why A–E are red flags:**
-
-            - A: “if possible” breaks testability; implementers can always claim it wasn’t possible.
-
-            - B: RFC 8174 exists because case matters; lowercase wording often becomes disputable.
-
-            - C: turning security into “optional” is a common failure mode.
-
-            - D: undefined adjectives make `MUST` unenforceable.
-
-            - E: contradictions create incompatible implementations and endless debates.
-
-            - F: A clearly identified non-normative example can aid understanding without changing conformance, so it is not a red flag.
+            A: “if possible” breaks testability; implementers can always claim it wasn’t possible.
+            B: RFC 8174 exists because case matters; lowercase wording often becomes disputable.
+            C: turning security into “optional” is a common failure mode.
+            D: undefined adjectives make `MUST` unenforceable.
+            E: contradictions create incompatible implementations and endless debates.
+            F: A clearly identified non-normative example can aid understanding without changing conformance, so it is not a red flag.
           </div>
         </div>
       </article>
@@ -259,7 +242,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (key terms):**
+            RFC 2119 Section 3 requires the implications of a SHOULD exception to be understood and weighed; RFC 8174 Section 2 addresses the keyword convention, but capitalization alone cannot define the missing behavior.
+
 
             - **Testable requirement**: can be validated by an interop/conformance test.
 
@@ -267,13 +251,9 @@
 
             - **Exceptions**: if you use `SHOULD`, specify what justifies deviation.
 
-            **Options:**
-
-            - A: “Stronger” is subjective and does not decide the intended conformance level or testable behavior.
-
-            - B: It asks for the three missing design decisions: defined behavior, requirement level, and exception conditions.
-
-            - C: Capitalization gives `SHOULD` normative force but still leaves the verification procedure untestable.
+            A: “Stronger” is subjective and does not decide the intended conformance level or testable behavior.
+            B: It asks for the three missing design decisions: defined behavior, requirement level, and exception conditions.
+            C: Capitalization gives `SHOULD` normative force but still leaves the verification procedure untestable.
           </div>
         </div>
       </article>
@@ -289,7 +269,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition:**
+            RFC 2119 Sections 1 and 5 distinguish behavior required of every conforming implementation from a truly optional extension.
+
 
             - `MUST`: required for all conforming implementations.
 
@@ -297,13 +278,9 @@
 
             - `MUST NOT`: prohibited.
 
-            **Options:**
-
-            - A: `MUST` makes the base mandatory, and `MAY` leaves implementation of the extension optional.
-
-            - B: This makes the base only recommended and makes the extension mandatory, reversing both levels.
-
-            - C: This makes the base optional and prohibits the extension, expressing a different design.
+            A: `MUST` makes the base mandatory, and `MAY` leaves implementation of the extension optional.
+            B: This makes the base only recommended and makes the extension mandatory, reversing both levels.
+            C: This makes the base optional and prohibits the extension, expressing a different design.
           </div>
         </div>
       </article>
@@ -319,19 +296,16 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (key word):**
+            RFC 2119 Section 2 uses MUST NOT for an absolute prohibition. Defining what counts as secret information makes the prohibition testable.
+
 
             `MUST NOT` expresses an absolute prohibition required for conformance.
 
-            **Options:**
-
-            - A: `MUST NOT` makes secret logging an absolute prohibition for conforming implementations.
-
-            - B: `SHOULD NOT` discourages the behavior but still permits a carefully justified exception.
-
-            - C: `MAY` expressly permits the behavior and therefore contradicts the prohibition.
-
             The specification should also define which values count as secrets so the prohibition is testable.
+
+            A: `MUST NOT` makes secret logging an absolute prohibition for conforming implementations.
+            B: `SHOULD NOT` discourages the behavior but still permits a carefully justified exception.
+            C: `MAY` expressly permits the behavior and therefore contradicts the prohibition.
           </div>
         </div>
       </article>
@@ -347,7 +321,8 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (key words):**
+            RFC 2119 Section 4 uses SHOULD NOT when a behavior is normally prohibited but a valid exception may exist after careful analysis.
+
 
             - `MUST NOT`: absolute prohibition.
 
@@ -355,18 +330,14 @@
 
             - `MAY`: optional/permission.
 
-            **Options:**
-
-            - A: If no exception is acceptable, the absolute prohibition is `MUST NOT`.
-
-            - B: `SHOULD NOT` fits a behavior that is normally avoided but may be justified in exceptional circumstances.
-
-            - C: A behavior that is simply optional is expressed with `MAY`, not `SHOULD NOT`.
+            A: If no exception is acceptable, the absolute prohibition is `MUST NOT`.
+            B: `SHOULD NOT` fits a behavior that is normally avoided but may be justified in exceptional circumstances.
+            C: A behavior that is simply optional is expressed with `MAY`, not `SHOULD NOT`.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c,d" data-difficulty="L3" data-hint="A useful review asks whether each key word is interpreted consistently, testable, and compatible with security and interoperability.">
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="A useful review asks whether each key word is interpreted consistently, testable, and compatible with security and interoperability.">
         <header><h4>Q10: Pick the best review checklist items for RFC 2119 / BCP 14 usage</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -379,7 +350,6 @@
           <div class="explain">
             **Explanation:**
 
-            **Definition (what “good” looks like):**
 
             - **Clear**: readers agree on meaning.
 
@@ -387,17 +357,13 @@
 
             - **Scoped**: optional vs mandatory is explicit.
 
-            **Options:**
+            RFC 2119 Sections 1–5 define the key-word meanings, Sections 6–7 require care where interoperability or harm is at stake, and RFC 8174 Section 2 limits the BCP 14 meanings to the capitalized forms under its standard boilerplate. This is therefore an application-level checklist, not an L3 design judgment.
 
-            - A: Uppercase and the BCP 14 reference make the normative interpretation explicit.
-
-            - B: A mandatory statement that cannot be tested does not give reviewers a usable conformance boundary.
-
-            - C: Documented exception conditions keep `SHOULD` and `SHOULD NOT` from becoming arbitrary.
-
-            - D: Optional behavior still needs review for incompatible or insecure outcomes.
-
-            - E: More `MUST` statements do not improve a specification; unjustified mandates can constrain valid implementations.
+            A: Uppercase and the BCP 14 reference make the normative interpretation explicit.
+            B: A mandatory statement that cannot be tested does not give reviewers a usable conformance boundary.
+            C: Documented exception conditions keep `SHOULD` and `SHOULD NOT` from becoming arbitrary.
+            D: Optional behavior still needs review for incompatible or insecure outcomes.
+            E: More `MUST` statements do not improve a specification; unjustified mandates can constrain valid implementations.
           </div>
         </div>
       </article>

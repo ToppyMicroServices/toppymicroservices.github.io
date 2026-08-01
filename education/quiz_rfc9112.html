@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 9112",
       SKILL_SUBTITLE: "HTTP/1.1",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,19 +101,19 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** header section, empty line, CRLF. HTTP/1.1 uses a blank line to separate headers from the optional message body.
-            **Correct (C):** The header section ends at the empty line, which is a CRLF on its own, after the last header field line.
-            **Options:**
+            header section, empty line, CRLF. HTTP/1.1 uses a blank line to separate headers from the optional message body.
+            The header section ends at the empty line, which is a CRLF on its own, after the last header field line.
+
 
             - A (incorrect): Content-Length is about body framing. It does not terminate the header section.
             - B (incorrect): That CRLF terminates one field line; the grammar requires another CRLF as an empty line to end the section.
             - C (correct): The CRLF empty line is the defined delimiter.
-            **Related:** When parsers disagree on where headers end, intermediaries can be vulnerable to request smuggling.
+            When parsers disagree on where headers end, intermediaries can be vulnerable to request smuggling.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Apply the message-body-length precedence rules to a response that permits a body but supplies no chunked coding or explicit length.">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Apply the message-body-length precedence rules to a response that permits a body but supplies no chunked coding or explicit length.">
         <header><h4>Q2: A server sends a 200 response to GET with neither Transfer-Encoding nor Content-Length, sends body octets, and then closes the connection. How is the message body length determined</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -123,14 +124,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A close-delimited response is a response whose body ends when the server closes the connection instead of at a declared length or chunked terminator.
-            **Correct (C):** Under RFC 9112 Section 6.3, an otherwise body-bearing response without a declared body length contains all octets received before the server closes the connection.
-            **Options:**
+            A close-delimited response is a response whose body ends when the server closes the connection instead of at a declared length or chunked terminator.
+            Under RFC 9112 Section 6.3, an otherwise body-bearing response without a declared body length contains all octets received before the server closes the connection.
+
 
             - A (incorrect): The no-body default applies to a request when no earlier framing rule applies, not to this 200 response.
             - B (incorrect): CRLF can occur inside body content and is not the delimiter for a close-delimited response.
             - C (correct): Connection closure supplies the delimiter, so every preceding body octet contributes to the length.
-            **Related:** A close-delimited response cannot distinguish normal completion from a network interruption, so RFC 9112 recommends explicit length or transfer coding when possible.
+            A close-delimited response cannot distinguish normal completion from a network interruption, so RFC 9112 recommends explicit length or transfer coding when possible.
           </div>
         </div>
       </article>
@@ -146,14 +147,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** chunked coding, chunk size, terminator. Chunked transfer coding frames the body as a series of chunks.
-            **Correct (B):** A zero-size last chunk ends the content chunks. An optional trailer section can follow, and a final empty line terminates the chunked coding.
-            **Options:**
+            chunked coding, chunk size, terminator. Chunked transfer coding frames the body as a series of chunks.
+            A zero-size last chunk ends the content chunks. An optional trailer section can follow, and a final empty line terminates the chunked coding.
+
 
             - A (incorrect): Connection close is not the normal terminator for chunked coding and should not be relied upon.
             - B (correct): The zero-size chunk signals that content chunks are complete; any trailer fields and the final empty line complete the coding.
             - C (incorrect): Content-Length is not used as a trailer to end a chunked body.
-            **Related:** Trailer fields come after the zero-size last chunk and before the final empty line.
+            Trailer fields come after the zero-size last chunk and before the final empty line.
           </div>
         </div>
       </article>
@@ -172,9 +173,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** request-target, origin-form, absolute-form, authority-form, asterisk-form. Different forms are used depending on whether the client is talking to an origin server, proxy, or using CONNECT/OPTIONS.
-            **Correct (A,B,C,D):** All four forms are defined and used in specific situations.
-            **Options:**
+            request-target, origin-form, absolute-form, authority-form, asterisk-form. Different forms are used depending on whether the client is talking to an origin server, proxy, or using CONNECT/OPTIONS.
+            All four forms are defined and used in specific situations.
+
 
             - A (correct): Common for origin servers, like /path?query.
             - B (correct): Used when making requests to proxies, like http://example.com/path.
@@ -182,45 +183,49 @@
             - D (correct): Used with OPTIONS * to query server-wide options.
             - E (incorrect): HTTP/1.1 has a Host field, but it does not define a request-target form named host-form.
             - F (incorrect): A URI scheme can appear within absolute-form; scheme-form is not a separately defined request-target form.
-            **Related:** Proxies must carefully preserve semantics and not accidentally rewrite request-target incorrectly.
+            Proxies must carefully preserve semantics and not accidentally rewrite request-target incorrectly.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Recall which behavior HTTP/1.1 assumes when no Connection: close signal is present.">
-        <header><h4>Q5: What is the default connection behavior in HTTP/1.1</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A persistent connection needs a message length that is not defined by closing that same connection.">
+        <header><h4>Q5: Can the server reuse this connection for another response?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A server sends a 200 response to GET with neither Transfer-Encoding nor Content-Length. It delimits the response body by closing the connection after the last octet, but its connection pool then attempts to send the next response on that connection.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Connections are always closed after each response</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Connections are never reused across requests</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Connections are persistent unless explicitly closed</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; HTTP/1.1 persistence means a close-delimited body can be followed by another response</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. No; closure defines this body length, so reuse requires a self-defined message length instead</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes, if the next response begins with CRLF so the client can find its boundary</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No, because HTTP/1.1 forbids persistent connections for every GET response</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** persistent connection, Connection: close. HTTP/1.1 is designed to reuse TCP connections for efficiency.
-            **Correct (C):** Connections are persistent by default, and either side can signal that it will close the connection.
-            **Options:**
-
-            - A (incorrect): That is closer to HTTP/1.0 behavior and is inefficient.
-            - B (incorrect): Reuse is a core feature to reduce latency and overhead.
-            - C (correct): This is the standard default.
-            **Related:** Framing must be correct to safely reuse connections. Otherwise, boundaries can be ambiguous.
+            A: A close-delimited response ends only when the connection ends; no later response can be framed on that closed connection.
+            B: RFC 9112 Section 6.3 defines the body as all octets before server closure. Section 9.3 requires self-defined message lengths for persistence, such as valid Content-Length or final chunked coding where applicable.
+            C: CRLF inside an arbitrary response body is data, not a reliable next-message boundary.
+            D: Persistent connections are the HTTP/1.1 default when framing and connection options permit them.
+            Decision rule: Persistence is not enough by itself; every message on a reusable connection needs a length independent of connection closure.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^crlf$" data-difficulty="L1" data-hint="Consult the HTTP/1.1 grammar for the two-character sequence that terminates start-lines and field lines.">
-        <header><h4>Q6: HTTP/1.1 uses which line ending for start-lines and header fields</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Prevent two recipients from choosing different body boundaries; inspect the intermediary requirement when forwarding.">
+        <header><h4>Q6: Which gateway action avoids an ambiguous forwarded request?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type the abbreviation" />
+          <p class="question-premise">An HTTP/1.1 gateway receives a request containing both <code>Transfer-Encoding: chunked</code> and a conflicting <code>Content-Length</code>. Its downstream server has historically parsed Content-Length first. The gateway is deciding whether and how to forward.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Forward both fields unchanged because each hop may choose its preferred framing rule</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Remove Transfer-Encoding and forward the original Content-Length value</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Reject it; if forwarding, process Transfer-Encoding and remove Content-Length</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Forward both only when the decoded body happens to equal Content-Length</label>
+          </fieldset>
           <div class="explain">
             **Explanation:**
-
-            **Terms:** CRLF. HTTP/1.1 messages are defined in terms of CRLF as the line terminator.
-            **Correct:** CRLF. It is carriage return followed by line feed.
-            **Why others are wrong:** LF-only is common in Unix text files but is not the defined delimiter for HTTP/1.1 message syntax.
-            **Related:** Robust implementations may accept some variations, but emit correct CRLF to maximize interoperability.
+            A: Different framing decisions across hops are the request-smuggling condition, not acceptable extensibility.
+            B: RFC 9112 Section 6.3 gives Transfer-Encoding precedence. Substituting the conflicting Content-Length can change the message boundary.
+            C: Section 6.3 says the combination might indicate request smuggling and ought to be handled as an error. An intermediary that chooses to forward must remove Content-Length and process Transfer-Encoding first.
+            D: Equality checked after parsing does not make forwarding both fields safe; the downstream might select a boundary before that comparison.
+            Decision rule: Establish one canonical message boundary at the receiving hop before forwarding; never preserve competing length signals across a trust boundary.
           </div>
         </div>
       </article>

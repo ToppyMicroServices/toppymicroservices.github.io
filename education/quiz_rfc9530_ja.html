@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9530","SKILL_SUBTITLE":"Digest Fields","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9530","SKILL_SUBTITLE":"Digest Fields","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="HTTP Digest Fieldsが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9530のHTTP Digest FieldsだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="検証対象byteが,このmessage contentか,selected representationかでfieldを選びます.">
+        <header><h4>Q1: この2個のintegrity goalに合うdigest fieldはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9530を参照し,HTTP Digest Fieldsを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">agentはgzip-coded partial responseを受け取ります.このresponseで運ばれた正確なbyteと,rangeの元になった完全なselected representationの両方を検証したいとします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. HTTP contentのdigestをfieldで運び, recipientがrepresentation-data changeを検出できるようにすること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTP contentのdigestをfieldで運び, recipientがrepresentation-data changeを検出できるようにすること.ただしapplicationまたはsignature profileが要求するdigest algorithmとfailure behaviorはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. HTTP Message SignaturesはDigest Fieldsを署名対象にでき, coverage設定時にdigestへsender-authenticated contextを与える.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9530を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. carried rangeにはRepr-Digestを使い,HTTP fieldを含むcomplete messageには2個目のRepr-Digestを使う.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. complete representationにはContent-Digestを使い,実際のcarried byteにはWant-Content-Digestを使う.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. actual response contentにはContent-Digestを使い,complete selected representationにはRepr-Digestを使う.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. content codingとrange selectionはinputを変えないため,両goalにContent-Digestを使う.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-4はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 2-4がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9530はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: RFC 9530 Sections 1.2と3はRepr-Digestをselected representation data上で定義し,HTTP message fieldやcarried rangeだけのdigestにはしません.
+B: Section 4のWant-Content-Digestはpreference hintであり,integrity valueではありません.このcaseのContent-Digestはcomplete selected representationも表しません.
+C: Sections 2と3はactual message contentとselected representationを分けます.Appendix B.3はpartial responseで異なる値になる例を示します.
+D: range selectionはtransferred contentを変え,content codingはrepresentation dataへ影響します.2個のvalidation goalは異なるinputを持ちます.
+判断軸: fieldを選ぶ前に,transferred content,selected representation,digest外metadataのどれを検証するか正確に書き出します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがHTTP Digest Fieldsについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="preference fieldが,peerによるdigest省略をprotocol errorにするか確認します.">
+        <header><h4>Q2: このdigest preferenceが無視された場合の意味は何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9530を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A clientはsha-256を最優先とするWant-Content-Digestを送ります.serverはContent-Digestを返さず,A2A profileにも追加要件はありません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. applicationまたはsignature profileが要求するdigest algorithmとfailure behaviorだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: HTTP Message SignaturesはDigest Fieldsを署名対象にでき, coverage設定時にdigestへsender-authenticated contextを与える</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. 使うdigest fieldを示し, HTTP semanticsで定義されたbyteに対して計算する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 最高weightのalgorithmはreceiverに必須なので,responseはRFC 9530上malformedである.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. RFC 9530はserverがhintを無視することを許す.applicationがdigestを必須にするなら,A2A profileが追加expectationとfailure behaviorを定義する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. ignored content preferenceは自動的にrepresentation integrityを選ぶため,clientはWant-Repr-Digestでretryする.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. digest省略よりweak algorithmの方がinteroperableなので,serverは任意のdeprecated algorithmを返す.</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 2-3 and 5に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: RFC 9530 Section 4はpreference fieldをhintと定義します.weightはrelative preferenceですが,response digest自体を必須にはしません.
+B: Section 4はreceiverがhintを無視でき,それ自体はprotocol errorでないとします.application-specific constraintは追加要件を定義できます.
+C: content integrityとrepresentation integrityは別goalです.一方のpreference無視は他方のfieldをnegotiateしません.
+D: Section 5はdeprecated algorithmを限定的なcorruption用途だけに許し,adversarial useでは禁止します.preferenceはunsafe fallbackを強制しません.
+判断軸: 省略時にoperationを失敗させるなら,Want-Content-Digestから推論せず,consuming application profileへ要件を記載します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このHTTP Digest Fieldsのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="digested byteの解釈を決める全fieldがsignature coverageへ入るかを確認します.">
+        <header><h4>Q3: このsigned digestはA2A判断に十分か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: あるrepresentationでdigestを計算し, recipientが別のtransformed representationで検証すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">senderはContent-Digestをsignしますが,Content-TypeとContent-Encodingはsignしません.backendはdigestとsignature検証後,この2個のunsigned fieldからsecurity-sensitive parserを選びます.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,trailer, transformation, content codingを許すかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. fieldへ依存する前に, 正しいcontentまたはrepresentation dataでdigestを再計算して比較する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: HTTP Message SignaturesはDigest Fieldsを署名対象にでき, coverage設定時にdigestへsender-authenticated contextを与える</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9530対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 十分である.Content-Digestはrepresentation解釈へ影響する全HTTP fieldを暗号学的に含む.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. hash algorithmがActiveなら十分である.algorithm statusはunsigned representation metadataも認証する.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. 不十分なのでContent-Typeを無視し,content先頭byteだけからparserを推定する.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. 不十分である.signature coverageへ関連representation metadataを含めるか,profileが解釈を不変かつ別手段で保護する必要がある.</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 6に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: RFC 9530 Section 6.1はdigest fieldがHTTP headerまたはtrailer fieldを保護しないとします.Content-Digestはactual message contentだけを対象にします.
+B: Active hashは関連hash attackへ耐性を持ち得ますが,signature inputから除外したfieldをbindしません.
+C: content sniffingは別の曖昧なsecurity ruleへ置換するだけで,RFC 9530が提供する保護ではありません.
+D: Section 6.3はIntegrity fieldだけをsignし,Content-TypeやContent-Encodingなどのrepresentation metadataを除くtampering surfaceを警告します.
+判断軸: digest validationは定義されたbyteだけのintegrityを示します.security-relevantな解釈を制御するmetadataもsignatureでbindします.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: HTTP Digest Fieldsを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="各messageについて,representation metadataがenclosed representationを何として示すか確認します.">
+        <header><h4>Q4: このPATCH exchangeでRepr-Digestは何を対象にするか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9530を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">PATCH requestはpatch documentを運びます.success responseは更新後resourceのcomplete representationを運び,両messageにRepr-Digestがあります.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. applicationまたはsignature profileが要求するdigest algorithmとfailure behavior</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. fieldへ依存する前に, 正しいcontentまたはrepresentation dataでdigestを再計算して比較する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. trailer, transformation, content codingを許すか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. HTTP contentのdigestをfieldで運び, recipientがrepresentation-data changeを検出できるようにすること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. request digestはpatch document,response digestはpatched resourceのselected representationを対象にする.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. exchangeの共通baseなので,両digestはpatch前のresource stateを対象にする.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. PATCH methodがresponseのrepresentation meaningも固定するため,両digestはpatch documentを対象にする.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. request digestはtarget resource,response digestはstatus codeとLocation fieldだけを対象にする.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 2-4は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 9530 Section 3.1がこの区別を明記します.request metadataはpatch documentを示し,response metadataはpatched resource representationを示せます.
+B: pre-patch resourceは,記載されたどちらのmessageでもenclosed representationではありません.Repr-Digestは概念上の共通baseではなくrepresentation ruleに従います.
+C: HTTP methodだけではresponse contentをpatch documentにしません.responseのrepresentation metadataとmethod semanticsがdigest inputを決めます.
+D: Repr-Digestはstatus codeやLocationをdigestせず,PATCH request digestも自動的にtarget resourceを対象にしません.
+判断軸: state-changing methodでは,requestとresponseが同じtargetを指すと仮定せず,digest inputを別々に導出します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでHTTP Digest Fieldsを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="on-path attackerがcontentとunkeyed digestの両方を一致するpairへ置換できるかを考えます.">
+        <header><h4>Q5: このbare digestが提供するassuranceは何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: APIが署名対象にもなり得るrequest/response contentのstable integrity checkを必要とする場面.観測した欠陥: unkeyed digest単体をsender authenticationやactive attackerへのtamper resistanceとして扱うこと.</p>
+          <p class="question-premise">A2A webhookがactive intermediaryにcontrolされたchannelで届きます.receiverはsha-256 Content-Digestがbodyと一致することだけでsender identityを受理します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（HTTP contentのdigestをfieldで運び, recipientがrepresentation-data changeを検出できるようにすること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（使うdigest fieldを示し, HTTP semanticsで定義されたbyteに対して計算する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（HTTP Message SignaturesはDigest Fieldsを署名対象にでき, coverage設定時にdigestへsender-authenticated contextを与える）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. sender authenticityを提供する.collision-resistant digestはoriginal senderだけが計算できる.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. authorizationを提供する.valid digestはsenderがwebhook invokeを許可されたことを示す.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. received contentのcorruption detectionは提供するが,bodyとdigestを同時に置換できるactorに対するsender authenticityは提供しない.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Content-DigestはHTTP fieldなので,request targetと全HTTP fieldを含むfull-message integrityを提供する.</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 6に沿って欠陥を解消してからresultを使います.profile rule: 使うdigest fieldを示し, HTTP semanticsで定義されたbyteに対して計算する.check: fieldへ依存する前に, 正しいcontentまたはrepresentation dataでdigestを再計算して比較する.local policy: applicationまたはsignature profileが要求するdigest algorithmとfailure behavior.</div>
+A: unkeyed hashはattackerも計算できます.RFC 9530 Section 6.1はmalicious on-path actorがcontentと新digestを置換できるとします.
+B: RFC 9530が定義するのはcontentまたはrepresentationのintegrity fieldであり,authorization decisionやidentity credentialではありません.
+C: Section 6.1がこの限定的assuranceを支えます.authenticationにはTLS endpoint authenticationや適切なcoverageのsignatureなど追加mechanismが必要です.
+D: Section 6.1はHTTP field全体を保護しないと明示します.request-targetとheader integrityには別coverageが必要です.
+判断軸: threat modelとmechanismを対応させます.unkeyed digestはaccidental changeを検出できますが,adversarial channelでsenderを識別できません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: HTTP Digest Fieldsとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="gateway transformationの前後で,どのcomponentがどのbyteを検証したか追跡します.">
+        <header><h4>Q6: このtransforming gatewayを越えてintegrityをどうcomposeすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはHTTP Digest Fieldsを別protocol layerと組み合わせます.design noteには「HTTP Message SignaturesはDigest Fieldsを署名対象にでき, coverage設定時にdigestへsender-authenticated contextを与える」とあります.</p>
+          <p class="question-premise">agentはgzip-coded taskのContent-Digest,Content-Type,Content-Encodingをsignします.gatewayは検証後にdecompressし,origin evidenceと処理byteの両方を必要とするbackendへplain JSONを転送します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,applicationまたはsignature profileが要求するdigest algorithmとfailure behaviorは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（fieldへ依存する前に, 正しいcontentまたはrepresentation dataでdigestを再計算して比較する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（applicationまたはsignature profileが要求するdigest algorithmとfailure behavior）を定義し,必要なcheck（fieldへ依存する前に, 正しいcontentまたはrepresentation dataでdigestを再計算して比較する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. original digestをplain JSONと共に変更せず転送する.gatewayで成功すれば全transformed downstream messageでもvalidになる.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. original messageの検証を記録し,変換後contentへ新digestを付け,backendがgatewayをtrustするかorigin evidenceを検証するか定義する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. decompress後にContent-DigestをRepr-Digestへ置換し,original agent signatureは維持する.両fieldは常に同じinputを使う.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. intermediaryがcontent codingを変える場合,RFC 9530はdigest利用を禁止するため,TLS終端後に全integrity fieldを除く.</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 2-4とSection 6がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 9530 Section 2はContent-Digestをactual message contentへbindします.decompressionはそのbyteを変えるため,original valueはforwarded contentを検証しません.
+B: Sections 2,3,6.1,6.3はbyte domainとprotection layerの区別を求めます.gateway trustとorigin-verifiable evidenceは明示すべき別architectureです.
+C: Content-DigestとRepr-Digestはinputが異なり,covered fieldやdigestを変えればsignature schemeが変換を定義しない限りoriginal signatureはinvalidです.
+D: RFC 9530はintermediary越しのintegrity fieldを許しつつ,transformationとmetadataを警告します.一律除去ruleはありません.
+判断軸: transformationは,original evidenceを保存するか,transformed messageへの新しいauthenticated assertionを定義しない限り,以前のbyte-level assertionを終わらせます.</div>
         </div>
       </article>
     </section>

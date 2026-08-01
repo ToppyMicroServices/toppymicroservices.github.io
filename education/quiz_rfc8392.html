@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what CWT claims token provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 8392 make CWT claims token sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate the CWT representation and protection steps from the claim set selected by an application profile.">
+        <header><h4>Q1: Which statement correctly divides responsibility between RFC 8392 and an A2A CWT profile?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 8392 and claims that using CWT claims token automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">A constrained A2A profile wants compact authorization claims and plans to use CWTs protected by COSE.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. representing JWT-like claims in compact CBOR form for constrained or binary protocol environments; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. representing JWT-like claims in compact CBOR form for constrained or binary protocol environments, while which CWT claims are required, ignored, or security critical remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. CWT is derived from JWT but uses CBOR and COSE instead of JSON and JOSE serialization; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 8392 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. RFC 8392 defines the registered claims and therefore every conforming CWT must contain all seven claims listed in Section 3.1</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. RFC 8392 fixes a signed CWT as the only valid construction, while the profile chooses whether the claims set is a CBOR map</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8392 defines CWT claim representations and COSE-based creation and validation; the profile defines which claims it uses and when they are required</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8392 defines only compact integer claim keys, leaving COSE processing and the CBOR type of the claims set entirely to the profile</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-7 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 3-7 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 8392 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: Section 3 says the registered claims are not mandatory as a set; applications define which claims are used and whether they are required.
+B: Sections 7.1 and 7.2 cover signed, MACed, and encrypted CWTs, and the CWT Claims Set is a CBOR map.
+C: Sections 3 and 7 define that boundary: interoperable representation and protection processing come from the RFC, while the application supplies its claim profile.
+D: RFC 8392 specifies the CBOR claims set and invokes COSE processing; those are not left undefined.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for CWT claims token. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Check whether the CWT tag is the only way an application can know that a CBOR item is a CWT.">
+        <header><h4>Q2: Must this receiver reject the untagged CWT?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 8392 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A message schema says that field 4 contains a CWT. The field contains an untagged COSE_Sign1 object, and the receiver knows its type from that schema position.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only which CWT claims are required, ignored, or security critical and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: CWT is derived from JWT but uses CBOR and COSE instead of JSON and JOSE serialization</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Choose compact claim keys and define which claims are required for the consuming profile</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Reject it because every CWT must carry CBOR tag 61 in addition to the COSE object tag, even when the application context fixes the type</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Do not reject it merely for lacking tag 61; application context can identify a CWT, while a present CWT tag has the structure required by Section 6</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Accept it as a claims set without COSE validation because omitting tag 61 changes the object into an unprotected CWT representation</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Require the application/cwt media type inside field 4 because neither schema position nor a CBOR tag can establish the object type</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3 and 7 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: Section 6 makes the CWT tag optional and describes application context and media type as other ways to identify a CWT.
+B: This follows Section 6. If tag 61 is present, it prefixes a tagged COSE object; its absence does not bypass Section 7.2 validation.
+C: Identification and cryptographic validation are separate. An untagged COSE object still undergoes the applicable COSE validation.
+D: Section 6 lists application/cwt as one method, not a mandatory in-message field.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this CWT claims token review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A valid CBOR and COSE object is not yet a decision about the application-required claims.">
+        <header><h4>Q3: May the resource server authorize after only the RFC 8392 Section 7.2 steps?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: accepting a CWT without enforcing its COSE protection, issuer, audience, time, and required-claim profile. The result controls an A2A security decision.</p>
+          <p class="question-premise">The CWT is a valid CBOR map and its COSE_Sign1 signature verifies. The A2A profile requires aud to identify this resource and exp to be current, but the validator has not examined either claim. Authorization requires both profile conditions.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document whether a CWT is carried by media type, context, or an explicit tag as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Validate COSE protection, required claims, issuer, audience, time, and application profile requirements</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: CWT is derived from JWT but uses CBOR and COSE instead of JSON and JOSE serialization</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 8392 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Authorize because Section 7.2 ends after producing a valid CWT Claims Set, making any registered claim semantically valid as well</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Authorize if the signing key belongs to a configured issuer; issuer trust makes the omitted audience and expiration checks redundant</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Reject every CWT that contains aud or exp because Section 3 leaves the set of required claims outside RFC 8392</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Complete Section 7.2, then apply the profile's aud and exp rules; cryptographic validity alone does not meet the stated authorization criterion</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 8 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: Section 7.2 validates the CBOR and COSE construction; it does not choose the claim set or the operation's authorization policy.
+B: Section 8 distinguishes authenticating the CWT creator from deciding whether the claims are acceptable for an operation.
+C: Section 3 permits applications to require and process registered claims; being profile-defined does not make those claims invalid.
+D: Sections 3 and 7.2 provide the two stages. Sections 3.1.3 and 3.1.4 import the aud and exp processing semantics, while this profile makes them required.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing CWT claims token, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="RFC 8392 gives a default for unknown claims only in the absence of application requirements.">
+        <header><h4>Q4: How should the second implementation handle claim 500?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 8392 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">An A2A profile defines private claim 500 as the required operation class and says requests without a recognized value are rejected. One implementation understands it; another applies the generic unknown-claim rule and ignores it. Interoperable authorization is the decision criterion.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Which CWT claims are required, ignored, or security critical</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Validate COSE protection, required claims, issuer, audience, time, and application profile requirements</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Whether a CWT is carried by media type, context, or an explicit tag</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Representing JWT-like claims in compact CBOR form for constrained or binary protocol environments</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Treat claim 500 as required by the profile and reject when its semantics or value are not understood; the generic ignore rule no longer controls this case</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Ignore claim 500 after verifying COSE because RFC 8392 requires every unregistered claim to be ignored even when an application profile requires it</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Map claim 500 to the nearest registered integer key locally so both implementations can continue without a shared claim definition</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Accept the token but defer operation-class checking to audit logs, preserving the unknown-claim behavior at the authorization boundary</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-7 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Section 3 says unknown claims are ignored in the absence of application requirements and also says applications define claims that must be understood and processed. This profile supplies such a requirement.
+B: That reading omits the qualifying context in Section 3 and would defeat the profile's stated authorization rule.
+C: Claim keys identify defined semantics; unilateral remapping creates a different, non-interoperable profile.
+D: Logging does not satisfy the profile's pre-authorization decision criterion.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when CWT claims token is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask which parties can create a valid MAC, not only whether the MAC verifies.">
+        <header><h4>Q5: What can the verifier conclude about the claimed issuer?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when constrained devices or attestation formats need compact signed claims. Observed defect: assuming compact CBOR encoding makes claims trustworthy without validating COSE and policy.</p>
+          <p class="question-premise">Five devices share the same symmetric COSE MAC key. A MACed CWT says iss=device-A, and its MAC verifies. The authorization rule requires evidence that device-A, rather than another group member, created the claims.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (representing JWT-like claims in compact CBOR form for constrained or binary protocol environments), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (choose compact claim keys and define which claims are required for the consuming profile) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (CWT is derived from JWT but uses CBOR and COSE instead of JSON and JOSE serialization), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The verified MAC authenticates device-A because the iss value is inside the protected claims set and names a single device</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. The MAC authenticates possession of the group key, not a unique member; the keying design needs distinct origin evidence for this rule</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. The cti claim can identify device-A cryptographically, so adding a unique token identifier supplies the missing origin authentication</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. A CWT tag binds the MAC key to the issuer name, so prefixing tag 61 would distinguish device-A from the other devices</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 8 supports resolving the defect before relying on the result. The profile rule is: choose compact claim keys and define which claims are required for the consuming profile. The check is: validate COSE protection, required claims, issuer, audience, time, and application profile requirements. The local policy is: which CWT claims are required, ignored, or security critical.</div>
+A: Integrity protects the iss value from outsiders, but every holder of the group MAC key can create an equally valid value.
+B: Section 8 requires the recipient to authenticate the party that assembled the claims and to trust that party. A shared group key does not meet the scenario's per-device origin criterion by itself.
+C: Section 3.1.7 defines cti as a token identifier; it is not proof of which group member generated the token.
+D: Section 6 uses tag 61 to identify the object as a CWT, not to identify its creator.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should CWT claims token be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Trace where COSE verification ends and what evidence the backend actually receives across the new trust boundary.">
+        <header><h4>Q6: Can the backend treat the forwarded claims as the original CWT evidence?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines CWT claims token with another protocol layer. Its design note says: CWT is derived from JWT but uses CBOR and COSE instead of JSON and JOSE serialization.</p>
+          <p class="question-premise">An A2A gateway validates a CWT, checks aud=gateway, and forwards plain JSON containing sub and operation to a resource-owning backend. The backend receives the JSON over an authenticated gateway connection but neither the CWT nor a gateway assertion covering audience, issuer, and validation time. Backend policy requires evidence intended for this backend operation.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes which CWT claims are required, ignored, or security critical unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (validate COSE protection, required claims, issuer, audience, time, and application profile requirements) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (which CWT claims are required, ignored, or security critical), perform the required check (validate COSE protection, required claims, issuer, audience, time, and application profile requirements), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept because successful Section 7.2 processing makes every later serialization of selected claims equivalent to the protected CWT</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Accept because aud=gateway authorizes any backend reached by that gateway, independent of the audience model in the A2A profile</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Do not call the JSON original CWT evidence; issue a protected gateway assertion, or deliver evidence the backend validates under its audience policy</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Reject gateway mediation as incompatible with RFC 8392, because a CWT may be validated only by the final resource-owning application</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 3-7 and Section 8 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: Sections 7.2 and 8 protect and authenticate the CWT at its verifier; selected plaintext fields do not retain that protection automatically.
+B: Section 3 leaves required-claim and audience use to the application profile. The stated backend criterion is not met merely by aud=gateway.
+C: This separates RFC processing from composition policy. The gateway can be an explicit new trust boundary, but its assertion must carry the semantics and protection on which the backend relies.
+D: RFC 8392 defines CWT processing and does not prohibit a trusted gateway architecture; the profile must define the resulting trust and authorization boundaries.</div>
         </div>
       </article>
     </section>

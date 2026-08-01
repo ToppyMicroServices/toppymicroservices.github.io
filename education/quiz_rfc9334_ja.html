@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9334", "SKILL_SUBTITLE": "RATS Architecture", "LEARNING_MODE_DEFAULT": true, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 9334", "SKILL_SUBTITLE": "RATS Architecture", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -54,125 +54,129 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="conceptual messageをproducerからappraiserへ追う.">
-        <header><h4>Q1: Target EnvironmentについてEvidenceをcreateするroleはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="conceptual messageを作るroleから、評価するroleまで追う。">
+        <header><h4>Q1: Target EnvironmentについてEvidenceを作るroleはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q1" value="a"> A. Attester</label>
           <label class="choice"><input type="radio" name="Q1" value="b"> B. Verifier</label>
           <label class="choice"><input type="radio" name="Q1" value="c"> C. Relying Party</label>
         </fieldset><div class="explain">**解説:**
 
-A: AttesterがTarget Environmentについてのclaimを含むEvidenceをproduceする.
-B: VerifierはEvidenceをconsumeしappraiseする.
-C: Relying PartyはdecisionのためAttestation Resultをconsumeする.</div></div>
+A: AttesterがTarget Environmentについてのclaimを含むEvidenceを作る。
+B: VerifierはEvidenceを受け取り、appraiseする。
+C: Relying Partyは判断のためにAttestation Resultを受け取る。</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Verifierはappraised EvidenceをRelying Party向けmessageへtransformする.">
-        <header><h4>Q2: Verifierのmain outputはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="VerifierはEvidenceのappraisal結果をRelying Party向けのmessageにする。">
+        <header><h4>Q2: Verifierの主なoutputはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q2" value="a"> A. new Target Environment</label>
           <label class="choice"><input type="radio" name="Q2" value="b"> B. OAuth authorization code</label>
           <label class="choice"><input type="radio" name="Q2" value="c"> C. Attestation Result</label>
         </fieldset><div class="explain">**解説:**
 
-A: roleはappraise対象environmentをcreateしない.
-B: RATSはOAuth code issuanceをVerifier outputとして定義しない.
-C: VerifierはEvidence appraisal policyを適用しAttestation Resultをproduceする.</div></div>
+A: roleはappraise対象のenvironmentを新たに作るものではない。
+B: RATSはOAuth authorization codeの発行をVerifierのoutputとして定義しない。
+C: VerifierはEvidence appraisal policyを適用し、Attestation Resultを作る。</div></div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Evidence用policyとVerifier result用policyは別である.">
-        <header><h4>Q3: Appraisal Policy for Attestation Resultsをapplyするのは誰?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Evidence用のpolicyと、Verifierのresult用のpolicyは別である。">
+        <header><h4>Q3: Appraisal Policy for Attestation Resultsを適用するのは誰？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q3" value="a"> A. Attester</label>
           <label class="choice"><input type="radio" name="Q3" value="b"> B. Relying Party</label>
           <label class="choice"><input type="radio" name="Q3" value="c"> C. Endorser</label>
         </fieldset><div class="explain">**解説:**
 
-A: AttesterはEvidenceをcreateするがRelying Partyのacceptance decisionは行わない.
-B: Relying Partyがresult-appraisal policyでAttestation Resultをevaluateする.
-C: EndorserはVerifierが使うEndorsementをsupplyする.</div></div>
+A: AttesterはEvidenceを作るが、Relying Partyのacceptance decisionは行わない。
+B: Relying Partyがresult-appraisal policyでAttestation Resultを評価する。
+C: EndorserはVerifierが使うEndorsementを提供する。</div></div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="attestationはdecisionへ情報を与えるがRelying Party policyをreplaceしない.">
-        <header><h4>Q4: positiveなAttestation Resultは自動的にauthorization grantになる?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Verifierによるappraisalと,その結果を受け取る側の判断を分けて考える。">
+        <header><h4>Q4: positiveなAttestation Resultは、自動的にauthorization grantになる？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q4" value="a"> A. はい, Verifierが全resource accessを決める</label>
           <label class="choice"><input type="radio" name="Q4" value="b"> B. はい, signed resultは常にadministrator rightをgrantする</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. いいえ, Relying Partyが自身のappraisalとauthorization policyへ組み込む</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. いいえ、Relying Partyは自身のpolicyを引き続き適用する</label>
         </fieldset><div class="explain">**解説:**
 
-A: VerifierはEvidenceをappraiseしRelying Partyが自身のdecisionを行う.
-B: signature validityはRelying Partyのauthorization policyを定義しない.
-C: Attestation Resultはdecision supportであり特定useではunacceptableになりうる.</div></div>
+A: VerifierはEvidenceをappraiseし、Relying Partyが自身の判断を行う。
+B: signatureが有効でも、Relying Partyのauthorization policyまでは決まらない。
+C: Attestation Resultは判断材料であり、特定の用途には受け入れられない場合もある。</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="誰がVerifier resultを最初に受け取り後でpresentするかを見る.">
-        <header><h4>Q5: Passport Modelをdistinguishするものはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="誰がVerifierのresultを最初に受け取り、後で提示するかを見る。">
+        <header><h4>Q5: Passport Modelを特徴付けるflowはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. AttesterがAttestation Resultを取得しRelying Partyへpresentする</label>
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. AttesterがAttestation Resultを取得し、Relying Partyへ提示する</label>
           <label class="choice"><input type="radio" name="Q5" value="b"> B. Relying PartyがEvidenceをVerifierへ送りresultをAttesterから隠す</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. flowにVerifierが参加しない</label>
         </fieldset><div class="explain">**解説:**
 
-A: reusable resultはholderが運ぶpassportに似る.
-B: そのflowはBackground-Check Modelに近い.
-C: 両topological patternともVerifierのEvidence-appraisal roleを持つ.</div></div>
+A: 再利用できるresultをholderが運ぶ点で、passportに似ている。
+B: そのflowはBackground-Check Modelに近い。
+C: どちらのtopological patternにも、EvidenceをappraiseするVerifierがいる。</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Relying PartyがEvidenceをchosen Verifierへforwardする.">
-        <header><h4>Q6: Background-Check Modelをdistinguishするものはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="各topologyでraw Evidenceを受け取るroleとappraiseするroleを追う。">
+        <header><h4>Q6: Background-Check Modelを特徴付けるflowはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. AttesterがRelying Partyへcontactする前にreusable resultを常にcacheする</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. Relying PartyがEvidenceを受けVerifierにappraiseさせる</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. Relying PartyがVerifierなしでraw Evidenceをinterpretする</label>
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. AttesterがRelying Partyへ連絡する前に、再利用可能なresultを必ずcacheする</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Relying PartyがEvidenceを受け取り、Verifierにappraiseさせる</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Relying PartyがVerifierを使わずにraw Evidenceを解釈する</label>
         </fieldset><div class="explain">**解説:**
 
-A: それはPassport Modelのcharacteristicでこのmodelのrequirementではない.
-B: resultはRelying Partyへ戻り自身のappraisalとdecisionに使われる.
-C: architectureはEvidence appraisalをVerifier roleへassignする.</div></div>
+A: それはPassport Modelの特徴であり、このmodelの要件ではない。
+B: resultはRelying Partyへ戻り、自身のappraisalと判断に使われる。
+C: architectureはEvidenceのappraisalをVerifierのroleに割り当てる。</div></div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Verifierはmeasurementまたはclaimをknown acceptable valueと比較する.">
-        <header><h4>Q7: Reference Valueのroleはどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Verifierはmeasurementやclaimを、既知の値と比較する。">
+        <header><h4>Q7: Reference Valueのroleはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q7" value="a"> A. Attesterがgenerateするfresh nonce</label>
           <label class="choice"><input type="radio" name="Q7" value="b"> B. Relying Partyのfinal access decision</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. VerifierがEvidence policy適用時に使うknown value</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. Evidence appraisalで比較に使う既知の値</label>
         </fieldset><div class="explain">**解説:**
 
-A: nonceはfreshnessをsupportできるがReference Valueではない.
-B: Reference ValueはEvidence appraisalへのinputでfinal decisionではない.
-C: Evidence内claimをassessするcomparison materialを提供する.</div></div>
+A: nonceはfreshnessの評価に使えるが、Reference Valueではない。
+B: Reference ValueはEvidence appraisalへのinputであり、最終判断ではない。
+C: Evidence内のclaimを評価するための比較材料を提供する。</div></div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="validだがoldなEvidenceはもう存在しないstateをdescribeしうる.">
-        <header><h4>Q8: RATS protocolがfreshnessをprovideすべき理由はどれ?</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="有効でも古いEvidenceは、すでに変化したstateを表している場合がある。">
+        <header><h4>Q8: RATS設計でfreshnessを評価する理由はどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. staleなEvidenceまたはAttestation Resultのreplayをlimitする</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. deviceが永続的にtrustworthyであるとguaranteeする</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. Evidence source authenticationをreplaceする</label>
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. staleなEvidenceまたはAttestation Resultのreplayを制限する</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. deviceが永続的にtrustworthyであると保証する</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. Evidence sourceのauthenticationを置き換える</label>
         </fieldset><div class="explain">**解説:**
 
-A: timestamp, nonce, epoch identifierでappraisalをrelevant time windowへconnectできる.
-B: freshnessはtimingをdescribeするがfuture stateをguaranteeしない.
-C: freshnessとsource authenticityは別propertyである.</div></div>
+A: timestamp、nonce、epoch identifierを使い、appraisalを関連するtime windowへ結び付けられる。
+B: freshnessは時点を評価するもので、将来のstateまでは保証しない。
+C: freshnessとsource authenticityは別のpropertyである。</div></div>
       </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Evidenceはappraiseするpartyへsensitive informationをdiscloseしうる.">
-        <header><h4>Q9: Evidenceがdetailed device configurationを含む. どのprivacy boundaryが重要?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. 全Relying Partyがindependentにverifyできるよう全Evidenceをpublishする</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. VerifierをauthenticateしEvidence disclosureをauthorized partyへprotectする</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. encryptionを全claimがacceptableなproofとして扱う</label>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Evidenceのintegrityは、その内容を誰が知ってよいかを決めない。">
+        <header><h4>Q9: appraisalを弱めずにdisclosure riskを抑える変更はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">agentはdevice serial number、patch level、loaded module、user identifierを含む署名付きEvidenceを、Verifierを名乗る任意のendpointへ送る。teamは、recipientがsignatureを改変できないのでVerifier認証は不要だと主張している。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. signature integrityは全recipientをauthorizedにもするため、現状を維持する</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. 全Verifierが同じ署名copyを得られるよう、Evidenceを広く公開する</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. Verifierを認証し、開示claimを最小化してconfidentialityを保護する</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. Evidenceでprivacy-sensitiveなのはfreshness dataだけなので、それを削除する</label>
         </fieldset><div class="explain">**解説:**
 
-A: broad disclosureはprivacy riskを増やしsecurity-sensitive stateをexposeしうる.
-B: Attesterはsensitive Evidence送信前にVerifierをassureする必要がある場合がある.
-C: confidential conveyanceはclaim correctnessをappraiseしない.</div></div>
+RFC 9334 Section 7.2は、sensitive Evidenceを渡す前にAttesterがVerifierを認証するのが一般的だと述べる。Section 11はEvidenceとAttestation Resultがdevice stateやPIIを明かし得ることを説明する。signatureが保護するのはauthenticityとintegrityであり、recipient authorizationやconfidentialityではない。Cはappraisalを保ったまま開示を制御する。Bは露出を広げ、Dは列挙された情報を保護せずfreshness評価も損なう。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Evidence appraisal, result appraisal, operation authorizationをexplicitに保つ.">
-        <header><h4>Q10: A2A serviceはacceptance decisionでattestationをどう使うべき?</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. VerifierなしでAttester自身にtrustedとdeclareさせる</label>
-          <label class="choice"><input type="radio" name="Q10" value="b"> B. 任意positive resultをunrestricted authorityへmapする</label>
-          <label class="choice"><input type="radio" name="Q10" value="c"> C. freshnessとtrustをvalidateしresultをappraiseしてoperation-specific authorizationを適用する</label>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="attestationとgrantが与える判断材料を列挙し、要求operationに対して個別に照合する。">
+        <header><h4>Q10: backendはこのresultだけでtransferをauthorizeしてよい？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">信頼するVerifierが、agentはapproved firmwareを実行中だというfreshでauthenticなAttestation Resultを発行した。gatewayはそのboolean resultを全operationの許可として扱う。backendにはresultと、有効ではあるがaudienceが別serviceを指すOAuth grantが届き、要求transferはgrantのscopeも超えている。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. よい。approved firmwareならgrantのaudience・scope検査は不要になる</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. よい。freshnessはAttestation Resultをunrestricted authorization grantにする</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. 不可。resultをappraiseしたうえで、operationのauthorization policyを独立に適用する</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. 不可。Relying Partyはattestationをauthorization判断に一切使えない</label>
         </fieldset><div class="explain">**解説:**
 
-A: self-asserted claimではarchitectureのindependent appraisal stepを行えない.
-B: positive resultはcontextualでoperation scopeを定義しない.
-C: これでRATS role separationを保持しattestationがsilentにuniversal authorizationになるのを防ぐ.</div></div>
+RFC 9334 Section 8.4はAttestation Resultを、Relying Partyがappraiseしてapplication固有の判断を行うための入力とする。Section 10のfreshnessはclaimが最近のstateを反映するかに関係するが、resource authorityは定義しない。Cはこの分離を守る。resultはdevice-state条件を満たす材料になり得るが、audience・scope・subject・operation policyは別にaccessを制御する。Dは強すぎる断定で、authorizationはRelying Partyの明示的なuse caseである。</div>
+        </div>
       </article>
     </section>
     <section class="card panel" aria-label="クイズ結果"><button type="button" id="bottomShowAnswers">すべての解答を表示</button><div id="results-bottom" class="muted" style="margin-top:.8rem"></div></section>

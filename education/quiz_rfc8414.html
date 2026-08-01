@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,272 +57,118 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Discovery is not the same thing as authorization.">
-        <header><h4>Q1: What is RFC 8414 mainly used for in an OAuth deployment</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Separate publishing server configuration from issuing or accepting authorization.">
+        <header><h4>Q1: What problem does authorization server metadata solve?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. granting users access to protected resources</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. publishing authorization server endpoints and capabilities as metadata</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. replacing client registration and local security policy</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Authorization server metadata tells clients where to find endpoints and capabilities. It does not decide whether a request is allowed.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: Access decisions are made by authorization flows, tokens, resource servers, and policy.
-- B: Publishing endpoints and capabilities is the core function of the metadata document.
-- C: Discovery can support clients, but registration and local policy remain separate controls.
-          </div>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. It publishes an authorization server's configuration in a standard format.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. It grants every discovering client access to all protected resources.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. It proves that any user-selected issuer is trusted by the application.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. It replaces token validation and resource-server authorization policy.</label>
+          </fieldset><div class="explain">RFC 8414 Section 2 defines metadata that describes an authorization server's configuration so a client can learn where and how to interact with it. Reading that document neither issues a grant or token nor chooses which issuer a resource should trust. Token validation and the resource's authorization decision therefore remain outside this configuration mechanism.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="A client must know which issuer it intended to use.">
-        <header><h4>Q2: Which checks prevent metadata confusion. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Check the issuer&#x27;s syntax and the fields that a conforming metadata document must publish.">
+        <header><h4>Q2: Which statements about core RFC 8414 metadata are correct? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. validate that the returned issuer matches the authorization server expected by the client</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. use any reachable metadata document if it contains a token_endpoint</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. retrieve metadata through a trustworthy HTTPS path for the intended issuer</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. skip endpoint validation after jwks_uri is present</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Metadata discovery is useful only when the client binds it to the intended issuer and transport trust.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: The issuer value prevents mixing metadata from one authorization server into another context.
-- B: A reachable document can be attacker-controlled or simply for another issuer.
-- C: HTTPS and the intended issuer path protect metadata retrieval before later endpoint use.
-- D: jwks_uri is one field in the document and does not validate every endpoint or issuer relationship.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. The issuer may use HTTP when signed_metadata is present.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. The issuer is required, uses HTTPS, and has no query or fragment.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. response_types_supported is optional whenever grant_types_supported appears.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. response_types_supported is a required JSON array.</label>
+          </fieldset><div class="explain">RFC 8414 Section 2 requires an HTTPS `issuer` without query or fragment and a `response_types_supported` JSON array. Signed metadata does not relax the issuer syntax, and another capability field cannot replace a required one. Consumers must distinguish these discovery anchors from optional capability descriptions and field-specific defaults.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The issuer identifier is the anchor for the metadata.">
-        <header><h4>Q3: Why is the issuer value security-relevant in RFC 8414</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Insert the well-known component between the host and the issuer path.">
+        <header><h4>Q3: Where is metadata fetched for issuer https://as.example/tenant-a using the default suffix?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. it gives the user a display name for login pages</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. it decides which protected resource must accept a token</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. it binds the metadata document to the authorization server identity the client expects</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The issuer value stops a client from using endpoints, keys, or capabilities from the wrong authorization server.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: Display names are user interface concerns and are not the main security role.
-- B: Resource-server acceptance is a separate decision based on audience, token, and policy.
-- C: Issuer binding is the key check that prevents cross-issuer metadata confusion.
-          </div>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. https://as.example/tenant-a/.well-known/oauth-authorization-server</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. https://as.example/oauth-authorization-server/.well-known/tenant-a</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. https://as.example/.well-known/oauth-authorization-server/tenant-a</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. https://as.example/.well-known/tenant-a/oauth-authorization-server</label>
+          </fieldset><div class="explain">RFC 8414 Section 3.1 inserts `/.well-known/oauth-authorization-server` between the authority and the issuer path, producing `https://as.example/.well-known/oauth-authorization-server/tenant-a`. Appending the suffix after the tenant path or folding that path into the suffix changes the registered construction. Preserving the issuer path is especially important when one host serves multiple issuers.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A signed object still needs a trust decision.">
-        <header><h4>Q4: How should a client treat signed authorization server metadata</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The comparison prevents endpoints from being substituted under another issuer&#x27;s discovery location.">
+        <header><h4>Q4: The fetched document returns a different issuer value from the issuer used to build its URL. What should the client do?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. as metadata that can add integrity, while still validating signature trust and issuer expectations</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. as automatic proof that every endpoint in the document is acceptable</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. as a replacement for TLS and issuer comparison</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Signed metadata can protect content integrity, but it must be tied to the expected issuer and trusted signing key.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: This keeps the signature as validation input without skipping issuer and trust checks.
-- B: A signature proves only what the trusted key signed, not that every endpoint is policy-approved.
-- C: TLS and issuer comparison protect retrieval and binding boundaries that a signature alone does not erase.
-          </div>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Follow the returned issuer and repeat discovery until the values converge.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Do not use the metadata because the two issuer values must be identical.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Keep only the jwks_uri because key locations are exempt from issuer validation.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Accept the document if its token endpoint uses the same registrable domain.</label>
+          </fieldset><div class="explain">RFC 8414 Section 3.3 requires the returned `issuer` to be exactly identical to the issuer used to construct the metadata URL and prohibits using a mismatching response. Following a replacement value from inside the document would let that response redirect its own trust target, while registrable-domain similarity is not the specified comparison. The whole metadata response, including endpoint and key-location claims, must be rejected.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Follow issuer, metadata, endpoints, and keys as separate steps.">
-        <header><h4>Q5: Which client flow best matches RFC 8414 usage</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="Apply the signed-metadata rule only after the feature and its signature are actually supported.">
+        <header><h4>Q5: A supported client receives conflicting plain and signed metadata values. Which value has precedence?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. choose an endpoint from a search result and infer issuer from the response</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. start with an expected issuer, fetch metadata, verify issuer consistency, then use declared endpoints under policy</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. download jwks_uri first and let the key set choose the authorization server</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc8414-en-q5-caption">
-            <figcaption id="rfc8414-en-q5-caption">Authorization server metadata validation flow.</figcaption>
-            <svg viewBox="0 0 772 158" role="img" aria-label="Authorization server metadata validation flow.">
-              <rect class="flow-box" x="22" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="95" y="69">Expected</text>
-              <text class="flow-label" x="95" y="90">issuer</text>
-              <line class="flow-arrow" x1="168" y1="79" x2="204" y2="79"></line>
-              <polygon class="flow-arrow-head" points="204,79 193,73 193,85"></polygon>
-              <rect class="flow-box" x="216" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="289" y="69">Fetch</text>
-              <text class="flow-label" x="289" y="90">metadata</text>
-              <line class="flow-arrow" x1="362" y1="79" x2="398" y2="79"></line>
-              <polygon class="flow-arrow-head" points="398,79 387,73 387,85"></polygon>
-              <rect class="flow-box" x="410" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="483" y="69">Validate</text>
-              <text class="flow-label" x="483" y="90">issuer</text>
-              <line class="flow-arrow" x1="556" y1="79" x2="592" y2="79"></line>
-              <polygon class="flow-arrow-head" points="592,79 581,73 581,85"></polygon>
-              <rect class="flow-box" x="604" y="42" width="146" height="74" rx="10"></rect>
-              <text class="flow-text" x="677" y="69">Use endpoints</text>
-              <text class="flow-label" x="677" y="90">under policy</text>
-            </svg>
-          </figure>
-          <div class="explain">
-**Judgment point:** The client should not let keys or endpoints choose the authorization server. Expected issuer identity comes first.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: A search result is not a trusted issuer anchor and can lead to mix-up.
-- B: This flow keeps issuer identity, metadata retrieval, and endpoint use in the intended order.
-- C: Keys are verifier inputs, not the authority for selecting which server the client intended.
-          </div>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The plain value always wins because it was protected by HTTPS.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. The client may merge both values into a new endpoint URL.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. The client must ignore signed_metadata even when it supports the feature.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. A valid supported signed value takes precedence over its plain counterpart.</label>
+          </fieldset><div class="explain">RFC 8414 Section 2.1 requires processed `signed_metadata` to be signed or MACed, contain `iss`, and take precedence over corresponding plain claims after validation. A consumer that does not support the member may ignore it, but a consumer that chooses to process it cannot merge conflicts into a third value or let TLS replace signature and trust checks. Support, cryptographic validation, signer trust, and precedence are separate steps.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Capabilities are declarations, not permission grants.">
-        <header><h4>Q6: Which boundaries remain outside RFC 8414 metadata. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Some optional fields have defaults; omission of others leaves support unspecified.">
+        <header><h4>Q6: Which interpretations of omitted metadata are defined by RFC 8414? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. the JSON names used to describe authorization server capabilities</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. whether a user or client is allowed to access a particular resource</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. locations such as authorization_endpoint or token_endpoint</label>
-            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. which metadata fields a deployment requires before accepting an authorization server</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The metadata format describes a server. The deployment still chooses what it trusts and what policy requires.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: Field names are part of the metadata format and are within the RFC area.
-- B: Resource access is an authorization decision outside the discovery document.
-- C: Endpoint locations are exactly the kind of information metadata publishes.
-- D: A deployment profile can require fields and reject metadata that is insufficient for its threat model.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q6" value="a"> A. Omitted grant_types_supported defaults to authorization_code and implicit.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="b"> B. Omitted scopes_supported means the server supports no scopes.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Omitted token_endpoint_auth_methods_supported defaults to client_secret_basic.</label>
+            <label class="choice"><input type="checkbox" name="Q6" value="d"> D. Omitted jwks_uri means clients may invent a conventional /jwks path.</label>
+          </fieldset><div class="explain">RFC 8414 Section 2 defines `authorization_code` and `implicit` as the omission default for `grant_types_supported`, and `client_secret_basic` as the default token-endpoint authentication method. By contrast, absence of recommended `scopes_supported` does not mean no scopes are supported, and optional `jwks_uri` does not authorize inventing a location. Only an explicit field definition creates a default; other omitted capabilities remain unknown or need another specified configuration path.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Mix-up starts when one issuer context is used with another server.">
-        <header><h4>Q7: Which failure is a cross-issuer metadata risk</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Successful discovery binds configuration to an issuer; it does not choose the application&#x27;s trust relationship.">
+        <header><h4>Q7: May this client treat the discovered server as authorized for the A2A resource?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A user supplies https://login.attacker.example as an issuer. TLS validation succeeds, the returned issuer matches exactly, and the metadata is syntactically valid. The client has no policy linking that issuer to the requested A2A resource.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q7" value="a"> A. a client caches metadata for the expected issuer and respects expiry</label>
-            <label class="choice"><input type="radio" name="Q7" value="b"> B. a client rejects metadata whose issuer differs from configuration</label>
-            <label class="choice"><input type="radio" name="Q7" value="c"> C. a client combines endpoints from issuer A with tokens or keys expected for issuer B</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** OAuth deployments must avoid confusing one authorization server with another. Metadata validation is one place to enforce that boundary.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: Correct caching for the expected issuer supports stable operation.
-- B: Rejecting mismatched issuer values is the intended protection.
-- C: Combining fields from different issuers is exactly the confusion the issuer check is meant to prevent.
-          </div>
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes, because exact issuer validation converts any HTTPS issuer into a trusted authority.</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. No; the metadata is self-consistent, but the application still lacks a trusted issuer-to-resource association.</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Yes, if the document advertises both an authorization endpoint and jwks_uri.</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. No, because RFC 8414 prohibits users from supplying issuer identifiers in every deployment.</label>
+          </fieldset><div class="explain">RFC 8414 Sections 3.3 and 6.2 protect discovery against substitution relative to the issuer selected as input; they do not establish that this issuer is appropriate for a particular A2A resource. Section 6.4 leaves secure authorization-server-to-resource association out of scope and application dependent. Even complete, valid metadata proves configuration for the chosen issuer, so the client still needs a defined reason to trust that issuer for the target resource.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="jwks_uri locates keys, but it does not choose trust by itself.">
-        <header><h4>Q8: What is a careful interpretation of jwks_uri in authorization server metadata</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A signature authenticates an attester only when the verifier already has a suitable trust basis for its key.">
+        <header><h4>Q8: How should the client process this signed_metadata object?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">The metadata contains signed_metadata whose JWS is cryptographically valid and whose iss is unknown to the client. The unsigned JSON claims name a familiar token endpoint, while the signed claims replace it with an unfamiliar host.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q8" value="a"> A. it tells where to retrieve keys for validating objects from that authorization server under policy</label>
-            <label class="choice"><input type="radio" name="Q8" value="b"> B. it makes every key at that URL trusted for all issuers</label>
-            <label class="choice"><input type="radio" name="Q8" value="c"> C. it replaces issuer, audience, and algorithm validation</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** The key set location supports validation of authorization server objects. The verifier still applies issuer and algorithm policy.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: This treats jwks_uri as a scoped key source for the expected authorization server.
-- B: Trust is scoped and cannot be extended to all issuers just because a URL is reachable.
-- C: Issuer, audience, and algorithm validation protect boundaries beyond key retrieval.
-          </div>
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Use the unfamiliar endpoint because any valid JWS has mandatory precedence.</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Use the familiar endpoint and ignore every signed object regardless of client support.</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Merge the familiar host with the path from the signed endpoint.</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Do not apply signed precedence until the unknown signer is trusted under local policy.</label>
+          </fieldset><div class="explain">RFC 8414 Section 2.1 defines the signed representation and its precedence, but only after the object and its `iss` have been validated. A mathematically valid signature from an unknown key does not authorize that signer to define an issuer's endpoints, and the RFC does not permit synthesizing alternative endpoints when validation fails. The application must establish the signer-to-issuer trust relationship before relying on signed values.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,d" data-difficulty="L3" data-hint="Metadata can change, but changes must not silently weaken checks.">
-        <header><h4>Q9: Which operational practices are safe for authorization server metadata. Select all that apply</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q9" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Check both URL construction and the response-to-request issuer binding.">
+        <header><h4>Q9: Which two corrections are required for this multi-tenant discovery flow? Select all that apply.</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">For issuer https://as.example/t1, a client fetches https://as.example/t1/.well-known/oauth-authorization-server. It accepts a document whose issuer is https://as.example/t2 because both tenants share a TLS certificate.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. cache metadata with a defined refresh strategy</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. cache metadata forever because authorization servers never rotate endpoints or keys</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. ignore issuer mismatch during temporary outages</label>
-            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. fail closed when required metadata is missing or inconsistent</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Metadata supports automation, but automation should not make clients accept stale or inconsistent security state.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: Defined refresh behavior lets clients update endpoints and keys without ad hoc behavior.
-- B: Authorization servers can rotate keys and endpoints, so forever caching is unsafe.
-- C: Ignoring issuer mismatch during outages is a fail-open behavior.
-- D: Failing closed avoids using metadata that no longer satisfies the deployment profile.
-          </div>
+            <label class="choice"><input type="checkbox" name="Q9" value="a"> A. Fetch https://as.example/.well-known/oauth-authorization-server/t1 under the RFC 8414 transformation.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="b"> B. Accept either tenant when the certificate Subject Alternative Name covers as.example.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="c"> C. Require the returned issuer to equal https://as.example/t1 exactly.</label>
+            <label class="choice"><input type="checkbox" name="Q9" value="d"> D. Remove the issuer path before comparison so both tenants have one identity.</label>
+          </fieldset><div class="explain">RFC 8414 Section 3.1 preserves the tenant path after the well-known suffix, and Section 3.3 separately requires exact equality between the returned issuer and the value used for URL construction. A shared TLS certificate can authenticate the host connection without making `/tenant-a` and `/tenant-b` the same issuer. Both the path-preserving construction and the exact comparison are needed to prevent cross-tenant confusion.</div>
         </div>
       </article>
-
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Absence of metadata support is not permission to guess.">
-        <header><h4>Q10: If a required capability is absent from metadata, what should a strict client do</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Assign each guarantee to the component and protocol that actually verifies it.">
+        <header><h4>Q10: Which assessment correctly composes discovery, token proof, and backend authorization?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">RFC 9728 resource metadata lists an authorization server. An A2A client validates that server's RFC 8414 metadata, obtains a grant, and presents a session-bound proof to a gateway. The gateway verifies both and forwards only an unsigned identity header to a backend that owns the resource policy.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. assume the feature is supported because the endpoint exists</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. treat the authorization server as unusable for that feature unless another trusted rule says otherwise</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. use the feature and wait for the resource server to reject it</label>
-          </fieldset>
-          <div class="explain">
-**Judgment point:** Metadata lets a client avoid guessing about capabilities. A strict profile should not turn missing data into support.
-
-**Related keywords:**
-- **issuer** : Authorization server identifier
-- **metadata** : JSON document describing endpoints and capabilities
-- **jwks_uri** : Location for keys used by the authorization server
-
-**Options:**
-- A: Endpoint existence does not imply support for every capability.
-- B: This preserves deterministic client behavior and avoids unsupported or unsafe flows.
-- C: Trying unsupported behavior can leak data and create confusing failure paths.
-          </div>
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. RFC 8414 metadata proves the grant, proof, and backend header because all began at one issuer.</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. The listed endpoints make the authorization server trusted for every resource that discovers them.</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Discovery configures the issuer; grant, proof, forwarding, and backend policy remain separate checks.</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. A valid grant removes the need to validate the metadata issuer or protect the forwarded identity.</label>
+          </fieldset><div class="explain">RFC 8414 Sections 3.3 and 6.2 authenticate metadata relative to the intended issuer, while Section 6.4 leaves the issuer-to-resource association to the application. Discovery, grant validation, session-bound proof, and backend authorization each have a different verifier and scope; success at one stage does not protect an unsigned internal header or retroactively validate another. The design must preserve the trusted issuer input and protect every derived assertion up to the component that owns the final resource decision.</div>
         </div>
       </article>
     </section>

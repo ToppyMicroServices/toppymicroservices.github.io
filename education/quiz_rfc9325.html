@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9325","SKILL_SUBTITLE":"Recommendations for Secure Use of TLS and DTLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9325","SKILL_SUBTITLE":"Recommendations for Secure Use of TLS and DTLS","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate what TLS deployment BCP provides from the acceptance and authorization decisions made by the consuming profile.">
-        <header><h4>Q1: Does RFC 9325 make TLS deployment BCP sufficient for A2A authorization?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="First classify the design as a new transport protocol or an application protocol that reuses TLS.">
+        <header><h4>Q1: Which TLS version policy fits this new A2A application protocol?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile cites RFC 9325 and claims that using TLS deployment BCP automatically settles peer acceptance and authorization.</p>
+          <p class="question-premise">The protocol runs over TCP, reuses TLS for channel security, and needs broad interoperability with current TLS libraries. It is not defining a new transport protocol.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. reviewing deployed TLS and DTLS configurations against current security recommendations; therefore no profile-specific trust or authorization rules are needed</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. reviewing deployed TLS and DTLS configurations against current security recommendations, while what authenticated identity is expected and how it maps to authorization remains an explicit profile or deployment decision</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8446 defines TLS 1.3, while RFC 9325 gives broader secure-use recommendations for TLS and DTLS deployments; therefore that nearby relationship supplies every local acceptance rule</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. Citing RFC 9325 is sufficient; the profile need not document the selected construction, interpretation, or local policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Require TLS 1.3 only, because every newly designed protocol is barred from integrating TLS 1.2.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Require TLS 1.2 only, because TLS 1.3 is optional whenever existing libraries must interoperate.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Integrate TLS 1.2 and TLS 1.3, prefer TLS 1.3 when available, and do not negotiate older versions.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Offer TLS 1.3 first but allow fallback through TLS 1.1 when a legacy agent cannot complete the handshake.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-5 defines the mechanism, not all relying-party policy; the conclusion overclaims its effect.
-B: Sections 3-5 supports the mechanism statement, while the application still owns the stated policy boundary.
-C: A relationship to another specification does not transfer that specification's guarantees or local policy automatically.
-D: RFC 9325 still defines interoperable behavior within its scope; calling it guidance does not make processing arbitrary.</div>
+A: RFC 9325 Section 3.1.1 reserves the TLS/DTLS 1.3-only rule for new transport protocols. It gives a different integration rule for new application protocols that reuse TLS.
+B: Section 3.1.1 requires TLS 1.2 support and recommends TLS 1.3 support, but it does not make TLS 1.2-only the target policy.
+C: Section 3.1.1 says new application protocols should integrate both versions for interoperability, must prefer TLS 1.3 when implemented, and must not negotiate TLS 1.1 or earlier.
+D: Section 3.1.1 forbids negotiation of TLS 1.0 and TLS 1.1. Compatibility does not justify this downgrade path.
+Decision rule: Apply the rule for the kind of protocol actually being designed, then state the version floor and negotiation preference explicitly.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Look for the construction or profiling choice on which independent implementations must agree before deployment policy is evaluated.">
-        <header><h4>Q2: Two implementations reach incompatible results for TLS deployment BCP. What must the profile define?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Examine what happens when an attacker removes the upgrade signal before TLS is established.">
+        <header><h4>Q2: How should this dynamic TLS upgrade be deployed?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The profile cites RFC 9325 but leaves a core construction or interpretation rule to each implementation.</p>
+          <p class="question-premise">An A2A control protocol has only a STARTTLS-like upgrade. Today, an agent continues in plaintext when the upgrade response is missing.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Document only what authenticated identity is expected and how it maps to authorization and leave the concrete construction or interpretation rule unspecified</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Rely on this adjacent statement without defining the local construction: RFC 8446 defines TLS 1.3, while RFC 9325 gives broader secure-use recommendations for TLS and DTLS deployments</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. Publish a deployment profile that disables obsolete versions and documents certificate and key-management rules</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. Accept both outputs as equivalent whenever each implementation reports local success</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Provide and enable a strict local policy that forbids plaintext when TLS is not negotiated, causing the connection to fail.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Continue in plaintext only for authenticated grants, because application authentication compensates for a stripped upgrade.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Retry the upgrade once and then continue in plaintext, because the peer might not implement the extension.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Permit plaintext on private networks, because the strict-upgrade guidance applies only to public web browsers.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Acceptance policy cannot repair incompatible construction inputs or encodings.
-B: A nearby specification relationship does not define this profile's omitted construction rule.
-C: Sections 3-4 contains the relevant construction and profiling boundary; the profile must make the selected behavior unambiguous.
-D: Two locally successful but unequal outputs are not interoperable merely because both implementations accept themselves.</div>
+A: RFC 9325 Section 3.2 requires a strict local policy when dynamic upgrade is the only method, and administrators must use it to forbid plaintext without negotiated TLS.
+B: A grant does not restore confidentiality or integrity to the unprotected exchange. Section 3.2 targets stripping and command-injection attacks before the secure channel exists.
+C: Falling back after a retry preserves the downgrade condition. The required end state is a TLS-protected channel, not a best-effort attempt to upgrade.
+D: Section 3.2 states the rule for protocols with only a dynamic upgrade method. Network location does not remove the specified downgrade risk.
+Decision rule: When upgrade is the only path, acceptance depends on reaching the protected end state; a failed upgrade is a failed connection.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Identify the RFC-specific input or evidence that must be checked, then separate that check from the local policy decision.">
-        <header><h4>Q3: Which correction addresses this TLS deployment BCP review defect?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Judge whether compromise of one ticket key would expose an unnecessarily large set of past resumptions.">
+        <header><h4>Q3: Which review finding is justified for this session-ticket design?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Observed production behavior: writing use TLS as the only requirement without naming versions, algorithms, validation, or downgrade behavior. The resulting value or conclusion controls an A2A security decision.</p>
+          <p class="question-premise">A gateway fleet shares one session-ticket encryption key for 90 days. Tickets remain valid for all 90 days, and retired gateways retain the old key for incident analysis.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Keep the current behavior but document how operational exceptions are approved, monitored, and retired as the only remaining concern</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Enforce supported TLS versions, strong cipher suites, certificate validation, and safe resumption behavior</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Treat this relationship as proof of successful verification: RFC 8446 defines TLS 1.3, while RFC 9325 gives broader secure-use recommendations for TLS and DTLS deployments</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. Continue processing because RFC 9325 support was advertised by both peers</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept the design if the initial full handshake used TLS 1.3, because later ticket handling cannot weaken forward secrecy.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept the shared key but shorten only the ticket identifier, because ticket confidentiality is independent of key lifetime.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Keep the old key for audit recovery, but encrypt the ticket a second time with the same fleet-wide key.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Require authenticated and encrypted resumption data, regular key rotation and destruction, and a bounded ticket lifetime tied to that rotation.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Operational policy matters, but it cannot substitute for the RFC-specific validation or analysis step.
-B: Section 7 supports resolving this RFC-specific review boundary before using the result in an A2A decision.
-C: Protocol composition must be validated explicitly; a citation or relationship is not a verification result.
-D: Capability advertisement is not evidence that this instance was constructed and checked correctly.</div>
+A: RFC 9325 Section 3.4 treats resumption as another handshake and warns that ticket-key compromise can negate forward-secrecy benefits.
+B: Identifier length does not bound the exposure window. Section 3.4 focuses on strong ticket encryption, key rotation, key destruction, and reasonable validity.
+C: Retaining a compromised-capable key defeats the required destruction at the end of its validity period. Reusing that key for another layer does not fix the trust window.
+D: Section 3.4 directly supplies these controls. Their purpose is to keep resumption from weakening the security properties of the initial handshake.
+Decision rule: Review session tickets by the secrets and time window they expose, not merely by whether the first connection was a full handshake.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="Separate the RFC-specific processing or analysis step from decisions left to the relying profile; neither category replaces the other.">
-        <header><h4>Q4: After processing TLS deployment BCP, which decisions still belong to the profile or deployment? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Look for an application-protocol specification that defines which early requests are replay-safe.">
+        <header><h4>Q4: May this state-changing A2A operation use TLS 1.3 0-RTT?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">The A2A design review has applied RFC 9325 and now has to decide whether the result is acceptable for a particular operation.</p>
+          <p class="question-premise">An agent sends a non-idempotent task that transfers credits as 0-RTT data. The A2A profile says only that TLS 1.3 is used; it defines no replay handling or operation eligibility.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. What authenticated identity is expected and how it maps to authorization</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Enforce supported TLS versions, strong cipher suites, certificate validation, and safe resumption behavior</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. How operational exceptions are approved, monitored, and retired</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Reviewing deployed TLS and DTLS configurations against current security recommendations</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes, if the grant is unexpired, because authorization validity also proves that the request was not replayed.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. No under the current profile; 0-RTT needs explicit protocol rules that define when it is appropriate and secure, including replay consequences.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes, if the server stores the TLS session ticket, because ticket uniqueness makes every early-data request execute once.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. No for every A2A operation in all deployments, because RFC 9325 permanently prohibits application protocols from using 0-RTT.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Sections 3-5 does not choose this relying-party policy for every deployment.
-B: This is an RFC-specific validation or analysis step, not a policy decision that can be skipped arbitrarily.
-C: The application or deployment must define this consequence beyond the RFC mechanism itself.
-D: This describes the RFC mechanism's scope, not a local acceptance choice.</div>
+A: Grant validity and replay resistance are independent. A copied authorized request can still cause the same state change more than once.
+B: RFC 9325 Section 3.10 says applications must avoid 0-RTT unless an explicit specification explains when it is appropriate and secure. This profile has no such rule.
+C: A session ticket enables resumption; it is not an application-level exactly-once record. The design still needs replay-aware operation rules.
+D: Section 3.10 does not impose a universal ban. It permits 0-RTT when an explicit application specification establishes safe use.
+Decision rule: The decision criterion is not TLS 1.3 alone; it is an explicit protocol rule plus replay-safe handling for the particular operation.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Do not let a citation or local success stand in for the RFC-specific check, context analysis, or local policy.">
-        <header><h4>Q5: Which review response is justified when TLS deployment BCP is used at an A2A trust boundary?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify the two TLS endpoints before assigning any identity to a component behind the terminator.">
+        <header><h4>Q5: What can the backend conclude from this gateway-terminated TLS connection?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">Intended use: when a public service, API, or internal control plane must document minimum TLS security requirements. Observed defect: claiming that TLS is used while leaving obsolete versions, weak algorithms, or broken certificate validation enabled.</p>
+          <p class="question-premise">Mutual TLS authenticates an agent to a gateway. The gateway then opens a separate TLS connection to a backend and sends an unsigned X-Agent-Identity header copied from the client certificate.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because the mechanism has the stated purpose (reviewing deployed TLS and DTLS configurations against current security recommendations), without resolving the observed defect</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Apply only the construction rule (publish a deployment profile that disables obsolete versions and documents certificate and key-management rules) and treat local processing success as sufficient</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Treat the defect as a warning because of the nearby specification (RFC 8446 defines TLS 1.3, while RFC 9325 gives broader secure-use recommendations for TLS and DTLS deployments), then continue with the same authorization</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. Correct the observed defect using the profile construction and RFC-specific check, then apply the local acceptance policy</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The backend has end-to-end mutual TLS with the agent because both network legs independently use TLS.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. The backend can treat the header as the client certificate whenever the gateway passed RFC 9325 cipher checks.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. RFC 9325 protects each TLS channel, but the client identity assertion across the gateway needs a defined trust boundary and integrity protection.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. The backend has no usable security property at all, because terminating TLS at an intermediary is forbidden by the BCP.</label>
           </fieldset><div class="explain">**Explanation:**
-A: A mechanism's purpose does not establish that this instance or context is acceptable.
-B: Correct construction is necessary but not sufficient for verification and local acceptance.
-C: An adjacent specification cannot convert a failed or context-confused result into success.
-D: Section 7 supports resolving the defect before relying on the result. The profile rule is: publish a deployment profile that disables obsolete versions and documents certificate and key-management rules. The check is: enforce supported TLS versions, strong cipher suites, certificate validation, and safe resumption behavior. The local policy is: what authenticated identity is expected and how it maps to authorization.</div>
+A: Two hop-by-hop TLS channels do not form one TLS channel. The authenticated endpoint on the second leg is the gateway, not automatically the original agent.
+B: Cipher and version checks protect the channel but do not authenticate an unsigned application header as a statement about the prior channel.
+C: RFC 9325 Section 5.1 defines TLS authentication in terms of an endpoint of the TLS communication. The system must separately protect and authorize the gateway assertion.
+D: RFC 9325 does not prohibit TLS termination at gateways. The issue is the claim carried across the resulting trust boundary, not the existence of an intermediary itself.
+Decision rule: Map every claimed identity to the channel on which it was authenticated, then specify how any cross-boundary assertion is protected and trusted.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Identify which specification supplies each layer, then retain the application checks that neither layer performs for the other.">
-        <header><h4>Q6: How should TLS deployment BCP be composed with the nearby specification cited by the profile?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="Separate transport configuration, early-data replay, application proof, and backend authorization into distinct checks.">
+        <header><h4>Q6: Which composition rule is sufficient for this high-impact A2A path?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">An A2A profile combines TLS deployment BCP with another protocol layer. Its design note says: RFC 8446 defines TLS 1.3, while RFC 9325 gives broader secure-use recommendations for TLS and DTLS deployments.</p>
+          <p class="question-premise">A gateway uses TLS 1.3 resumption and may receive 0-RTT tasks. It validates a grant and a session-bound proof, then forwards an identity assertion to a backend that performs the resource decision.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. The relationship makes what authenticated identity is expected and how it maps to authorization unnecessary; the profile need not say how the RFC result is used</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. After either layer succeeds, the required check (enforce supported TLS versions, strong cipher suites, certificate validation, and safe resumption behavior) can be skipped and the other layer can infer the result</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. The composition is complete once this checklist item is answered (Are exact inputs, context, validation rules, and rejection behavior specified); responsibility between the layers can remain implicit</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. The relationship identifies the layers; the profile must define local policy (what authenticated identity is expected and how it maps to authorization), perform the required check (enforce supported TLS versions, strong cipher suites, certificate validation, and safe resumption behavior), and state how that result is consumed by the operation</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Control ticket keys and lifetimes, permit 0-RTT only for explicitly replay-safe tasks, bind the proof to the accepted session, and protect the assertion used by backend authorization.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Treat a valid grant as permission to use 0-RTT, reuse ticket keys for operational simplicity, and let the backend infer the original session from the gateway hostname.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Disable 0-RTT but keep indefinite shared ticket keys, then accept the forwarded identity because every request arrived on some TLS-protected connection.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Meet the RFC 9325 version and cipher floor, then omit application proof and backend trust rules because TLS endpoint authentication supplies both decisions.</label>
           </fieldset><div class="explain">**Explanation:**
-A: Layering does not erase relying-party policy.
-B: Success in one layer does not stand in for validation required by another.
-C: A review checklist is useful, but responsibility and operational meaning still require an explicit profile.
-D: Sections 3-5 and Section 7 delimit the RFC side; the application profile must define and verify the composition boundary.</div>
+A: RFC 9325 Sections 3.4 and 3.10 cover resumption and early data, while Section 5.1 bounds TLS security services to its endpoints. Grant, proof, and resource authorization remain separate application checks.
+B: A grant does not provide replay safety or identify a TLS session. Long-lived shared ticket keys also conflict with the exposure controls in Section 3.4.
+C: Removing early data addresses one risk but leaves the ticket-key window and the cross-gateway identity assertion unevaluated.
+D: The BCP is a transport-security floor, not an authorization protocol. It cannot silently define proof inputs or the backend trust model.
+Decision rule: A composed design is acceptable only when each guarantee names its endpoint, freshness or replay rule, verification input, and final decision owner.</div>
         </div>
       </article>
     </section>

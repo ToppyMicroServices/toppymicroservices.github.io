@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7617",
       SKILL_SUBTITLE: "HTTP Basic Authentication",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,16 +101,15 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A Basic challenge is carried in `WWW-Authenticate`; the client's credential response uses the `Authorization` request header.
+            A Basic challenge is carried in `WWW-Authenticate`; the client's credential response uses the `Authorization` request header.
 
-            **Correct (A):** The client sends `Authorization: Basic <token68>`.
+            The client sends `Authorization: Basic &lt;token68&gt;`.
 
-            **Options:**
-            - A (correct): `Authorization` is the HTTP authentication framework's request field for credentials.
-            - B (incorrect): There is no `Authenticate` request field; server challenges use `WWW-Authenticate`.
-            - C (incorrect): `Cookie` is a separate state mechanism and is not the Basic credential field.
+            `Authorization` is the HTTP authentication framework's request field for credentials.
+            There is no `Authenticate` request field; server challenges use `WWW-Authenticate`.
+            `Cookie` is a separate state mechanism and is not the Basic credential field.
 
-            **Related:** Proxy authentication uses `Proxy-Authorization` rather than `Authorization`.
+            Proxy authentication uses `Proxy-Authorization` rather than `Authorization`.
           </div>
         </div>
       </article>
@@ -118,23 +118,22 @@
         <header><h4>Q2: Basic credentials are encoded as</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. Hash of username and password</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. Encrypted blob using server public key</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. A one-way hash of the user-id and password joined with a colon</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. A ciphertext encrypted to the server public key using its certificate algorithm</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Base64 of the encoded user-id, colon, and password sequence</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** Basic forms `user-pass` by concatenating the user-id, one colon, and the password, converts that character sequence to octets, and Base64-encodes the octets.
+            Basic forms `user-pass` by concatenating the user-id, one colon, and the password, converts that character sequence to octets, and Base64-encodes the octets.
 
-            **Correct (C):** Base64 changes the representation but supplies no confidentiality.
+            Base64 changes the representation but supplies no confidentiality.
 
-            **Options:**
-            - A (incorrect): The transmitted Basic token is not a password hash; the original user-pass octets can be recovered from Base64.
-            - B (incorrect): Basic does not encrypt the credential with the server's public key.
-            - C (correct): This describes the required construction while keeping the character-encoding step distinct.
+            The transmitted Basic token is not a password hash; the original user-pass octets can be recovered from Base64.
+            Basic does not encrypt the credential with the server's public key.
+            This describes the required construction while keeping the character-encoding step distinct.
 
-            **Related:** The default character encoding is not universally fixed; a challenge can advertise `charset="UTF-8"`.
+            The default character encoding is not universally fixed; a challenge can advertise `charset="UTF-8"`.
           </div>
         </div>
       </article>
@@ -143,23 +142,22 @@
         <header><h4>Q3: Why is Basic authentication unsafe without TLS</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. It cannot work over HTTP/2</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. It is incompatible with HTTP/2 and can only be parsed on an HTTP/1.1 connection</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Credentials can be trivially decoded by eavesdroppers</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. It forces cookies to be sent cross site</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. It causes the browser to attach every cookie to unrelated cross-site requests</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** Base64 is a reversible binary-to-text encoding. It is not encryption and does not require a secret key to decode.
+            Base64 is a reversible binary-to-text encoding. It is not encryption and does not require a secret key to decode.
 
-            **Correct (B):** A passive observer can recover the user-id and password from an unprotected Basic credential.
+            A passive observer can recover the user-id and password from an unprotected Basic credential.
 
-            **Options:**
-            - A (incorrect): Basic operates in HTTP's authentication semantics and is not inherently incompatible with HTTP/2.
-            - B (correct): TLS or another external secure channel is needed to protect the credential in transit.
-            - C (incorrect): Basic does not itself force browser cookies to be sent across sites.
+            Basic operates in HTTP's authentication semantics and is not inherently incompatible with HTTP/2.
+            TLS or another external secure channel is needed to protect the credential in transit.
+            Basic does not itself force browser cookies to be sent across sites.
 
-            **Related:** Password reuse increases the impact because disclosure can compromise accounts outside the challenged protection space.
+            Password reuse increases the impact because disclosure can compromise accounts outside the challenged protection space.
           </div>
         </div>
       </article>
@@ -175,41 +173,39 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** An origin server can challenge with `401 Unauthorized` and a `WWW-Authenticate: Basic realm=...` response field.
+            An origin server can challenge with `401 Unauthorized` and a `WWW-Authenticate: Basic realm=...` response field.
 
-            **Correct (A):** 401 is the standard status used for this origin authentication challenge.
+            401 is the standard status used for this origin authentication challenge.
 
-            **Options:**
-            - A (correct): It tells the client that credentials are required for the selected protection space.
-            - B (incorrect): 206 reports a partial-content response and does not initiate Basic authentication.
-            - C (incorrect): 302 redirects the request; it is not the authentication challenge status.
+            It tells the client that credentials are required for the selected protection space.
+            206 reports a partial-content response and does not initiate Basic authentication.
+            302 redirects the request; it is not the authentication challenge status.
 
-            **Related:** A proxy uses 407 and `Proxy-Authenticate`, which is a separate exchange.
+            A proxy uses 407 and `Proxy-Authenticate`, which is a separate exchange.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Treat the value as a reusable secret and review every forwarding, redirect, and logging boundary it can cross.">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Treat the value as a reusable secret and review every forwarding, redirect, and logging boundary it can cross.">
         <header><h4>Q5: A common operational best practice for Basic auth credentials is</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Put them in URLs for easy debugging</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Log the decoded value for troubleshooting</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Put the credential in a URL so histories, redirects, and logs can reproduce the request</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Decode and record the credential so operators can troubleshoot failed authentication</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Avoid sending them to untrusted origins and avoid logging them</label>
           </fieldset>
           <div class="explain">
             **Explanation:**
 
-            **Terms:** A Basic credential is a reusable secret. TLS protects it in transit to the intended peer but does not make later logs or forwarding safe.
+            A Basic credential is a reusable secret. TLS protects it in transit to the intended peer but does not make later logs or forwarding safe.
 
-            **Correct (C):** Restricting its destination and excluding it from logs reduces accidental disclosure outside the intended protection space.
+            Restricting its destination and excluding it from logs reduces accidental disclosure outside the intended protection space.
 
-            **Options:**
-            - A (incorrect): Credentials placed in a URL can spread through histories, access logs, analytics, and other URI-processing systems.
-            - B (incorrect): Logging the decoded user-pass stores the reusable secret in another system and broadens access to it.
-            - C (correct): Trust-boundary filtering and secret-aware logging address two common operational leakage paths.
+            Credentials placed in a URL can spread through histories, access logs, analytics, and other URI-processing systems.
+            Logging the decoded user-pass stores the reusable secret in another system and broadens access to it.
+            Trust-boundary filtering and secret-aware logging address two common operational leakage paths.
 
-            **Related:** RFC 7617 defines when credentials may be reused within an authentication scope; it does not make arbitrary cross-origin forwarding safe.
+            RFC 7617 defines when credentials may be reused within an authentication scope; it does not make arbitrary cross-origin forwarding safe.
           </div>
         </div>
       </article>
@@ -221,14 +217,33 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** The optional **charset** authentication parameter appears in a Basic challenge. Its only defined value in RFC 7617 is `UTF-8`, matched case-insensitively.
+            The optional **charset** authentication parameter appears in a Basic challenge. Its only defined value in RFC 7617 is `UTF-8`, matched case-insensitively.
 
-            **Correct:** **charset**.
 
-            **Why this matters:** The parameter is advisory and addresses the character-to-octet encoding used before Base64. It is not an encryption setting and does not appear inside the credential token.
+            The parameter is advisory and addresses the character-to-octet encoding used before Base64. It is not an encryption setting and does not appear inside the credential token.
 
-            **Related:** Without an agreed character encoding, non-ASCII user-ids and passwords can produce interoperability failures.
+            Without an agreed character encoding, non-ASCII user-ids and passwords can produce interoperability failures.
           </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Compute the original protection space before deciding whether a redirect target may receive the reusable credential.">
+        <header><h4>Q7: Which credential-handling decision is best supported by RFC 7617?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An agent authenticates with Basic over HTTPS to `https://api.example/tasks/7`. The origin returns a redirect to `https://collector.example/import`. A client library would forward the same `Authorization` field and record its decoded value in a debug log.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Forward it because a redirect inherits the original realm even when the target has a different scheme or authority</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Decode and re-encode it before forwarding because a fresh Base64 representation creates a new protection space</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Do not reuse it for the new origin; require an applicable challenge or policy, and keep the reusable secret out of logs</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+RFC 7617 Section 2.2 allows preemptive reuse only for resources within the authentication scope of the protection space. Its examples treat a scheme change as outside that scope; a different authority is not the original origin's protection space either. A redirect does not grant the new origin permission to receive the credential.
+
+Section 4 explains that Basic transmits a password in readily reversible form and should not protect sensitive information without HTTPS. Base64 re-encoding supplies no freshness or confidentiality. Because the value remains a reusable secret, recording the decoded form creates another disclosure path; avoiding that log is a deployment consequence of the threat, not a separate wire-format rule stated by RFC 7617.
+
+The new origin can issue its own applicable challenge, or an application can apply an explicit credential policy. It must not acquire the first origin's credential merely through redirect handling.</div>
         </div>
       </article>
     </section>

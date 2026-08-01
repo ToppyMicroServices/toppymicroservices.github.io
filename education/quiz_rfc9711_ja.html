@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9711","SKILL_SUBTITLE":"Entity Attestation Token (EAT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9711","SKILL_SUBTITLE":"Entity Attestation Token (EAT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Entity Attestation Tokenが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9711のEntity Attestation TokenだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="claimが説明するsystem componentと運営organizationを分け,base frameworkがprofileへ残す選択を確認します.">
+        <header><h4>Q1: このEATのscopeを正しく説明するものはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9711を参照し,Entity Attestation Tokenを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A service operatorは,sandbox processのEATが運営会社のlegal identityをattestし,全deploymentで同じclaimを必須にすると説明します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. relying partyがentityへのtrustを評価できるよう, entityに関するattested claimを運ぶこと.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. relying partyがentityへのtrustを評価できるよう, entityに関するattested claimを運ぶこと.ただし受理するclaim, issuer, appraisal rule, relying-party decisionはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9334はRATS roleを定義し, RFC 9711はattestation-oriented claimのtoken formatを定義する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9711を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. companyがEAT entityである.entityは常にserviceを担当するpersonまたはorganizationを意味する.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. certified hardwareとphysical attackへのminimum resistanceがなければ,sandboxはentityになれない.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. EAT base standardはuniversal claim setを必須にし,deployment profileはserializationだけを変更できる.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. sandbox processはentityだが,companyは違う.EAT profileがuse caseのclaimとprotectionを選ぶ.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-6はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 3-6がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9711はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: RFC 9711 Section 1.1は,EAT contextのentityがpersonやorganizationを指さず,target system componentを指すとします.
+B: Section 1.1はindividual processをentity例に含め,entityであるためのminimum security levelはないとします.
+C: Sections 1.2と6はflexibilityを残します.base frameworkは全claimを一律mandatoryにせず,profileが選択を狭めます.
+D: Sections 1.1,1.2,6が両boundaryを支えます.componentのclaimだけではoperatorのlegal identityをattestしません.
+判断軸: attested componentとprofileを明記し,component claimをoperatorへ拡張したり,base EATからuniversal token formatを推論したりしません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがEntity Attestation Tokenについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="誰がEvidenceをappraiseし,誰がAttestation Resultsをresource policyへ適用するかを特定します.">
+        <header><h4>Q2: final admission decisionを所有するparticipantは誰か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9711を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">attesterはEAT Evidenceをverifierへ送ります.verifierはreference valueを確認し,approved softwareが測定されたとのsigned Attestation Resultsを出します.relying partyがA2A resourceを管理します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. 受理するclaim, issuer, appraisal rule, relying-party decisionだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 9334はRATS roleを定義し, RFC 9711はattestation-oriented claimのtoken formatを定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. entityとstateを表すclaimを入れ, profileが要求するfreshness evidenceへbindする</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. attesterである.Evidenceへのsignは,entityがaccessできる全relying-party resourceも決定する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. relying partyである.authenticated Attestation Resultsをlocal policyで評価し,verifierはEvidence appraisalを所有する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. verifierである.positive Attestation Resultは全relying partyへのuniversal authorization commandである.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. EAT issuer registryである.registered claim nameが全claimのadmission consequenceを定義する.</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 4 and 6に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: Evidenceはtarget environmentを説明しますが,resource accessをgrantしません.attesterは全relying partyのpolicyを選べません.
+B: RFC 9711 Section 1.3.1は,EvidenceとAttestation Resultsの関係をverifierとそのpolicyが管理するとします.relying partyは結果を自分の判断へ使います.
+C: verifierはEvidenceをappraiseしますが,結果のconsequenceはrelying partyとuse caseで変わります.positive appraisalはuniversal authorizationではありません.
+D: claim registrationはnameとsemanticsを提供しますが,resource-owner policyやadmission decisionは提供しません.
+判断軸: attestation appraisalとauthorizationは,owner,input,policyが異なる別判断です.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このEntity Attestation Tokenのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="superior entityのdebug stateが各submoduleへpropagateすると定義されるか確認します.">
+        <header><h4>Q3: relying partyはTEEのdebug stateを推論できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: EATがsignedというだけで受理し, nonce, freshness, issuer, appraisal policyを無視すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">device EATのtop levelはdbgstat=disabled-fully-and-permanentlyをreportします.TEEはsubmoduleにありますがdbgstatがなく,policyはdeviceとTEEの両方でdebug disabledを要求します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,EvidenceとAttestation Resultをlocal trust decisionへどうmapするかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. trustを導く前にtoken protection, freshness, issuer, intended use, claim meaningを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 9334はRATS roleを定義し, RFC 9711はattestation-oriented claimのtoken formatを定義する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9711対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. できる.すべてのtop-level entity claimは自動的に全nested submoduleへ適用される.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. できる.TEEが同じmanufacturer identifierを使えば,common ownershipによりclaim inheritanceが生じる.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. できない.debug statusにinheritanceはなく,stated policyをpassするにはTEE自身のapplicable claimが必要である.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. できない.EATはsubmoduleのdebug-status claimを禁止し,out-of-band inspectionを要求する.</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Sections 8-9に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: RFC 9711 Section 4.2.9はsubmodule間のdebug statusにinheritanceがないと明示します.
+B: manufacturer identityはclaim scopeを変えません.whole-device facilityでも各submoduleが独立してreportすべきです.
+C: Section 4.2.9がこの結論を支えます.policyが両entityを指定する場合,missing evidenceをparent valueで置換できません.
+D: submoduleもdbgstatをreportできます.Section 4.2.9は独立reportがreceiverにstateを知らせる方法だと説明します.
+判断軸: 各claimをreportしたentityまたはsubmoduleへ適用し,claim definitionが否定するinheritanceを作りません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: Entity Attestation Tokenを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="token内challengeと,今回のverification transactionで発行したchallengeを比較します.">
+        <header><h4>Q4: 以前validだったこのEATを今回acceptできるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9711を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">verifierはfresh challenge N2を送ります.agentは昨日のsuccessful transactionのeat_nonce N1を含むcorrectly signed EATを返し,全measurementはreference valueに一致します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. 受理するclaim, issuer, appraisal rule, relying-party decision</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. trustを導く前にtoken protection, freshness, issuer, intended use, claim meaningを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. EvidenceとAttestation Resultをlocal trust decisionへどうmapするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. relying partyがentityへのtrustを評価できるよう, entityに関するattested claimを運ぶこと</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. rejectする.nonceがN2でなければ,signatureとmeasurement validityだけで今回のfreshnessを示せない.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. stable measurementならsoftware version変更までnonce mismatchは無関係なのでacceptする.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. N1がrandomなら無期限のlater verificationに使えるためacceptする.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. EATがJSONの場合だけrejectする.freshnessはJWT EATでmandatoryだが,CWT EATではoptionalである.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-6は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 9711 Sections 4.1と9.3はfreshness mechanismを要求します.stale challengeはold tokenがcryptographically validでもreplayを許します.
+B: measurementはstateの問いへ答え,freshnessはevidenceが今回のinteractionでcurrentかへ答えます.一方を他方で置換できません.
+C: randomnessはunpredictabilityに役立ちますが,verifierはtransaction用nonceをbindしてcheckする必要があります.reuseはそのbindingを失わせます.
+D: Section 9.3はJSON/JWTまたはCBOR/CWT encodingに関係なく,すべてのEAT利用へfreshnessを要求します.
+判断軸: authenticity,appraisal,freshnessを独立に検証します.old authentic tokenでもreplayable evidenceです.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでEntity Attestation Tokenを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="identifierにより無関係なrelying partyが同じentityをcorrelateできるか評価します.">
+        <header><h4>Q5: このcross-service UEID設計をどうreviewすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: serviceがtrust付与前にdevice, workload, component stateのevidenceを必要とする場面.観測した欠陥: staleまたはcontext-freeなattestation claimをcurrent authorization evidenceとして扱うこと.</p>
+          <p class="question-premise">agentはunauthenticated discovery endpointを含む全A2A serviceへ同じstable UEIDを送ります.各serviceのauthorization ruleはglobal device identifierを必要としません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（relying partyがentityへのtrustを評価できるよう, entityに関するattested claimを運ぶこと）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（entityとstateを表すclaimを入れ, profileが要求するfreshness evidenceへbindする）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 9334はRATS roleを定義し, RFC 9711はattestation-oriented claimのtoken formatを定義する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. valid EAT signatureがあればglobally unique UEIDはprivacy-preservingなので維持する.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. profileがJWTまたはCWTを許せばattestation claimはdata minimization対象外なので維持する.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. relying-party contextなしでUEIDをhashし,同じhashを全serviceへ送ればcross-service linkabilityは消える.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 不要な場所では省略するかcontext-specific strategyを使う.stable valueはrelying partyを越えたcorrelationを可能にする.</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Sections 8-9に沿って欠陥を解消してからresultを使います.profile rule: entityとstateを表すclaimを入れ, profileが要求するfreshness evidenceへbindする.check: trustを導く前にtoken protection, freshness, issuer, intended use, claim meaningを確認する.local policy: 受理するclaim, issuer, appraisal rule, relying-party decision.</div>
+A: RFC 9711 Section 8.1は,同じentityのtokenをlinkできるためUEIDは通常privacy-preservingでないとします.
+B: encodingやsignature formatはprivacy consequenceを除きません.Section 8はuse-case-dependentなprivacy choiceを推奨します.
+C: stableでglobally identicalなhashはstable correlatorのままです.disclosed identifierをcontext boundaryごとに変える必要があります.
+D: Sections 8と8.1は,suppression,permission,single-relying-party use,認証済み特定relying party用derived identifierを説明します.
+判断軸: relying policyが必要とする場合だけidentifierを開示し,stable identifierを最小の有用contextへscopeします.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: Entity Attestation Tokenとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="evidence freshness,verifier appraisal,result provenance,session proof,grant,resource authorizationを別linkとして追跡します.">
+        <header><h4>Q6: このA2A attestation boundaryで必要なcheckはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはEntity Attestation Tokenを別protocol layerと組み合わせます.design noteには「RFC 9334はRATS roleを定義し, RFC 9711はattestation-oriented claimのtoken formatを定義する」とあります.</p>
+          <p class="question-premise">gatewayはEATとOAuth grantを検証し,session-bound proofを確認して,Attestation-Status: trustedだけをbackendへ転送します.backendはresource policyを所有し,original EATをinspectできません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,受理するclaim, issuer, appraisal rule, relying-party decisionは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（trustを導く前にtoken protection, freshness, issuer, intended use, claim meaningを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（受理するclaim, issuer, appraisal rule, relying-party decision）を定義し,必要なcheck（trustを導く前にtoken protection, freshness, issuer, intended use, claim meaningを確認する）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. EAT signatureがvalidならheaderをacceptする.claim authenticityはfreshness,verifier policy,grant validity,session binding,backend decisionも自動的に立証する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. EAT profileとfreshness,verifier appraisal policy,forwarded resultのprotected provenance,proof-to-session binding,grant check,backend authorization ruleを定義する.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. backendにEATをparseさせるが,gateway-result protectionは省略する.direct claim accessがappraisal実行者の認証を不要にする.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. valid grantはEAT claimのruntime stateを立証し,session proofとappraisal checkも不要にするため,backendではOAuth grantだけを使う.</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 3-6とSections 8-9がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 9711 Sections 6,9.1,9.3はprofile choice,claim trustworthiness,freshnessを分けます.signatureだけでは他application guaranteeを立証しません.
+B: Sections 1.3.1と6がappraisalとprofile boundaryを定め,Sections 9.1と9.3がtrustworthinessとfreshnessを加えます.他のcheckはcomposed A2A authorization設計に属します.
+C: direct Evidence accessはindependent appraisalを可能にしますが,backendがdecision resultへ依存するならunprotected resultにはprovenanceがありません.
+D: OAuth authorizationとentity-state attestationは別の問いへ答えます.一方のtokenが他方の保証を暗黙に移しません.
+判断軸: backendはgateway appraisalをtrustできますが,trust boundary,authenticated result,freshness,independent authorization inputを明示する必要があります.</div>
         </div>
       </article>
     </section>

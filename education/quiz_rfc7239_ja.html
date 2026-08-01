@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 7239",
       SKILL_SUBTITLE: "Forwarded",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -102,15 +103,11 @@
 
             `Forwarded` は, HTTP requestがproxyを通ると失われたり変わったりする情報を記録します. 接続を保護したり, 記録値の正しさを証明したりするfieldではありません.
 
-            **各選択肢:**
-
-            - A: requestと転送proxyに関する情報を伝えるという, fieldの目的を表しています.
-
-            - B: transport securityはTLSの役割です. `Forwarded` はTLSを置き換えません.
-
-            - C: senderは偽の値も送れるため, 真正性は定義されたproxy trust boundaryに依存します.
-
             security判断に使う場合は, どのintermediaryがfieldを追加または置換できるかを定める必要があります.
+
+            A: requestと転送proxyに関する情報を伝えるという, fieldの目的を表しています.
+            B: transport securityはTLSの役割です. `Forwarded` はTLSを置き換えません.
+            C: senderは偽の値も送れるため, 真正性は定義されたproxy trust boundaryに依存します.
           </div>
         </div>
       </article>
@@ -131,19 +128,12 @@
 
             RFC 7239が初期登録するparameterは4つです. extensionによるparameter追加は可能ですが, `path` と `port` はこの4つに含まれません.
 
-            **各選択肢:**
-
-            - A: `for` はproxyへrequestを行ったnodeを示します.
-
-            - B: `by` はrequestを受信したproxy interfaceを示します.
-
-            - C: `proto` はproxyが受信したrequestで使われたprotocolを示します.
-
-            - D: `host` はproxyが受信した元のHost request-header値を示します.
-
-            - E: `path` はRFC 7239のparameterではなく, request pathは初期parameter群の対象外です.
-
-            - F: `port` は独立したRFC 7239 parameterではありません. node identifierでは, 構文が許す場合にportを含められます.
+            A: `for` はproxyへrequestを行ったnodeを示します.
+            B: `by` はrequestを受信したproxy interfaceを示します.
+            C: `proto` はproxyが受信したrequestで使われたprotocolを示します.
+            D: `host` はproxyが受信した元のHost request-header値を示します.
+            E: `path` はRFC 7239のparameterではなく, request pathは初期parameter群の対象外です.
+            F: `port` は独立したRFC 7239 parameterではありません. node identifierでは, 構文が許す場合にportを含められます.
           </div>
         </div>
       </article>
@@ -161,41 +151,33 @@
 
             1つのforwarded-elementは, 1つのproxyが追加した情報をまとめます. 複数elementはfield生成順のHTTP listになります.
 
-            **各選択肢:**
-
-            - A: 複数のfield lineは結合できますが, commaはlist delimiterであり禁止されません.
-
-            - B: forwarded-element間はcommaで区切り, 1つのelement内のparameter間はsemicolonで区切ります.
-
-            - C: RFC 7239が定義するのはHTTP field-value grammarであり, JSON形式ではありません.
-
             parserはquoted stringとoptional whitespaceもfield grammarに従って扱う必要があります.
+
+            A: 複数のfield lineは結合できますが, commaはlist delimiterであり禁止されません.
+            B: forwarded-element間はcommaで区切り, 1つのelement内のparameter間はsemicolonで区切ります.
+            C: RFC 7239が定義するのはHTTP field-value grammarであり, JSON形式ではありません.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="trusted edgeがfieldをsanitizeする前に, 誰がその値を付けられるかを考えてください.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="trusted edgeがfieldをsanitizeする前に, 誰がその値を付けられるかを考えてください.">
         <header><h4>Q4: Forwarded運用でありがちな主要リスクはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. HTTP/2へ強制downgradeする</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. HSTSを自動的に無効化する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. untrusted sourceから信じるとspoofされる</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. untrusted sourceによるspoofing</label>
           </fieldset>
           <div class="explain">
             **解説:**
 
-            `Forwarded` 自体には信頼性の保証がありません. clientは, requestがdeployment内の最初のtrusted proxyへ届く前に独自のfieldを付けられます.
-
-            **各選択肢:**
-
-            - A: このfieldはHTTP versionをnegotiationしないため, HTTP/2へのdowngradeを起こしません.
-
-            - B: HSTS policyを変更したり, HTTPSへのupgradeを無効にしたりするfieldではありません.
-
-            - C: untrusted senderの値を信じると, clientやproxyのmetadataをspoofされます.
+            RFC 7239 Section 8.1は,clientを含む任意のnodeが`Forwarded`を変更できるため,値が正しいとは依存できないと述べます.
 
             典型的には, trusted edgeで外部由来のforwarding fieldを除去し, trusted proxyの観測値から生成し直します.
+
+            A: このfieldはHTTP versionをnegotiationしないため, HTTP/2へのdowngradeを起こしません.
+            B: HSTS policyを変更したり, HTTPSへのupgradeを無効にしたりするfieldではありません.
+            C: untrusted senderの値を信じると, clientやproxyのmetadataをspoofされます.
           </div>
         </div>
       </article>
@@ -227,15 +209,11 @@
 
             RFC 7239は, 実identifierを開示すべきでない場合にobfuscated node identifierを認めます. この値はunderscoreで始め, 意図的に相関させる場合を除きrequestごとにrandom生成することが望まれます.
 
-            **各選択肢:**
-
-            - A: obfuscationにより, deploymentが必要と決めた関連付けだけを残し, identifierの開示を抑えられます.
-
-            - B: obfuscationはproxyを認証せず, fieldの由来も証明しません.
-
-            - C: identifierの開示と関連付けを制御する仕組みであり, header圧縮方式ではありません.
-
             literalの `unknown` は別の意味を持ち, 直前のnode identityが不明な場合に使います.
+
+            A: obfuscationにより, deploymentが必要と決めた関連付けだけを残し, identifierの開示を抑えられます.
+            B: obfuscationはproxyを認証せず, fieldの由来も証明しません.
+            C: identifierの開示と関連付けを制御する仕組みであり, header圧縮方式ではありません.
           </div>
         </div>
       </article>

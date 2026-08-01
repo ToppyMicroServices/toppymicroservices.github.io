@@ -37,6 +37,7 @@
       SKILL_NAME: "RFC 8446",
       SKILL_SUBTITLE: "TLS 1.3",
       LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 2,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -100,14 +101,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** forward secrecy, ephemeral key exchange. Forward secrecy means compromising long-term keys later does not decrypt past sessions.
-            **Correct (C):** TLS 1.3 removes static RSA and static Diffie-Hellman key exchange. Its public-key-based key exchanges use ephemeral (EC)DHE, so later compromise of a long-term authentication key does not reveal the past connection's shared secret.
-            **Options:**
+            RFC 8446 Section 1.2 removes static RSA and static Diffie-Hellman key exchange. Public-key-based exchanges use fresh (EC)DHE shares, so later compromise of a long-term authentication key does not by itself reveal the shared secret of an earlier connection.
 
-            - A (incorrect): Static RSA key transport is removed in TLS 1.3.
-            - B (incorrect): Static Diffie-Hellman is removed, and reusing one static share would not provide the intended forward-secrecy property.
-            - C (correct): Fresh ephemeral Diffie-Hellman shares provide forward secrecy for public-key-based key exchange.
-            **Related:** A PSK-only exchange does not provide forward secrecy for application data. A PSK combined with (EC)DHE can provide it, so the selected PSK key-exchange mode matters.
+            Forward secrecy is not automatic in every TLS 1.3 mode. A PSK-only exchange does not provide it for application data, while combining the PSK with (EC)DHE can. A reviewer must therefore inspect the negotiated key-exchange mode, not infer the property from the TLS version alone.
           </div>
         </div>
       </article>
@@ -123,19 +119,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** 0-RTT, early data, replay. 0-RTT allows sending application data before handshake completion, which changes threat assumptions.
-            **Correct (A):** Early data can be replayed in some situations, so servers and applications must treat it carefully.
-            **Options:**
+            RFC 8446 Section 8 states that TLS does not provide inherent replay protection for 0-RTT data. An attacker can cause the same early-data bytes to be processed more than once under conditions described in that section; certificate expiration is not the distinguishing issue.
 
-            - A (correct): Replay is the main risk.
-            - B (incorrect): Certificate expiration is unrelated to 0-RTT.
-            - C (incorrect): This is backwards. 0-RTT has weaker properties in the replay dimension.
-            **Related:** Accept early data only when repeated execution has no unacceptable effect, and apply replay defenses appropriate to the deployment. Idempotence is a useful starting property, but it does not by itself prove that every replay is safe.
+            Applications should accept early data only when repeated execution has no unacceptable effect and should apply replay defenses suitable for the deployment. Idempotence is relevant, but it does not by itself prove that every replay is harmless across authorization, rate-limit, and backend boundaries.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Trace how TLS needs distinct secrets for handshake stages and for the two traffic directions.">
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Trace how TLS needs distinct secrets for handshake stages and for the two traffic directions.">
         <header><h4>Q3: TLS 1.3 derives keys through which general construction</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -146,19 +137,14 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** key schedule, HKDF. A key schedule defines how traffic keys and secrets evolve as the handshake progresses.
-            **Correct (B):** TLS 1.3 uses an HKDF-based key schedule to derive multiple secrets for different stages and directions.
-            **Options:**
+            RFC 8446 Section 7 defines an HKDF-based key schedule. `HKDF-Extract` combines input keying material at successive stages, and `HKDF-Expand-Label` derives purpose-specific secrets and keys, including separate handshake and application traffic secrets for each direction.
 
-            - A (incorrect): Base64 is an encoding, not a key derivation method.
-            - B (correct): HKDF is the standard KDF used for TLS 1.3 secrets.
-            - C (incorrect): TLS rotates secrets as the handshake advances and uses separate keys per direction.
-            **Related:** Separating handshake and application traffic secrets helps limit damage if something leaks.
+            Base64 only changes representation and cannot provide key derivation or domain separation. Reusing one traffic key across stages would also discard the separation that the TLS 1.3 schedule is designed to provide.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify the point where the peers have enough key-schedule state to protect the rest of the handshake.">
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Identify the point where the peers have enough key-schedule state to protect the rest of the handshake.">
         <header><h4>Q4: How are TLS 1.3 handshake messages sent after ServerHello protected</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -192,14 +178,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** handshake traffic keys, encryption. TLS 1.3 encrypts much more of the handshake than earlier versions.
-            **Correct (C):** After ServerHello, the endpoints derive handshake traffic secrets and encrypt subsequent handshake messages with the corresponding traffic keys.
-            **Options:**
+            After ServerHello, the peers have the inputs needed to derive handshake traffic secrets. RFC 8446 then carries the remaining handshake messages in records protected with the corresponding handshake traffic keys; compression is not the protection mechanism.
 
-            - A (incorrect): TLS 1.3 intentionally reduces plaintext handshake exposure.
-            - B (incorrect): Compression is not the primary mechanism here.
-            - C (correct): Handshake traffic keys protect the later handshake records.
-            **Related:** Encrypted handshake improves privacy and reduces ossification pressure.
+            This reduces plaintext exposure of certificate and extension information compared with earlier handshakes. ClientHello and ServerHello remain visible because they are needed to establish the parameters from which those secrets are derived.
           </div>
         </div>
       </article>
@@ -215,14 +196,9 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** confidentiality, integrity, replay. TLS is a security protocol that protects traffic against eavesdropping and modification.
-            **Correct (A):** TLS provides encryption and message authentication to protect data in transit.
-            **Options:**
+            TLS record protection uses authenticated encryption to provide confidentiality and integrity for data in transit. Those channel properties do not decide which application principal may perform an operation; authorization remains an application-policy decision.
 
-            - A (correct): These are baseline protections.
-            - B (incorrect): TLS does not decide application authorization logic.
-            - C (incorrect): Some modes like early data have replay considerations that applications must address.
-            **Related:** Authentication of the server is typically provided by certificates, but trust decisions remain an application and policy concern.
+            TLS also does not promise replay prevention in every mode. In particular, 0-RTT has the replay considerations described in RFC 8446 Section 8. Peer authentication and certificate validation, when used, still depend on the negotiated authentication mode and the relying party's trust policy.
           </div>
         </div>
       </article>
@@ -234,10 +210,28 @@
           <div class="explain">
             **Explanation:**
 
-            **Terms:** DHE, ECDHE, forward secrecy. These are Diffie-Hellman based ephemeral key exchanges.
-            **Correct:** DHE or ECDHE. Both represent ephemeral DH variants used for forward secrecy.
-            **Why others are wrong:** Static RSA key exchange is removed in TLS 1.3. PSK is different: it can resume sessions, but forward secrecy depends on additional mechanisms.
-            **Related:** The key exchange choice impacts performance and cryptographic agility.
+            DHE and ECDHE use fresh ephemeral Diffie-Hellman shares to establish a per-connection secret. TLS 1.3 removes static RSA key transport and static Diffie-Hellman, so (EC)DHE is the public-key exchange family that supplies forward secrecy.
+
+            A PSK can be used for resumption, but PSK-only mode does not provide forward secrecy for application data. The `psk_dhe_ke` mode adds an ephemeral Diffie-Hellman exchange and therefore changes that property.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate channel authentication from the application's guarantee about executing one operation only once.">
+        <header><h4>Q7: Which execution decision is justified by RFC 8446</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A client sends a funds-transfer POST as TLS 1.3 0-RTT data. Replay caches are isolated per edge zone, and a rejected early-data request is retried as 1-RTT in another zone. The service claims successful TLS authentication proves at-most-once execution.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes; PSK authentication binds every accepted request to one unique TLS connection and execution</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Yes; a replay cache in each zone plus a 1-RTT retry makes duplicate execution impossible</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. No; keep this operation out of 0-RTT unless the application profile makes repeated execution safe</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            C is the defensible decision. RFC 8446 Sections 2.3 and 8 state that 0-RTT has weaker security properties and no inherent protection against replay across connections. Successful TLS authentication therefore does not establish at-most-once execution. Isolated replay state and a cross-zone retry path can still let the application observe the operation more than once.
+
+            Appendix E.5 requires an application profile using 0-RTT to identify which messages are safe and to define appropriate handling. For a transfer, the service can use 1-RTT, or it can define application-level semantics such as a protected operation identifier with deduplication across every execution path. RFC 8446 does not mandate that particular design, and even its anti-replay mechanisms do not turn TLS authentication into a general transaction guarantee.
           </div>
         </div>
       </article>

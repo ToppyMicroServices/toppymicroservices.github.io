@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9847","SKILL_SUBTITLE":"TLS/DTLS IANA Registry Updates","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 9847","SKILL_SUBTITLE":"TLS/DTLS IANA Registry Updates","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,106 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="TLS registry updateが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 9847のTLS registry updateだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Nを直接的security gradeではなく,IETF evaluationに関するstatementとして読みます.">
+        <header><h4>Q1: このTLS mechanismのN entryが立証するものは何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 9847を参照し,TLS registry updateを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">teamはIANA Recommended列がNであることだけを理由にexporter-related mechanismをrejectし,Nはcryptographic flawの証明だと説明します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. discouraged markingやcomment columnを含むTLS/DTLS IANA registry metadataを更新すること.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. discouraged markingやcomment columnを含むTLS/DTLS IANA registry metadataを更新すること.ただしproduct, compliance profile, security baselineで許すregistry entryはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 9847はTLS 1.3 protocol自体を変えず, TLS registry周辺のregistry handlingを更新する.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 9847を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. NはIETFがmechanismを評価し,implementationが使うべきでないとのconsensusへ達したことを意味する.</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. NはIETFのsuitability statementがないことを示す.referenceとapplicabilityを確認してから判断する.</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Nはprivate deploymentではsafeだが,public Internetでは禁止されることを意味する.</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Nはregistry entryがunassignedで,Yへ変わるまでimplementationできないことを意味する.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-16はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 3-16がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 9847はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: RFC 9847 Section 3はdiscouraged itemへDを使います.Nは使うべきでないとのconsensusをencodeしません.
+B: Section 3はNをIETFによる未評価でsuitability statementなしと定義し,flawを必ず意味するわけではないと警告します.
+C: registry valueはprivate対publicのdeployment ruleを作りません.applicabilityはmechanism documentationとlocal profileから得ます.
+D: assigned entryもNになり得ます.Section 3はYまたはDへ設定されないitemをNにするとします.
+判断軸: Nはapprovedまたはinsecureの略語ではなく,referenceとdeployment profileからevidenceを集めるtriggerとして使います.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがTLS registry updateについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="defined purposeへのfitnessと,すべてのprotocol useへのfitnessを区別します.">
+        <header><h4>Q2: profileはY entryから何を推論できるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 9847を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">A2A profileはYとmarkされたTLS mechanismを選び,applicability statementを読まずに全agent operationへ適切だとregistry statusが証明すると主張します.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. product, compliance profile, security baselineで許すregistry entryだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 9847はTLS 1.3 protocol自体を変えず, TLS registry周辺のregistry handlingを更新する</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. 明確なspecification付きregistration requestを用意し, expert reviewやstandards actionが必要な条件を理解する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. 主張は正しい.Yはprotocol,endpoint,threat modelを越えたuniversal security approvalである.</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. mechanismが他standards bodyではなくIETF working groupでregisterされた場合だけ正しい.</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Yはdefined purposeにfitするとのIETF consensusであり,profileはapplicabilityとconstraintも確認する.</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Yはcode pointがsyntactically validとだけ示し,どのpurposeへのfitness statementも持たない.</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 3 and 14-16に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: RFC 9847 Section 3はYをdefined purposeへのfitnessに明確に限定し,applicabilityを注意して読むよう求めます.
+B: Yの意味はIETF consensusとdefined-purpose fitnessであり,initial registration requestを出したorganizationでは決まりません.
+C: Section 3がこの限定的推論を支えます.mechanismはYでも,仕様にlimited applicabilityを持つ場合があります.
+D: IETF suitability statementがないvalueはNです.Yはcode-point assignment以上を示しますが,universal approvalではありません.
+判断軸: registry recommendationはdesign reviewの1 inputです.use caseをmechanismのdocumented purposeとconstraint内に維持します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このTLS registry updateのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="entryのReferenceとCommentを読み,対象条件がSHOULD NOTかMUST NOTかを確認します.">
+        <header><h4>Q3: このD-marked mechanismをどうreviewすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: TLS registry entryが存在するだけで使い, recommendation stateとcommentを無視すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">internal A2A deploymentがDとmarkされたTLS mechanismを提案します.reviewerはletterだけでrejectし,implementerはisolated networkだけを理由にacceptします.どちらもlinked materialを読みません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,discouraged mechanismの例外をどう正当化しretireするかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. mechanismが使えるか決める前に, Y, N, Dをreference/commentと一緒に読む</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 9847はTLS 1.3 protocol自体を変えず, TLS registry周辺のregistry handlingを更新する</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 9847対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. どちらの結論もまだ根拠不足である.Dはdiscouragedで,referenceまたはcommentがproblemとSHOULD NOTまたはMUST NOTになる条件を示す.</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. reviewerが常に正しい.全D entryは全deploymentでunconditional protocol-level MUST NOTである.</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. implementerが常に正しい.DはInternet-facing serviceだけに適用され,isolated networkには影響しない.</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Dはdesign-review上の意味を持たないeditorial metadataなので,両positionとも同じくconformingである.</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Section 17に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: RFC 9847 Sections 3と3.1はDをdiscouraged itemとし,applicable SHOULD NOTまたはMUST NOT conditionをreferenceで確認するよう求めます.
+B: 記載security goalではabsoluteなconditionもありますが,D列だけでは全contextへのuniversal MUST NOTを表しません.
+C: isolationはlinked rationaleで関連すると示された場合だけrelevant contextです.documented weaknessやconstraintを免除すると仮定できません.
+D: DはIETF-reviewed discouragementを反映し,実質的なreview意味があります.unassigned entryのようなneutral placeholderではありません.
+判断軸: D valueはconditional reviewの開始点です.documented failure modeを特定し,normative conditionを実deployment goalへ適用します.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: TLS registry updateを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="registration hygieneとexpert reviewを,application exporter constructionのendorsementから分けます.">
+        <header><h4>Q4: このTLS exporter labelのapprovalは何を立証するか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 9847を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">label EXPORTER-A2A-session-proofはExpert Reviewを通り,IANAはprintable ASCIIで他labelのprefixでないことを確認します.applicationはregistrationをproof protocolのsecurity reviewとして扱います.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. product, compliance profile, security baselineで許すregistry entry</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. mechanismが使えるか決める前に, Y, N, Dをreference/commentと一緒に読む</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. discouraged mechanismの例外をどう正当化しretireするか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. discouraged markingやcomment columnを含むTLS/DTLS IANA registry metadataを更新すること</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Expert Reviewはapplication-level cryptographic analysisを置換するため,proof protocolがsecureだと立証する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. registryがentryをNのままにしても,すべてのlabel利用がRecommended=Yだと立証する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. 全registered labelがその意味を持つため,exporter valueがTLS sessionではなくend userを識別すると立証する.</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. registration checkの通過だけを示す.proof designのendorsementではなく,context binding,endpoint,acceptance ruleは別reviewとなる.</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-16は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 9847 Section 7はdeeper reviewを許しますが,expert approvalをexporter labelのendorsementとして扱わないよう明示します.
+B: Section 7は既存YとNを維持し,recommendation status変更には別processを適用します.Expert registrationはYを意味しません.
+C: labelはexporter useをnamespaceしますが,application identity meaningを提供しません.protocolがinputとinterpretationを定義する必要があります.
+D: Section 7はsyntactic checkとprefix checkを示し,approvalが立証する範囲を限定します.consuming security constructionはapplicationの責務です.
+判断軸: registrationはlabel collisionを防ぎreview可能性を改善しますが,exporter利用protocolのsemanticsやsecurityをcertifyしません.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryへTLS registry updateを適用するとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="registry metadataをlocal allowまたはrequire policyへ変換する前に,YとNの定義を適用します.">
+        <header><h4>Q5: このautomated TLS policyの問題は何か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: TLS profile, exporter label, cipher suite, extension registrationのsafe useをレビューする場面.観測した欠陥: Nをsafe approvalとして扱うこと, 弱いまたは問題あるmechanismのD markingを無視すること.</p>
+          <p class="question-premise">deployment toolは全Y itemをmandatoryにし,全N itemを自動allowします.D itemはReferenceやCommentをreviewerへ示さずblockします.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（discouraged markingやcomment columnを含むTLS/DTLS IANA registry metadataを更新すること）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（明確なspecification付きregistration requestを用意し, expert reviewやstandards actionが必要な条件を理解する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 9847はTLS 1.3 protocol自体を変えず, TLS registry周辺のregistry handlingを更新する）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. D handlingだけが問題で,Yは常にmandatory,NはRFC 9847上常にsafe to enableである.</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. N handlingだけが問題で,Y itemはdocumented purposeが無関係でもすべてenableする必要がある.</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 全mappingが誤り.Yはpurpose-bounded,Nはsuitability statementなし,Dはdocumented conditionの確認が必要である.</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Recommended列はmechanism specificationとlocal security profileを置換するため,問題はない.</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Section 17に沿って欠陥を解消してからresultを使います.profile rule: 明確なspecification付きregistration requestを用意し, expert reviewやstandards actionが必要な条件を理解する.check: mechanismが使えるか決める前に, Y, N, Dをreference/commentと一緒に読む.local policy: product, compliance profile, security baselineで許すregistry entry.</div>
+A: RFC 9847 Section 3はYをuniversally mandatoryにせず,Nをaffirmatively safeにしません.Section 3.1はDにcontextを求めます.
+B: N mappingはunsafeですが,Yにもapplicability reviewが必要で,全mechanismをactivateする要件ではありません.
+C: Sections 3と3.1が3個の異なる意味を定義します.toolは表示できますが,contextなしにrequire,allow,blockへ圧縮できません.
+D: この列はconsensus statusを要約します.RFC 9847はmechanism documentation,reference,comment,applicabilityを確認するよう繰り返し求めます.
+判断軸: registry metadataはreview priorityに使えますが,final policyはstatus,referenced constraint,protocol need,local risk acceptanceを組み合わせます.</div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: TLS registry updateとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="TLS configuration,registry status,exporter construction,proof verification,authorizationへ別々のevidenceを割り当てます.">
+        <header><h4>Q6: このsession-bound A2A profileに合うreview結論はどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはTLS registry updateを別protocol layerと組み合わせます.design noteには「RFC 9847はTLS 1.3 protocol自体を変えず, TLS registry周辺のregistry handlingを更新する」とあります.</p>
+          <p class="question-premise">profileはTLS versionとcipherにRFC 9325を適用し,Nでregisteredされたexporter labelを使い,gatewayでsession proofを導出し,backendでauthorizeします.label仕様はTLS termination越しのforwardingを定義しません.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,product, compliance profile, security baselineで許すregistry entryは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（mechanismが使えるか決める前に, Y, N, Dをreference/commentと一緒に読む）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. 記載された関係はlayerを識別する.profileはlocal policy（product, compliance profile, security baselineで許すregistry entry）を定義し,必要なcheck（mechanismが使えるか決める前に, Y, N, Dをreference/commentと一緒に読む）を行い,そのresultをoperationがどう使うか記載する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. TLS floorがsoundでも,N entryとexporter endpointをreviewし,backendが使うgateway assertionを保護する必要がある.</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Nはexporter labelがinsecureだと立証するため,仕様がuse caseに合っていてもそれだけでrejectする.</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. RFC 9325に従えば,registered exporter valueがbackend-verifiable identityへ変わるため,それだけでacceptする.</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. registrationが異なるTLS session間のproof transferをendorseするため,Expert Review済みlabelならforwarded proofをacceptする.</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 3-16とSection 17がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 9847 Sections 3と7はNとregistrationの意味を限定します.RFC 9325はTLS deploymentを扱い,applicationとgateway trust ruleが残るcompositionを定義します.
+B: NはIETF suitability statementなしを意味し,flawの証明ではありません.仕様とdeployment useが必要なevidenceです.
+C: TLS configuration BCPはapplication proof semanticsを定義せず,backend endpointをclient-gateway TLS sessionの一部にしません.
+D: Section 7はexpert approvalがendorsementではないとします.別channel越しのexporter-derived assertion forwardingを認可できません.
+判断軸: 1個のregistry letterやTLS checklistだけではcomposed guaranteeになりません.exporterをchannel instanceへ追跡し,trust-boundary transitionを保護します.</div>
         </div>
       </article>
     </section>

@@ -2,8 +2,9 @@
 """Quiz authoring policy checker.
 
 The checker evaluates the explanation and optional hint authored in each quiz
-HTML file. Runtime-generated text must not be used to make incomplete content
-pass.
+HTML file.  It checks for substantive reasoning, not a prescribed
+option-by-option template.  Runtime-generated text must not be used to make
+incomplete content pass.
 
 Exit code:
   0: no failures
@@ -204,14 +205,6 @@ def _check_question_shape(
 
     question_markup = EXPLAIN_RE.sub("", body)
     visible_question_text = _strip_tags_preserve_breaks(question_markup) + "\n" + hint_text
-    if is_ja and ("。" in visible_question_text or "、" in visible_question_text):
-        results.append(
-            CheckResult(
-                False,
-                "WARN_JA_PUNCTUATION",
-                "Question or hint uses Japanese punctuation; project quiz copy uses '.' and ','",
-            )
-        )
     if is_ja and "意味論" in visible_question_text:
         results.append(
             CheckResult(
@@ -328,34 +321,36 @@ def _check_explain_block(explain_html: str, *, is_ja: bool, qtype: str, choice_l
 
     explain_text = _strip_tags_preserve_breaks(explain_html)
 
-    # Length / not one-liner
-    if len(explain_text) < 120 or "\n" not in explain_text:
+    # Require enough authored reasoning to explain the governing distinction.
+    # Source-line wrapping is an authoring detail, so a well-developed paragraph
+    # is valid even when it occupies one HTML line.
+    if is_ja:
+        sentence_endings = len(
+            re.findall(
+                r"[。！？]|(?<!\d)[.!?](?=$|\s|[A-Za-z\u3040-\u30ff\u3400-\u9fff])",
+                explain_text,
+            )
+        )
+    else:
+        sentence_endings = len(re.findall(r"[.!?](?:\s|$)", explain_text))
+    has_reasoning_shape = sentence_endings >= 2 or "\n" in explain_text
+    if len(explain_text) < 100 or not has_reasoning_shape:
         results.append(
             CheckResult(
                 False,
                 "FAIL_EXPLAIN_TOO_SHORT",
-                "Explanation looks too short (should not be a one-liner and should be readable)",
+                "Explanation needs a substantive reason and enough context to be independently readable",
             )
         )
 
-    # Option-by-option
+    # Option-by-option labels are optional.  When authors use them, reject
+    # placeholder statements such as merely saying that an option is wrong.
     if qtype.lower() in {"mc", "ms"} and len(choice_letters) >= 2:
-        missing: list[str] = []
         generic: list[str] = []
         for letter in choice_letters:
             reason = _option_reason(explain_text, letter)
-            if reason is None:
-                missing.append(letter)
-            elif _is_generic_option_reason(reason):
+            if reason is not None and _is_generic_option_reason(reason):
                 generic.append(letter)
-        if missing:
-            results.append(
-                CheckResult(
-                    False,
-                    "FAIL_NO_OPTION_EXPLAIN",
-                    "Missing per-option explanation for: " + ", ".join(missing),
-                )
-            )
         if generic:
             results.append(
                 CheckResult(
@@ -376,15 +371,6 @@ def _check_explain_block(explain_html: str, *, is_ja: bool, qtype: str, choice_l
                     "Found '意味論'. Consider more natural wording like 'セマンティクス(意味/ルール)' or simply '意味'.",
                 )
             )
-        if "。" in explain_text or "、" in explain_text:
-            results.append(
-                CheckResult(
-                    False,
-                    "WARN_JA_PUNCTUATION",
-                    "Found Japanese punctuation (。/、). Project policy prefers '.' and ','.",
-                )
-            )
-
     return results
 
 

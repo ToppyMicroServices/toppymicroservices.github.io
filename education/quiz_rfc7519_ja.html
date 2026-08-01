@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -57,100 +57,100 @@
     </section>
 
     <section id="questions">
-            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="JWT claims tokenが提供する機能と,利用profileが決めるacceptanceやauthorizationを分けてください.">
-        <header><h4>Q1: RFC 7519のJWT claims tokenだけでA2A authorizationまで確定できるか</h4><span class="type">単一選択</span></header>
+            <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="registryはnameと一般的semanticsを定義します. どのclaimを必須にし, どのauthorizationへ結び付けるかはapplication contextが決めます. ">
+        <header><h4>Q1: RFC 7519がすべてのJWTへ必須とするclaimはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileがRFC 7519を参照し,JWT claims tokenを使えばpeer acceptanceとauthorizationも自動的に決まると主張しています.</p>
+          <p class="question-premise">A2A profileは全task tokenへiss, sub, aud, exp, jtiを含めたいと考えています. authorはRFC 7519自身がこのclaim setを必須にすると説明しています. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. JOSE mechanismで署名, MAC, 暗号化できるcompactなJSON claims setを運ぶこと.したがってprofile固有のtrustとauthorization ruleは不要である</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. JOSE mechanismで署名, MAC, 暗号化できるcompactなJSON claims setを運ぶこと.ただしどのclaimを必須にし, authorization上どう解釈するかはprofileまたはdeploymentが明示的に決める</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8725はRFC 7519形式を安全に使うための現在のbest practiceを示す.したがって近接仕様がすべてのlocal acceptance ruleも提供する</label>
-            <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 7519を参照すれば十分であり,選んだconstruction,interpretation,local policyをprofileへ記載しなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. JWTがintegrity-protectされる場合, Section 4.1のregistered claimはすべて必須である</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 一律mandatoryではない. A2A profileがclaimを必須にし, validationとauthorizationを定義できる</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. issとexpだけが一律に必須で, その他はoptionalである</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. JWT claimの利用は常にoptionalなので, application profileはclaimを必須にできない</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-4はmechanismを定義しますが,すべてのrelying-party policyまでは決めません.
-B: Sections 3-4がmechanism側を支え,applicationは記載されたpolicy boundaryを所有します.
-C: 近接仕様との関係だけで,その仕様の保証やlocal policyが自動的に移転することはありません.
-D: RFC 7519はscope内のinteroperable behaviorを定義します.guidanceであっても処理を任意にはできません.</div>
+A: claimのregistrationは全registered claimをmandatoryにはしません.
+B: RFC 7519 Section 4は, required claimがcontext dependentでbase specificationの一律要件ではないとします. profileは選択したclaimを必須にしてoperational meaningを定義できます.
+C: issとexpもRFC 7519で一律mandatoryとはされていません.
+D: base specificationがapplicationへ選択を委ねることと, profileが要件を課せないことは別です. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="deployment policyより前に,独立実装が一致すべきconstructionまたはinterpretation ruleを探してください.">
-        <header><h4>Q2: 二つのimplementationがJWT claims tokenについて両立しない結果を出す.profileは何を定義すべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="claimは単一audienceまたはarrayを持てます. 比較対象は関連service名ではなくprocessor自身のidentityです. ">
+        <header><h4>Q2: A2A recipientはaudをどうvalidateすべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">profileはRFC 7519を参照するだけで,中核となるconstructionまたはinterpretation ruleを各implementationへ任せています.</p>
+          <p class="question-premise">JWTのaudは["task-gateway", "billing-agent"]です. billing-agentがtokenを処理し, 無関係なinventory-agentがcopyされたrequestを受け取ります. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. どのclaimを必須にし, authorization上どう解釈するかだけを記載し,具体的なconstructionまたはinterpretation ruleは未定義のままにする</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. local constructionを定義せず,この近接関係だけに依存する: RFC 8725はRFC 7519形式を安全に使うための現在のbest practiceを示す</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. claimの意味, token type, audience, lifetime, 必要な署名または暗号化を定義する</label>
-            <label class="choice"><input type="radio" name="Q2" value="d"> D. 各implementationがlocal successを返せば,異なるoutputも同じものとして受理する</label>
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. non-empty aud arrayがrecipientの指定を証明するため, 両agentがacceptする</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. 同じissuerとverification keyを共有すれば, 両agentがacceptする</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. billing-agentは通り得るが, inventory-agentはaudにないためrejectする</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. aud arrayは最初のelementだけで解釈するため, task-gatewayだけがacceptする</label>
           </fieldset><div class="explain">**解説:**
-A: acceptance policyでは,incompatibleなconstruction inputやencodingを修復できません.
-B: 近接仕様との関係は,このprofileが省略したconstruction ruleを定義しません.
-C: Sections 4 and 7に対応するconstructionとprofiling boundaryを,profile内で一意に決める必要があります.
-D: 双方が自己受理しても,異なるoutputがinteroperableになるわけではありません.</div>
+A: recipientはaudience valueの中で自身を識別する必要があり, non-empty arrayだけでは不十分です.
+B: issuerとkey validationはrecipient restrictionの代わりになりません.
+C: RFC 7519 Section 4.1.3はstringまたはarrayを許し, processorがaud内で自身を識別できなければrejectするよう求めます. aud通過だけでoverall acceptanceが決まるわけではありません.
+D: array順序によって最初のaudienceだけへ制限されません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="RFC固有のinputまたはevidenceを確認するstepと,その後のlocal policy decisionを分けてください.">
-        <header><h4>Q3: このJWT claims tokenのreview defectを直す方法はどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="signatureが証明するのは選択されたkeyのcontrolです. そのkeyがclaimed issuerとtoken profileについてauthorizeされたとverifierが判断した根拠を確認します. ">
+        <header><h4>Q3: unverifiedなiss claimにverification keyを選ばせてよいか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">productionで観測した動作: cryptographic signatureだけ確認し, issuer, audience, token typeを無視すること.その結果がA2Aのsecurity decisionを左右します.</p>
+          <p class="question-premise">A2A serviceはJWTをverifyする前にissを読み, その値だけから構成したURLでkeyを取得し, 取得keyでsignatureがverifyできればacceptします. issuer-to-keyのconfigured trust relationshipはありません. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. 現在の処理を維持し,token種別がaccess token, ID token, session token, その他profileのどれかだけを残る問題として文書化する</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. signatureまたはMAC, allowed algorithm, issuer, audience, time claim, application-specific claim profileを確認する</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. この近接関係をverification成功の証拠として扱う: RFC 8725はRFC 7519形式を安全に使うための現在のbest practiceを示す</label>
-            <label class="choice"><input type="radio" name="Q3" value="d"> D. 両peerがRFC 7519対応をadvertiseしたため,検証せずprocessingを続ける</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. signature verification成功によりunverified issuer valueも遡及的にtrustworthyになるためよい</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. issuer namespaceとkeyのownerに関係なく, URLがHTTPSならよい</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. configured issuer policyを適用する場合も含め, JWTはkey selectionへissを一切使えない</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. よくない. trusted issuerをkey sourceとalgorithmへbindし, signatureとclaim profileをvalidateする</label>
           </fieldset><div class="explain">**解説:**
-A: operational policyは必要ですが,RFC固有のvalidationまたはanalysis stepを置き換えません.
-B: Sections 7 and 11に対応するRFC固有のreview boundaryを解決してから,A2A decisionへ使います.
-C: protocol compositionは明示的に検証する必要があり,citationや関係だけではverification resultになりません.
-D: capability advertisementは,このinstanceが正しく構築,検証された証拠ではありません.</div>
+A: attackerがissuerを名乗り, それをvalidateするkeyも供給できるcircular trustになります.
+B: HTTPSは選択endpointへのtransportを保護しますが, そのendpointをclaimed JWT issuerとしてauthorizeしません.
+C: configured trustで制約すればissuer-aware key selectionは安全に構成できます. RFC 7519は禁止していません.
+D: RFC 7519 Sections 7.2 and 11.1は, 必要なtrust context内でのcryptographic validationを求めます. issuer-to-key associationとacceptable algorithmはapplicationまたはprofile policyです. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,c" data-difficulty="L3" data-hint="RFC固有のprocessingまたはanalysisと,relying profileが選ぶdecisionを分けてください.どちらも他方を置き換えません.">
-        <header><h4>Q4: JWT claims tokenを処理した後も,profileまたはdeploymentが決める項目はどれか.複数選択</h4><span class="type">複数選択</span></header>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="verifierのcurrent timeを両boundaryへ適用します. small clock-skew allowanceはprofile choiceであり, 無制限の延長ではありません. ">
+        <header><h4>Q4: このtokenは現在のtime window内か</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A design reviewはRFC 7519を適用し,結果を特定operationで受理するか判断します.</p>
+          <p class="question-premise">verifier timeが12:00:30Zの時, tokenのnbfは12:01:00Z, expは12:10:00Zです. profileが許すclock-skew leewayは最大10秒です. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. どのclaimを必須にし, authorization上どう解釈するか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. signatureまたはMAC, allowed algorithm, issuer, audience, time claim, application-specific claim profileを確認する</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. token種別がaccess token, ID token, session token, その他profileのどれか</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. JOSE mechanismで署名, MAC, 暗号化できるcompactなJSON claims setを運ぶこと</label>
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. expは未来でありnbfはadvisoryなのでwindow内である</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. nbfより30秒早くprofileの10秒leewayを超えるため, exp前でもwindow外である</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. positiveなleewayがあればnbfとexpは両方optionalになるためwindow内である</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. nbfとexpを同じtokenへ含められないためwindow外である</label>
           </fieldset><div class="explain">**解説:**
-A: Sections 3-4は,このrelying-party policyを全deployment向けに選びません.
-B: これはRFC固有のvalidationまたはanalysis stepであり,任意に省略できるpolicyではありません.
-C: applicationまたはdeploymentが,RFC mechanismを越えた結果の扱いを定義します.
-D: これはRFC mechanismのscopeであり,local acceptance choiceではありません.</div>
+A: RFC 7519 Section 4.1.5は, 許容leewayを除きcurrent timeがnbfより前でないことを求めます.
+B: stated acceptance window外です. Sections 4.1.4 and 4.1.5がexpとnbfを定義し, skewにsmall leewayを使えます. そのboundはprofileが選びます.
+C: leewayはboundaryを限定的に調整するもので, claim checkを削除しません.
+D: 両claimを併用してvalidity intervalを限定できます. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFCの参照やlocal successを,RFC固有のcheck,context analysis,local policyの代用にしないでください.">
-        <header><h4>Q5: A2A trust boundaryでJWT claims tokenを使うとき,適切なreview responseはどれか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="unique identifierは, verifierがreuseを認識するstateを保持するか別のcheckを行う場合にだけdetectionを可能にします. ">
+        <header><h4>Q5: jtiだけでtoken replayを防げるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">想定する利用場面: APIやidentity flowが署名付きclaims setを受け取り, 受理可否を決める場面.観測した欠陥: algorithm confusion, wrong issuer, wrong audience, expired time claimを持つtokenを受理すること.</p>
+          <p class="question-premise">すべてのA2A task tokenはuniqueなjtiとvalidなsignatureを持ちます. verifierはreplay stateを保持せず, expまで同じtokenを何度でもacceptします. profileはjtiを含めるだけでone-time useになると主張します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. mechanismの目的（JOSE mechanismで署名, MAC, 暗号化できるcompactなJSON claims setを運ぶこと）に合うため,観測した欠陥を解消せず受理する</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. construction rule（claimの意味, token type, audience, lifetime, 必要な署名または暗号化を定義する）だけを適用し,local processingのsuccessを十分条件にする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 近接仕様（RFC 8725はRFC 7519形式を安全に使うための現在のbest practiceを示す）を理由に欠陥をwarning扱いとし,同じauthorizationを続ける</label>
-            <label class="choice"><input type="radio" name="Q5" value="d"> D. profile constructionとRFC固有のcheckで観測した欠陥を直し,local acceptance policyを適用する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. stringのuniquenessによりJWT libraryが二回目の提示を自動rejectするため防げる</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. expがあればjti semanticsがexpiration前のreplayを排除するため防げる</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 防げない. jtiはindexであり, profileがreplay detection, scope, lifetimeを定義する</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 防げない. RFC 7519は全verifierへ全jtiの永久保存を求める</label>
           </fieldset><div class="explain">**解説:**
-A: mechanismのpurposeだけでは,このinstanceやcontextがacceptableとは確立しません.
-B: 正しいconstructionは必要ですが,verificationとlocal acceptanceの十分条件ではありません.
-C: 近接仕様は,failed resultやcontext-confused resultをsuccessへ変換しません.
-D: Sections 7 and 11に沿って欠陥を解消してからresultを使います.profile rule: claimの意味, token type, audience, lifetime, 必要な署名または暗号化を定義する.check: signatureまたはMAC, allowed algorithm, issuer, audience, time claim, application-specific claim profileを確認する.local policy: どのclaimを必須にし, authorization上どう解釈するか.</div>
+A: claimが存在するだけでJWT processingがreplay stateを作ることはありません.
+B: expはacceptance intervalを制限しますが, その中でのreuseを防ぎません.
+C: RFC 7519 Section 4.1.7はjtiをreplay防止へ利用できるとします. 実際のdetection protocol, storage, scope, retentionはprofileまたはdeploymentが選びます.
+D: RFC 7519は一律のpermanent storageを要求しません. </div>
         </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="各layerを提供する仕様を特定し,一方が他方の代わりに実行しないapplication checkを残してください.">
-        <header><h4>Q6: JWT claims tokenとprofileが参照する近接仕様を,どう組み合わせるべきか</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="backendをJWT recipientとするのか, gateway assertionのrelying partyとするのかを決めます. 両architectureではaudienceとtrust checkが異なります. ">
+        <header><h4>Q6: gatewayだけをaudienceとするJWTをどう扱うべきか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">A2A profileはJWT claims tokenを別protocol layerと組み合わせます.design noteには「RFC 8725はRFC 7519形式を安全に使うための現在のbest practiceを示す」とあります.</p>
+          <p class="question-premise">signed task JWTのaudは"task-gateway"だけです. gatewayがvalidateした後, resourceを所有するbilling backendを呼びます. profile次第で, backendはoriginal JWTを処理するかgateway assertionを信頼します. </p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. 他layerが全trust decisionを持つため,どのclaimを必須にし, authorization上どう解釈するかは不要であり,RFCのresultをどう使うかも記載しない</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. どちらか一方が成功すれば必要なcheck（signatureまたはMAC, allowed algorithm, issuer, audience, time claim, application-specific claim profileを確認する）を省略し,他layerがresultを推測してよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. checklist項目（exact input, context, validation rule, and rejection behaviorは明記されているか）へ回答すれば,layer間の責務は暗黙のままでよい</label>
-            <label class="choice"><input type="radio" name="Q6" value="d"> D. layerを分け,JWT validationとlocal claim policyを保ち,validated resultをoperationでどう使うか明記する</label>
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. backendはaudでJWTをrejectするか, request-bound gateway assertionを信頼し, 別にauthorizeする</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 同じdeploymentに属することでbackendもaudへ自動追加されるためoriginal JWTを処理できる</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. validなsignatureがcopy後の値も保護し続けるため, gatewayはJWT claimを通常headerへcopyできる</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. gatewayのJWT validation成功はbilling backendの全operationをauthorizeする</label>
           </fieldset><div class="explain">**解説:**
-A: layeringはrelying-party policyを消しません.
-B: 一つのlayerのsuccessは,別layerが必要とするvalidationの代わりになりません.
-C: review checklistは有用ですが,責務とoperation上の意味には明示的なprofileが必要です.
-D: Sections 3-4とSections 7 and 11がRFC側の境界を示し,application profileがcomposition boundaryを定義,検証します.</div>
+A: RFC 7519 Section 4.1.3はJWT recipientへaud内で自身を識別するよう求めます. protected gateway assertionは別のtrust modelであり, gateway, context, downstream requestをauthenticateする必要があります. resource ownerはauthorizationを別に判断します.
+B: deployment topologyはsigned audience claimを書き換えません.
+C: claimのcopyはoriginal signature protectionを失います. new carrierを独立に保護しgateway assertionとして解釈する必要があります.
+D: token validationとresource authorizationは別のdecisionです. </div>
         </div>
       </article>
     </section>
