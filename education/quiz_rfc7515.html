@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 7515", "SKILL_SUBTITLE": "JSON Web Signature", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 7515", "SKILL_SUBTITLE": "JSON Web Signature", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 3, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -46,6 +46,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">References</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7515" target="_blank" rel="noopener noreferrer">RFC 7515: JSON Web Signature</a></li></ul>
+      <p>This quiz reviews what JWS validation proves, which bytes it covers, and which acceptance decisions remain with the application. Section numbers refer to RFC 7515.</p>
     </section>
     <section class="card panel" aria-label="Quiz settings">
       <div class="row" aria-label="Answer reveal controls">
@@ -53,131 +54,133 @@
         <label class="switch" for="toggleShowAllAnswers"><input type="checkbox" id="toggleShowAllAnswers" /><span class="ui-toggle" aria-hidden="true"></span><span class="switch-label">Show all answers</span></label>
       </div>
     </section>
-    <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Identify the exact signing input before inferring application meaning.">
-        <header><h4>Q1: What does a valid JWS cryptographically protect?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. Every JSON member in the enclosing application object, including unsigned metadata</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. The encoded protected header and payload used as the JWS signing input</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. The truth, authorization meaning, and freshness of every claim carried in the payload</label>
-        </fieldset><div class="explain">**Explanation:**
-
-Only the JWS signing input is covered, not arbitrary enclosing data.
-The signature or MAC is computed over the protected-header and payload representation.
-Cryptographic integrity does not decide whether application claims are acceptable.</div></div>
-      </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Compare the protected and unprotected header containers.">
-        <header><h4>Q2: Where must a security-relevant JOSE header parameter be placed when its integrity matters?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. In the JWS Protected Header</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. Only in the JWS Unprotected Header</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. Only in an unsigned outer JSON object</label>
-        </fieldset><div class="explain">**Explanation:**
-
-Protected-header bytes are included in the signing input.
-Unprotected header parameters are not integrity protected.
-An outer object is not covered unless the application explicitly includes it in the signed payload.</div></div>
-      </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Distinguish a lookup hint from a trust decision.">
-        <header><h4>Q3: What is the role of the JWS &quot;kid&quot; header parameter?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. It proves that the named key belongs to the signer</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. It selects the only algorithm a verifier may accept</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. It is a hint for identifying the key to use</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A key identifier does not establish ownership or trust.
-Algorithm policy and key identification are separate decisions.
-RFC 7515 defines kid as a hint and leaves its structure unspecified.</div></div>
-      </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Successful cryptography and algorithm acceptability are separate validation steps.">
-        <header><h4>Q4: A JWS uses an algorithm that verifies mathematically but is disabled by local policy. Should it be accepted?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes, successful cryptographic verification overrides every local algorithm restriction</label>
-          <label class="choice"><input type="radio" name="Q4" value="b"> B. No, verification success is insufficient when the algorithm is unacceptable</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes, whenever kid is present and resolves to a known verification key</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 7515 requires the algorithm to be acceptable to the application.
-A JWS is valid only after both cryptographic validation and application acceptance checks.
-A key hint cannot authorize a disallowed algorithm.</div></div>
-      </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Critical means processing cannot safely continue by ignoring the parameter.">
-        <header><h4>Q5: A protected header contains an extension listed in &quot;crit&quot; that the verifier does not understand. What should happen?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. Reject the JWS</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. Ignore only that extension and verify the signature</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. Move the extension into the unprotected header</label>
-        </fieldset><div class="explain">**Explanation:**
-
-Every parameter named by crit must be understood and processed.
-Ignoring an unknown critical parameter defeats the purpose of crit.
-A verifier cannot rewrite the sender&#x27;s protected header without invalidating the signing input.</div></div>
-      </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Check which members each serialization's syntax can carry.">
-        <header><h4>Q6: Which statement distinguishes Compact Serialization from JSON Serialization?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. Compact Serialization supports a per-signature unprotected header</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. Compact Serialization carries multiple signatures over one payload</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. JSON Serialization can represent unprotected headers and multiple signatures</label>
-        </fieldset><div class="explain">**Explanation:**
-
-Compact Serialization has no JWS Unprotected Header.
-Multiple signatures are provided by the general JSON serialization.
-These are capabilities of the JWS JSON serialization rather than the compact form.</div></div>
-      </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 7515 supplies a minimum, while the application chooses which signatures must succeed.">
-        <header><h4>Q7: A general JWS JSON object contains three signatures and the application requires two specific signers. What validation rule applies?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. Any one valid signature always satisfies every application</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. Validate the two required signers according to the application&#x27;s rule</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. Accept the first signature without checking the others</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 7515 requires at least one but permits applications to require particular or multiple signatures.
-The application decides which signature values must validate and can require more than the base minimum.
-Array position does not define the application&#x27;s signer policy.</div></div>
-      </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Remote key retrieval creates a transport and server-identity trust boundary.">
-        <header><h4>Q8: A verifier fetches a JWK Set from a &quot;jku&quot; URL. Which check is still required?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. Use TLS and validate the server identity</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. Trust any key whose kid matches</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. Disable certificate validation because the JWS has a signature</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 7515 requires integrity-protected retrieval and validated TLS server identity.
-Matching a hint does not establish a trusted key source.
-An attacker-controlled key source could provide a matching key and signature.</div></div>
-      </article>
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Separate integrity and signer-key possession from authority and freshness.">
-        <header><h4>Q9: What does successful JWS validation not establish by itself for an Agent Card?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q9" value="a"> A. That the signing input matches the signature under the selected key</label>
-          <label class="choice"><input type="radio" name="Q9" value="b"> B. That protected header changes would invalidate the signature</label>
-          <label class="choice"><input type="radio" name="Q9" value="c"> C. That the signer is authorized for the advertised agent and the card is current</label>
-        </fieldset><div class="explain">**Explanation:**
-
-This is the core cryptographic result of successful validation.
-Protected-header content participates in the signing input.
-Authority, issuer binding, audience, and freshness require application-profile rules.</div></div>
-      </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="First mark the exact bytes in the signing input; then identify every routing or acceptance field outside those bytes.">
-        <header><h4>Q10: Which review conclusion follows from RFC 7515?</h4><span class="type">Multiple Choice</span></header>
+<section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="List the serialized values used to construct the signing input, then compare that list with the gateway's decision inputs.">
+        <header><h4>Q1: Does the valid signature cover the routing decision?</h4><span class="type">Multiple Choice · L3</span></header>
         <div class="body">
-          <p class="question-premise">An Agent Card wrapper contains a valid JWS plus unsigned `target` and `valid-until` members. The signed payload identifies the agent, but the gateway routes and authorizes requests using the two outer members. Its expected key and algorithm validate successfully.</p>
+          <p class="question-premise">An A2A gateway receives an envelope containing a compact JWS and a separate <code>target</code> member. The signed payload names agent A, while the outer member names agent B. The JWS validates, and the gateway routes by the outer member.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q10" value="a"> A. Accept it because a valid JWS signature protects adjacent members of the enclosing JSON object as part of the same application message</label>
-            <label class="choice"><input type="radio" name="Q10" value="b"> B. Copy the outer members into an in-memory protected header after validation, retroactively adding them to the original signing input</label>
-            <label class="choice"><input type="radio" name="Q10" value="c"> C. Put decision fields in signed content before issuance and make the profile validate their meaning, key trust, algorithm, and freshness</label>
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. No. The outer member is outside the compact JWS signing input and must be bound into signed content if it controls routing</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Yes. A valid JWS also authenticates adjacent members when the JWS and those members arrived in the same JSON envelope</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Yes, if the gateway serializes the complete envelope after validation and stores the resulting bytes with the request</label>
           </fieldset>
           <div class="explain">**Explanation:**
 
-RFC 7515 Section 5.2 validates a signature over the JWS Signing Input: the encoded protected header and payload. JSON members merely adjacent to the JWS are outside that input. Moving or copying them after validation cannot change which bytes the signer covered.
+A is correct. Sections 5.1 and 5.2 define the signing input from the encoded protected header and payload. An enclosing application member is not added merely by being adjacent to the JWS. If <code>target</code> controls routing, the application profile should place that decision value in protected content before signing and check it after validation.
 
-The application profile must decide which fields carry routing and authorization meaning, place them in integrity-protected content before signing, and define acceptable algorithms and trusted keys. Section 5.2 also makes algorithm acceptability an application decision even after the cryptographic operation succeeds.
+B invents protection for bytes that were never part of the signing input. C records the received envelope but cannot retroactively change what the signer signed. The issue is the boundary of cryptographic coverage, not whether the outer object is valid JSON.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Do not resolve the conflict by choosing one value; first check whether the two header parameter sets are allowed to overlap.">
+        <header><h4>Q2: How should a verifier handle conflicting protected and unprotected parameters?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A flattened JWS JSON object has <code>alg: ES256</code> in its protected header and <code>alg: HS256</code> in its unprotected header. A library offers to prefer the protected value and continue.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Continue with ES256 because integrity protection gives the protected occurrence precedence over the duplicate</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Continue with HS256 because the unprotected header is easier for an application to inspect before verification</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Treat the signature as invalid because the protected and unprotected header parameter names must be disjoint</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
 
-JWS validation does not by itself define claim semantics or freshness. RFC 7515 Section 10.10 describes replay protection as an application concern, for example by signing a unique message identifier and checking prior use. A valid signature is therefore necessary for the signed assertion, but not sufficient for this wrapper's acceptance decision.</div>
+C is correct. Sections 5.2 step 4 and 7.2 require the parameter names in the protected and unprotected header objects to be disjoint. A duplicate <code>alg</code> is therefore a malformed JOSE Header for this signature; precedence is not a repair rule.
+
+A would conceal a prohibited collision, even though protecting <code>alg</code> is a sound design. B is worse because the unprotected value can be altered without invalidating the signature. The verifier should fail this signature rather than select either occurrence.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask what the sender required every recipient to understand before the signature could be accepted.">
+        <header><h4>Q3: May an unknown critical extension be ignored after the signature verifies?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A protected header contains <code>crit: ["session-bind"]</code> and a <code>session-bind</code> value. The signature verifies cryptographically, but this verifier has no implementation of that extension.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept it because successful signature verification proves that the unknown extension was not modified</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Reject it because a parameter named by <code>crit</code> must be understood and processed by the recipient</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Remove the extension and <code>crit</code>, then verify the remaining protected header against the original signature</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+B is correct. Section 4.1.11 says that an extension listed in <code>crit</code> must be understood and processed; otherwise the JWS is invalid. Integrity of unknown semantics is not enough.
+
+A confuses protection from alteration with the ability to apply the sender's required processing. C changes the protected header and therefore changes the signing input; it cannot preserve the original validation result. The safe outcome mandated by the critical-extension mechanism is rejection.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Separate a library's mathematical result from the application's configured algorithm set.">
+        <header><h4>Q4: Is mathematical verification enough when the profile disallows the algorithm?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">An Agent Card profile permits only EdDSA. A legacy card uses ES256 with a trusted key, and the cryptographic library reports a valid signature. The verifier supports both algorithms.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Accept it because a trusted key makes the profile's algorithm restriction advisory after verification succeeds</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Accept it because support in the cryptographic library makes every implemented algorithm acceptable to the application</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Reject it because cryptographic success and application algorithm acceptance are separate conditions</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+C is correct. Section 5.2 makes acceptable algorithms an application decision and says a successfully validated JWS using an unacceptable algorithm should be considered invalid. Section 10.6 also requires implementations to check that algorithm information in the signature corresponds to the <code>alg</code> header.
+
+A confuses key trust with algorithm policy. B confuses implementation capability with authorization to use that capability in this profile. Because the stated profile accepts only EdDSA, ES256 fails the application's acceptance rule even though the mathematical check succeeds.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Evaluate transport authenticity and authorization of the key source as two distinct decisions.">
+        <header><h4>Q5: What follows from a successful TLS fetch of a header-selected JWK Set?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A verifier follows a protected <code>jku</code> supplied by an untrusted sender. HTTPS and server-identity validation succeed, the returned set contains the named <code>kid</code>, and that key validates the JWS. The URL's host is not an issuer configured by the application.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Accept it because RFC 7515's TLS requirement makes any successfully authenticated HTTPS host an authorized signing authority</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Do not infer signer authority from those checks; apply application policy for trusted key origins and for whether sender-selected retrieval is allowed</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Accept it because matching <code>kid</code> proves that the returned key belongs to the agent named in the payload</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+B is correct. Section 4.1.2 requires integrity-protected retrieval and TLS server-identity validation for an HTTP <code>jku</code> fetch. Those checks authenticate the contacted service; they do not establish that the application authorizes that service to supply keys for the claimed signer. Section 10.3 separately requires the key-management technique to authenticate key origin.
+
+A turns a transport requirement into an application trust grant. C overstates <code>kid</code>, which Section 4.1.4 defines only as a key-selection hint. Restricting acceptable key sources and deciding whether to dereference sender-controlled URLs are application security policies, not guarantees supplied by JWS validation.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="RFC 7515 sets a validity floor, while the relying application can require a particular set of signers.">
+        <header><h4>Q6: Does one valid signature satisfy a two-signer acceptance policy?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A general JWS JSON object carries signatures from an issuer, an auditor, and an unrelated service. The application requires both the issuer and auditor. Only the issuer and unrelated-service signatures validate.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Reject it: process the signatures and enforce the application's requirement that both designated signers validate</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. Accept it: RFC 7515's at-least-one rule prevents an application from requiring more than one valid signature</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Accept it: two signatures validated, so signer identity and the application's designated roles no longer matter</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+A is correct. Section 5.2 requires validation processing for each signature and makes it an application decision which signatures must succeed. At least one valid signature is the RFC-level floor, not a ceiling on the application's policy.
+
+B reverses that relationship. C counts successes without checking whether the required auditor signed. A verifier must return or retain which signatures succeeded so that the application can enforce the issuer-plus-auditor rule.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="For detached content, compare bytes rather than parsed JSON meaning.">
+        <header><h4>Q7: Can semantically equivalent JSON replace a detached JWS payload?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A detached JWS was created over UTF-8 JSON bytes containing a particular member order and whitespace. The receiver parses a stored copy, emits semantically equivalent JSON with different bytes, and wants to insert that serialization before validation.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes, because JWS signs the abstract JSON data model rather than a byte representation of the payload</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Yes, provided the receiver compares the parsed objects before it performs signature validation</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. No. It must reconstruct the exact signed payload unless a separate profile applied canonicalization before signing</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+C is correct. Appendix F's detached-content method assumes that the recipient can reconstruct the exact payload used in the JWS. Sections 5.1 and 5.2 operate on the payload's encoded octets, not on semantic equality between parsed JSON objects.
+
+A describes a canonical data-model signature that RFC 7515 does not provide. B may be useful as an application comparison, but it cannot make different bytes satisfy the original signature. A separate profile could prescribe canonicalization, but both signer and verifier would have to apply that rule to the signed representation.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Inventory each decision: payload integrity, key origin, algorithm, grant scope, freshness, audience, and replay. Mark which mechanism actually establishes each one.">
+        <header><h4>Q8: Which conclusion correctly composes JWS validation with A2A authorization?</h4><span class="type">Multiple Choice · L4</span></header>
+        <div class="body">
+          <p class="question-premise">A cached Agent Card JWS validly signs an agent identifier and endpoint. The verifier trusts the signing key and accepts the algorithm. The card has no signed audience, expiry, or unique identifier. A separate grant is valid for workflow X. An attacker replays the same card and request in workflow Y.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Accept it because a valid card signature carries the separate grant's workflow scope and supplies replay protection for every request using the card</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Treat signed fields as intact, but evaluate grant scope, audience, freshness, and replay separately under the application profile</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Reject all cached signed cards because RFC 7515 requires every JWS to contain standardized audience, expiry, and nonce claims</label>
+          </fieldset>
+          <div class="explain">**Explanation:**
+
+B is correct. The valid signature establishes integrity for the protected header and signed payload under the selected trusted key. It does not copy the separate grant's scope into the card or create audience, freshness, and replay semantics that were never signed.
+
+A conflates independent evidence and acceptance checks. C invents mandatory JWS claims: RFC 7515 defines the signature format, not a universal Agent Card claim set. Section 10.10 explicitly treats replay protection as an application concern and gives an integrity-protected unique identifier plus prior-use checking as one possible design. An A2A profile must define the decision fields, their protected placement, and the checks that connect the card, grant, request, and workflow.</div>
         </div>
       </article>
     </section>
