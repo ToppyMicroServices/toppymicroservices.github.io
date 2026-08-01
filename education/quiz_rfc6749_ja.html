@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 6749",
       SKILL_SUBTITLE: "OAuth 2.0のrole・grant・token境界",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -61,6 +61,7 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc7636" target="_blank" rel="noopener noreferrer">RFC 7636: Proof Key for Code Exchange by OAuth Public Clients</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9700" target="_blank" rel="noopener noreferrer">RFC 9700: Best Current Practice for OAuth 2.0 Security</a></li>
       </ul>
+      <p><strong>範囲:</strong> RFC 6749はOAuth 2.0のrole, grant, endpoint, token abstractionを定義します. RFC 9700は一部の歴史的選択を更新する現行deployment security guidanceです. valid access tokenだけでruntime, task, delegation, user identityに関する全claimを証明するものではありません.</p>
     </section>
     <section class="card panel" aria-label="Quiz settings">
       <div class="row" aria-label="Answer reveal controls">
@@ -118,20 +119,20 @@ A:  authorization serverがresource-owner authenticationを仲介し,clientに�
 B:  implicit flowのexposure riskです.
 C:  codeはclient identifierとredirect URIにbindされ,short-livedかつsingle-useです.</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="client自身のauthentication credentialをconfidentialに保てるかで分類してください.">
-        <header><h4>Q5: user browser内だけで動くJavaScript applicationに,固定client secretがdownload codeとして埋め込まれている.このsecretをどう扱うべきか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="client自身のauthentication credentialをconfidentialに保てるかで分類してください.">
+        <header><h4>Q5: authorization serverは埋め込みsecretを信頼してよいか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">user browser内だけで動くJavaScript applicationに固定client secretがdownload codeとして埋め込まれています. serverはその値をregistered client由来のrequestだというproofに使おうとしています.</p><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. sourceをminifyすればconfidential-client credentialになる</label>
           <label class="choice"><input type="radio" name="Q5" value="b"> B. 抽出可能であり,public clientを安全に識別するcredentialとしては使えない</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. user-agent内にあるのでresource owner passwordとして扱う</label>
         </fieldset><div class="explain">**Explanation:**
 A:  obfuscationやminificationはcredential confidentialityを保ちません.
-B:  browser-based・native applicationは通常shared secretを保持できず,authorization serverはその固定値だけでpublic clientを識別してはなりません.
+B:  RFC 6749 Section 2.1はcodeとcredentialへaccessできるbrowser-based applicationをpublic clientに分類します. Section 2.3はpublic-client authenticationをclient識別に依存しないことをMUST NOTとします.
 C:  client credentialとresource-owner credentialは別です.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="redirect先と,browser transactionからcallbackまでのbindingをそれぞれ保護してください.">
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="redirect先と,browser transactionからcallbackまでのbindingをそれぞれ保護してください.">
         <header><h4>Q6: authorization-code redirect flowを保護するcontrolはどれか.複数選択</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
+        <div class="body"><p class="question-premise">clientはbrowser経由のauthorization code flowを使います. 現在は任意のHTTPS callback URIを許し, initiating transactionとのbindingも, code redemptionとinitiating client instanceのbindingもありません.</p><fieldset class="choices">
           <label class="choice"><input type="checkbox" name="Q6" value="a"> A. redirect URIを事前登録値と照合し,現行RFC 9700に従いnative-app exception以外はexact string matchingする</label>
           <label class="choice"><input type="checkbox" name="Q6" value="b"> B. browserが送ったURIがHTTPS syntaxなら,任意のredirect URIを受け入れる</label>
           <label class="choice"><input type="checkbox" name="Q6" value="c"> C. 承認済みCSRF defenseでcallbackを開始元user-agent transactionへbindする</label>
@@ -179,7 +180,7 @@ B: authorization responseでaccess tokenを返すと,leakageとreplay riskが生
 C: RFC 9700は,規定されたinjection・leakage対策を満たさないimplicitの利用を避けるよう求めます.
 D: public code-flow clientではPKCEがmandatoryで,confidential clientにもrecommendedです.根拠はRFC 9700 Sections 2.1.1,2.1.2,2.4です.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="tokenはresource operationをauthorizeできても,runtime,delegation chain,task contextの全claimを証明するとは限りません.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="tokenはresource operationをauthorizeできても,runtime,delegation chain,task contextの全claimを証明するとは限りません.">
         <header><h4>Q10: Agent BがAgent AからOAuth access tokenを受け取り,高impact taskを実行するか判断する.適切な結論はどれか</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">tokenはBのresource API向けにvalidです.さらに,提示可能なruntime,承認されたtask,onward delegation可否も判断する必要があります.</p>

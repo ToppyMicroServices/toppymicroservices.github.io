@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 6749",
       SKILL_SUBTITLE: "OAuth 2.0 Authorization Framework",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -61,6 +61,7 @@
         <li><a href="https://www.rfc-editor.org/rfc/rfc7636" target="_blank" rel="noopener noreferrer">RFC 7636: Proof Key for Code Exchange by OAuth Public Clients</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9700" target="_blank" rel="noopener noreferrer">RFC 9700: Best Current Practice for OAuth 2.0 Security</a></li>
       </ul>
+      <p><strong>Scope:</strong> RFC 6749 defines the OAuth 2.0 roles, grants, endpoints, and token abstraction. RFC 9700 supplies current deployment security guidance that supersedes some historical choices. Neither document makes a valid access token proof of every runtime, task, delegation, or user-identity claim.</p>
     </section>
     <section class="card panel" aria-label="Quiz settings">
       <div class="row" aria-label="Answer reveal controls">
@@ -118,20 +119,20 @@ A:  the authorization server mediates resource-owner authentication and returns 
 B:  that describes the exposure risk of the implicit flow, not the code flow.
 C:  codes are bound to the client identifier and redirect URI and are short-lived and single-use.</div></div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Classify the client by whether it can keep its own authentication credentials confidential.">
-        <header><h4>Q5: A JavaScript application runs entirely in a user's browser and contains a fixed client secret in its downloaded code. How should that secret be treated?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Classify the client by whether it can keep its own authentication credentials confidential.">
+        <header><h4>Q5: May the authorization server rely on the embedded secret?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A JavaScript application runs entirely in a user's browser and contains a fixed client secret in its downloaded code. The server proposes using that value as proof that requests came from the registered client.</p><fieldset class="choices">
           <label class="choice"><input type="radio" name="Q5" value="a"> A. As a confidential-client credential because the source file is minified</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. As extractable; this is a public client and the fixed value cannot securely identify the client</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. As extractable; a public client cannot use it as reliable client authentication</label>
           <label class="choice"><input type="radio" name="Q5" value="c"> C. As the resource owner's password because both values appear in a user agent</label>
         </fieldset><div class="explain">**Explanation:**
 A:  obfuscation or minification does not preserve credential confidentiality.
-B:  browser-based and native applications generally cannot keep a shared secret, so the authorization server must not rely on it to identify a public client.
+B:  RFC 6749 Section 2.1 classifies a browser-based application as a public client because its code and credentials are accessible. Section 2.3 says the server MUST NOT rely on public-client authentication for client identification.
 C:  client credentials and resource-owner credentials are distinct.</div></div>
       </article>
-      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="Protect both the destination of the redirect and the binding between the browser transaction and its callback.">
+      <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c,d" data-difficulty="L3" data-hint="Protect both the destination of the redirect and the binding between the browser transaction and its callback.">
         <header><h4>Q6: Which controls protect an authorization-code redirect flow? Select all that apply.</h4><span class="type">Multi-Select</span></header>
-        <div class="body"><fieldset class="choices">
+        <div class="body"><p class="question-premise">A client uses the authorization code flow through a browser. Its current design accepts any HTTPS callback URI, does not bind the callback to the initiating transaction, and does not bind code redemption to the initiating client instance.</p><fieldset class="choices">
           <label class="choice"><input type="checkbox" name="Q6" value="a"> A. Match the redirect URI against a pre-registered URI; current RFC 9700 guidance requires exact string matching except its stated native-app exception</label>
           <label class="choice"><input type="checkbox" name="Q6" value="b"> B. Accept an arbitrary redirect URI supplied by the browser if it is syntactically valid HTTPS</label>
           <label class="choice"><input type="checkbox" name="Q6" value="c"> C. Bind the callback to the initiating user-agent transaction using an approved CSRF defense</label>
@@ -179,7 +180,7 @@ B: Returning an access token in the authorization response introduces leakage an
 C: RFC 9700 says clients should not use implicit unless its stated injection and leakage risks are prevented.
 D: PKCE is mandatory for public code-flow clients and recommended for confidential clients. RFC 9700 Sections 2.1.1, 2.1.2, and 2.4 provide the cited deployment guidance.</div></div>
       </article>
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A token can authorize a resource operation without proving every claim about a runtime, delegation chain, or task context.">
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="A token can authorize a resource operation without proving every claim about a runtime, delegation chain, or task context.">
         <header><h4>Q10: Agent B receives an OAuth access token from Agent A and needs to decide whether to execute a high-impact task. What is the sound conclusion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">The token is valid for B's resource API. The design also needs to know which runtime may present it, which task was approved, and whether onward delegation is allowed.</p>
