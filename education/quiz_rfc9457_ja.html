@@ -161,8 +161,8 @@ B: 1つのHTTP responseが持つstatus lineは1つである. Problem Detailsは�
 C: 同じtypeの複数occurrenceはtype固有extensionで表現できる. typeが異なる場合は最もrelevantまたはurgentなproblemを返すことが推奨される.</div></div>
       </article>
 
-      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="安定したmachine-readable semanticsを、occurrence textやinternal diagnosticから分ける。">
-        <header><h4>Q9: 安定したclient contractを作りつつinternal情報を漏らさない再設計はどれ？</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="機械処理に使う安定した意味を、個別事象の説明や内部診断情報から分ける。">
+        <header><h4>Q9: 安定したクライアント向け契約を保ち、内部情報を漏らさない再設計はどれ？</h4><span class="type">単一選択</span></header>
         <div class="body">
           <p class="question-premise">APIは<code>type: about:blank</code>、HTTP 400、<code>detail: &quot;account locked in AuthService.java:418&quot;</code>を返す。clientは英語のdetail textをmatchしてretryするか停止する。serverはlock reasonとunlock timeも伝えたい。</p>
           <fieldset class="choices">
@@ -176,8 +176,8 @@ RFC 9457 Sections 3.1.1と3.1.4は<code>type</code>を主要なmachine identifie
         </div>
       </article>
 
-      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="translation、client decision、loggingを、明示的contractを持つ別boundaryとして考える。">
-        <header><h4>Q10: interoperabilityを保ちdisclosureを抑えるreview recommendationはどれ？</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="変換、クライアントの判断、ログ記録を、明示的な契約を持つ別々の境界として考える。">
+        <header><h4>Q10: 相互運用性を保ち、情報漏えいを抑える設計レビュー上の提案はどれ？</h4><span class="type">単一選択</span></header>
         <div class="body">
           <p class="question-premise">A2A bindingは<code>google.rpc.Status</code>系error bodyを規定する。browser-facing gatewayがそれを<code>application/problem+json</code>へ変換し、agentは<code>detail</code>をparseしてretryを判断し、central loggerは変換後object全体を保存する。<code>instance</code> URIのqueryにはbearer tokenがあり、<code>detail</code>にはinternal pathがある。</p>
           <fieldset class="choices">
