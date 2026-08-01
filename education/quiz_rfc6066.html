@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6066",
       SKILL_SUBTITLE: "TLS Extensions",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6066" target="_blank" rel="noopener noreferrer">RFC 6066: Transport Layer Security (TLS) Extensions</a></li>
       </ul>
+      <p><strong>Scope:</strong> These questions test RFC 6066's TLS-extension wire and failure rules. They do not imply that every extension is appropriate for a new deployment or replace certificate validation, endpoint identification, or application authorization.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,123 +91,70 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Think about adding capabilities without preventing an endpoint that lacks an extension from completing an ordinary handshake.">
-        <header><h4>Q1: The main purpose of TLS extensions is to</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Move certificate validation from the TLS handshake into the application protocol</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Add optional capabilities in a backward compatible way</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Require every peer to support each new capability before a handshake can succeed</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6066 uses the TLS extension framework to add capabilities such as server-name indication, fragment-length negotiation, and certificate-status requests. These extensions are designed so supporting endpoints can still communicate with peers that do not support them.
-
-            A: Some extensions influence certificate handling, but the framework does not move validation into the application protocol.
-            B: Backward-compatible capability negotiation is the shared design purpose.
-            C: Optional extensions are designed to coexist with peers that do not support every new capability.
-          </div>
-        </div>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate a client's offer from the server's acceptance; then apply the record behavior actually negotiated.">
+        <header><h4>Q1: Which record-layer behavior follows from this handshake?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A TLS 1.2 client offers `truncated_hmac`. The server completes a full handshake but does not include `truncated_hmac` in ServerHello. The selected cipher suite uses HMAC.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. Abort, because a server must accept every RFC 6066 extension offered by a client</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. Continue without truncation; the client offer alone did not negotiate 80-bit HMAC tags</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. Send truncated tags because ClientHello unilaterally changes both record layers</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. Treat the missing echo as proof that the server resumed a previous session</label>
+        </fieldset><div class="explain">**Explanation:**
+RFC 6066 Section 7 says a server MAY agree by including the extension in ServerHello; only after successful negotiation MUST both sides use 10-byte HMAC tags. B follows that state. A turns an optional offer into a requirement. C ignores server acceptance. D is unsupported because extension absence in a full handshake does not prove resumption.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Look for the extension that requests certificate-status information during the TLS handshake, rather than fetching a separate revocation list.">
-        <header><h4>Q2: Which RFC 6066 extension lets a client ask the server to send certificate-status information such as an OCSP response during the handshake?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. trusted_ca_keys</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. status_request</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. client_certificate_url</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            The `status_request` extension negotiates delivery of server-certificate status information in the TLS handshake. RFC 6066 defines the corresponding `CertificateStatus` handshake message and an OCSP response form.
-
-            A: `trusted_ca_keys` indicates CA root keys possessed by the client.
-            B: `status_request` is the extension for requesting certificate-status information.
-            C: `client_certificate_url` lets a client offer URLs in place of sending its certificate chain directly.
-          </div>
-        </div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="An attacker with the server key can pretend not to support the extension; apply the client's stated validation policy separately from negotiation success.">
+        <header><h4>Q2: What may the client conclude when no stapled status arrives?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A client offers `status_request` and requires OCSP validation by local policy. A server with an otherwise acceptable certificate completes the handshake without negotiating the extension or sending CertificateStatus.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. The certificate is not revoked because absence of CertificateStatus is a positive status result</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. The server violated RFC 6066 because it was required to accept the client's request</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Stapled status is unavailable; the client should contact OCSP directly or abort under its requirement</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. The client may authorize the peer first and validate status only after the protected operation</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 8 lets a server decline to provide CertificateStatus, while Section 11.6 warns that a compromised-key server can pretend not to support the extension. C preserves the unknown status and applies the client's requirement. A invents positive evidence. B turns MAY into MUST. D is a fail-open policy contrary to the premise; RFC 6066 does not make authorization precede required validation.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Check the allowed name type and its on-wire representation; IP literals and trailing dots have explicit rules.">
-        <header><h4>Q3: Which value follows RFC 6066's encoding rules for server_name HostName?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. A literal IPv6 address encoded as ASCII text without a trailing dot</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. A fully qualified DNS hostname encoded in ASCII without a trailing dot</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. A fully qualified DNS hostname encoded as raw UTF-8 with a trailing dot</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6066 Section 3 defines `HostName` as the fully qualified DNS hostname understood by the client, encoded as an ASCII byte string without a trailing dot. Internationalized names use A-labels, and literal IPv4 and IPv6 addresses are not permitted in this field.
-
-            A: Literal IP addresses are expressly excluded from `HostName`.
-            B: It satisfies both the DNS-name and encoding constraints.
-            C: The field is ASCII without a trailing dot, not a raw UTF-8 name ending in one.
-          </div>
-        </div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Check DNS-name type, internationalized-name representation, and the trailing-dot rule independently.">
+        <header><h4>Q3: Which HostName value is correctly encoded for SNI?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A client connects to the internationalized DNS name “bücher.example” and constructs RFC 6066 `server_name`.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. `bücher.example.` as raw UTF-8, retaining the trailing dot</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. `xn--bcher-kva.example` as an ASCII A-label without a trailing dot</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. `[2001:db8::1]` as an ASCII IPv6 literal for the same endpoint</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. Both the Unicode name and A-label as two `host_name` entries in one list</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 3 defines HostName as an ASCII fully qualified DNS name without a trailing dot and uses A-labels for internationalized names, so B is correct. A violates encoding and dot rules. C is a literal address, which is prohibited. D violates the requirement that ServerNameList contain at most one name of each name_type.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Evaluate extension design for backward compatibility, explicit negotiation semantics, and its own security analysis.">
-        <header><h4>Q4: A well designed extension negotiation should (select all)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. Allow the peer to ignore unknown extensions</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Be explicit about when an extension is required vs optional</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. Define security considerations for the added feature</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. Assume every extension is safe by default</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            Extension design needs explicit compatibility and failure semantics. RFC 6066 demonstrates backward-compatible optional features and provides feature-specific security considerations; it does not justify assuming every new extension is harmless.
-
-            A: Defined handling of unsupported extensions preserves communication with older peers where the extension is optional.
-            B: Peers need to know whether lack of support permits fallback or requires handshake failure.
-            C: New inputs and behavior create security properties and failure modes that must be analyzed.
-            D: An extension can add attack surface, privacy exposure, or downgrade risk.
-          </div>
-        </div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The server may decline the offer, but an acceptance response has an exact echo rule.">
+        <header><h4>Q4: How must the client handle this max-fragment response?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A client requests `max_fragment_length` 2^10. The ServerHello includes the extension but returns 2^11, intending to choose a nearby supported limit.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. Accept 2^11 because the server may select any allowed value</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. Abort with `illegal_parameter` because the response differs from the requested value</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. Use the smaller local limit while treating negotiation as successful</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. Ignore only the response extension and continue as though the server had sent none</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 4 permits the server to accept by echoing the same value; a different response value requires the client to abort with `illegal_parameter`, so B is correct. A invents server selection. C creates inconsistent record limits. D ignores a malformed negotiation response instead of the specified fatal behavior.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="The needed field identifies the requested host; protocol selection and resumption state answer different questions.">
-        <header><h4>Q5: A TLS server hosts two names on one IP and uses a different certificate for each. Before any HTTP request arrives, which ClientHello information lets it select the certificate</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. The ALPN protocol identifiers</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. The SNI server_name value</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. The session_ticket extension</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            SNI carries the requested DNS hostname in the ClientHello **server_name** extension, before the server sends its certificate.
-
-            RFC 6066 allows a server to use the server_name information to guide selection of the certificate returned to the client.
-
-            This is why name-based HTTPS virtual hosting can serve different certificates from one IP address.
-
-            A: ALPN identifies the application protocol, such as HTTP/2, rather than the requested hostname.
-            B: The SNI server_name distinguishes the virtual host early enough for certificate selection.
-            C: A session ticket carries resumption state; it is not the hostname selector for a new virtual-host connection.
-          </div>
-        </div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Track the TLS server name, the application-layer authority, certificate endpoint identification, and client authorization as separate facts.">
+        <header><h4>Q5: Which gateway decision follows RFC 6066's name-consistency rule?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A gateway receives SNI `agents.example`, selects that virtual host's certificate, and completes TLS. The protected HTTP request then carries authority `billing.example`. The gateway's routing policy assumes the two names are identical.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. Route to billing because the protected authority always overrides the earlier SNI without comparison</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. Route to agents because SNI authenticates the client's identity and requested operation</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. Detect the mismatch and apply defined routing policy before dispatch; SNI is not client authorization</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. Accept either route because successful TLS proves that all names inside the connection are equivalent</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 11.1 requires an application server that relies on the names being the same to check that the client did not present a different application-protocol name. C performs that check and keeps authorization separate. A omits the required comparison. B misuses a server-routing hint as client identity and permission. D confuses channel protection with semantic equality.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^max_fragment_length$" data-difficulty="L2" data-hint="Use the extension-type name for negotiating a smaller TLS plaintext fragment limit.">
-        <header><h4>Q6: Which RFC 6066 extension negotiates a smaller maximum TLS plaintext fragment length? (one token)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
-
-
-            `max_fragment_length` lets constrained clients offer one of the fragment sizes defined by RFC 6066. A server accepts by echoing the same requested value; a different or unsupported value causes an `illegal_parameter` failure under the specified rules.
-          </div>
-        </div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="On accepted resumption, distinguish what is sent in the new hello messages from which original-session functions continue to apply.">
+        <header><h4>Q6: Which resumption review is correct?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A full TLS 1.2 session negotiated `max_fragment_length` 2^10 and `truncated_hmac`. A later ClientHello requests resumption and repeats both offers. The server resumes the session and omits both extensions from ServerHello. The client resets to 2^14 fragments and full HMAC.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. The server omission is required, but the client is wrong: the original session's negotiated functions apply to the resumed session</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. The server must echo both extensions on resumption, and the client is right to reset until it does</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. The client must omit all extensions when requesting resumption, so neither side can apply the original functions</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. Resumption preserves only the fragment limit; HMAC truncation must always be renegotiated</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 1.1 says that on accepted resumption the server MUST ignore these extensions and send none of them, while the functionality negotiated at original initiation applies to the resumed session. Sections 4 and 7 specifically say both functions last through resumptions, so A is correct. B demands a forbidden echo. C contradicts the client's SHOULD and loses fallback behavior if resumption is denied. D invents unequal lifetime rules.</div></div>
       </article>
     </section>
 

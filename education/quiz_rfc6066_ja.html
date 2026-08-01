@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 6066",
       SKILL_SUBTITLE: "TLS extensions",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc6066" target="_blank" rel="noopener noreferrer">RFC 6066: Transport Layer Security (TLS) Extensions</a></li>
       </ul>
+      <p><strong>範囲:</strong> ここではRFC 6066 extensionのwire ruleとfailure ruleを扱います.全extensionがnew deploymentに適切だという意味ではなく,certificate validation,endpoint identification,application authorizationを置き換えません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,131 +91,70 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="extensionを持たないendpointも通常のhandshakeを完了できる形で, capabilityを追加する方法を考えてください.">
-        <header><h4>Q1: TLS extensionの主な目的として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate validationをTLS handshakeからapplication protocolへ移す</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. backward compatibleにoptional capabilityを追加する</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. 全peerが新capabilityをsupportしない限りhandshakeを失敗させる</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            **TLS extension** は, protocol version を増やさずに追加 capability を交渉する仕組みです. 古い実装が理解できない extension は無視できるように設計されることが重要です.
-
-            optional capabilityをextensionとして交渉できるため,protocol version全体を置き換えずに機能を追加できます.
-
-            拡張が増えるほど attack surface も増えます. だから negotiation の失敗時挙動や security considerations もセットで設計する必要があります.
-
-            A: certificate関連のextensionはありますが, validationをapplication protocolへ移すframeworkではありません.
-            B: backward compatibility を保ちながら機能追加する, という本質を表しています.
-            C: optional extensionは, 全peerが新capabilityをsupportしなくても共存できるよう設計されます.
-          </div>
-        </div>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="clientのofferとserverのacceptanceを分け,実際にnegotiateされたrecord behaviorを適用してください.">
+        <header><h4>Q1: このhandshake後のrecord-layer behaviorはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">TLS 1.2 clientが`truncated_hmac`をofferしました.serverはfull handshakeを完了しましたが,ServerHelloに`truncated_hmac`を含めません.selected cipher suiteはHMACを使います.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. serverはofferされた全RFC 6066 extensionをacceptする必要があるためabortする</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. truncationなしで続行する.clientのofferだけでは80-bit HMAC tagはnegotiateされない</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. ClientHelloだけで両record layerが変更されるためtruncated tagを送る</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. echoがないことをprevious sessionがresumedされた証拠として扱う</label>
+        </fieldset><div class="explain">**Explanation:**
+RFC 6066 Section 7では,serverはServerHelloにextensionを含めることでagreeでき,successful negotiation後にだけ双方が10-byte HMAC tagを使います.したがってBです.Aはoptional offerをrequirementへ変えています.Cはserver acceptanceを無視します.Dは根拠がなく,full handshakeでextensionがないことはresumptionを証明しません.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="別にrevocation listを取得するのではなく, TLS handshake中にcertificate statusを要求するextensionを探してください.">
-        <header><h4>Q2: OCSP responseなどのcertificate status情報をhandshake中に送るようserverへ要求できるRFC 6066 extensionはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. trusted_ca_keys</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. status_request</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. client_certificate_url</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            `status_request` extensionは, server certificateのstatus情報をTLS handshake内で配送するために使います. RFC 6066は対応する`CertificateStatus` handshake messageとOCSP response形式を定義しています.
-
-            A: `trusted_ca_keys`はclientが保持するCA root keyを示します.
-            B: `status_request`がcertificate status情報を要求するextensionです.
-            C: `client_certificate_url`はclient certificate chainを直接送る代わりにURLを提示するために使います.
-          </div>
-        </div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="server keyを持つattackerはextension非対応を装えます.negotiation successとclientのvalidation policyを分けてください.">
+        <header><h4>Q2: stapled statusが来ない場合,clientが導ける結論はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">clientは`status_request`をofferし,local policyでOCSP validationを必須にしています.その他の点ではacceptableなcertificateを持つserverが,extensionをnegotiateせずCertificateStatusも送らずにhandshakeを完了しました.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. CertificateStatusがないことはpositive status resultなのでcertificateはnot revokedである</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. serverはclient requestを必ずacceptすべきなのでRFC 6066違反である</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. stapled statusはunavailableであり,policyに従いOCSPへ直接問い合わせるかabortする</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. protected operationをauthorizeした後でstatusをvalidateしてよい</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 8はserverがCertificateStatusを提供しないことを許し,Section 11.6はcompromised keyを持つserverが非対応を装えると警告します.Cはunknown statusを保ち,client requirementを適用します.Aはpositive evidenceを捏造します.BはMAYをMUSTへ変えます.Dはpremiseに反するfail-open policyであり,RFC 6066はrequired validationよりauthorizationを先にしません.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="許可されるname typeとwire表現を確認してください. IP literalとtrailing dotには明示的なruleがあります.">
-        <header><h4>Q3: RFC 6066のserver_name HostName encoding ruleに従う値はどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. trailing dotなしのASCII textとしてencodeしたliteral IPv6 address</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. trailing dotなしでASCII encodeしたfully qualified DNS hostname</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. trailing dot付きのraw UTF-8としてencodeしたfully qualified DNS hostname</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            RFC 6066 Section 3は`HostName`を, clientが理解するfully qualified DNS hostnameのASCII byte stringとして定義し, trailing dotを認めません. internationalized nameはA-labelを使い, literal IPv4とIPv6 addressはこのfieldに入れられません. ここで問うのは表現ruleの適用なのでL2であり, 設計上のtrade-offは提示されていません.
-
-            A: literal IP addressは`HostName`から明示的に除外されています.
-            B: DNS nameとencodingの両constraintを満たします.
-            C: raw UTF-8でもtrailing dot付きでもありません.
-          </div>
-        </div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="DNS name type,internationalized-name representation,trailing-dot ruleを個別に確認してください.">
+        <header><h4>Q3: SNIへ正しくencodeしたHostNameはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">clientが国際化DNS名“bücher.example”へ接続し,RFC 6066 `server_name`を構築します.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. trailing dotを残したraw UTF-8の`bücher.example.`</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. trailing dotなしのASCII A-label `xn--bcher-kva.example`</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. 同じendpointのASCII IPv6 literal `[2001:db8::1]`</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. Unicode nameとA-labelを一list内の二つの`host_name`として送る</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 3はHostNameをtrailing dotなしのASCII fully qualified DNS nameとし,internationalized nameにはA-labelを使うためBです.Aはencodingとdot ruleに違反します.Cは許可されないliteral addressです.DはServerNameListに同じname_typeを複数含めないrequirementに違反します.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="backward compatibility, 明示的なnegotiation rule, 追加機能固有のsecurity分析から評価してください.">
-        <header><h4>Q4: extension negotiationがうまく設計されているときの性質はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q4" value="a"> A. unknown extensionを無視できる</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="b"> B. requiredかoptionalかが明確</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="c"> C. 追加機能のsecurity considerationsが定義される</label>
-            <label class="choice"><input type="checkbox" name="Q4" value="d"> D. 全extensionは安全だと仮定する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            **unknown extension を無視できる** ことは backward compatibility に重要で, **required / optional の明確化** は failure 時の挙動を決め, **security considerations** は attack surface を明文化します.
-
-            unknown extensionの処理,required/optionalの境界,security considerationsを揃えることで,新機能を追加しても古い実装との相互運用とfailure時の判断を保てます.
-
-            extension 設計では, feature そのものより failure mode の定義が interoperability を左右します.
-
-            A: 未知の extension をどう扱うかは interoperability の土台です.
-            B: required / optional が曖昧だと negotiation failure の意味が不明になります.
-            C: extension は attack surface を増やすので, security considerations が欠かせません.
-            D: 「全extensionは安全」と仮定するのは危険です. 拡張は新しいリスクも持ち込みます.
-          </div>
-        </div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="serverはofferをdeclineできますが,acceptance responseにはexact echo ruleがあります.">
+        <header><h4>Q4: clientはこのmax-fragment responseをどう処理するか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">clientが`max_fragment_length` 2^10をrequestしました.ServerHelloはextensionを含みますが,近いsupported limitを選ぶ意図で2^11を返しました.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. serverはallowed valueを自由に選べるため2^11をacceptする</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. responseがrequested valueと異なるため`illegal_parameter`でabortする</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. negotiation成功として扱いながらlocalの小さいlimitを使う</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. response extensionだけをignoreし,serverが何も送らなかったものとして続行する</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 4はserverが同じvalueをechoしてacceptすることを許し,異なるresponse valueならclientへ`illegal_parameter`でabortするよう求めるためBです.Aはserver selectionを作り出します.Cはrecord limitを不一致にします.Dはmalformed negotiation responseへspecified fatal behaviorを適用していません.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="必要なのは要求されたhostを識別するfieldです. protocol選択とresumption stateは別の問いに答えます.">
-        <header><h4>Q5: 1つのIPアドレスで2つのホスト名を提供し, ホスト名ごとに異なる証明書を使うTLSサーバがある. HTTPリクエストを受け取る前に証明書を選ぶため, ClientHelloのどの情報を使えるか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. ALPNが示すアプリケーションプロトコル</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. SNIのserver_nameが示すホスト名</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. session_ticketが示すセッション再開情報</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            SNIは, サーバが証明書を送る前に, ClientHelloの **server_name** 拡張でクライアントが要求するDNSホスト名を伝えます.
-
-            RFC 6066では, サーバがserver_nameの情報を, クライアントへ返す適切な証明書の選択に利用できます.
-
-            この仕組みにより, 1つのIPアドレスからホスト名ごとに異なる証明書を返す, 名前ベースのHTTPS仮想ホスティングが可能になります.
-
-            A: ALPNはHTTP/2などのアプリケーションプロトコルを識別します. 要求されたホスト名を示す情報ではありません.
-            B: SNIのserver_nameなら, 証明書を選ぶ時点で仮想ホストを区別できます.
-            C: session ticketはセッション再開用の状態を運びます. 新しい仮想ホスト接続でホスト名を選ぶ情報ではありません.
-          </div>
-        </div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="TLS server name,application-layer authority,certificate endpoint identification,client authorizationを別々に追ってください.">
+        <header><h4>Q5: RFC 6066のname-consistency ruleに従うgateway判断はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">gatewayはSNI `agents.example`を受け,そのvirtual hostのcertificateを選んでTLSを完了しました.続くprotected HTTP requestのauthorityは`billing.example`です.gatewayのrouting policyは二つのnameが同じだと仮定します.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. protected authorityは比較なしにearlier SNIを常にoverrideするためbillingへrouteする</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. SNIはclient identityとrequested operationをauthenticateするためagentsへrouteする</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. dispatch前にmismatchを検出してrouting policyを適用する.SNIはclient authorizationではない</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. TLS成功はconnection内の全nameが等しいことを証明するため,どちらへrouteしてもよい</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 11.1は,nameが同じことへ依存するapplication serverに,clientがapplication protocolで異なるnameを提示していないか確認するよう求めます.Cはそのcheckを行い,authorizationも分けます.Aはrequired comparisonを省きます.Bはserver-routing hintをclient identityとpermissionに誤用します.Dはchannel protectionをsemantic equalityと混同します.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^max_fragment_length$" data-difficulty="L2" data-hint="TLS plaintext fragmentの上限を小さくnegotiationするextension type名を使ってください.">
-        <header><h4>Q6: TLS plaintext fragmentの最大長を小さくnegotiationするRFC 6066 extensionは何 (token 1つ)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
-          <div class="explain">
-            **Explanation:**
-
-
-            `max_fragment_length`では,constrained clientがRFC 6066の定義するfragment sizeの1つをofferできます.serverは同じrequested valueをechoしてacceptし,異なる値や許可されない値はspecified ruleに従って`illegal_parameter` failureになります.
-          </div>
-        </div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L4" data-hint="accepted resumptionで,new hello messageへ送るものと,original sessionから継続するfunctionを分けてください.">
+        <header><h4>Q6: 正しいresumption reviewはどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">full TLS 1.2 sessionで`max_fragment_length` 2^10と`truncated_hmac`をnegotiateしました.後のClientHelloがresumptionを要求し,両offerを繰り返します.serverはsessionをresumeし,ServerHelloから両extensionを省きました.clientは2^14 fragmentとfull HMACへresetします.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. serverの省略はrequiredだがclientは誤りで,original sessionでnegotiateしたfunctionをresumed sessionへ適用する</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. serverはresumptionでも両extensionをechoすべきで,それまではclientのresetが正しい</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. clientはresumption requestで全extensionを省く必要があり,双方ともoriginal functionを適用できない</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. resumptionが維持するのはfragment limitだけで,HMAC truncationは毎回renegotiateする</label>
+        </fieldset><div class="explain">**Explanation:**
+Section 1.1はaccepted resumptionでserverがこれらのextensionをignoreし,ServerHelloへ含めず,original initiationでnegotiateしたfunctionをresumed sessionへ適用するよう求めます.Sections 4と7も両functionがresumptionを通じて続くと明記するためAです.Bは禁じられたechoを要求します.CはclientのSHOULDと,resumption拒否時のfallbackを損ないます.Dは存在しないlifetime差を作ります.</div></div>
       </article>
     </section>
 
