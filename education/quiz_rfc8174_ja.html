@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 8174",
       SKILL_SUBTITLE: "BCP 14の大文字小文字の更新",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>大文字小文字を区別するBCP 14規則を扱います。規範文がすべてkeyword文であるという誤解は避けます。RFC 2119と明記した箇所以外、Section番号はRFC 8174を指します。</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8174" target="_blank" rel="noopener noreferrer">RFC 8174: Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc2119" target="_blank" rel="noopener noreferrer">RFC 2119: Key words for use in RFCs to Indicate Requirement Levels</a></li>
@@ -91,161 +92,95 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="単語の大文字小文字と, 文書が解釈規則を宣言しているかの両方を確認します.">
-        <header><h4>Q1: 仕様に "Clients must validate certificates" とあり, BCP 14の解釈が明示されていない. 起きやすい問題はどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. 全ての読者がmustを必ず規範的MUSTとして読む</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. mustが要件か単なる英語かで読者が割れる</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. 文として無効なので必ず削除が必要</label>
-          </fieldset>
-          <figure class="flow-diagram answer-figure" aria-labelledby="rfc8174-ja-q1-caption">
-            <figcaption id="rfc8174-ja-q1-caption">RFC 8174では, ALL CAPSとBCP 14宣言の組み合わせが, 通常の英語とBCP 14キーワードを区別します.</figcaption>
-            <svg viewBox="0 0 760 190" role="img" aria-label="lowercase must と uppercase MUST の読み分け図">
-              <rect class="flow-box" x="28" y="34" width="300" height="110" rx="12"></rect>
-              <text class="flow-text" x="178" y="59">"Clients must validate"</text>
-              <text class="flow-label" x="178" y="84">BCP 14 宣言なし</text>
-              <text class="flow-label" x="178" y="106">要件か強い英語かが割れる</text>
-              <line class="flow-arrow" x1="328" y1="89" x2="432" y2="89"></line>
-              <polygon class="flow-arrow-head" points="432,89 420,83 420,95"></polygon>
-              <text class="flow-label" x="380" y="71">曖昧性が残る</text>
-              <rect class="flow-box" x="432" y="34" width="300" height="110" rx="12"></rect>
-              <text class="flow-text" x="582" y="59">"Clients MUST validate"</text>
-              <text class="flow-label" x="582" y="84">BCP 14 宣言あり</text>
-              <text class="flow-label" x="582" y="106">適合要件として読める</text>
-            </svg>
-          </figure>
-          <div class="explain">
-            **Explanation:**
-
-            must (小文字), 規範要件, BCP 14, 曖昧性. 要件は, 実装者が同じ解釈で適合判定できることが重要.
-
-            規範語が **ALL CAPS** で書かれ, 文書がBCP 14の解釈を宣言していれば, 特別なキーワードの意味を一意に適用できます. どちらかが曖昧だと, mustの重さが読み手によって変わります.
-
-            BCP 14の解釈が宣言されていないと, mustを厳密な要件として読む人と, 強い言い回しとして読む人が混ざり, 実装が割れやすい. RFC 8174 は, まさにこの曖昧性を減らすための文書です.
-
-            セキュリティ要件は, テスト可能な条件として書き, 規範語の解釈を明示する. だから RFC 2119 と RFC 8174 は, 仕様を書く人だけでなく読む人にも効く RFC です.
-
-            A: 小文字mustを必ず規範語として読む根拠は, 文書が明示しない限り成立しない.
-            B: これが最も起きやすい問題. 同じ仕様を読んでも結論が分岐する.
-            C: 文は意味を持つ. 問題は有効性ではなく, 規範性の明確さ.
-          </div>
-        </div>
+      <article class="q card" data-id="Q1" data-type="ms" data-answer="a,c,d" data-difficulty="L1" data-hint="clarificationは、大文字表記、通常英語、keywordがそもそも必須かを扱います。">
+        <header><h4>Q1: RFC 8174のclarificationに含まれる記述はどれ？ 3つ選べ。</h4><span class="type">複数選択</span></header>
+        <div class="body"><fieldset class="choices">
+          <label class="choice"><input type="checkbox" name="Q1" value="a"> A. BCP 14の特別な意味はALL CAPS表記だけに適用される</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="b"> B. すべての規範文にBCP 14 keywordが必要である</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="c"> C. lowercase表記は通常の英語の意味を持つ</label>
+          <label class="choice"><input type="checkbox" name="Q1" value="d"> D. keywordを使わない規範文も存在できる</label>
+        </fieldset><div class="explain">RFC 8174 Section 2はA、C、Dを明記します。Bは誤りです。keywordは明確さと一貫性のために利用できますが、使用は必須ではありません。この区別により、case-insensitiveなkeyword解析と、keywordのない文は参考文だという誤解の両方を避けられます。</div></div>
       </article>
-
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="BCP 14では, 明示的な解釈宣言と特定の大文字表記を組み合わせて信号にします.">
-        <header><h4>Q2: 要件にBCP 14のMUSTとしての特別な意味を持たせたい. 最も明確な書き方はどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q2" value="a"> A. MUSTをすべて大文字で書き, BCP 14の解釈を示すボイラープレートを入れる</label>
-            <label class="choice"><input type="radio" name="Q2" value="b"> B. ボイラープレートは両方を同じ意味にするので, mustを小文字で書く</label>
-            <label class="choice"><input type="radio" name="Q2" value="c"> C. 規範表現を省き, 要件を例に置き換える</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            MUST, 規範語, BCP 14ボイラープレート, 大文字小文字.
-
-            RFC 8174のボイラープレートは, 列挙した語がすべて大文字で現れる場合に限り, BCP 14の定義どおりに解釈すると宣言します. 宣言と大文字のキーワードを揃えることで, 意図が明確になります.
-
-            文書が別の規則を明示的に定義することはできますが, RFC 8174の標準ボイラープレートが小文字にもBCP 14の意味を与えるとは説明できません.
-
-            A: すべて大文字のMUSTが大文字条件を満たし, ボイラープレートがBCP 14の解釈を宣言します.
-            B: RFC 8174の標準ボイラープレートでは, 小文字のmustにBCP 14の特別な意味は与えられません.
-            C: 例は動作を説明できますが, 必須の適合条件を宣言する代わりにはなりません.
-          </div>
-        </div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="文書の「ALL CAPSの場合に限る」という宣言を、文中の正確な綴りへ適用してください。">
+        <header><h4>Q2: reviewerはこのlowercase shouldをどう分類すべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">仕様はRFC 8174の推奨boilerplateを含む。後の文に"Clients should retry after a timeout."とある。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. 同じ単語なのでBCP 14 SHOULDである</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. BCP 14の特別なkeywordではなく通常英語である</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. lowercaseはoptionalを示すためBCP 14 MAYである</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. invalid textであり英語としての意味もない</label>
+        </fieldset><div class="explain">A: RFC 8174 Section 2ではcaseが意味を持ちます。B: このboilerplateの下で特別な意味を持つのはALL CAPSのSHOULDだけで、lowercase shouldは通常英語です。C: case変更で別keywordへ変わりません。D: lowercase proseはvalidで、文脈と表現により規範的意図を伝えることもあります。</div></div>
       </article>
-
-      <article class="q card" data-id="Q3" data-type="ms" data-answer="a,c,d" data-difficulty="L2" data-hint="解釈規則の明示, テスト可能な要件, 例外条件の記述を, ラベルのない曖昧な文章と分けます.">
-        <header><h4>Q3: 実装者の曖昧性を減らす実践はどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q3" value="a"> A. 文書内でBCP 14キーワードの解釈を定義する</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="b"> B. 規範と参考をラベル無しで混ぜる</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="c"> C. MUSTをテストできる条件として書く</label>
-            <label class="choice"><input type="checkbox" name="Q3" value="d"> D. SHOULDには理由と例外条件を書く</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            曖昧性, BCP 14キーワード, MUST, SHOULD. RFC 8174の狙いは, キーワードの読み方を明示して, 要件を一意に読むこと.
-
-
-            レビューでは, "このMUSTはどう試験する" と "このSHOULDの例外は何" を確認する.
-
-            A: MUST/SHOULD/MAYの意味の前提を固定できる.
-            B: 何が要件で何が説明かが不明になり, 実装差が増える.
-            C: MUSTがテスト可能なら, 実装とレビューが収束しやすい.
-            D: SHOULDは例外を許す. 例外が曖昧だと, SHOULDが実質MAYになる.
-          </div>
-        </div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="BCP 14 keywordがないことと、規範性がないことを同一視しないでください。">
+        <header><h4>Q3: reviewerのreject理由はRFC 8174上妥当か？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">protocolのnormative sectionに"Implementations are required to reject frames with an invalid length."とある。reviewerはALL CAPS keywordがないことだけを理由にnon-normativeと判定した。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. 妥当。MUSTを含む文だけがnormativeになれる</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. 妥当。requiredは常にinformativeなsynonymである</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. 不当。lowercase requiredは自動的にBCP 14 REQUIREDになる</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. 不当。normative textにBCP 14 keywordは必須ではない</label>
+        </fieldset><div class="explain">AとBは、keywordを使わないnormative textも多いとするRFC 8174 Section 2に反します。Cも誤りで、lowercase requiredは特別なBCP 14意味ではなく通常英語です。Dはkeyword markerと文のnormative forceを分離します。文脈と表現自体が要件を成立させます。</div></div>
       </article>
-
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="冒頭の「すべて大文字の場合に限り」を, 後に現れた綴りへそのまま適用します.">
-        <header><h4>Q4: 仕様の冒頭に, 「BCP 14キーワードはすべて大文字の場合に限り, 定義された意味を持つ」とある. 後の本文に "clients should retry" と書かれている. 小文字のshouldをどう解釈するか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. 大文字小文字を問わず, 規範的なSHOULDと解釈する</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. 文書が別に定義していなければ, 通常の英語と解釈する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. 小文字は任意性を示すため, 規範的なMAYと解釈する</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            **SHOULD** はBCP 14キーワードです. RFC 8174の「すべて大文字」という規則を採用した文書では, 小文字の **should** は通常の英語の意味を持ちます.
-
-            RFC 8174が定義するBCP 14の特別な意味は, すべて大文字の表記だけに与えられます. 文書が別の規則を定義することはできますが, この定型文だけでは小文字の **should** は規範的 **SHOULD** になりません.
-
-            BCP 14キーワードを使わない規範文も書けますが, その要件は小文字の綴りから推測させず, 本文で明確にする必要があります.
-
-            A: すべて大文字という条件があるため, 大文字小文字は解釈に影響します. あらゆる表記を規範語にする宣言ではありません.
-            B: 文書が小文字に別の意味を明示しない限り, 通常の英語として読みます.
-            C: 小文字にすると別のBCP 14キーワードへ変わるのではなく, この規則では特別なBCP 14の意味を失います.
-          </div>
-        </div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="先頭文字だけのcapitalizationはALL CAPSではありません。">
+        <header><h4>Q4: 文頭のMustはBCP 14の特別な意味を持つか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">文書はRFC 8174 boilerplateを採用している。checklist itemは"Must the client retain the nonce?"で始まる。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. 持たない。MustはALL CAPSのMUST keywordではない</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. 持つ。initial capitalでBCP 14が有効になる</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. 持つ。疑問符が文をrequirementへ変える</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. 持たない。疑問文はnormative languageを一切含められない</label>
+        </fieldset><div class="explain">A: Section 2は特別な意味をALL CAPSの場合だけに与え、title caseは通常英語です。BとCはRFC 8174にないactivation ruleを作っています。Dは過剰です。ここでの判定理由は正確なcapitalizationであり、文法形式一般の禁止ではありません。</div></div>
       </article>
-
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="各文がtestableなmandatory conditionを示すか, normative forceや例外条件を曖昧にしているかを比べます.">
-        <header><h4>Q5: 文書が標準のBCP 14ボイラープレートを採用している. testableな必須要件を最も明確に表す文はどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. serverはSection 4の構文に違反するrequestを通常はrejectした方がよい</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. serverはSection 4の構文に違反するrequestをMUST rejectする</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. serverは自らrejectしないと決めた場合を除き, malformed inputをSHOULD rejectする</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
-
-            BCP 14, 規範セクション, MUST. RFC 8174とRFC 2119の文脈では, MUSTのようなキーワードで適合要件を表現する.
-
-            MUSTが動作をmandatoryと示し, 参照した構文がimplementation-independentでtestableなconditionを与えます.
-
-            正当な例外がある場合は, circularなescape clauseではなく, 理由と適用conditionを示してSHOULDを使います.
-
-            A: 標準ボイラープレートでは通常の日本語に埋め込んだ「方がよい」にBCP 14の特別な意味はなく, normative forceが不明確です.
-            B: すべて大文字のMUSTが宣言済みのBCP 14意味を持ち, 具体的なconditionへ適用されています.
-            C: SHOULDは例外を許しますが, この文は例外を選ぶ実質的なconditionを示していません.
-          </div>
-        </div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="caseだけのformat変更でも、BCP 14規則の適用有無が変わります。">
+        <header><h4>Q5: publication formatterはこのcase変更をしてよいか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">source specificationはRFC 8174 boilerplateを採用し、"The verifier MUST reject an invalid proof."とする。style formatterが公開HTMLでMUSTをMustへ変える。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. よい。caseはstandards language semanticsを変えない</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. よい。readerはcontextからuppercase sourceを復元できる</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. よくない。rendered textから宣言済みBCP 14 markerが失われる</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. よくない。RFC 8174はあらゆるtypographic変換を禁止する</label>
+        </fieldset><div class="explain">AとBはRFC 8174 Section 2のALL CAPS条件を無視します。Cが正解です。このboilerplateでは公開されたMustは通常英語にしかならず、明示的keyword signalが変わります。Dは広すぎます。語とcaseを保つ変換までRFC 8174が禁止しているわけではありません。</div></div>
       </article>
-
-      <article class="q card" data-id="Q6" data-type="text" data-answer="MAY" data-difficulty="L1" data-hint="truly optionalな動作を, 絶対要件や正当な例外を許す推奨と区別します.">
-        <header><h4>Q6: implementationがある動作を含めるか省くかを自由に選べると示すBCP 14キーワードは何 (1語)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one keyword (e.g., MUST)" />
-          <div class="explain">
-            **Explanation:**
-
-            optional behavior, 規範語, MAY. BCP 14では, itemがtruly optionalな場合にMAYを使います.
-
-            MAYはimplementationがその動作を含めるか省くかを選べることを示します. 仕様に定めがあれば, 異なる選択をしたpeer同士でもinteroperateする必要があります.
-
-            MUSTは絶対要件です. SHOULDは正当な例外を許す推奨です. どちらもfeature自体が自由選択という意味ではありません.
-
-            optional featureでも, peerがその有無を検出し, 未対応時にどう動くかというinteroperability boundaryは定義します.
-          </div>
-        </div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="独自規則は定義できますが、RFC 8174の標準規則として説明してはいけません。">
+        <header><h4>Q6: editorは公開前に何を変えるべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">draftはRFC 8174を引用しつつ、"must, should, and may have the BCP 14 meanings regardless of capitalization."と宣言する。toolingもcase-insensitiveにkeywordをparseする。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. 変更不要。これはRFC 8174が定義する規則である</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. ALL CAPSを使うか、別のlocal conventionと明記する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. proseからlowercase wordをすべて削除する</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. documentよりtooling behaviorをauthoritativeとする</label>
+        </fieldset><div class="explain">AはRFC 8174 Section 2を誤って説明しています。特別な意味はALL CAPS表記に限られます。Bは標準規則と意図的に異なるlocal ruleを分離します。Cは不要で、lowercase wordは通常英語として使えます。Dはauthorityを逆転させています。toolingがdocumentの宣言を実装すべきです。</div></div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="通常英語の単語があることは、authorがBCP 14 keywordを意図した証拠ではありません。">
+        <header><h4>Q7: linterはすべての該当語を自動uppercaseすべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">linterがexplanatory paragraph内のlowercase must、should、mayを検出し、すべてuppercase keywordへ変換しようとする。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. すべき。すべてmalformed normative keywordである</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. すべき。normative documentは通常英語を含められない</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. すべきでない。explanatory paragraphではBCP 14 keywordが禁止される</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. すべきでない。通常proseの可能性があるためauthor intentをreviewする</label>
+        </fieldset><div class="explain">AとBはRFC 8174 Section 2に反します。lowercase表記は通常英語であり、keyword使用はoptionalです。Cは位置による禁止を作っています。Dが正解です。uppercase化はsemantic signalを変えるため、linterは候補を示せてもauthor reviewなしにrequirementを作るべきではありません。</div></div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="推奨されるauthoring guidanceと、protocol適合要件を分けてください。">
+        <header><h4>Q8: reviewerはこのboilerplate更新をどう説明すべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">新draftはALL CAPSのNOT RECOMMENDEDを使うが、RFC 2119だけを引用し、そのphraseを列挙しない古い宣言を残している。editorはRFC 2119と8174を引用するRFC 8174 boilerplateを提案した。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. 意図したBCP 14規則を明示する推奨authoring guidanceである</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. deployed peerへ課されるruntime interoperability要件である</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. NOT RECOMMENDEDをabsolute MUST NOTへ変える</label>
+          <label class="choice"><input type="radio" name="Q8" value="d"> D. lowercase not recommendedをBCP 14 keywordにする</label>
+        </fieldset><div class="explain">A: RFC 8174 Section 2は、guidelineに従うauthorへ、NOT RECOMMENDEDと両RFCを含む更新済み文言を取り込むよう勧めます。これはdocument authoring guidanceで、wire protocol要件ではありません。Bはeditorial clarityとpeer behaviorを混同します。Cはrequirement levelを変えます。DはALL CAPS限定条件に反します。</div></div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="翻訳はreader向け意味を保てても、自動BCP 14処理が使う正確なmarkerを失うことがあります。">
+        <header><h4>Q9: normative signalを保つpublication policyはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">英語仕様はRFC 8174を採用する。日本語訳はMUSTを通常の日本語proseへ置換し、conformance extractorには同じkeyword markupが残る前提で翻訳版を処理させる。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q9" value="a"> A. 強調された日本語をすべてBCP 14 MUSTとして扱う</label>
+          <label class="choice"><input type="radio" name="Q9" value="b"> B. extractorを全言語でcase-insensitiveにする</label>
+          <label class="choice"><input type="radio" name="Q9" value="c"> C. 英語keyword markerを保つか、翻訳metadataとauthorityを明示する</label>
+          <label class="choice"><input type="radio" name="Q9" value="d"> D. typographyはmachine extractionへ影響しないと仮定する</label>
+        </fieldset><div class="explain">AとBはRFC 8174 Section 2が定義しないcross-language ruleを作ります。Cはnormative sourceとmachine markerを明示します。翻訳がproseの意味を伝えても、削除されたALL CAPS英語keywordをextractorは推測できません。Dはcase-sensitive規則を無視します。</div></div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="複数仕様を合成する前に、各文書が宣言する規則を別々に保ってください。">
+        <header><h4>Q10: gatewayのcase-insensitive requirement mergerを信頼できるか？</h4><span class="type">単一選択</span></header>
+        <div class="body"><p class="question-premise">A2A profileは、RFC 8174を採用してMUSTを使うSpec Aと、BCP 14宣言なしでlowercase mustを使うSpec Bをimportする。gatewayは両textを統合し、case-insensitiveに一致する語をすべてBCP 14 MUSTとmarkする。</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. 信頼できる。importにより一致語はすべてBCP 14 keywordへupgradeされる</label>
+          <label class="choice"><input type="radio" name="Q10" value="b"> B. 信頼できない。文書ごとの規則を保ち、Spec Bのproseを勝手にrelabelしない</label>
+          <label class="choice"><input type="radio" name="Q10" value="c"> C. 信頼できる。aggregation後はautomationがnormative forceを決める</label>
+          <label class="choice"><input type="radio" name="Q10" value="d"> D. 信頼できない。Spec Bのruleはすべて必ずnon-normativeとして捨てる</label>
+        </fieldset><div class="explain">A: RFC 8174 Section 2は、import側が別文書のcapitalization conventionを遡って変えることを認めません。B: Spec Aの明示的keyword semanticsを保ち、Spec Bの通常英語の要件は、その文書自身のwording、status、contextから評価します。Cはtoolingにsemanticsを作らせています。Dは逆方向の誤りで、BCP 14 keywordなしでもnormative textは存在できます。</div></div>
       </article>
     </section>
 
