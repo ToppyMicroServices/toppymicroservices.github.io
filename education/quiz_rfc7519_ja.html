@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,8 +45,9 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">参照（URL）</h3>
+      <h3 id="refs-h">一次資料</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7519" target="_blank" rel="noopener noreferrer">RFC 7519: JSON Web Token (JWT)</a></li></ul>
+      <p>JWTの構文・暗号検証と、claim要件、key trust、replay対策、application authorizationを分けて判断する問題です。節番号はRFC 7519を指します。</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -151,6 +152,38 @@ A: RFC 7519 Section 4.1.3はJWT recipientへaud内で自身を識別するよう
 B: deployment topologyはsigned audience claimを書き換えません.
 C: claimのcopyはoriginal signature protectionを失います. new carrierを独立に保護しgateway assertionとして解釈する必要があります.
 D: token validationとresource authorizationは別のdecisionです. </div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="authorization componentがどちらの値を見るかを決める前に、JWT Claims Setのparse規則を確認してください。">
+        <header><h4>Q7: 複数componentが重複claimから別々の値を選んでよいか？</h4><span class="type">単一選択 · L3</span></header>
+        <div class="body">
+          <p class="question-premise">JWT Claims Setに<code>role</code>が2回あり、最初は<code>viewer</code>、次は<code>admin</code>です。upstream parserは最初の値を保持し、resource serverは最後の値を保持してadministratorとしてauthorizeします。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. よい。private claimの意味はapplicationが定めるため、各componentがどちらかを選べる</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. よい。resource serverは、より広いpermissionを与える方の重複値を選ぶべきである</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. よくない。重複をrejectするか字句上最後だけを返し、処理経路で解釈を分裂させない</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. よくない。RFC 7519は常に最初の値を残すよう求めるため、両方がviewerとしてauthorizeする</label>
+          </fieldset><div class="explain">**解説:**
+A: applicationがclaimの意味を定義できても、Claims Setのparse規則は上書きできません。
+B: より強いpermissionを選ぶ規則はRFCになく、曖昧さをprivilege escalationへ変えてしまいます。
+C: Section 4はclaim名をuniqueとし、parserに重複のrejectまたは字句上最後の値だけを返す動作を求めます。profileはsecurity-relevantな全componentが、許された一貫した動作を使うようにします。最初の値を採るupstreamの動作は、そのどちらでもありません。
+D: RFC 7519が許すのはrejectまたは最後の値であり、最初の値を残す規則ではありません。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="base formatがobjectを表現できることと、このapplicationのtrust policyがalgorithmと保護を受理することを分けてください。">
+        <header><h4>Q8: RFCがUnsecured JWTを扱えるなら、この入力も受理できるか？</h4><span class="type">単一選択 · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profileは、設定済みissuerが署名したtask JWTだけを受理します。外部requestから、<code>alg</code>が<code>none</code>、signature valueが空で、もっともらしい<code>aud</code>と<code>exp</code>を持つwell-formedなUnsecured JWTが届きました。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. rejectする。RFC 7519は全application contextでUnsecured JWTをmalformedと定めている</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. このprofileではrejectする。base formatはUnsecured JWTを許すが、要求されたissuer authenticationを提供しない</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. 受理する。validな<code>aud</code>と<code>exp</code>が、欠けている署名を補う</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. <code>none</code>をlocalで許可済みalgorithmへ置き換え、空のsignatureをそのまま検証する</label>
+          </fieldset><div class="explain">**解説:**
+A: Section 6はUnsecured JWTの形式を明示的に定義しているため、一律にmalformedではありません。
+B: 提示されたprofileは設定済みissuerによるauthenticationを要求します。Sections 7.2と11.1は、algorithmの受理と必要なtrust contextをapplicationへ委ねており、構文上validであることをtrustへ変えません。そのため、この入力は表現可能でもprofileの受理条件を満たしません。
+C: 必要なissuer protectionがなければ、audienceとtime claimも信頼できないassertionです。
+D: JOSE Headerの変更はprotected inputを変えるため、validな署名を新たに作ることはできません。</div>
         </div>
       </article>
     </section>

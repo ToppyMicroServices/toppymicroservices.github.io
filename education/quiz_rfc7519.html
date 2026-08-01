@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 7519","SKILL_SUBTITLE":"JSON Web Token (JWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,8 +45,9 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc7519" target="_blank" rel="noopener noreferrer">RFC 7519: JSON Web Token (JWT)</a></li></ul>
+      <p>The questions distinguish JWT syntax and cryptographic validation from claim requirements, key trust, replay control, and application authorization. Section numbers refer to RFC 7519.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -151,6 +152,38 @@ A: RFC 7519 Section 4.1.3 requires a JWT recipient to identify itself in aud. A 
 B: Deployment topology does not rewrite a signed audience claim.
 C: Copying claims removes the original signature's protection unless the new carrier is independently protected and interpreted as a gateway assertion.
 D: Token validation and resource authorization remain distinct decisions.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Check the JWT Claims Set parsing rule before choosing which duplicate value an authorization component should see.">
+        <header><h4>Q7: May different components choose different duplicate claim values?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">A JWT Claims Set contains two <code>role</code> names: first <code>viewer</code>, then <code>admin</code>. An upstream parser keeps the first occurrence, while the resource server keeps the last and authorizes as administrator.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes. Each component may select either occurrence because private claims have application-defined meaning</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. Yes. The resource server should select whichever duplicate grants the broader permission</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. No. Reject duplicates or keep only the lexically last value, as Section 4 permits; do not create conflicting interpretations</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. No. RFC 7519 always requires keeping the first occurrence, so both components must authorize as viewer</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Application-defined claim meaning does not override the Claims Set parsing rule.
+B: Choosing the more privileged value is not an RFC rule and turns ambiguity into privilege escalation.
+C: Section 4 requires claim names to be unique. A parser must either reject duplicates or use a parser that returns only the lexically last duplicate. A profile should ensure every security-relevant component applies a consistent permitted behavior; the upstream's first-value interpretation is not one of them.
+D: RFC 7519 permits rejection or the lexically last value, not a first-value rule.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Separate whether the base format can represent the object from whether this application's trust policy accepts its algorithm and protection.">
+        <header><h4>Q8: Does RFC support for an Unsecured JWT make it acceptable here?</h4><span class="type">Multiple Choice · L3</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A profile accepts only task JWTs signed by configured issuers. An external request supplies an otherwise well-formed Unsecured JWT with <code>alg</code> equal to <code>none</code>, an empty signature value, and plausible <code>aud</code> and <code>exp</code> claims.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Reject it because RFC 7519 declares every Unsecured JWT malformed in all application contexts</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Reject it under this signed-token profile: syntactic support for an Unsecured JWT supplies no issuer authentication</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Accept it because valid <code>aud</code> and <code>exp</code> claims compensate for the missing signature</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Replace <code>none</code> with an allowed algorithm locally and validate the unchanged empty signature</label>
+          </fieldset><div class="explain">**Explanation:**
+A: Section 6 explicitly defines the Unsecured JWT form, so it is not universally malformed.
+B: The stated profile requires authentication by a configured issuer. Sections 7.2 and 11.1 leave algorithm acceptance and the trust context to the application and do not turn syntactic validity into trust. This input therefore fails the profile even though RFC 7519 can represent it.
+C: Audience and time claims are untrusted assertions when the required issuer protection is absent.
+D: Changing the JOSE Header changes the protected input and cannot create a valid signature.</div>
         </div>
       </article>
     </section>
