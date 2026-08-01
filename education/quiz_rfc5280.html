@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -47,6 +47,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">References (URLs)</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc5280" target="_blank" rel="noopener noreferrer">RFC 5280: Internet X.509 PKI Certificate and CRL Profile</a></li></ul>
+      <p><strong>Scope:</strong> RFC 5280 profiles certificates and CRLs and defines path and CRL processing. Selecting trust anchors, authenticating forwarded gateway assertions, and authorizing A2A operations require additional protocol or deployment policy.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -63,12 +64,12 @@
           <p class="question-premise">An A2A verifier validates an agent certificate against its configured RFC 5280 inputs. The path succeeds, but the requested operation is restricted to a subset of agents.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. The certificate holder is authorized for every operation accepted by the same trust anchor</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. The path meets validation inputs; trust anchor, identity, purpose, and operation remain application policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. The subject/public-key binding satisfies the configured path inputs; operation authorization remains application policy</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. The peer proved possession of the private key for the exact A2A request under review</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. Revocation status is necessarily current for every certificate in the path</label>
           </fieldset><div class="explain">**Explanation:**
 A: Path validation does not assign application permissions.
-B: RFC 5280 Sections 6.1 and 6.2 define minimum path-validation conditions and inputs. Trust-anchor selection is a matter of policy, and an application may impose additional purpose and authorization constraints.
+B: RFC 5280 Sections 6.1 and 6.2 validate the subject/public-key binding under configured inputs and define minimum path conditions. Trust-anchor selection is a policy matter, and an application may impose additional purpose and authorization constraints.
 C: A certificate path binds a public key to a subject under the validation inputs; request-specific proof of possession requires the consuming protocol.
 D: Revocation processing depends on available and applicable status information; path success alone does not promise universally fresh status.</div>
         </div>
@@ -92,7 +93,7 @@ D: Validation depends on the verifier's own correct processing, not another impl
       <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A valid signature answers who issued a certificate. It does not make constraints carried by that issuer optional.">
         <header><h4>Q3: Should this constrained certification path be accepted?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <p class="question-premise">A trusted root issued an intermediate CA whose name constraints permit only DNS names under agents.example. That intermediate issued a leaf for billing.other.example. The signatures, validity periods, and CA basic constraints are otherwise valid.</p>
+          <p class="question-premise">A trusted root issued an intermediate CA whose name constraints permit only dNSName values under agents.example. That intermediate issued a leaf with subjectAltName dNSName billing.other.example. The signatures, validity periods, and CA basic constraints are otherwise valid.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. Accept, because a trust anchor may delegate names without limiting the intermediate's issuance scope</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Accept, because name constraints affect only name display after signature validation</label>
@@ -128,17 +129,17 @@ D: The two extensions are designed to be evaluated together; their coexistence i
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. Record not revoked because no signed CRL states that the certificate was revoked</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Record revoked because inability to obtain a CRL is cryptographic evidence of revocation</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Preserve unavailable status; deployment policy chooses rejection, retry, or another approved source</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. Preserve UNDETERMINED status; deployment policy chooses rejection, retry, or another approved source</label>
             <label class="choice"><input type="radio" name="Q5" value="d"> D. Ignore revocation whenever signatures and validity times pass</label>
           </fieldset><div class="explain">**Explanation:**
 A: Absence of evidence is not positive revocation-status evidence.
 B: Retrieval failure does not prove revocation either.
-C: RFC 5280 Section 6.3 defines CRL-based revocation processing; when required information cannot establish status, the validator must not misreport a positive result. Whether unavailable status is operationally acceptable belongs to the profile or deployment.
+C: RFC 5280 Section 6.3 returns UNDETERMINED when the available CRLs cannot determine status. The RFC does not define whether that result is operationally acceptable; rejection, retry, or another approved source belongs to the profile or deployment.
 D: This silently discards the deployment's stated revocation requirement.</div>
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="Track four separate facts: path validity, private-key possession at the TLS endpoint, authenticity of forwarded identity, and permission at the resource owner.">
-        <header><h4>Q6: Which certificate result may a gateway safely delegate?</h4><span class="type">Multiple Choice</span></header>
+        <header><h4>Q6: Which architecture keeps the RFC 5280 result distinct from downstream responsibilities?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <p class="question-premise">A gateway terminates mutual TLS, validates the client certificate path, and forwards a subject-name header to a backend. The backend owns the resource and cannot inspect the TLS handshake or original certificate. It uses the header for final authorization.</p>
           <fieldset class="choices">

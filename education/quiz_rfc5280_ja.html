@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 5280","SKILL_SUBTITLE":"Internet X.509 PKI Certificate and CRL Profile","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -47,6 +47,7 @@
     <section class="card scope" aria-labelledby="refs-h">
       <h3 id="refs-h">参照（URL）</h3>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc5280" target="_blank" rel="noopener noreferrer">RFC 5280: Internet X.509 PKI Certificate and CRL Profile</a></li></ul>
+      <p><strong>範囲:</strong> RFC 5280はcertificateとCRLをprofileし,path・CRL processingを定義します.trust anchorの選択,forwardされたgateway assertionの認証,A2A operationのauthorizationには,追加のprotocolまたはdeployment policyが必要です.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -63,12 +64,12 @@
           <p class="question-premise">A2A verifierが, 設定されたRFC 5280 inputを用いてagent certificateをvalidateします. pathは成功しましたが, 要求されたoperationは一部のagentだけに制限されています. </p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. certificate holderが, 同じtrust anchorで受理されるすべてのoperationを実行できること</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. pathはinputを満たす. anchor, identity, purpose, operationはapplicationが受理判断する</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. subject-public key bindingがpath inputを満たす.operation authorizationは別途判断する</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. peerが, review対象のA2A requestに対するprivate key possessionを証明したこと</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. path内の全certificateについてrevocation statusが必ず最新であること</label>
           </fieldset><div class="explain">**解説:**
 A: path validationはapplication permissionを付与しません.
-B: RFC 5280 Sections 6.1 and 6.2は, path validationのminimum conditionとinputを定義します. trust anchorの選択はpolicy事項であり, applicationはpurposeやauthorizationへ追加constraintを課せます.
+B: RFC 5280 Sections 6.1 and 6.2は,設定済みinputの下でsubjectとpublic keyのbindingをvalidateし,pathのminimum conditionを定義します.trust anchorの選択はpolicy事項であり,applicationはpurposeやauthorizationへ追加constraintを課せます.
 C: certificate pathはvalidation inputの下でpublic keyとsubjectを結び付けます. request固有のproof of possessionには利用protocolが必要です.
 D: revocation processingは, 取得できた適用可能なstatus情報に依存します. path成功だけで常に最新のstatusを保証しません. </div>
         </div>
@@ -92,7 +93,7 @@ D: verifier自身の正しいprocessingが必要であり, 別implementationの�
       <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="validなsignatureが答えるのは誰がcertificateを発行したかです. issuerが設定したconstraintはoptionalにはなりません. ">
         <header><h4>Q3: このconstraint付きcertification pathをacceptできるか</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <p class="question-premise">trusted rootが, agents.example配下のDNS nameだけを許すname constraintsを持つintermediate CAを発行しました. このintermediateがbilling.other.example向けleafを発行しています. signature, validity period, CA basic constraintsはその他の点で有効です. </p>
+          <p class="question-premise">trusted rootが,agents.example配下のdNSNameだけを許すname constraintsを持つintermediate CAを発行しました.このintermediateはsubjectAltName dNSNameがbilling.other.exampleのleafを発行しています.signature,validity period,CA basic constraintsはその他の点で有効です.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. trust anchorはintermediateのissuance scopeを制限せずnameをdelegateできるためacceptする</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. name constraintsはsignature validation後の表示だけに影響するためacceptする</label>
@@ -128,17 +129,17 @@ D: 二つのextensionは併せて評価するためのものです. 共存自体
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. revokedと記載するsigned CRLがないのでnot revokedと記録する</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. CRLを取得できないこと自体がrevocationのcryptographic evidenceなのでrevokedと記録する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. unavailableとして保持し, reject, retry, 別sourceの利用はdeployment policyで決める</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. UNDETERMINEDとして保持し,reject,retry,別sourceの利用はdeployment policyで決める</label>
             <label class="choice"><input type="radio" name="Q5" value="d"> D. signatureとvalidity timeに成功すればrevocationをignoreする</label>
           </fieldset><div class="explain">**解説:**
 A: evidenceがないことはpositiveなrevocation-status evidenceではありません.
 B: retrieval failureはrevocationも証明しません.
-C: RFC 5280 Section 6.3はCRL-based revocation processingを定義します. 必要な情報からstatusを確立できない場合にpositive resultと誤記してはいけません. unavailable statusをoperationally受理するかはprofileまたはdeploymentが決めます.
+C: RFC 5280 Section 6.3は,利用できるCRLからstatusを決定できなければUNDETERMINEDを返します.RFCはその結果をoperationally受理できるかを定めません.reject,retry,別のapproved sourceの利用はprofileまたはdeploymentが決めます.
 D: deploymentが明示したrevocation要件を黙って捨てています. </div>
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L4" data-hint="path validity, TLS endpointでのprivate-key possession, forwarded identityのauthenticity, resource ownerでのpermissionを分けて追跡します. ">
-        <header><h4>Q6: gatewayはどのcertificate結果を安全にdelegateできるか</h4><span class="type">単一選択</span></header>
+        <header><h4>Q6: RFC 5280の結果とdownstream責務を分けるarchitectureはどれか</h4><span class="type">単一選択</span></header>
         <div class="body">
           <p class="question-premise">gatewayがmutual TLSを終端し, client certificate pathをvalidateして, subject-name headerをbackendへforwardします. resourceを所有するbackendはTLS handshakeや元certificateを確認できず, headerを最終authorizationへ使います. </p>
           <fieldset class="choices">
