@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 4949",
       SKILL_SUBTITLE: "Internet Security Glossary",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc4949" target="_blank" rel="noopener noreferrer">RFC 4949: Internet Security Glossary</a></li>
       </ul>
+      <p>範囲: RFC 4949はInformationalな用語集です. 定義はdesign reviewでcategory errorを見つける助けになりますが, それだけでarchitectureやconformanceを決定するものではありません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -101,15 +102,11 @@
           <div class="explain">
             **Explanation:**
 
-            **authentication** は「その主体が本当に誰かを確認すること」, **authorization** は「確認済みの主体に何を許すかを決めること」です.
+            RFC 4949 Section 4はauthenticationを, entityまたはresourceが特定attribute valueを持つというclaimのverificationと定義します. loginでは通常, userが主張するidentityがそのattributeです.
 
-            user が主張する identity が正しいか確かめる行為は **authentication** です. password, passkey, certificate, session などはこの確認を支える手段です.
-
-            identity verification そのものを指します.
-            **authorization** は権限判断です. 本人確認が終わった後に「その user に delete を許すか」を決めます.
-            **identification** はuser identifierなどのclaimed valueを提示する段階で, claimの検証そのものではありません.
-
-            login は authentication の入口ですが, login 済みだから何でもできるわけではありません. その先に authorization が続きます.
+            A: 正解. claimed identityをverifyする段階です.
+            B: authorizationはidentityなどを基にresource accessを許可する判断です.
+            C: identificationはuser identifierなどのclaimed valueを提示しますが, claim自体をverifyしません.
           </div>
         </div>
       </article>
@@ -125,15 +122,11 @@
           <div class="explain">
             **Explanation:**
 
-            **authorization** は access control decision です. 認証済みの user に対して, resource や action ごとに許可/拒否を決めます.
+            RFC 4949 Section 4はauthorizationを, entityへresource accessを許可するapprovalまたはその付与processと定義します. identityと適用policyが分かった後にrequested operationを評価します.
 
-            record を delete できるか決めるのは **authorization** です. その user が誰か分かったあとに, 何をしてよいかを判断する段階です.
-
-            **authentication** は本人確認であり, delete 許可の判断までは含みません.
-            operation ごとの access control を決めるのでこれが正解です.
-            **accounting** はactivityの記録や計測であり, permission decisionそのものではありません.
-
-            admin 画面で「ログインできたが削除はできない」は正常です. authentication と authorization が別だからです.
+            A: authenticationはattribute claimをverifyしますが, delete permissionを与えません.
+            B: 正解. このentityへこのoperationを許すかというauthorization判断です.
+            C: accountingはactivityの記録や計測であり, permission decisionではありません.
           </div>
         </div>
       </article>
@@ -167,15 +160,11 @@
           <div class="explain">
             **Explanation:**
 
-            **integrity** は data や message が unauthorized に改変されていないことを守る性質です. MAC, signature, checksum の一部はこの検証に関わります.
+            RFC 4949 Section 4はdata integrityを, dataがunauthorizedな方法で変更または破壊されていない性質と定義します. integrity mechanismはtransit中のmodification検知を支えます.
 
-            transit 中に message が tamper されたことを検知したいなら **integrity** が最も近いです.
-
-            **confidentiality** は見えないようにする性質で, 改ざん検知そのものは主目的ではありません.
-            tampering の防止や検知に関わるので正解です.
-            **availability** は必要なときのaccessやoperationを扱い, messageが改変されたかは示しません.
-
-            encryption だけでは integrity が十分でない場合があります. 「読めない」と「書き換えられない」は別に確認する癖が大切です.
+            A: confidentialityはdisclosureを制限しますが, received dataが不変だとは示しません.
+            B: 正解. unauthorized modificationの検知はintegrity functionです.
+            C: availabilityは必要時のaccessやoperationを扱い, message alterationを示しません.
           </div>
         </div>
       </article>
@@ -191,15 +180,11 @@
           <div class="explain">
             **Explanation:**
 
-            RFC 4949の**nonce**は, protocolで交換するdataへ入れるrandomまたはnon-repeatingな値です. 通常はlivenessを保証し, replay attackを検知または防止するために使います.
+            RFC 4949 Section 4のnonceは, protocol dataへ含めるrandomまたはnon-repeatingな値で, 通常はlivenessを示しreplayを防ぐために使います. この用途ではsecrecyではなくfreshnessが中心です.
 
-            replay を防ぐ one-time value として最もよく出る語は **nonce** です.
-
-            一回性を持たせる値として代表的です.
-            **credential** はsecurity判断に使うevidenceやattributeを運びますが, 固有にfreshとは限りません.
-            **checksum** はdata changeを検知できる場合がありますが, protocol exchangeをnon-repeatingにはしません.
-
-            nonce 自体は秘密でなくてもよいことがあります. 重要なのは, 同じ文脈で再利用しないことです.
+            A: 正解. 問いのrandomまたはnon-repeating valueです.
+            B: credentialはsecurity判断用のevidenceやattributeですが, 必ずしもfreshではありません.
+            C: checksumはdata changeを検知できる場合がありますが, exchangeをnon-repeatingにはしません.
           </div>
         </div>
       </article>
@@ -212,7 +197,7 @@
             **Explanation:**
 
 
-            RFC 4949は, 有効なdata transmissionをoriginatorまたはinterceptorが悪意または不正に繰り返すattackと定義しています. nonceなどのfreshness mechanismは, 以前使われたprotocol dataをreceiverが拒否する助けになります.
+            RFC 4949 Section 4はreplay attackを, originatorまたはinterceptorによるvalid data transmissionの悪意あるまたは不正な反復と定義します. nonceなどのfreshness mechanismは以前使われたprotocol dataの拒否を支えます.
           </div>
         </div>
       </article>
@@ -234,6 +219,79 @@
             backendには`X-Agent-ID`とgatewayのverification resultを結ぶtrustworthyなbindingも必要です. untrusted workloadが同じheaderを作れるなら, syntaxだけではauthenticationもintegrityも得られません. protectedなgateway-to-backend trust boundaryを置く設計も, backendがevidenceを直接verifyする設計もあり得ますが, RFC 4949は一方を選びません.
 
             RFC 4949はInformationalなglossaryであり, conformance specificationではありません. ここではdesign review上のcategory errorを明確にできますが, gatewayを使う全設計を非適合とはしません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q8" data-type="ms" data-answer="a,b,c" data-difficulty="L3" data-hint="weakness, potential danger, intentional act, realized exposure, expected lossを別々に分類してください.">
+        <header><h4>Q8: glossaryと整合するincident用語の使い方はどれか?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">debug設定により再利用可能なidentity grantがshared logへ書かれます. internal accountはlogを読め, operatorが意図的にgrantをcopyして再利用しました. profileはraw grantのunauthorized log exposureをsuccessful attackとします.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q8" value="a"> A. secret-bearing loggingはvulnerabilityで, insiderやcompromised accountによるmisuse可能性はthreatである</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="b"> B. 意図的な取得と再利用はattackで, grantのunauthorized exposureはsecurity compromiseである</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="c"> C. riskはthreatがvulnerabilityを利用してharmful resultを生むexpected lossを表す</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="d"> D. log file自体がattackで, 意図的に読む者がvulnerabilityである</label>
+            <label class="choice"><input type="checkbox" name="Q8" value="e"> E. TLS authentication成功によりgrantは安全に届いたためlogging riskは消える</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 4949 Section 4はvulnerabilityをexploitableなflawまたはweakness, threatをharmのpotential, attackをpolicyへ反するintentional act, security compromiseをunauthorized accessへのexposureまたはpotential exposure, riskをthreat, vulnerability, harmful resultに関するexpected lossと定義します.
+
+            A: 選択. logging behaviorがweaknessで, potential actorまたはeventがthreatです.
+            B: 選択. deliberate exploitationはattackで, profileが定めたunauthorized exposureはcompromiseです.
+            C: 選択. riskを単一のthreatやflawと区別しています.
+            D: 非選択. actionとweaknessのcategoryが逆です.
+            E: 非選択. transport protectionは後段のlogging sinkを制御しません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="trustedはpolicy enforcementを依存するcomponentを示し, trustworthyはその依存を正当化する根拠まで含みます.">
+        <header><h4>Q9: gatewayをtrustedと呼ぶことで何が確定するか?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">backendは1つのgatewayから届くidentityとauthorization resultだけを受理します. design文書はgatewayを“trusted”としますが, protected channel, isolation, review evidence, recovery planは示しません. reviewerはlabelだけでgatewayがpolicyへ違反できないと主張します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. flawless operationが証明され, gatewayはattack surfaceから外れる</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. security dependencyを示すだけで, trustworthinessにはassuranceが必要である</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. policy enforcement上の役割と無関係に, trustedは暗号化を使うという意味である</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. RFC 4949はbackendがgatewayへ依存する全designを禁止する</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 4949 Section 4はtrusted componentをpolicy enforcementへ責任を持ち, そのcorrect operationへsystem securityが依存するcomponentとして説明します. trustworthy systemはtrustedであるだけでなく, convincingなvalidationやassuranceによりtrustに値します.
+
+            A: dependency labelはflawless behaviorのevidenceではありません.
+            B: 正解. trust boundaryを示した上で, designに応じたprotectionとassuranceで支える必要があります.
+            C: encryptionは1つのmechanismになり得ますが, この意味のtrustedを定義しません.
+            D: Informational glossaryは用語を定義し, gateway architectureを禁止しません.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q10" data-type="ms" data-answer="a,c,d" data-difficulty="L4" data-hint="各mechanismを支えるserviceへ, policy decisionをenforcement pointへ, 依存componentをassurance claimへ対応付けてください.">
+        <header><h4>Q10: terminology-level composition reviewを通る主張はどれか?</h4><span class="type">Multi-Select</span></header>
+        <div class="body">
+          <p class="question-premise">Agent Card signatureはvalidで, TLSはgatewayをauthenticateし, identity grantは期限内です. gatewayはAgent IDをbackendへ転送し, backendは固有のdelete policyを適用します. 文書はrequestが全hopでconfidential, authorized, risk-freeだと結論します.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="checkbox" name="Q10" value="a"> A. signature validationはintegrityまたはorigin authenticationを支えてもdelete permissionは与えない</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="b"> B. gatewayまでのTLSはtermination後のforwarded dataも自動的にconfidentialにする</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="c"> C. backendのaccess-control functionがresource固有のauthorization policyをenforceする</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="d"> D. gatewayへの依存はその機能についてtrustedにするが, 自動的にtrustworthyにはしない</label>
+            <label class="choice"><input type="checkbox" name="Q10" value="e"> E. 3つのcheck成功によりboundaryを調べなくてもresidual riskは消える</label>
+          </fieldset>
+          <div class="explain">
+            **Explanation:**
+
+            RFC 4949 Section 4はsecurity mechanismとそれが支えるservice, authenticationとauthorization, access controlとpolicy approval, trustedとtrustworthyを区別します. glossaryはreview用の正確な語彙を与えますが, composed systemの安全性を証明しません.
+
+            A: 選択. valid signatureだけでresource operationはauthorizeされません.
+            B: 非選択. 1つのchannel endpointまでのserviceはtermination後のhandlingを説明しません.
+            C: 選択. 前提ではbackendがdelete policyのenforcement pointです.
+            D: 選択. functional relianceがtrustを示し, trustworthinessにはassuranceが必要です.
+            E: 非選択. check数はgapやresidual riskの分析になりません.
           </div>
         </div>
       </article>
