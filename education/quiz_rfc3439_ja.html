@@ -33,7 +33,7 @@
       SKILL_NAME: "RFC 3439",
       SKILL_SUBTITLE: "大規模Internet設計とSimplicity Principle",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -67,18 +67,19 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="interactionとfeatureが増えたときのscale costを考えてください.">
-        <header><h4>Q1: RFC 3439のSimplicity Principleに最も合う設計判断はどれか</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. 将来あり得るfeatureを配備前にすべてshared coreへ入れる</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. 必要な動作を満たす中で最も単純なarchitectureを選ぶ</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. component間のcouplingが増えても,各componentを個別最適化する</label>
-        </fieldset><div class="explain">**Explanation:**
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="任意機能が必須経路、同時更新、failure scopeをどれだけ増やすかを比較してください。">
+        <header><h4>Q1: RFC 3439 Sections 2, 2.4, and 3.1を設計レビューの視点として使う場合、最も適切な評価はどれか</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">署名検証とroutingを行うA2A gatewayが10,000 tenantで稼働している。新しい利用分析はbest effortでよく、停止してもrequest処理のSLOを維持する必要がある。案Xはtenant別分析rule、payload正規化、retry coordinationを全gatewayの必須経路へ追加し、rule変更のたびに全gatewayを同時更新する。案Yはgatewayから非同期eventを送り、利用tenantだけが独立したcollectorを有効にする。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. 案Xを選ぶ。一つのdeployment unitなら、経路上の依存や同時更新はcomplexityとして数えなくてよい</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. 案Yを優先する。任意処理を必須経路から外し、更新とfailureのcouplingを要件内で小さくできる</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. 案Xを選ぶ。tenantがcoreを共有する場合、Simplicity Principleはcentral retry coordinationを要求する</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. 両案を同等とする。この原則が比較するのはsource code量だけで、運用上の依存関係ではない</label>
+          </fieldset><div class="explain">**Explanation:**
 
-RFC 3439はcomplexityを効率的なscalingの主要な妨げであり,CAPEXとOPEXの増加要因と捉えます.
-speculativeなfeature追加はinteractionを増やします.
-要件を満たす最も単純な解へ寄せます.
-local optimizationはcomplexityとcouplingを増やし得ます.</div></div>
+Bが最も適切です。RFC 3439 Section 2はcomplexityを大規模化とCAPEX・OPEXの妨げとして扱い、Section 2.4は新機能のためにcore全体を更新する構成と、参加するedgeだけが採用できる構成のcostを対比します。Section 3.1はlocal optimizationがcomplexityとcouplingを増やし得ると注意します。案Yは、設問で分析がbest effortとされているため、必須経路、同時更新、failure scopeを減らしながら要件を満たします。一つのdeployment unitであることやsource code量だけではsystem complexityを判定できません。またRFC 3439はInformationalな設計指針であり、案Yをprotocol適合要件として強制する文書ではありません。分析結果がauthorizationや監査証拠に必須なら前提が変わり、非同期化した案Yがその要件を満たすかを改めて評価する必要があります。</div>
+        </div>
       </article>
       <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="routeの存在ではなく,endpoint communication stateとcore stateの相互作用に注目してください.">
         <header><h4>Q2: end-to-end argumentから,Internet coreのstateについて言えることはどれか</h4><span class="type">Multiple Choice</span></header>
