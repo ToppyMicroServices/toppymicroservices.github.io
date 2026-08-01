@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7239",
       SKILL_SUBTITLE: "Forwarded",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7239" target="_blank" rel="noopener noreferrer">RFC 7239: Forwarded HTTP Extension</a></li>
       </ul>
+      <p><strong>範囲:</strong> RFC 7239は, proxyが追加・保持・削除できる任意のrequest metadataを定義します. client, proxy, agent, authorization claimが真正であることを証明する仕様ではありません.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,132 +91,94 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="forwarding metadataを, 暗号化やmetadataが真実であることの証明とは分けてください.">
-        <header><h4>Q1: Forwarded headerの意図として最も近いのはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. intermediary越しでも, 元のclientやprotocolなどの情報を運ぶ</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. HTTPの暗号化のためTLSを置き換える</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. trust boundaryなしでIPの正当性を常に保証する</label>
-          </fieldset>
-          <div class="explain">
-            **解説:**
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="trusted boundaryの外で作られたlist prefixと, edgeが自身のconnectionから観測した値を区別してください.">
+        <header><h4>Q1: backendは最初の<code>for</code>値を認証済みclient addressとして使える?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">Internet clientが<code>Forwarded: for=10.0.0.7</code>を送ります. trusted edge proxyはincoming fieldを削除せず<code>for=198.51.100.24</code>を追加し, backendは最初の<code>for</code>値がprivate rangeならadministratorとしてauthorizeします.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. はい. listの先頭という位置がelementを認証する</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. はい. Internet clientはprivate addressを指定できない</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. いいえ. untrusted prefixはspoof可能でauthorizationに使えない</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. いいえ. RFC 7239はtrusted proxyによるelement追加を禁じる</label>
+        </fieldset><div class="explain">**解説:**
 
-            `Forwarded` は, HTTP requestがproxyを通ると失われたり変わったりする情報を記録します. 接続を保護したり, 記録値の正しさを証明したりするfieldではありません.
-
-            security判断に使う場合は, どのintermediaryがfieldを追加または置換できるかを定める必要があります.
-
-            A: requestと転送proxyに関する情報を伝えるという, fieldの目的を表しています.
-            B: transport securityはTLSの役割です. `Forwarded` はTLSを置き換えません.
-            C: senderは偽の値も送れるため, 真正性は定義されたproxy trust boundaryに依存します.
-          </div>
-        </div>
+A: list順は生成順を記録しますが, elementを認証しません.
+B: clientはprivate addressらしい値を含む任意のHTTP field valueを送れます.
+C: RFC 7239 Section 8.1は, すべてのnodeが変更できるためfieldの正しさに依存できないとします. deploymentはuntrusted fieldをsanitizeし, 定義したedgeの観測値を信頼できますが, RFC 7239だけではその値もauthorization evidenceになりません.
+D: Section 4はproxyによるelement追加または新しいfield lineの追加を認めます. 問題はattacker-controlled prefixを保持して信頼することです.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="request initiator, 受信proxy, 元のauthority, 受信時のschemeという4つの役割に対応する登録名を考えてください.">
-        <header><h4>Q2: RFC 7239がForwarded element用に定義するparameter名はどれ? (複数選択)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. for</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. by</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. proto</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. host</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. path</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="f"> F. port</label>
-          </fieldset>
-          <div class="explain">
-            **解説:**
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="proxyがelementを追加した順序を逆転せず, field lineを1つのHTTP listとして結合してください.">
+        <header><h4>Q2: originがparseすべきlogical listはどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">originは次の順で2つのfield lineを受け取ります: <code>Forwarded: for=192.0.2.43</code>, <code>Forwarded: for="[2001:db8:cafe::17]";proto=https</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. semicolonで区切られた2つの<code>for</code>を持つ1 element</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. 受信順の2 elementで, comma-separated listと等価</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. nearest proxyが常に先頭になるよう逆順の2 element</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. RFC 7239は1 field lineだけを許すためinvalid</label>
+        </fieldset><div class="explain">**解説:**
 
-            RFC 7239が初期登録するparameterは4つです. extensionによるparameter追加は可能ですが, `path` と `port` はこの4つに含まれません.
-
-            A: `for` はproxyへrequestを行ったnodeを示します.
-            B: `by` はrequestを受信したproxy interfaceを示します.
-            C: `proto` はproxyが受信したrequestで使われたprotocolを示します.
-            D: `host` はproxyが受信した元のHost request-header値を示します.
-            E: `path` はRFC 7239のparameterではなく, request pathは初期parameter群の対象外です.
-            F: `port` は独立したRFC 7239 parameterではありません. node identifierでは, 構文が許す場合にportを含められます.
-          </div>
-        </div>
+A: semicolonは1つのforwarded-element内のparameterを区切り, そのelementで同じparameterは重複できません.
+B: RFC 7239 Sections 4と7.1は, 複数field lineへ分割できるHTTP listを定義します. 先頭elementは最初のproxyの寄与で, 後続の寄与が続きます.
+C: 最後のproxyがoriginに最も近くてもlistを逆転しません.
+D: 複数field lineは許され, 結合したcomma-separated representationと等価です.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="1つのproxyのdataを1つのforwarded-elementとして, HTTP list syntaxを当てはめてください.">
-        <header><h4>Q3: 複数proxy hopをForwardedで表す一般的な方法はどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. hopごとにheaderを分け, commaは禁止</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. commaで区切ったforwarded elementのlistにする</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. header valueにJSONを埋め込む</label>
-          </fieldset>
-          <div class="explain">
-            **解説:**
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="commaで区切られた1つのforwarded-element内で, 同じparameterの出現数を数えてください.">
+        <header><h4>Q3: proxyはこのelementを出力してよい?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">proxyはsocket peerとapplication指定addressの両方を<code>Forwarded: for=192.0.2.10;for=198.51.100.8;proto=https</code>として記録しようとしています.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. はい. 重複parameterはtrust順に並ぶ</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. はい. semicolonごとに新しいproxy hopになる</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. はい. 両方IP addressなら<code>for</code>重複はvalid</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. いいえ. 1 element内でparameter名を2回使ってはならない</label>
+        </fieldset><div class="explain">**解説:**
 
-            1つのforwarded-elementは, 1つのproxyが追加した情報をまとめます. 複数elementはfield生成順のHTTP listになります.
-
-            parserはquoted stringとoptional whitespaceもfield grammarに従って扱う必要があります.
-
-            A: 複数のfield lineは結合できますが, commaはlist delimiterであり禁止されません.
-            B: forwarded-element間はcommaで区切り, 1つのelement内のparameter間はsemicolonで区切ります.
-            C: RFC 7239が定義するのはHTTP field-value grammarであり, JSON形式ではありません.
-          </div>
-        </div>
+A: RFC 7239はduplicate parameterのtrust rankingを定義しません.
+B: commaが別のforwarded-elementを開始し, semicolonは同じelementへparameterを追加します.
+C: value typeによって重複を許す例外はありません.
+D: Section 4は各parameterが1 field-value/forwarded-element内に2回以上現れてはならないとします. 異なるproxyの寄与はcommaで区切った別elementにします.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="trusted edgeがfieldをsanitizeする前に, 誰がその値を付けられるかを考えてください.">
-        <header><h4>Q4: Forwarded運用でありがちな主要リスクはどれ</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. HTTP/2へ強制downgradeする</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. HSTSを自動的に無効化する</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. untrusted sourceによるspoofing</label>
-          </fieldset>
-          <div class="explain">
-            **解説:**
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="独立に蓄積されたlegacy listに, entryをhopごとにpairingする共通構造があるかを確認してください.">
+        <header><h4>Q4: legacy fieldを安全にpaired elementへ変換できる?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">requestに<code>X-Forwarded-For</code>と<code>X-Forwarded-By</code>の両listがあります. producerと挿入順序は不明ですが, proxyはarray indexで値をpairingして<code>Forwarded</code>へ変換する案です.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. はい. list長が同じなら同一hopのentryだと証明できる</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. はい. 両listをalphabetical sortすればproxy順を復元できる</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. いいえ. 対応関係と挿入順序を復元できない可能性がある</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. いいえ. RFC 7239はX-Forwarded-*からの全変換を禁止する</label>
+        </fieldset><div class="explain">**解説:**
 
-            RFC 7239 Section 8.1は,clientを含む任意のnodeが`Forwarded`を変更できるため,値が正しいとは依存できないと述べます.
-
-            典型的には, trusted edgeで外部由来のforwarding fieldを除去し, trusted proxyの観測値から生成し直します.
-
-            A: このfieldはHTTP versionをnegotiationしないため, HTTP/2へのdowngradeを起こしません.
-            B: HSTS policyを変更したり, HTTPSへのupgradeを無効にしたりするfieldではありません.
-            C: untrusted senderの値を信じると, clientやproxyのmetadataをspoofされます.
-          </div>
-        </div>
+A: 長さの一致は, 独立に生成されたentryの対応を確立しません.
+B: lexical orderはtraversal orderと無関係です.
+C: RFC 7239 Section 7.4は, 複数のX-Forwarded-* fieldがある場合, 既存fieldの追加順序が不明なため変換不能になり得ると警告します.
+D: 情報が十分なら合理的な変換を推奨します. 例えばX-Forwarded-Forだけのlistは変換できる場合があります.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^for$" data-difficulty="L1" data-hint="requestを開始したendpointと, それを受け取ったproxyを対比してください.">
-        <header><h4>Q5: request initiatorに相当する情報を指すparameter名は何 (token 1つ)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the parameter" />
-          <div class="explain">
-            **解説:**
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="debugging要件を, 明示的なprivacy signalとdefault disclosure guidanceに照らしてください.">
+        <header><h4>Q5: RFC 7239のprivacy guidanceに最も合うforwarding policyはどれ?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">proxyはprivacy semanticsを明示的に要求するfieldを持つrequestを受け取ります. 運用担当はdebug用にclientのstable IP addressを転送したい一方, backendのaddress-based機能は必要としていません.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. debuggingは常にprivacy signalより優先するためstable IPを転送する</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. private addressを渡さず, このguidanceの下ではForwardedを省略する</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. client検証用に完全なForwarded chainをresponseへcopyする</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. 全requestで同じobfuscated identifierを無期限に使用する</label>
+        </fieldset><div class="explain">**解説:**
 
-            tokenは **for** です. `for` はproxyへrequestを行ったnodeを示し, `by` はrequestを受信したproxy interfaceを示します.
-
-            値にはIP-based node identifierのほか, 直前のnodeが不明な場合の `unknown` や, 実identifierを露出したくない場合のobfuscated identifierを使えます.
-          </div>
-        </div>
+A: Section 8.3はprivacy-sensitive requestを優先し, proxyはForwardedを使わずprivate informationも次hopへ渡さないSHOULD NOTを示します.
+B: これは記載されたprivacy guidanceに従います. そのsignalなしでfieldを使う場合, Sections 5.1, 5.2, 8.3はdefaultとしてobfuscated identifierを推奨します.
+C: Section 8.2はproxy chainを露出し得るためfieldをresponseへcopyすべきでないとします.
+D: obfuscated identifierはpersistenceが必要でない限りrequestごとにrandomとし, persistentでもclient IP addressより長く保持すべきではありません.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="限定的なhopの関連付けと, 安定したnetwork identifierの露出とのtrade-offを考えてください.">
-        <header><h4>Q6: <code>for</code> parameterでIP addressの代わりにobfuscated identifierを使う理由はどれ?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. clientやprivate addressの露出を減らしつつ, 必要な範囲だけ関連付ける</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. それ以前の全proxyが暗号学的に認証済みであると示す</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. addressを短い再利用tokenに置き換えてheader圧縮率を上げる</label>
-          </fieldset>
-          <div class="explain">
-            **解説:**
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="transport由来のhop metadataと, agentやtask権限に関するprotocol evidenceを分けてください.">
+        <header><h4>Q6: A2A backendはforwarding metadataをどう使うべき?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">trusted gatewayが外部A2A requestを受け, incoming <code>Forwarded</code>をすべて置換し, authenticated transportで<code>Forwarded: for=198.51.100.24;proto=https;host=agent.example</code>をbackendへ送ります. backendはこの値をagent runtime, grant holder, approved task, delegation chainの証拠として扱う案です.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. gateway sanitizationがmetadataをagent proofへ昇格させるため全claimを受理する</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. agent identityとgrant ownershipは受理し, onward delegationだけ検証する</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. trusted hop contextだけに使い, agentとauthorization claimは別に検証する</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. RFC 7239はreverse-proxy requestのForwardedを禁じるため拒否する</label>
+        </fieldset><div class="explain">**解説:**
 
-            RFC 7239は, 実identifierを開示すべきでない場合にobfuscated node identifierを認めます. この値はunderscoreで始め, 意図的に相関させる場合を除きrequestごとにrandom生成することが望まれます.
-
-            literalの `unknown` は別の意味を持ち, 直前のnode identityが不明な場合に使います.
-
-            A: obfuscationにより, deploymentが必要と決めた関連付けだけを残し, identifierの開示を抑えられます.
-            B: obfuscationはproxyを認証せず, fieldの由来も証明しません.
-            C: identifierの開示と関連付けを制御する仕組みであり, header圧縮方式ではありません.
-          </div>
-        </div>
+A: sanitizationとauthenticatedなgateway-to-backend transportによりgatewayの観測をboundary内で信頼できても, fieldに新しいapplication semanticsは加わりません.
+B: RFC 7239はagent identityもgrant possessionも証明しません.
+C: Sections 4, 5, 8.1はforwarding metadataとintegrity上の限界を定義します. 独立したapplication claimはA2A profile, credential validation, sender-constraining, task policy, delegation ruleで確立する必要があります.
+D: Section 4はrequest fieldをforwarding proxyとreverse proxyの両方へ適用します. 禁止するのはresponseでの利用です.</div></div>
       </article>
     </section>
 

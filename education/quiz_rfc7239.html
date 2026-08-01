@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 7239",
       SKILL_SUBTITLE: "Forwarded",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -72,6 +72,7 @@
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc7239" target="_blank" rel="noopener noreferrer">RFC 7239: Forwarded HTTP Extension</a></li>
       </ul>
+      <p><strong>Scope:</strong> RFC 7239 defines optional request metadata that proxies may add, preserve, or remove. It defines syntax and disclosure semantics, not proof that a client, proxy, agent, or authorization claim is authentic.</p>
     </section>
 
     <section class="card panel" aria-label="Quiz settings">
@@ -90,132 +91,94 @@
     </section>
 
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Separate forwarding metadata from encryption and from proof that the metadata is truthful.">
-        <header><h4>Q1: In one sentence, the Forwarded header is used to</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q1" value="a"> A. Convey original client and proxy related information across intermediaries</label>
-            <label class="choice"><input type="radio" name="Q1" value="b"> B. Replace TLS for HTTP encryption</label>
-            <label class="choice"><input type="radio" name="Q1" value="c"> C. Guarantee that an IP address is authentic without any trust boundary</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify which list prefix came from outside the trusted boundary and which value the edge learned from its own connection.">
+        <header><h4>Q1: May the backend use the first <code>for</code> value as an authenticated client address?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">An Internet client sends <code>Forwarded: for=10.0.0.7</code>. A trusted edge proxy appends <code>for=198.51.100.24</code> without removing the incoming field, and the backend authorizes administrators when the first <code>for</code> value is in a private range.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. Yes; the first list element is authenticated by its position</label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. Yes; private addresses cannot be supplied by Internet clients</label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. No; the untrusted prefix is spoofable and must not drive authorization</label>
+          <label class="choice"><input type="radio" name="Q1" value="d"> D. No; RFC 7239 prohibits trusted proxies from adding a new element</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            `Forwarded` records information that may otherwise be changed or lost as an HTTP request passes through proxies. It does not secure the connection or authenticate the recorded values.
-
-            A deployment should define which intermediaries may add or replace this field before using it for security-sensitive decisions.
-
-            A: This describes the field's purpose: conveying information about the request and the forwarding proxies.
-            B: TLS provides transport security; `Forwarded` is an HTTP metadata field and does not replace it.
-            C: A sender can supply false field values, so authenticity depends on a defined proxy trust boundary.
-          </div>
-        </div>
+A: List order records generation order; it does not authenticate an element.
+B: A client can send arbitrary HTTP field values, including private-looking addresses.
+C: RFC 7239 Section 8.1 says the field cannot be relied upon to be correct because every node can modify it. A deployment may sanitize untrusted fields and trust observations from a defined edge, but RFC 7239 alone does not make even those values authorization evidence.
+D: Section 4 permits a proxy to append a new element or add a new field line; the defect is retaining an attacker-controlled prefix and trusting it.</div></div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="ms" data-answer="a,b,c,d" data-difficulty="L2" data-hint="Map each registered name to one of four roles: request initiator, receiving proxy, original authority, or incoming scheme.">
-        <header><h4>Q2: Which parameter names are defined by RFC 7239 for a Forwarded element? (Select all that apply.)</h4><span class="type">Multi-Select</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. for</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. by</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. proto</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. host</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="e"> E. path</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="f"> F. port</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Combine the field lines as an HTTP list without reversing the order in which proxies added elements.">
+        <header><h4>Q2: Which logical list must the origin parse?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">The origin receives two field lines in this order: <code>Forwarded: for=192.0.2.43</code> and <code>Forwarded: for="[2001:db8:cafe::17]";proto=https</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. One element containing two <code>for</code> parameters separated by a semicolon</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Two elements in the received order, equivalent to a comma-separated list</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Two elements in reverse order because the nearest proxy is always first</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. An invalid field because RFC 7239 allows only one field line</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 7239 initially registers four parameters. Extensions can define additional parameters, but `path` and `port` are not among these four.
-
-            A: `for` identifies the node that made the request to the proxy.
-            B: `by` identifies the proxy's interface that received the request.
-            C: `proto` records the protocol used for the request received by the proxy.
-            D: `host` records the original Host request-header value received by the proxy.
-            E: `path` is not an RFC 7239 parameter; the request path is outside the initial parameter set.
-            F: `port` is not a separate RFC 7239 parameter; a node identifier can include a port where the syntax permits it.
-          </div>
-        </div>
+A: Semicolons separate parameters within one forwarded-element; a parameter cannot occur twice in that element.
+B: RFC 7239 Sections 4 and 7.1 define an HTTP list that may be split over multiple field lines. The first element is the first proxy's contribution, followed by later contributions.
+C: The list is not reversed merely because the last proxy is closest to the origin.
+D: Multiple field lines are allowed and are equivalent to the combined comma-separated representation.</div></div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Treat one proxy's data as one forwarded-element and then apply HTTP list syntax.">
-        <header><h4>Q3: How are multiple proxies represented in Forwarded</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. Use one header per hop and forbid commas</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. Use a comma separated list of forwarded elements</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. Embed JSON in the header value</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Count occurrences of the same parameter inside one comma-delimited forwarded-element.">
+        <header><h4>Q3: May this proxy emit the proposed element?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A proxy wants to record both the socket peer and an application-supplied address as <code>Forwarded: for=192.0.2.10;for=198.51.100.8;proto=https</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Yes; repeated parameters are ordered from most to least trusted</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Yes; semicolons create a new proxy hop for every parameter</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. Yes; duplicate <code>for</code> values are valid when both are IP addresses</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. No; one parameter name must not occur twice in one element</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            A forwarded-element contains the information added by one proxy. Multiple elements form an HTTP list in the order in which the field was generated.
-
-            A parser also has to handle quoted strings and optional whitespace according to the field grammar.
-
-            A: Separate field lines are allowed to be combined, but commas remain the list delimiter and are not forbidden.
-            B: Commas separate forwarded-elements; semicolons separate parameters within one element.
-            C: RFC 7239 defines HTTP field-value grammar, not a JSON representation.
-          </div>
-        </div>
+A: RFC 7239 defines no trust ranking for duplicate parameters.
+B: A comma starts another forwarded-element; a semicolon adds another parameter to the same element.
+C: The value type does not create an exception for duplicates.
+D: Section 4 says each parameter MUST NOT occur more than once per field-value/forwarded-element. Distinct proxy contributions require distinct comma-delimited elements.</div></div>
       </article>
 
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Ask who can supply the field before the trusted edge sanitizes it.">
-        <header><h4>Q4: A key operational risk with Forwarded is</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q4" value="a"> A. It forces HTTP/2 downgrade</label>
-            <label class="choice"><input type="radio" name="Q4" value="b"> B. It disables HSTS automatically</label>
-            <label class="choice"><input type="radio" name="Q4" value="c"> C. Spoofing from an untrusted source</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Ask whether independently accumulated legacy lists contain enough shared structure to pair their entries hop by hop.">
+        <header><h4>Q4: Can the proxy safely translate these legacy fields into paired elements?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A request arrives with both <code>X-Forwarded-For</code> and <code>X-Forwarded-By</code> lists. Their producers and insertion order are not known, but the proxy proposes pairing values by array index and converting them to <code>Forwarded</code>.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes; equal list lengths prove that entries describe the same hops</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. Yes; alphabetically sorting both lists reconstructs proxy order</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. No; the correspondence and insertion order may be unrecoverable</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. No; RFC 7239 forbids every transition from X-Forwarded-* fields</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 7239 Section 8.1 states that `Forwarded` cannot be relied upon to be correct because any node, including the client, can modify it.
-
-            A common boundary design is to remove untrusted forwarding fields at the edge and generate values from observations made by trusted proxies.
-
-            A: The field does not negotiate an HTTP version and therefore does not force an HTTP/2 downgrade.
-            B: The field does not alter an HSTS policy or disable HTTPS upgrading.
-            C: Trusting an untrusted sender's value can let that sender spoof client or proxy metadata.
-          </div>
-        </div>
+A: Matching lengths do not establish that independently generated entries correspond.
+B: Lexical order has no relationship to traversal order.
+C: RFC 7239 Section 7.4 warns that conversion may be impossible when multiple X-Forwarded-* fields exist because the order in which existing fields were added is unknown.
+D: The RFC encourages sensible conversion when information is sufficient; for example, a lone X-Forwarded-For list can often be translated.</div></div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="text" data-eval="regex" data-answer="^for$" data-difficulty="L1" data-hint="Contrast the endpoint that initiated the request with the proxy that received it.">
-        <header><h4>Q5: Which parameter name typically identifies the client that initiated the request (one token)</h4><span class="type">Short Text</span></header>
-        <div class="body">
-          <input type="text" name="Q5" aria-label="Q5 input" placeholder="Type the parameter" />
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Balance the debugging need against the explicit privacy signal and the default disclosure guidance.">
+        <header><h4>Q5: Which forwarding policy best follows RFC 7239's privacy guidance?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A proxy receives a request carrying fields that specifically request privacy semantics. Operations would prefer to forward the client's stable IP address for debugging, but no address-based backend function requires it.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. Forward the stable IP because debugging always overrides privacy signals</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. Do not pass the private address; omit Forwarded under the stated guidance</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. Copy the full Forwarded chain into the response for client verification</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. Use the same obfuscated identifier indefinitely across all requests</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            The token is **for**. It identifies the node that made the request to the proxy, whereas `by` identifies the proxy interface that received it.
-
-            Its value can be an IP-based node identifier, `unknown` when the preceding node is not known, or an obfuscated identifier when exposing the real identifier is undesirable.
-          </div>
-        </div>
+A: Section 8.3 gives privacy-sensitive requests priority: the proxy SHOULD NOT use Forwarded or otherwise pass private information to the next hop.
+B: This follows the stated privacy guidance. Where the field is used without that signal, Sections 5.1, 5.2, and 8.3 recommend obfuscated identifiers by default.
+C: Section 8.2 says the field should never be copied into responses because that can expose the proxy chain.
+D: Obfuscated identifiers should be random per request unless persistence is needed, and persistent identifiers should not outlive client IP addresses.</div></div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Consider the trade-off between limited hop correlation and disclosing a stable network identifier.">
-        <header><h4>Q6: Why might a deployment use an obfuscated identifier instead of an IP address in the <code>for</code> parameter?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body">
-          <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q6" value="a"> A. Preserve limited correlation while reducing exposure of a client or private address</label>
-            <label class="choice"><input type="radio" name="Q6" value="b"> B. Signal that every preceding proxy has been cryptographically authenticated</label>
-            <label class="choice"><input type="radio" name="Q6" value="c"> C. Increase compression by replacing an address with a shorter reusable token</label>
-          </fieldset>
-          <div class="explain">
-            **Explanation:**
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Separate transport-derived hop metadata from protocol evidence about the agent and permission for the requested task.">
+        <header><h4>Q6: How should an A2A backend use the forwarded metadata?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body"><p class="question-premise">A trusted gateway receives an external A2A request, replaces all incoming <code>Forwarded</code> fields, and sends <code>Forwarded: for=198.51.100.24;proto=https;host=agent.example</code> to a backend over authenticated transport. The backend proposes treating the value as proof of the agent runtime, grant holder, approved task, and delegation chain.</p><fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Accept every claim because gateway sanitization upgrades metadata into agent proof</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Accept agent identity and grant ownership, but validate only onward delegation</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Use it as trusted hop context only; validate agent and authorization claims separately</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. Reject it because RFC 7239 prohibits Forwarded on reverse-proxy requests</label>
+        </fieldset><div class="explain">**Explanation:**
 
-            RFC 7239 permits an obfuscated node identifier when the real identifier should not be disclosed. Such an identifier begins with an underscore and ought to be randomly generated per request unless correlation is intentionally required.
-
-            The literal `unknown` has a different meaning: it is used when the identity of the preceding node is not known.
-
-            A: Obfuscation can limit disclosure while retaining only the correlation a deployment deliberately needs.
-            B: Obfuscation does not authenticate any proxy or prove the provenance of the field.
-            C: The mechanism is defined for identifier disclosure and correlation policy, not as header compression.
-          </div>
-        </div>
+A: Sanitization and authenticated gateway-to-backend transport can make the gateway's observation trustworthy within that boundary, but do not give the field new application semantics.
+B: RFC 7239 does not prove either agent identity or grant possession.
+C: Sections 4, 5, and 8.1 define forwarding metadata and its integrity limitations. An A2A profile, credential validation, sender-constraining mechanism, task policy, and delegation rules must establish the independent application claims.
+D: Section 4 explicitly applies the request field to forwarding and reverse proxies; it prohibits use in responses, not reverse-proxy requests.</div></div>
       </article>
     </section>
 
