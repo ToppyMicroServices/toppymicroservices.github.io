@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate CBOR representation, COSE processing, claim validation, creator trust, and downstream authorization. Section numbers refer to RFC 8392.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8392" target="_blank" rel="noopener noreferrer">RFC 8392: CBOR Web Token (CWT)</a></li></ul>
     </section>
 
@@ -66,7 +67,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. RFC 8392 fixes a signed CWT as the only valid construction, while the profile chooses whether the claims set is a CBOR map</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8392 defines CWT claim representations and COSE-based creation and validation; the profile defines which claims it uses and when they are required</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8392 defines only compact integer claim keys, leaving COSE processing and the CBOR type of the claims set entirely to the profile</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 3 says the registered claims are not mandatory as a set; applications define which claims are used and whether they are required.
 B: Sections 7.1 and 7.2 cover signed, MACed, and encrypted CWTs, and the CWT Claims Set is a CBOR map.
 C: Sections 3 and 7 define that boundary: interoperable representation and protection processing come from the RFC, while the application supplies its claim profile.
@@ -82,7 +83,7 @@ D: RFC 8392 specifies the CBOR claims set and invokes COSE processing; those are
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Do not reject it merely for lacking tag 61; application context can identify a CWT, while a present CWT tag has the structure required by Section 6</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Accept it as a claims set without COSE validation because omitting tag 61 changes the object into an unprotected CWT representation</label>
             <label class="choice"><input type="radio" name="Q2" value="d"> D. Require the application/cwt media type inside field 4 because neither schema position nor a CBOR tag can establish the object type</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 6 makes the CWT tag optional and describes application context and media type as other ways to identify a CWT.
 B: This follows Section 6. If tag 61 is present, it prefixes a tagged COSE object; its absence does not bypass Section 7.2 validation.
 C: Identification and cryptographic validation are separate. An untagged COSE object still undergoes the applicable COSE validation.
@@ -98,7 +99,7 @@ D: Section 6 lists application/cwt as one method, not a mandatory in-message fie
             <label class="choice"><input type="radio" name="Q3" value="b"> B. Authorize if the signing key belongs to a configured issuer; issuer trust makes the omitted audience and expiration checks redundant</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Reject every CWT that contains aud or exp because Section 3 leaves the set of required claims outside RFC 8392</label>
             <label class="choice"><input type="radio" name="Q3" value="d"> D. Complete Section 7.2, then apply the profile's aud and exp rules; cryptographic validity alone does not meet the stated authorization criterion</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 7.2 validates the CBOR and COSE construction; it does not choose the claim set or the operation's authorization policy.
 B: Section 8 distinguishes authenticating the CWT creator from deciding whether the claims are acceptable for an operation.
 C: Section 3 permits applications to require and process registered claims; being profile-defined does not make those claims invalid.
@@ -114,7 +115,7 @@ D: Sections 3 and 7.2 provide the two stages. Sections 3.1.3 and 3.1.4 import th
             <label class="choice"><input type="radio" name="Q4" value="b"> B. Ignore claim 500 after verifying COSE because RFC 8392 requires every unregistered claim to be ignored even when an application profile requires it</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. Map claim 500 to the nearest registered integer key locally so both implementations can continue without a shared claim definition</label>
             <label class="choice"><input type="radio" name="Q4" value="d"> D. Accept the token but defer operation-class checking to audit logs, preserving the unknown-claim behavior at the authorization boundary</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 3 says unknown claims are ignored in the absence of application requirements and also says applications define claims that must be understood and processed. This profile supplies such a requirement.
 B: That reading omits the qualifying context in Section 3 and would defeat the profile's stated authorization rule.
 C: Claim keys identify defined semantics; unilateral remapping creates a different, non-interoperable profile.
@@ -130,7 +131,7 @@ D: Logging does not satisfy the profile's pre-authorization decision criterion.<
             <label class="choice"><input type="radio" name="Q5" value="b"> B. The MAC authenticates possession of the group key, not a unique member; the keying design needs distinct origin evidence for this rule</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. The cti claim can identify device-A cryptographically, so adding a unique token identifier supplies the missing origin authentication</label>
             <label class="choice"><input type="radio" name="Q5" value="d"> D. A CWT tag binds the MAC key to the issuer name, so prefixing tag 61 would distinguish device-A from the other devices</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Integrity protects the iss value from outsiders, but every holder of the group MAC key can create an equally valid value.
 B: Section 8 requires the recipient to authenticate the party that assembled the claims and to trust that party. A shared group key does not meet the scenario's per-device origin criterion by itself.
 C: Section 3.1.7 defines cti as a token identifier; it is not proof of which group member generated the token.
@@ -146,11 +147,59 @@ D: Section 6 uses tag 61 to identify the object as a CWT, not to identify its cr
             <label class="choice"><input type="radio" name="Q6" value="b"> B. Accept because aud=gateway authorizes any backend reached by that gateway, independent of the audience model in the A2A profile</label>
             <label class="choice"><input type="radio" name="Q6" value="c"> C. Do not call the JSON original CWT evidence; issue a protected gateway assertion, or deliver evidence the backend validates under its audience policy</label>
             <label class="choice"><input type="radio" name="Q6" value="d"> D. Reject gateway mediation as incompatible with RFC 8392, because a CWT may be validated only by the final resource-owning application</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Sections 7.2 and 8 protect and authenticate the CWT at its verifier; selected plaintext fields do not retain that protection automatically.
 B: Section 3 leaves required-claim and audience use to the application profile. The stated backend criterion is not met merely by aud=gateway.
 C: This separates RFC processing from composition policy. The gateway can be an explicit new trust boundary, but its assertion must carry the semantics and protection on which the backend relies.
 D: RFC 8392 defines CWT processing and does not prohibit a trusted gateway architecture; the profile must define the resulting trust and authorization boundaries.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The date claim already defines its value representation; decide whether an additional CBOR tag is permitted.">
+        <header><h4>Q7: May the issuer keep the epoch-date tag on this exp value?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A generic CBOR library encodes the exp claim as CBOR tag 1 applied to an epoch number. The CWT profile needs the standard RFC 8392 exp claim, not a newly defined claim.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. Yes, because every NumericDate must carry CBOR tag 1</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. No. Encode the number without a value tag for this claim</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. Yes, if the outer CWT tag 61 is omitted</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. No, because CWT forbids floating-point expiration values</label>
+          </fieldset><div class="explain">A: Section 5 says the claims defined by RFC 8392 MUST NOT have CBOR tags prefixed to their values. B: exp already has the integer-or-floating-point NumericDate representation, so the extra tag adds no information. C: The outer CWT tag and a claim-value tag are independent. D: Sections 2 and 4 allow either an integer or floating-point number for exp. A future claim definition may require a tag, but this standard exp claim does not.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Compare the human-readable form of an identifier with the CBOR type assigned to the registered claim.">
+        <header><h4>Q8: How should the validator handle this cti representation?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A producer encodes claim key 7 as the CBOR text string "token-123". The receiver expects the registered cti claim and uses it for replay-state lookup.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Accept it because every identifier is a StringOrURI</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Convert the text to a byte string after replay lookup</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Treat key 7 as an application-defined text claim</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Reject it as the wrong value type for registered cti</label>
+          </fieldset><div class="explain">A: StringOrURI applies to claims such as iss and sub, not cti. B: Post-lookup coercion lets different encodings reach the security state before validation. C: Claim key 7 is registered for cti and cannot be silently remapped. D: Section 3.1.7 and Table 1 define cti as a byte string. The application may define how those bytes map to its replay database, but it should validate the registered representation first.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="An outer COSE success does not complete validation when its payload is another tagged CWT.">
+        <header><h4>Q9: Is outer decryption sufficient for this nested CWT?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A recipient successfully decrypts a COSE_Encrypt0 CWT. The plaintext begins with a COSE_Sign1 tag, but the implementation parses its payload as claims and authorizes without validating the inner signature.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. No. Return to the validation steps for the inner tagged CWT</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Yes, because confidentiality substitutes for inner origin authentication</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Yes, because only the outermost COSE operation can be validated</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. No, because nested CWTs are universally forbidden</label>
+          </fieldset><div class="explain">A: RFC 8392 Section 7.2 Step 6 says that when the resulting Message begins with a COSE CBOR tag, it is a nested CWT and validation returns to Step 1 using that Message. B: Decryption and signature verification provide different properties. C: Section 7.2 explicitly recurses through nested operations. D: Nested CWTs are supported; skipping an inner validation step is the defect.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Distinguish a security recommendation with stated reasons from an absolute construction rule.">
+        <header><h4>Q10: How should the profile state its signing-and-encryption order?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A profile needs both signer privacy and protection against stripping a signature from a nested CWT. Its editor claims RFC 8392 universally mandates one nesting order.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Require encrypt-then-sign because RFC 8392 makes it the only valid syntax</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Leave the order undefined because the RFC gives no security guidance</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Choose sign-then-encrypt for these goals and label it a profile rule based on RFC guidance</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Use either order and claim they provide identical security properties</label>
+          </fieldset><div class="explain">A: Section 8 says nested operations are syntactically possible in any order; it does not make encrypt-then-sign the only valid syntax. B: Section 8 normally recommends signing and then encrypting. C: That order hides the signature and helps prevent signature stripping, matching the stated goals; making it mandatory is the profile's decision. D: The RFC explains why the security and privacy properties differ. The recommendation is not a universal RFC MUST.</div>
         </div>
       </article>
     </section>

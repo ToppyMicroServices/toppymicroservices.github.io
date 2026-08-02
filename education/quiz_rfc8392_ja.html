@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-3"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8392","SKILL_SUBTITLE":"CBOR Web Token (CWT)","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":4,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">参照（URL）</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>CBOR representation、COSE processing、claim validation、creator trust、downstream authorizationを分けて扱います。Section番号はRFC 8392を指します。</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8392" target="_blank" rel="noopener noreferrer">RFC 8392: CBOR Web Token (CWT)</a></li></ul>
     </section>
 
@@ -66,7 +67,7 @@
             <label class="choice"><input type="radio" name="Q1" value="b"> B. RFC 8392はsigned CWTだけを有効なconstructionとし,claims setをCBOR mapにするかはprofileが選ぶ</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. RFC 8392はCWT claimの表現とCOSE-basedな作成・検証を定義し,profileが使用するclaimとrequiredになる条件を定義する</label>
             <label class="choice"><input type="radio" name="Q1" value="d"> D. RFC 8392が定義するのはcompactなinteger claim keyだけで,COSE処理とclaims setのCBOR typeはすべてprofileに委ねる</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 3はregistered claim一式をmandatoryにしていません.applicationが使用するclaimとrequiredかどうかを定義します.
 B: Sections 7.1 and 7.2はsigned,MACed,encrypted CWTを扱い,CWT Claims SetはCBOR mapです.
 C: Sections 3 and 7がこの境界を定義します.interoperableな表現・保護処理はRFCから,claim profileはapplicationから得ます.
@@ -82,7 +83,7 @@ D: RFC 8392はCBOR claims setとCOSE処理を規定しており,それらを未�
             <label class="choice"><input type="radio" name="Q2" value="b"> B. tag 61がないことだけでは拒否しない.application contextでもCWTを識別でき,tagがある場合はSection 6の構造に従う</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. tag 61の省略によりunprotected CWT表現へ変わるため,claims setとしてCOSE検証なしに受理する</label>
             <label class="choice"><input type="radio" name="Q2" value="d"> D. schema上の位置でもCBOR tagでもtypeを確立できないため,field 4の中にapplication/cwt media typeを必須とする</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 6はCWT tagをoptionalとし,application contextやmedia typeもCWTを識別する方法として説明します.
 B: Section 6に沿う処理です.tag 61がある場合はtagged COSE objectをprefixしますが,tagがなくてもSection 7.2の検証は省略しません.
 C: objectの識別とcryptographic validationは別です.untagged COSE objectにも該当するCOSE検証を行います.
@@ -98,7 +99,7 @@ D: Section 6はapplication/cwtを一つの方法として示しますが,message
             <label class="choice"><input type="radio" name="Q3" value="b"> B. signing keyがconfigured issuerのものなら,issuer trustによって未確認のaudienceとexpirationも補えるためauthorizeする</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. Section 3がrequired claim setをRFC 8392のscope外にするため,audまたはexpを含むCWTをすべてrejectする</label>
             <label class="choice"><input type="radio" name="Q3" value="d"> D. Section 7.2を完了した後にprofileのaud/exp ruleを適用する.cryptographic validityだけでは指定されたauthorization条件を満たさない</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 7.2はCBOR/COSE constructionを検証しますが,claim setやoperationのauthorization policyを選びません.
 B: Section 8はCWT creatorのauthenticationと,claimがoperationに受理可能かの判断を分けています.
 C: Section 3はapplicationがregistered claimをrequiredとして処理することを認めます.profile-definedであることはclaimをinvalidにしません.
@@ -114,7 +115,7 @@ D: Sections 3 and 7.2の二段階を適用します.Sections 3.1.3 and 3.1.4がa
             <label class="choice"><input type="radio" name="Q4" value="b"> B. application profileがrequiredにしていても,RFC 8392はunregistered claimをすべてignoreさせるためCOSE検証後に無視する</label>
             <label class="choice"><input type="radio" name="Q4" value="c"> C. 共通claim definitionなしで処理を続けられるよう,claim 500をlocalに最も近いregistered integer keyへmapする</label>
             <label class="choice"><input type="radio" name="Q4" value="d"> D. tokenをacceptし,operation-class checkをaudit logへ回してauthorization boundaryではunknown-claim behaviorを維持する</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Section 3はapplication requirementがない場合にunknown claimをignoreし,同時にapplicationが理解・処理すべきclaimを定義すると述べます.このprofileがそのrequirementを与えます.
 B: Section 3の条件を落とした読み方であり,profileが指定したauthorization ruleを無効にします.
 C: Claim keyは定義されたsemanticsを識別します.一方的なremappingは別の非互換profileを作ります.
@@ -130,7 +131,7 @@ D: Loggingはpre-authorizationの判定基準を満たしません.</div>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. MACがauthenticateするのはgroup keyの所持でありunique memberではない.このruleには別のorigin evidenceを持つkeying設計が必要である</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. cti claimはdevice-Aをcryptographically identifyできるため,unique token identifierを追加すれば不足するorigin authenticationを得られる</label>
             <label class="choice"><input type="radio" name="Q5" value="d"> D. CWT tagはMAC keyをissuer nameへbindするため,tag 61をprefixすればdevice-Aと他deviceを区別できる</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Integrityは外部者によるiss変更を防ぎますが,group MAC keyを持つ全memberが同様にvalidな値を作れます.
 B: Section 8はrecipientがclaimsを組み立てたpartyをauthenticateし,そのpartyをtrustするよう求めます.shared group keyだけではscenarioのper-device origin条件を満たしません.
 C: Section 3.1.7のctiはtoken identifierであり,どのgroup memberが生成したかのproofではありません.
@@ -146,11 +147,59 @@ D: Section 6のtag 61はobjectをCWTと識別するもので,creatorを識別し
             <label class="choice"><input type="radio" name="Q6" value="b"> B. aud=gatewayはそのgatewayが到達できる全backendをauthorizeし,A2A profileのaudience modelには依存しないためacceptする</label>
             <label class="choice"><input type="radio" name="Q6" value="c"> C. JSONを元のCWT evidenceとは呼ばない.protected gateway assertionを発行するか,backendがaudience policyで検証できるevidenceを渡す</label>
             <label class="choice"><input type="radio" name="Q6" value="d"> D. CWTは最終resource-owning applicationだけが検証できるため,gateway mediationをRFC 8392非適合としてrejectする</label>
-          </fieldset><div class="explain">**Explanation:**
+          </fieldset><div class="explain">
 A: Sections 7.2 and 8によるCWTの保護とorigin authenticationはverifierまでです.選択したplaintext fieldはその保護を自動継承しません.
 B: Section 3はrequired claimとaudienceの使い方をapplication profileへ委ねます.指定されたbackend criterionはaud=gatewayだけでは満たされません.
 C: RFC processingとcomposition policyを分離します.gatewayを明示的な新trust boundaryにできますが,assertionはbackendが依存するsemanticsとprotectionを持つ必要があります.
 D: RFC 8392はCWT processingを定義しますが,trusted gateway architectureを禁止しません.profileがtrustとauthorization boundaryを定義します.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="date claimはすでにvalue representationを定義しています。追加CBOR tagが許されるか確認してください。">
+        <header><h4>Q7: issuerはこのexp valueへepoch-date tagを残してよいか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">汎用CBOR libraryがexp claimをepoch numberへCBOR tag 1を付けてencodeする。CWT profileが必要なのは新規claimではなく、RFC 8392の標準exp claimである。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q7" value="a"> A. すべてのNumericDateにCBOR tag 1が必須なので残す</label>
+            <label class="choice"><input type="radio" name="Q7" value="b"> B. 残さず、このclaimのnumberをvalue tagなしでencodeする</label>
+            <label class="choice"><input type="radio" name="Q7" value="c"> C. 外側のCWT tag 61を省略する場合だけ残す</label>
+            <label class="choice"><input type="radio" name="Q7" value="d"> D. CWTはfloating-point expirationを禁止するため残さない</label>
+          </fieldset><div class="explain">A: Section 5はRFC 8392が定義するclaim valueへCBOR tagをprefixしてはならないとします。B: expはintegerまたはfloating-point NumericDateとしてすでに表現が決まり、追加tagは情報を加えません。C: 外側のCWT tagとclaim-value tagは独立です。D: Sections 2と4はexpへintegerとfloating-point numberの両方を許します。将来のclaim定義はtagを要求できますが、この標準exp claimは要求しません。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="human-readable identifierと、registered claimへ割り当てられたCBOR typeを比べてください。">
+        <header><h4>Q8: validatorはこのcti representationをどう扱うべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">producerはclaim key 7をCBOR text string "token-123"としてencodeする。receiverはregistered cti claimを想定し、replay-state lookupへ使う。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. identifierはすべてStringOrURIなのでacceptする</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. replay lookup後にtextをbyte stringへ変換する</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. key 7をapplication-defined text claimとして扱う</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. registered ctiのvalue typeと異なるためrejectする</label>
+          </fieldset><div class="explain">A: StringOrURIはissやsubなどへ適用され、ctiには適用されません。B: lookup後のcoercionでは、validation前に異なるencodingがsecurity stateへ到達します。C: Claim key 7はcti用に登録され、一方的にremapできません。D: Section 3.1.7とTable 1はctiをbyte stringと定義します。applicationはそのbyteをreplay databaseへmapする方法を定義できますが、まずregistered representationを検証します。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="outer COSEが成功しても、そのpayloadが別のtagged CWTならvalidationは終わりません。">
+        <header><h4>Q9: このnested CWTはouter decryptionだけで十分か？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">recipientはCOSE_Encrypt0 CWTのdecryptionに成功した。plaintextはCOSE_Sign1 tagで始まるが、実装はinner signatureを検証せず、そのpayloadをclaimsとしてauthorizeする。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. 不十分。inner tagged CWTについてvalidation stepへ戻る</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. 十分。confidentialityがinner origin authenticationを代替する</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. 十分。検証できるのはoutermost COSE operationだけである</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. 不十分。nested CWTは一律に禁止されている</label>
+          </fieldset><div class="explain">A: RFC 8392 Section 7.2 Step 6は、得られたMessageがCOSE CBOR tagで始まる場合、それをnested CWTとしてMessageを使いStep 1へ戻るよう定めます。B: decryptionとsignature verificationは異なるpropertyを与えます。C: Section 7.2はnested operationを再帰的に検証します。D: nested CWTはsupportされており、問題はinner validationを飛ばしたことです。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="理由を持つsecurity recommendationと、absolute construction ruleを分けてください。">
+        <header><h4>Q10: profileはsigningとencryptionの順序をどう規定すべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profileはsigner privacyと、nested CWTからsignatureをstripする攻撃への保護を必要とする。editorはRFC 8392が1つのnesting orderを一律にmandateすると主張する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. encrypt-then-signだけがvalid syntaxなので必須にする</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. RFCにsecurity guidanceがないため順序を未定義にする</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. この目的にはsign-then-encryptを選び、profile ruleとして明記する</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. どちらも同一security propertyなので任意にする</label>
+          </fieldset><div class="explain">A: Section 8はnested operationをsyntax上どの順序でも可能とし、encrypt-then-signだけをvalidにしません。B: Section 8は通常signしてからencryptするよう勧めます。C: この順序はsignatureを隠し、signature strippingの防止に役立つため、指定された目的に合います。mandatoryにするのはprofileの判断です。D: RFCはsecurityとprivacy propertyが異なる理由を説明します。このrecommendationは一律のRFC MUSTではありません。</div>
         </div>
       </article>
     </section>
