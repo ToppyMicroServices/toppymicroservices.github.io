@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">参考URL</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>metadata syntax、issuer binding、signer trust、advertised capability、resource authorizationを分けて扱います。Section番号はRFC 8414を指します。</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8414" target="_blank" rel="noopener noreferrer">RFC 8414: OAuth 2.0 Authorization Server Metadata</a></li></ul>
     </section>
 
@@ -69,13 +70,14 @@
         </div>
       </article>
       <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="issuerのsyntaxと,conforming metadata documentが必ず公開するfieldを確認してください.">
-        <header><h4>Q2: RFC 8414のcore metadataについて正しい記述はどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q2: reviewerが指摘すべき2つの欠陥はどれか？</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">metadata documentはissuerをhttps://as.example?tenant=1とし、signed_metadataを含む。grant_types_supportedはあるが、response_types_supportedは省略されている。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. signed_metadataがあればissuerにHTTPを使える.</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. issuerは必須でHTTPSを使い,queryとfragmentを含まない.</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. grant_types_supportedがあればresponse_types_supportedはoptionalである.</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. response_types_supportedは必須のJSON arrayである.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. signed_metadataがあるためissuerのquery componentは許される。</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. issuerにはqueryを含められないため、このissuerはinvalidである。</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. grant_types_supportedがresponse_types_supportedを代替する。</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. requiredなresponse_types_supported JSON arrayが欠けている。</label>
           </fieldset><div class="explain">RFC 8414 Section 2は,queryとfragmentのないHTTPS `issuer`と,JSON arrayの`response_types_supported`をrequiredとします.signed metadataもissuer syntaxを緩和せず,別のcapability fieldもrequired fieldを置き換えません.consumerはdiscovery anchorと,optionalなcapability descriptionやfield固有defaultを区別する必要があります.</div>
         </div>
       </article>
@@ -113,8 +115,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="defaultを持つoptional fieldと,省略によりsupportが不明になるfieldを区別してください.">
-        <header><h4>Q6: metadata field省略時の解釈としてRFC 8414が定義するものはどれか.該当するものをすべて選べ.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q6: clientが適用できる2つのdefaultはどれか？</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">legacy serverはgrant_types_supported、token_endpoint_auth_methods_supported、scopes_supported、jwks_uriを省略している。clientはRFC 8414が省略時の規則を定義する項目だけ設定する。</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q6" value="a"> A. 省略時のdefaultはauthorization_codeとimplicit.</label>
             <label class="choice"><input type="checkbox" name="Q6" value="b"> B. scopes_supported省略時はserverがscopeを一切supportしない.</label>
@@ -169,6 +172,30 @@
             <label class="choice"><input type="radio" name="Q10" value="c"> C. discoveryはissuerを設定するが,grant validity,session proof,保護された転送,backend policyは別checkである.</label>
             <label class="choice"><input type="radio" name="Q10" value="d"> D. valid grantがあればmetadata issuerの検証とforwarded identityの保護は不要になる.</label>
           </fieldset><div class="explain">RFC 8414 Section 3.3と6.2はintended issuerに対するmetadataを認証し,Section 6.4はissuer-to-resource associationをapplicationへ残します.discovery,grant validation,session-bound proof,backend authorizationはそれぞれverifierとscopeが異なり,一段の成功はunsigned internal headerを保護せず,ほかの段を遡ってvalidにもしません.trusted issuer inputと各検証結果を,最終resource判断を持つcomponentまで明示的に保護する必要があります.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="visual equivalenceやUnicode normalizationは、このRFCが指定するcomparison procedureではありません。">
+        <header><h4>Q11: 受信したextension nameは登録名と一致するか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profileはmetadata name agent-rôleのôへprecomposed U+00F4を使う。documentは見た目が同じ名前を、U+006FとU+0302で表す。JSON parserはすでにJSON escapingを除去している。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. lookup前に両方をNFCへnormalizeすれば一致する</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. UIで同じ見た目になれば一致する</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. 一致しない。normalizeせずcode point列を比較する</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. 一致しない。metadata extension nameはASCII限定である</label>
+          </fieldset><div class="explain">A: Section 4はUnicode normalizationを適用してはならないと明記します。B: rendering上の同一性は指定されたequality testではありません。C: JSON escapingの除去後、Unicode code pointを1つずつ比較するため、この2列は異なります。D: RFC 8414はadditional metadata parameterを許し、ここで主張するASCII限定規則は設けていません。profileが独自に文字を制限することは別のprofile requirementです。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="algorithm supportのrecommendationは、conditionally required fieldのomission defaultではありません。">
+        <header><h4>Q12: clientはこのadvertised methodのalgorithmを推測できるか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">metadataはtoken_endpoint_auth_methods_supportedでprivate_key_jwtをadvertiseするが、token_endpoint_auth_signing_alg_values_supportedを省略している。implementerはRS256を仮定しようとしている。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. 可能。RS256は省略時のmandatory defaultである</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. 不可。この場合alg fieldはrequiredでdefaultはない</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. 可能。private_key_jwtが常にkey algorithmを選択する</label>
+            <label class="choice"><input type="radio" name="Q12" value="d"> D. 不可。RFC 8414はprivate_key_jwtを一律に禁止する</label>
+          </fieldset><div class="explain">A: Section 2はserverがRS256をsupportすべきとしますが、field省略時のimplicit algorithmは定義しません。B: private_key_jwtまたはclient_secret_jwtをadvertiseする場合、token_endpoint_auth_signing_alg_values_supportedは必須です。clientがalgorithmを作って補ってはいけません。C: authentication-method nameは単一JWS algを選択しません。D: RFC 8414はprivate_key_jwtのadvertiseを明示的に扱います。欠陥はdependent metadataの欠落です。</div>
         </div>
       </article>
     </section>

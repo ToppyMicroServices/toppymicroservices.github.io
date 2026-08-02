@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="light">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":2,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME":"RFC 8414","SKILL_SUBTITLE":"OAuth 2.0 Authorization Server Metadata","LEARNING_MODE_DEFAULT":true,"PROGRESS_VERSION":3,"BRAND_NAME":"ToppyMicroServices","BRAND_LOGO":"og-brand-clean.min.png","BRAND_URL":"../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -45,7 +45,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate metadata syntax, issuer binding, signer trust, advertised capabilities, and resource authorization. Section numbers refer to RFC 8414.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8414" target="_blank" rel="noopener noreferrer">RFC 8414: OAuth 2.0 Authorization Server Metadata</a></li></ul>
     </section>
 
@@ -69,13 +70,14 @@
         </div>
       </article>
       <article class="q card" data-id="Q2" data-type="ms" data-answer="b,d" data-difficulty="L2" data-hint="Check the issuer&#x27;s syntax and the fields that a conforming metadata document must publish.">
-        <header><h4>Q2: Which statements about core RFC 8414 metadata are correct? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q2: Which two defects must the reviewer report?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A metadata document contains issuer https://as.example?tenant=1 and signed_metadata. It publishes grant_types_supported but omits response_types_supported.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. The issuer may use HTTP when signed_metadata is present.</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. The issuer is required, uses HTTPS, and has no query or fragment.</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. response_types_supported is optional whenever grant_types_supported appears.</label>
-            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. response_types_supported is a required JSON array.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="a"> A. signed_metadata permits the query component in the issuer.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="b"> B. The issuer is invalid because an issuer cannot contain a query.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="c"> C. grant_types_supported makes response_types_supported unnecessary.</label>
+            <label class="choice"><input type="checkbox" name="Q2" value="d"> D. The required response_types_supported JSON array is missing.</label>
           </fieldset><div class="explain">RFC 8414 Section 2 requires an HTTPS `issuer` without query or fragment and a `response_types_supported` JSON array. Signed metadata does not relax the issuer syntax, and another capability field cannot replace a required one. Consumers must distinguish these discovery anchors from optional capability descriptions and field-specific defaults.</div>
         </div>
       </article>
@@ -113,8 +115,9 @@
         </div>
       </article>
       <article class="q card" data-id="Q6" data-type="ms" data-answer="a,c" data-difficulty="L2" data-hint="Some optional fields have defaults; omission of others leaves support unspecified.">
-        <header><h4>Q6: Which interpretations of omitted metadata are defined by RFC 8414? Select all that apply.</h4><span class="type">Multi-Select</span></header>
+        <header><h4>Q6: Which two defaults may the client apply?</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A legacy server omits grant_types_supported, token_endpoint_auth_methods_supported, scopes_supported, and jwks_uri. The client must configure only behavior for which RFC 8414 defines an omission rule.</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q6" value="a"> A. Omitted grant_types_supported defaults to authorization_code and implicit.</label>
             <label class="choice"><input type="checkbox" name="Q6" value="b"> B. Omitted scopes_supported means the server supports no scopes.</label>
@@ -169,6 +172,30 @@
             <label class="choice"><input type="radio" name="Q10" value="c"> C. Discovery configures the issuer; grant, proof, forwarding, and backend policy remain separate checks.</label>
             <label class="choice"><input type="radio" name="Q10" value="d"> D. A valid grant removes the need to validate the metadata issuer or protect the forwarded identity.</label>
           </fieldset><div class="explain">RFC 8414 Sections 3.3 and 6.2 authenticate metadata relative to the intended issuer, while Section 6.4 leaves the issuer-to-resource association to the application. Discovery, grant validation, session-bound proof, and backend authorization each have a different verifier and scope; success at one stage does not protect an unsigned internal header or retroactively validate another. The design must preserve the trusted issuer input and protect every derived assertion up to the component that owns the final resource decision.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Visual equivalence and Unicode normalization are not the comparison procedure specified by this RFC.">
+        <header><h4>Q11: Does the received extension name match the registered name?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A profile registers the metadata name agent-rôle using precomposed U+00F4. A document contains a visually identical name using U+006F followed by U+0302. The JSON parser has already removed JSON escaping.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. Yes, after normalizing both names to NFC before lookup</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. Yes, whenever the user interface renders both names identically</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. No; compare decoded code-point sequences without normalization</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. No, because metadata extension names are limited to ASCII</label>
+          </fieldset><div class="explain">A: Section 4 explicitly says Unicode normalization MUST NOT be applied. B: Rendering equivalence is not the specified equality test. C: After removing JSON escaping, compare Unicode code points one for one; these two sequences differ. D: RFC 8414 permits additional metadata parameters and does not create the claimed ASCII-only rule. A profile can constrain its own names, but that would be a separate profile requirement.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A recommendation to support an algorithm is not an omission default for a conditionally required field.">
+        <header><h4>Q12: Can the client infer an algorithm for this advertised method?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The metadata advertises private_key_jwt in token_endpoint_auth_methods_supported but omits token_endpoint_auth_signing_alg_values_supported. The implementer proposes assuming RS256.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. Yes, because RS256 is the mandatory omission default</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. No; the algorithm field is required here and has no default</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. Yes, because private_key_jwt always selects the key algorithm</label>
+            <label class="choice"><input type="radio" name="Q12" value="d"> D. No, because RFC 8414 prohibits private_key_jwt entirely</label>
+          </fieldset><div class="explain">A: Section 2 says servers SHOULD support RS256, but it defines no implicit algorithm when the field is absent. B: When private_key_jwt or client_secret_jwt is advertised, token_endpoint_auth_signing_alg_values_supported MUST be present; the client should not invent an algorithm. C: The authentication-method name does not select one JWS alg value. D: RFC 8414 explicitly supports advertising private_key_jwt; the defect is the missing dependent metadata.</div>
         </div>
       </article>
     </section>
