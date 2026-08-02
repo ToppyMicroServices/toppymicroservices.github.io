@@ -39,6 +39,11 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       storageDisabled: '保存を停止し, このクイズのCookieを削除しました.',
       storageUnavailable: 'この環境ではCookieへ保存できません.',
       skipToQuestions: '設問へスキップ',
+      starterLabel: '5問スターター',
+      starterTitle: 'まず5問で形式に慣れる',
+      starterIntro: 'この表示では最初の5問だけを出題します. 回答と解説は通常版と同じで, 続きはいつでも全問版で解けます.',
+      starterFullQuiz: '全問版を開く',
+      starterHub: 'コース選択へ戻る',
       showHint: 'ヒントを見る',
       hideHint: 'ヒントを閉じる',
       termNotes: '用語メモ',
@@ -70,6 +75,11 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
       storageDisabled: 'Saving is off and this quiz\'s cookie has been deleted.',
       storageUnavailable: 'Cookies are unavailable in this environment.',
       skipToQuestions: 'Skip to questions',
+      starterLabel: 'Five-question starter',
+      starterTitle: 'Learn the format in five questions',
+      starterIntro: 'This view includes only the first five questions. Answers and explanations are unchanged, and you can continue with the full quiz at any time.',
+      starterFullQuiz: 'Open the full quiz',
+      starterHub: 'Back to course selection',
       showHint: 'Show hint',
       hideHint: 'Hide hint',
       termNotes: 'Term notes',
@@ -1883,6 +1893,75 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     document.body.insertAdjacentElement('afterbegin', skip);
   }
 
+  function promoteQuestionsFirst(){
+    const questions = document.getElementById('questions');
+    if(!(questions instanceof HTMLElement)) return;
+    const container = questions.parentElement;
+    if(!(container instanceof HTMLElement) || !container.classList.contains('container')) return;
+
+    const pageHeader = Array.from(container.children)
+      .find(child => child instanceof HTMLElement && child.tagName === 'HEADER');
+    if(!(pageHeader instanceof HTMLElement)) return;
+
+    if(pageHeader.nextElementSibling !== questions){
+      pageHeader.insertAdjacentElement('afterend', questions);
+    }
+    questions.classList.add('question-first');
+  }
+
+  function applyStarterMode(){
+    let params;
+    try {
+      params = new URLSearchParams(window.location.search);
+    } catch (_e) {
+      return;
+    }
+    if(params.get('starter') !== '5') return;
+
+    const questions = document.getElementById('questions');
+    if(!(questions instanceof HTMLElement)) return;
+    const quizQuestions = $$('.q', questions);
+    if(!quizQuestions.length) return;
+
+    quizQuestions.slice(5).forEach(question => question.remove());
+    questions.dataset.starter = '5';
+
+    if(document.getElementById('quizStarterBanner')) return;
+    const banner = document.createElement('aside');
+    banner.id = 'quizStarterBanner';
+    banner.className = 'quiz-starter-banner card';
+    banner.setAttribute('aria-labelledby', 'quizStarterTitle');
+
+    const copy = document.createElement('div');
+    copy.className = 'quiz-starter-copy';
+    const label = document.createElement('span');
+    label.className = 'quiz-starter-label';
+    label.textContent = UI_TEXT.starterLabel;
+    const title = document.createElement('h3');
+    title.id = 'quizStarterTitle';
+    title.textContent = UI_TEXT.starterTitle;
+    const intro = document.createElement('p');
+    intro.textContent = UI_TEXT.starterIntro;
+    copy.append(label, title, intro);
+
+    const actions = document.createElement('div');
+    actions.className = 'quiz-starter-actions';
+    const fullQuiz = document.createElement('a');
+    const fullUrl = new URL(window.location.href);
+    fullUrl.searchParams.delete('starter');
+    fullUrl.hash = '';
+    fullQuiz.href = fullUrl.pathname + fullUrl.search;
+    fullQuiz.textContent = UI_TEXT.starterFullQuiz;
+    fullQuiz.className = 'quiz-starter-primary';
+    const hub = document.createElement('a');
+    hub.href = locale.startsWith('ja') ? 'rfc_quizzes_ja.html' : 'rfc_quizzes.html';
+    hub.textContent = UI_TEXT.starterHub;
+    actions.append(fullQuiz, hub);
+
+    banner.append(copy, actions);
+    questions.insertAdjacentElement('beforebegin', banner);
+  }
+
   function makeHintIcon(){
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
@@ -2459,10 +2538,12 @@ window.DRILL_SETTINGS = window.DRILL_SETTINGS || {
     });
   }
 
-	  applyInitialTheme();
-	  try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
-	  applySettings();
-	  injectSkipLink();
+		  applyInitialTheme();
+		  try{ if(!localStorage.getItem('quizTheme')){ setTheme(prefersDark.matches?'dark':'light',false);} }catch(_){ }
+		  applySettings();
+		  promoteQuestionsFirst();
+		  applyStarterMode();
+		  injectSkipLink();
 	  localizeStaticUiText();
 	  injectProgressStorageControls();
 		  injectRfcHubLink();
