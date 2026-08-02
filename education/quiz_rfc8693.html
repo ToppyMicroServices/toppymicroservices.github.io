@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8693", "SKILL_SUBTITLE": "OAuth 2.0 Token Exchange", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8693", "SKILL_SUBTITLE": "OAuth 2.0 Token Exchange", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 3, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -44,7 +44,8 @@
       </div>
     </header>
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions distinguish exchange syntax from authorization policy, actor history from access-control inputs, and delegated authority from token or channel binding. Section numbers refer to RFC 8693.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8693" target="_blank" rel="noopener noreferrer">RFC 8693: OAuth 2.0 Token Exchange</a></li></ul>
     </section>
     <section class="card panel" aria-label="Quiz settings">
@@ -54,101 +55,97 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate the subject token from the optional acting party.">
-        <header><h4>Q1: Which input identifies the security principal on whose behalf a token exchange is requested?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate the party represented by the requested token from an optional acting party.">
+        <header><h4>Q1: Which request input represents the party on whose behalf the new token is requested?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. requested_token_type with the desired output token type</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. subject_token with its subject_token_type</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. actor_token with its actor_token_type</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: This indicates the desired output token type, not the subject principal.
-B: The subject token represents the party that is the subject of the requested token.
-C: This identifies an optional acting party rather than the subject principal.</div></div>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. <code>requested_token_type</code></label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. <code>subject_token</code></label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. <code>actor_token</code></label>
+        </fieldset><div class="explain">RFC 8693 Sections 1.1 and 2.1 define <code>subject_token</code> as the token representing the party on whose behalf the request is made, so B is correct. <code>actor_token</code> represents an optional acting party, while <code>requested_token_type</code> describes the desired output representation rather than a principal.</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="The optional acting-party credential needs an explicit token type.">
-        <header><h4>Q2: Which optional credential and type-parameter pairing is valid in a token exchange request?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. subject_token with actor_token_type</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. requested_token_type with actor_token_type</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. actor_token with actor_token_type</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The subject credential uses subject_token_type instead.
-B: The requested output type is independent of actor-token typing.
-C: The authorization server needs the actor token&#x27;s type to interpret the optional credential.</div></div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Client authentication and the type declaration for a supplied credential serve different purposes.">
+        <header><h4>Q2: How must the authorization server handle this request?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway authenticates to the token endpoint with mTLS. Its form body contains a valid <code>subject_token</code> and type plus an <code>actor_token</code>, but omits <code>actor_token_type</code>.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Accept it because mTLS identifies the format of every supplied token</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Ignore the actor token and continue as an impersonation exchange</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Reject it as <code>invalid_request</code> because the actor token lacks its required type</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. Return <code>invalid_target</code> because the actor is not a resource server</label>
+        </fieldset><div class="explain">RFC 8693 Section 2.1 makes <code>actor_token_type</code> REQUIRED when <code>actor_token</code> is present and forbids it otherwise. Section 2.2.2 requires <code>invalid_request</code> for an invalid request, so C is correct. Client authentication does not supply the token's type, silently dropping the actor changes the request semantics, and <code>invalid_target</code> concerns resource or audience targets.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="They describe where or for whom the requested token is intended.">
-        <header><h4>Q3: What do the resource and audience parameters express?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. The target services for the requested token</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. The human user who approved the original grant</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. The cryptographic algorithm of the output token</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: They let the client identify intended resource servers or logical audiences.
-B: The subject token and its claims identify the subject, not resource or audience parameters.
-C: Token algorithm selection is not the purpose of these target parameters.</div></div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Determine whether scopes are paired with targets or applied across the entire requested target set.">
+        <header><h4>Q3: Which request design expresses the intended least privilege?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway needs <code>read</code> at resource A and <code>write</code> at resource B, but must not have <code>write</code> at A. It proposes one exchange request with both <code>resource</code> values and <code>scope=read write</code>.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. Use that request because scope order pairs <code>read</code> with A and <code>write</code> with B</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. Use separate exchanges or service-defined scopes that do not grant the forbidden product</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. Add both targets again as audience values so each scope becomes target-specific</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. Omit scope because every target then receives only its minimum default rights</label>
+        </fieldset><div class="explain">RFC 8693 Section 2.1.1 defines the requested rights as the Cartesian product of all scopes at all requested targets; there is no positional pairing. B avoids requesting <code>write</code> at A. A invents ordering semantics, C expands rather than partitions the target set, and D leaves the result to service policy without expressing the stated rights.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="RFC 8693 defines a target-specific token exchange error.">
-        <header><h4>Q4: The requested combination of audiences and resources is too broad for policy. Which error is appropriate?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. invalid_grant because every target is a grant</label>
-          <label class="choice"><input type="radio" name="Q4" value="b"> B. invalid_target</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. temporarily_unavailable because the token is large</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The problem is the requested target set rather than necessarily the input grant.
-B: This error indicates that the requested resource or audience combination is invalid or unacceptable.
-C: Policy rejection of a target is not a temporary availability failure.</div></div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Distinguish a bad input credential from an unacceptable target set.">
+        <header><h4>Q4: Which error is required for this failed exchange?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The requested backend audience is allowed, but signature validation of the supplied <code>subject_token</code> fails.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. <code>invalid_request</code></label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. <code>invalid_target</code></label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. <code>temporarily_unavailable</code></label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. HTTP 200 with an empty <code>access_token</code></label>
+        </fieldset><div class="explain">RFC 8693 Section 2.2.2 says an invalid or policy-unacceptable <code>subject_token</code> or <code>actor_token</code> MUST produce the OAuth <code>invalid_request</code> error, making A correct. <code>invalid_target</code> is for an unacceptable resource or audience. A validation failure is neither temporary nor a successful empty-token response.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="The token_type and issued token&#x27;s structural type answer different questions.">
-        <header><h4>Q5: What does the issued_token_type response parameter tell the client?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. Which actor is currently using the token</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. Whether the resource server accepted the token</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. The type identifier of the token that was issued</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: Actor identity is represented by claims such as act, not issued_token_type.
-B: The token exchange response precedes later resource-server acceptance.
-C: The response explicitly reports the issued token type even when it differs from the requested type.</div></div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The field named access_token can transport a security token that is not usable as an OAuth access token.">
+        <header><h4>Q5: Is this successful response structurally valid?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The response carries a SAML 2.0 assertion in <code>access_token</code>, sets <code>issued_token_type</code> to the SAML 2.0 token-type URI, and sets <code>token_type</code> to <code>N_A</code> because the assertion is not usable as an OAuth access token.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. No; <code>access_token</code> can carry only an OAuth bearer token</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. No; <code>issued_token_type</code> and <code>token_type</code> must be identical</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. Yes; the fields answer different questions, and <code>N_A</code> is valid</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. Yes, but only if the client ignores <code>issued_token_type</code></label>
+        </fieldset><div class="explain">RFC 8693 Section 2.2.1 uses <code>access_token</code> as the historical response field for any issued security token. <code>issued_token_type</code> identifies its representation, while <code>token_type</code> describes how to use it as an OAuth access token; <code>N_A</code> is required when that notion does not apply. Thus C is correct. A and B conflate the two type concepts, and D discards the representation identifier the client needs.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Nested act claims preserve earlier actors while the outer level is current.">
-        <header><h4>Q6: In a JWT with an act claim, what does the top-level act member represent?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. The current actor acting on behalf of the subject</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. The target resource server</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. The original authorization server only</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The top-level act claim identifies the present actor in the delegation chain.
-B: The target belongs in audience or resource information, not the actor claim.
-C: The act claim models acting parties and is not an issuer-only field.</div></div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Compare the granted scope with the requested scope, independent of whether the token is self-contained.">
+        <header><h4>Q6: Which response review is correct?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client requests <code>scope=read write</code>. Policy issues a JWT limited to <code>read</code>, but the JSON token response omits the top-level <code>scope</code> member because the client could decode the JWT.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Conforming, because JWT claims replace all token-response requirements</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Nonconforming, because a changed issued scope makes the response member required</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Conforming, because reducing scope never needs to be reported to a client</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. Nonconforming only when a refresh token is also issued</label>
+        </fieldset><div class="explain">RFC 8693 Section 2.2.1 makes the response <code>scope</code> member optional only when the issued scope is identical to the requested scope; otherwise it is REQUIRED. B applies that condition. Token inspectability does not remove the response requirement, scope reduction is exactly the case that must be reported, and refresh-token issuance is unrelated.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Do not flatten a chain into an unordered list.">
-        <header><h4>Q7: How are earlier actors represented when a delegation chain grows?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. Replace all previous actors with the newest actor</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. Nest the prior act claim inside the new act claim</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. Copy actors into the scope string</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: Dropping history loses the delegation path needed by policy and audit.
-B: Nested act objects express the current actor followed by prior actors.
-C: Scope expresses requested privileges and is not an actor-chain structure.</div></div>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="A token exchange is an event, not a persistent synchronization relationship between two credentials.">
+        <header><h4>Q7: Which lifecycle assumption must the design reject?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A gateway exchanges an input token for a backend token. It assumes the exchange consumes the input token, that later renewal of the input extends the backend token, and that revoking the input automatically revokes the backend token. No profile or deployment mechanism defines those effects.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. Only the consumption assumption; renewal and revocation always propagate</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Only the renewal assumption; an exchange always consumes and links tokens</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. Only the revocation assumption; the other two are core STS guarantees</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. All three; none is a general RFC 8693 property without additional semantics</label>
+        </fieldset><div class="explain">RFC 8693 Section 2.1 says an exchange normally has no impact on input-token validity and creates no tight linkage between input and output. Input renewal is not expected to change the output; revocation propagation can be desirable but is implementation-, token-, or deployment-specific. D therefore identifies all three unsupported assumptions. A, B, and C each promote a non-guaranteed behavior into a protocol property.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The protocol carries inputs and outputs, while the authorization server applies policy.">
-        <header><h4>Q8: Does RFC 8693 make every token exchange a permitted delegation?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. Yes, possession of any subject token is sufficient</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. Yes, actor_token automatically grants impersonation</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. No, authorization policy decides whether to permit it</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The authorization server must validate tokens and authorize the requested exchange.
-B: An actor token identifies an actor but does not bypass exchange policy.
-C: RFC 8693 provides the exchange framework without granting every requested authority transition.</div></div>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="An authorization hint inside the subject token does not replace caller and token validation policy.">
+        <header><h4>Q8: Which authorization review is accurate?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A stolen subject JWT contains <code>may_act.sub=gateway-7</code>. An unauthenticated caller also presents an actor token naming <code>gateway-7</code>. The authorization server allows unidentified clients and plans to approve solely because the two names match.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. Safe; <code>may_act</code> is proof that the caller possesses gateway-7's credentials</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. Unsafe; validate both tokens and authorize the caller under an explicit deployment policy</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. Required; RFC 8693 forbids client authentication when <code>may_act</code> is present</label>
+          <label class="choice"><input type="radio" name="Q8" value="d"> D. Safe if the output token has a shorter lifetime than the subject token</label>
+        </fieldset><div class="explain">RFC 8693 Sections 2.1 and 4.4 let <code>may_act</code> inform whether a party may become the actor, but the authorization server must still validate supplied tokens and apply authorization policy. Allowing unidentified clients is a deployment choice, not a requirement; Section 2.1 warns that it can let anyone leverage a compromised token through the STS. B states the missing controls. A confuses a claim with caller proof, C reverses the RFC, and D does not authenticate or authorize the exchange.</div>
+        </div>
       </article>
       <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Keep the subject of the authorization distinct from the party currently acting.">
         <header><h4>Q9: Which authorization and audit interpretation matches the issued token?</h4><span class="type">Multiple Choice</span></header>
@@ -159,9 +156,7 @@ C: RFC 8693 provides the exchange framework without granting every requested aut
           <label class="choice"><input type="radio" name="Q9" value="b"> B. Treat the token as impersonation and give the gateway every right Alice possesses</label>
           <label class="choice"><input type="radio" name="Q9" value="c"> C. Treat gateway-7 as the current actor for Alice and enforce the issued audience and scope</label>
           <label class="choice"><input type="radio" name="Q9" value="d"> D. Ignore the actor chain after cryptographic validation because it is only diagnostic text</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 8693 Section 1.1 distinguishes delegation, where the actor keeps its identity while acting for the subject, from impersonation. Section 4.1 defines the top-level <code>act</code> claim as the current actor and permits nested prior actors. C preserves that distinction and the token's target restrictions. A and D discard security-relevant actor context; B converts a constrained delegation into broader impersonation.</div>
+        </fieldset><div class="explain">RFC 8693 Section 1.1 distinguishes delegation, where the actor keeps its identity while acting for the subject, from impersonation. Section 4.1 defines the top-level <code>act</code> claim as the current actor and permits nested prior actors. C preserves that distinction and the token's target restrictions. A and D discard current-actor context; B converts a constrained delegation into broader impersonation.</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Trace which artifact the backend can verify and the channel or context to which each artifact is bound.">
@@ -173,9 +168,31 @@ RFC 8693 Section 1.1 distinguishes delegation, where the actor keeps its identit
           <label class="choice"><input type="radio" name="Q10" value="b"> B. Yes; the <code>act</code> claim cryptographically binds the token to the client's TLS connection</label>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. No; the token can carry delegated authority, but the original session binding is not preserved here</label>
           <label class="choice"><input type="radio" name="Q10" value="d"> D. No; RFC 8693 forbids gateways from exchanging tokens for backend services</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 8693 Section 1 limits the specification to a basic token-exchange protocol and leaves token security characteristics, proof-of-possession, and the deployment trust model to profiles or policy. A valid exchange can authorize the backend call under the issued token's audience, scope, subject, and actor semantics; it does not manufacture evidence of a different TLS session. C separates those guarantees. D is false: a resource server exchanging a received token for a backend token is an explicit use case.</div>
+        </fieldset><div class="explain">RFC 8693 Section 1 limits the specification to a basic token-exchange protocol and leaves token security characteristics, proof of possession, and the deployment trust model to profiles or policy. A valid exchange can authorize the backend call under the issued token's audience, scope, subject, and actor semantics; it does not manufacture evidence of a different TLS session. C separates those guarantees. D is false: a resource server exchanging a received token for a backend token is an explicit use case.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The nested history and the current actor do not have the same role in an access-control decision.">
+        <header><h4>Q11: Which access-control and audit treatment conforms to the <code>act</code> claim rules?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A token has top-level <code>sub=alice</code>, current actor <code>act.sub=service-16</code>, and nested prior actor <code>act.act.sub=service-77</code>. The resource server validates the token and wants to use all three identities.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q11" value="a"> A. Authorize from service-77 only because it is the least recent actor</label>
+          <label class="choice"><input type="radio" name="Q11" value="b"> B. Authorize from top-level claims and service-16; retain service-77 only as history</label>
+          <label class="choice"><input type="radio" name="Q11" value="c"> C. Intersect permissions of every nested actor before accepting the request</label>
+          <label class="choice"><input type="radio" name="Q11" value="d"> D. Ignore service-16 and service-77 because all <code>act</code> data is diagnostic</label>
+        </fieldset><div class="explain">RFC 8693 Section 4.1 requires access-control policy to consider only the token's top-level claims and the current actor in the outermost <code>act</code>. Nested prior actors are informational history and MUST NOT be used for access control, so B is correct. A and C use prior history normatively, while D also discards the current actor that the rule explicitly includes.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="TLS protects each hop, but it does not hide token contents from the client that receives the token.">
+        <header><h4>Q12: Which issuance policy meets the stated privacy requirement?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An authorization server issues tokens through TLS to a gateway client. Each token contains Alice's email, employee number, and full actor history. The backend needs only a pseudonymous subject and current actor, and policy says the gateway must not learn the direct identifiers.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q12" value="a"> A. Keep the token unchanged because TLS prevents the gateway from reading it</label>
+          <label class="choice"><input type="radio" name="Q12" value="b"> B. Base64url-encode the identifiers so they are no longer privacy-sensitive</label>
+          <label class="choice"><input type="radio" name="Q12" value="c"> C. Minimize the claims and encrypt recipient-only data for the backend</label>
+          <label class="choice"><input type="radio" name="Q12" value="d"> D. Put the identifiers in nested <code>act</code> claims so clients must ignore them</label>
+        </fieldset><div class="explain">RFC 8693 Section 6 requires encrypted channels, requires recipient encryption when information must be hidden from the client, and recommends including only the minimally necessary data. C meets all stated conditions. TLS still terminates at the gateway, Base64url is not encryption, and nesting changes claim structure rather than confidentiality; therefore A, B, and D fail.</div>
         </div>
       </article>
     </section>
