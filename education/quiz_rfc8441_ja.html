@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 8441",
       SKILL_SUBTITLE: "HTTP/2でのWebSocket bootstrapping",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>connection単位のnegotiation、request construction、WebSocket handshake mapping、stream lifecycle、intermediary behaviorを分けて扱います。Section番号はRFC 8441を指します。</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8441" target="_blank" rel="noopener noreferrer">RFC 8441: Bootstrapping WebSockets with HTTP/2</a></li>
       </ul>
@@ -99,8 +100,6 @@
             <label class="choice"><input type="radio" name="Q1" value="c"> C. DNS SRV record</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8441はCONNECTを拡張し, 1本のHTTP/2 stream上でWebSocketを開始します. requestは`:protocol` pseudo-headerを使い, streamで動かすapplication protocolを明示します.
 
             これはconnection全体を切り替えるHTTP/1.1 `Upgrade` exchangeとは異なります. DNS service discoveryはserviceの所在を示せても, HTTP/2 streamやWebSocket semanticsを成立させません.
@@ -111,14 +110,13 @@
       <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="HTTP/2のstream multiplexingと, WebSocketごとにtransport connectionが必要かに注目します.">
         <header><h4>Q2: HTTP/2でWebSocketを扱うことで, HTTP/1.1 upgradeと比べて避けられることとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">clientは同じoriginへ3本のWebSocketと通常HTTP requestを同時に使う。評価基準はtransport connectionの再利用であり、WebSocket framingやsecurity policyの変更ではない。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. transport encryptionでWebSocket trafficを保護すること</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. HTTP setupとWebSocket framingのsemanticsを適用すること</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. WebSocketごとに別のTCP connectionを確保すること</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8441の各WebSocketはHTTP/2 streamに対応し, 複数streamが1本のtransport connectionを共有できます. したがってWebSocketごとに専用TCP connectionが必須になるわけではありません.
 
             multiplexingはtransport security, HTTP setup semantics, 成功response後のWebSocket framingを不要にはしません. 変わるのはconnectionの共有方法であり, 他layerの保証ではありません.
@@ -126,18 +124,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint=":protocol pseudo-headerは, extended CONNECT streamで使用するapplication protocolを識別します.">
-        <header><h4>Q3: extended CONNECTでWebSocketを開始するとき, :protocol pseudo-headerに入れる値はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="extended CONNECTはprotocol tokenを追加し、Section 4が要求するtarget URI componentも保持します。">
+        <header><h4>Q3: WebSocket streamを正しく要求するpseudo-header setはどれか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">serverのopt-inを受信後、clientはwss://agent.example/eventsをHTTP/2上で開く。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. websocket, 登録されたWebSocket protocol token</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. http, 外側のHTTP/2 protocolを表すtoken</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. tls, channel-security protocolを表すtoken</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. :method=GET, :protocol=websocket, :scheme=https, :path=/events, :authority=agent.example</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. :method=CONNECT, :protocol=h2, :scheme=https, :path=/events, :authority=agent.example</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. :method=CONNECT, :protocol=websocket, :scheme=wss, :path=/events, :authority=agent.example</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. :method=CONNECT, :protocol=websocket, :scheme=https, :path=/events, :authority=agent.example</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            RFC 8441は`:protocol: websocket`により, extended CONNECT streamで動かすprotocolを識別します. `http`は外側のHTTP protocol, `tls`はchannel-security protocolを表すため, どちらもこのstreamへWebSocket semanticsを要求する値ではありません.
+            A: Section 5はRFC 6455のGET bootstrapをCONNECTへ置き換えます。B: `:protocol`はHTTP/2ではなくtunneled application protocolを示します。C: Section 4は`:protocol`があるrequestへ`:scheme`と`:path`も要求します。D: CONNECT、registered `websocket` token、`wss`に対応する`https`、target path、authorityをすべて含みます。
           </div>
         </div>
       </article>
@@ -145,6 +143,7 @@
       <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="変更されたHTTP bootstrapと, stream成立後も残るWebSocketおよびapplicationの規則を分けます.">
         <header><h4>Q4: HTTP/2 bootstrappingでもWebSocketのセマンティクスとして依然重要なものはどれ (複数選択)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">reviewerは、extended CONNECTの成功がRFC 6455とapplication-layer checkをすべて置き換えると主張する。引き続き必要な責務を選ぶ。</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. message framingやopcodeの規則</label>
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. browserが送るOrigin headerのserver側validation</label>
@@ -152,8 +151,6 @@
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. HTTP/1.1 Connection headerの必須要件</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8441が変更するのはHTTP bootstrapであり, WebSocket application protocolそのものではありません. 成功response後はWebSocket framingとopcodeがstreamを規定し, browser Origin validation, application authentication, authorizationも別の責務として残ります.
 
             一方, HTTP/1.1の`Connection` headerはこのHTTP/2 exchangeへ持ち込みません. 新しいbootstrapをsecurityやauthorizationの自動的な保証として扱うと, protocol layerの境界を越えてしまいます.
@@ -164,14 +161,13 @@
       <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="HTTP/2 peerがextended CONNECTへ明示的にopt inしているかを確認してから経路を選びます.">
         <header><h4>Q5: proxyがHTTP/2のみ対応でUpgradeをblockする. WebSocketに起きることとして近いのはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">deploymentはHTTP/2 hop経由でしかoriginへ到達できない。reviewerはpeerが実際にadvertiseしたbootstrapを選ぶ必要がある。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. WebSocket framingを使わず, 通常のHTTP/2 GETへ変換する</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. extended CONNECT対応を確認し, 利用可能ならその経路を使う</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. HTTP/2 stream内でHTTP/1.1のConnectionとUpgrade headerを送る</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             HTTP/1.1 `Upgrade`がblockされている事実だけでは, RFC 8441の利用可否は決まりません. clientはHTTP/2 peerがextended CONNECT対応をadvertiseしたかを別に確認し, 対応済みならそのbootstrapを使います. 未対応なら別のsupport済み経路を選ぶか失敗させる必要があります.
 
             通常のGETはWebSocket framing semanticsを成立させません. またHTTP/1.1の`Connection`と`Upgrade` fieldをHTTP/2 streamへ移植することもできません.
@@ -179,16 +175,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^settings_enable_connect_protocol$" data-difficulty="L2" data-hint="extended CONNECTを送る前にpeerがopt inするためのHTTP/2 SETTINGS parameterを探します.">
-        <header><h4>Q6: clientがextended CONNECTを使う前に, serverが値1で送るHTTP/2 settingは何 (正確な名前)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="permissionはpeerのsettingを受信した側に生じます。settingの送信は逆方向のpermissionを作りません。">
+        <header><h4>Q6: clientはextended CONNECTを送れるようになったか？</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <p class="question-premise">1本のHTTP/2 connectionでclientがserverへSETTINGS_ENABLE_CONNECT_PROTOCOL=1を送るが、serverからはそのsettingを受信していない。clientは自分のadvertiseをmutual opt-inと解釈し、extended CONNECT streamを開こうとする。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 可能。value 1を送ればsender自身にもpermissionが生じる</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. 不可。clientはserverからvalue 1を受信する必要がある</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. 可能。明示的にdisableされなければinitial valueは1である</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. 不可。extended CONNECTはHTTP/2で一切使えない</label>
+          </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            RFC 8441 Section 3は`SETTINGS_ENABLE_CONNECT_PROTOCOL`をextended CONNECTへのpeer opt-inとして定義します. serverは値1をadvertiseし, clientはそのsettingを受信する前に`:protocol` pseudo-headerを送れません.
-
-            このsettingが有効にするのはCONNECTの拡張形式です. target protocolを選ぶものではなく, request側がCONNECT methodと`:protocol`を使って指定します.
+            A: settingの送信はpeerへcapabilityをadvertiseしますが、sender自身へpermissionを与えません。B: Section 3はclientがvalue 1を受信した後に新しいextended-CONNECT streamを作れるとし、serverによる受信には効果がないと明記します。C: registered initial valueは0です。D: RFCはserverのopt-in後にこの利用を定義します。clientはこのconnectionでserverのsettingを待つ必要があります。
           </div>
         </div>
       </article>
@@ -203,12 +201,70 @@
             <label class="choice"><input type="radio" name="Q7" value="c"> C. upstream peerが対応するbootstrapを使い, 対応を仮定できなければ失敗させる</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             設計レビューとして妥当なのはCです. `SETTINGS_ENABLE_CONNECT_PROTOCOL`は, 特定のHTTP/2 connection上でpeerが示すopt-inです. RFC 8441 Section 3により, relayはupstream peerから対応のadvertiseを受けるまで, そのupstream connectionで`:protocol`を送れません.
 
             Sections 4と5がextended CONNECT requestとWebSocketへのmappingを定義しており, 通常のGETと一般的な成功responseでは同じsemanticsになりません. originが実際に対応する別のupstream方式をrelayが使うことはできますが, client側のsettingは別hopを許可も記述もしません. Section 7もintermediaryの利用を扱いますが, 1本のconnectionのsettingを経路全体のcapabilityにはしていません.
           </div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="WebSocket URI schemeをHTTP target URI schemeへmapします。transport preferenceから推測してはいけません。">
+        <header><h4>Q8: 要求したWebSocket URIに対して、このtarget schemeは正しいか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">clientはws://agent.example/eventsをbootstrapするが、既存HTTP/2 connectionがTLSを使うためextended CONNECTへ:scheme=httpsを送る。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. 正しい。transport connectionが常に:schemeを決める</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. 誤り。wsはhttpへ、wssはhttpsへmapする</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. 正しい。:protocol=websocketなら:schemeは無関係である</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. 誤り。HTTP/2上のWebSocketは常に:scheme=wsを使う</label>
+          </fieldset><div class="explain">A: Section 5はimplementation preferenceだけでなくWebSocket URIからtarget schemeを導きます。B: `ws`は`http`、`wss`は`https`へmapします。C: Section 4は`:protocol`がある場合に`:scheme`を要求します。D: このmappingで使うHTTP target-scheme valueは`ws`ではありません。HTTP/2 connection自体のsecurity requirementは別に適用されます。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="RFC 6455 fieldの一部はlowercaseで残り、HTTP/1.1のconnection-switch fieldとnonce exchangeは残りません。">
+        <header><h4>Q9: RFC 8441に従うhandshake修正はどれか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">HTTP/1.1 adapterがConnection、Upgrade、Sec-WebSocket-Key、Origin、Sec-WebSocket-Version、Sec-WebSocket-Protocolをextended CONNECT requestへ複製する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. RFC 6455がrequest全体を規定するため、全fieldをそのまま残す</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Originと全Sec-WebSocket fieldを除き、ConnectionとUpgradeを残す</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. serverがSec-WebSocket-Acceptを作れるようSec-WebSocket-Keyを残す</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Connection、Upgrade、Keyを除き、必要なOrigin、Version、Protocol、Extensionsを残す</label>
+          </fieldset><div class="explain">A: RFC 8441はopening handshakeの特定fieldを変更します。B: ConnectionとUpgradeはこのHTTP/2 requestへ含めてはならず、Originと複数のSec-WebSocket fieldは引き続き使います。C: Section 5はKey/Accept processingが`:protocol`で置き換えられたとします。D: RFC 8441が引き継ぐfieldを保持し、HTTP/1.1専用のswitchとnonce exchangeを除きます。HTTP/2 field nameはwire上lowercaseです。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="WebSocket close exchange後のorderly stream completionとexceptional resetを区別します。">
+        <header><h4>Q10: orderly WebSocket shutdown後、HTTP/2 streamをどう閉じるか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">peerはWebSocket closing exchangeを完了した。implementationはexceptionではなくorderly TCP-level closeに相当するHTTP/2処理を行う。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. END_STREAMでstreamを完了する</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. すべてのnormal closeへRST_STREAMとCANCELを送る</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. このWebSocketだけを閉じるためconnection-wide GOAWAYを送る</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. WebSocket data開始後にHTTP status 101を再利用する</label>
+          </fieldset><div class="explain">A: Section 5はorderly TCP-level closureをHTTP/2 `END_STREAM`へmapします。B: `RST_STREAM`と`CANCEL`はreset exceptionを表します。C: connection-wide GOAWAYは1本のstreamより広いscopeです。D: HTTP/2はHTTP/1.1の101 bootstrapを使わず、protocol open後のstream-close mechanismでもありません。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="forward-proxy tunnelと、その後のWebSocket bootstrapは別段階であり、内部のHTTP versionも別に決まります。">
+        <header><h4>Q11: clientはこのHTTP forward proxyへ最初に何を送るべきか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">clientはHTTP/2でforward proxyへ接続し、そのproxy経由でoriginへWebSocket connectionを作りたい。originへのtunnelはまだない。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. proxyをWebSocket originにする:protocol=websocket付きextended CONNECT</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. HTTP/2 proxy hopへConnectionとUpgradeを載せた通常GET</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. :protocolなしのtraditional CONNECTを使い、tunnel内でbootstrapする</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. forward proxyは例外なのでsetting確認なしのextended CONNECT</label>
+          </fieldset><div class="explain">A: Section 7はforward proxyをWebSocket serviceへ置き換えません。B: HTTP/1.1 connection fieldはHTTP/2 hopへ送れません。C: RFC 8441はHTTP forward proxyを通るtunnelへ`:protocol`なしのtraditional CONNECTを使い、tunnel内で成立したHTTP versionに応じてWebSocketをbootstrapするとします。D: intermediary useもnegotiation ruleを免除しません。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="opt-in前にincompatible extensionを1本のstreamで送った場合について、Section 3が示すfailure scopeを確認します。">
+        <header><h4>Q12: 非対応peerはどのfailureを生成するか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">SETTINGS_ENABLE_CONNECT_PROTOCOL=1を受信する前に、clientが:protocol=websocket付きCONNECTを送る。peerはRFC 8441非対応である。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. :protocolを無視しordinary CONNECTとして扱う</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. malformed requestを検出しstream errorを生成する</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. すべての場合にHTTP/2 connection全体を切断する</label>
+            <label class="choice"><input type="radio" name="Q12" value="d"> D. HTTP/1.1 Upgrade requestへ自動変換する</label>
+          </fieldset><div class="explain">A: unknown pseudo-headerを無視するとCONNECT semanticsを黙って変えます。B: Section 3はopt-in前の使用を非対応peerがmalformed requestとして検出し、stream errorを生成すると説明します。C: 引用箇所のfailure scopeはstreamであり、無条件のconnection-wide failureではありません。D: 自動downgradeやtranslation ruleは定義されていません。</div>
         </div>
       </article>
     </section>

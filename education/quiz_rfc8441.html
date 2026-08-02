@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 8441",
       SKILL_SUBTITLE: "Bootstrapping WebSockets with HTTP/2",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate connection-scoped negotiation, request construction, WebSocket handshake mapping, stream lifecycle, and intermediary behavior. Section numbers refer to RFC 8441.</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8441" target="_blank" rel="noopener noreferrer">RFC 8441: Bootstrapping WebSockets with HTTP/2</a></li>
       </ul>
@@ -99,8 +100,6 @@
             <label class="choice"><input type="radio" name="Q1" value="c"> C. A DNS SRV record</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8441 defines an extended form of CONNECT that creates the WebSocket on one HTTP/2 stream. The request carries a `:protocol` pseudo-header so that the stream's application protocol is explicit.
 
             This is different from the connection-wide HTTP/1.1 `Upgrade` exchange. DNS service discovery can locate a service, but it does not establish the HTTP/2 stream or its WebSocket semantics.
@@ -111,14 +110,13 @@
       <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Focus on HTTP/2 stream multiplexing and whether each WebSocket needs its own transport connection.">
         <header><h4>Q2: What does using WebSockets over HTTP/2 avoid compared to the HTTP/1.1 upgrade approach</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A client needs three simultaneous WebSockets and ordinary HTTP requests to the same origin. The deployment criterion is transport-connection reuse, not a change to WebSocket framing or security policy.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q2" value="a"> A. Protecting WebSocket traffic with transport encryption</label>
             <label class="choice"><input type="radio" name="Q2" value="b"> B. Applying HTTP setup and WebSocket framing semantics</label>
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Reserving a separate TCP connection for every WebSocket</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             Each RFC 8441 WebSocket is associated with an HTTP/2 stream, and multiple streams can coexist on one transport connection. A separate TCP connection per WebSocket is therefore not inherent in this bootstrap model.
 
             Multiplexing does not remove transport-security requirements, HTTP setup semantics, or WebSocket framing after the response succeeds. It changes how connections are shared, not what those other layers guarantee.
@@ -126,18 +124,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="The :protocol pseudo-header identifies the application protocol intended for the extended CONNECT stream.">
-        <header><h4>Q3: Which value belongs in the :protocol pseudo-header when extended CONNECT bootstraps a WebSocket</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="An extended CONNECT adds a protocol token and retains the target URI components required by Section 4.">
+        <header><h4>Q3: Which pseudo-header set correctly requests the WebSocket stream?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">After receiving the server's opt-in, a client opens wss://agent.example/events over HTTP/2.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q3" value="a"> A. websocket, the registered WebSocket protocol token</label>
-            <label class="choice"><input type="radio" name="Q3" value="b"> B. http, the token for the surrounding HTTP/2 protocol</label>
-            <label class="choice"><input type="radio" name="Q3" value="c"> C. tls, a token naming the channel-security protocol</label>
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. :method=GET, :protocol=websocket, :scheme=https, :path=/events, :authority=agent.example</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. :method=CONNECT, :protocol=h2, :scheme=https, :path=/events, :authority=agent.example</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. :method=CONNECT, :protocol=websocket, :scheme=wss, :path=/events, :authority=agent.example</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. :method=CONNECT, :protocol=websocket, :scheme=https, :path=/events, :authority=agent.example</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            RFC 8441 uses `:protocol: websocket` to identify the protocol that will run on the extended CONNECT stream. `http` describes the surrounding HTTP protocol and `tls` names a channel-security protocol; neither requests WebSocket semantics for this stream.
+            A: Section 5 replaces the RFC 6455 GET bootstrap with CONNECT. B: `:protocol` names the tunneled application protocol, not HTTP/2. C: Section 4 requires `:scheme` and `:path` whenever `:protocol` is present. D: This includes CONNECT, the registered `websocket` token, the HTTPS mapping for `wss`, the target path, and the authority.
           </div>
         </div>
       </article>
@@ -145,6 +143,7 @@
       <article class="q card" data-id="Q4" data-type="ms" data-answer="a,b,c" data-difficulty="L2" data-hint="Separate the changed HTTP bootstrap from the WebSocket and application rules that apply after the stream is accepted.">
         <header><h4>Q4: Which are still relevant for WebSocket semantics when using HTTP/2 bootstrapping (select all)</h4><span class="type">Multi-Select</span></header>
         <div class="body">
+          <p class="question-premise">A review claims that a successful extended CONNECT replaces every RFC 6455 and application-layer check. Select the responsibilities that still remain.</p>
           <fieldset class="choices">
             <label class="choice"><input type="checkbox" name="Q4" value="a"> A. WebSocket message framing and opcode rules</label>
             <label class="choice"><input type="checkbox" name="Q4" value="b"> B. Server validation of the browser-supplied Origin header</label>
@@ -152,8 +151,6 @@
             <label class="choice"><input type="checkbox" name="Q4" value="d"> D. The HTTP/1.1 Connection header requirement</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8441 changes the HTTP bootstrap, not the WebSocket application protocol. After a successful response, WebSocket framing and opcode rules still govern the stream; browser Origin validation and application authentication and authorization also remain separate responsibilities.
 
             The HTTP/1.1 `Connection` header is not carried into this HTTP/2 exchange. Treating the new bootstrap as an automatic security or authorization mechanism would cross protocol-layer boundaries.
@@ -164,14 +161,13 @@
       <article class="q card" data-id="Q5" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Determine whether the proxy explicitly opts in to extended CONNECT before choosing an HTTP/2 WebSocket path.">
         <header><h4>Q5: A proxy only supports HTTP/2 and blocks Upgrade. What is a practical consequence for WebSockets</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A deployment can reach an origin only through an HTTP/2 hop. The reviewer must choose a bootstrap that the peer actually advertised.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q5" value="a"> A. Translate the request into an ordinary HTTP/2 GET without WebSocket framing</label>
             <label class="choice"><input type="radio" name="Q5" value="b"> B. Check for extended CONNECT support and use that path if available</label>
             <label class="choice"><input type="radio" name="Q5" value="c"> C. Send HTTP/1.1 Connection and Upgrade headers inside an HTTP/2 stream</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             Blocking HTTP/1.1 `Upgrade` does not establish whether RFC 8441 is available. The client must separately determine whether its HTTP/2 peer advertised extended CONNECT support. If so, it can use that bootstrap; otherwise it needs another supported route or must fail the attempt.
 
             An ordinary GET does not create WebSocket framing semantics, and HTTP/1.1 `Connection` and `Upgrade` fields cannot be transplanted into an HTTP/2 stream.
@@ -179,16 +175,18 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^settings_enable_connect_protocol$" data-difficulty="L2" data-hint="Look for the HTTP/2 SETTINGS parameter that opts a peer in before extended CONNECT may be sent.">
-        <header><h4>Q6: Which HTTP/2 setting must a server send with value 1 before a client uses extended CONNECT (exact name)</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The permission is created by receiving the peer's setting; sending the setting does not grant permission in the reverse direction.">
+        <header><h4>Q6: May the client now send extended CONNECT?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type one word" />
+          <p class="question-premise">On one HTTP/2 connection, the client sends SETTINGS_ENABLE_CONNECT_PROTOCOL=1 to the server, but the server has not sent that setting. The client treats its own advertised value as mutual opt-in and wants to open an extended CONNECT stream.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. Yes; sending value 1 also grants the sender permission</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. No; the client must receive value 1 from the server</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Yes; the initial value is 1 unless explicitly disabled</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. No; extended CONNECT can never be used on HTTP/2</label>
+          </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            RFC 8441 Section 3 defines `SETTINGS_ENABLE_CONNECT_PROTOCOL` as the peer opt-in for extended CONNECT. A server advertises value 1, and a client must not send the `:protocol` pseudo-header before receiving that setting.
-
-            The setting enables the extended form of CONNECT; it does not select the target protocol. The request still uses CONNECT and identifies that protocol with `:protocol`.
+            A: Sending the setting advertises a capability to the peer; it does not grant the sender permission. B: Section 3 permits a client to create new extended-CONNECT streams upon receiving value 1, while receipt by a server has no impact. C: The registered initial value is 0. D: RFC 8441 defines this use after server opt-in. The client must wait for the server's setting on this connection.
           </div>
         </div>
       </article>
@@ -203,12 +201,70 @@
             <label class="choice"><input type="radio" name="Q7" value="c"> C. Use an upstream bootstrap supported by that peer, or fail instead of assuming upstream opt-in</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             C is the defensible review result. `SETTINGS_ENABLE_CONNECT_PROTOCOL` is an opt-in by a peer on a particular HTTP/2 connection. Under RFC 8441 Section 3, the relay cannot send `:protocol` on its upstream connection until that upstream peer has advertised support.
 
             Sections 4 and 5 define the extended CONNECT request and its WebSocket mapping; an ordinary GET and a generic successful response do not create equivalent semantics. The relay may use another upstream mechanism that the origin actually supports, but the client-facing setting does not authorize or describe that separate hop. Section 7 discusses intermediary use without turning one connection's setting into a route-wide capability.
           </div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Map the WebSocket URI scheme to the HTTP target URI scheme; do not infer it from transport preference.">
+        <header><h4>Q8: Is this target scheme correct for the requested WebSocket URI?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client bootstraps ws://agent.example/events but sends an extended CONNECT request with :scheme=https because the existing HTTP/2 connection uses TLS.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Yes; the transport connection always determines :scheme</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. No; ws maps to http, while wss maps to https</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Yes; :protocol=websocket makes :scheme irrelevant</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. No; every WebSocket over HTTP/2 must use :scheme=ws</label>
+          </fieldset><div class="explain">A: Section 5 derives the target scheme from the WebSocket URI, not merely from an implementation preference. B: `ws` maps to `http` and `wss` maps to `https`. C: Section 4 requires `:scheme` when `:protocol` is present. D: `ws` is not the HTTP target-scheme value used by this mapping. The separate security requirements for the HTTP/2 connection still apply.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Some RFC 6455 fields survive in lowercase, while the HTTP/1.1 connection-switch fields and nonce exchange do not.">
+        <header><h4>Q9: Which handshake correction follows RFC 8441?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An HTTP/1.1 adapter copies Connection, Upgrade, Sec-WebSocket-Key, Origin, Sec-WebSocket-Version, and Sec-WebSocket-Protocol into an extended CONNECT request.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Keep every field unchanged because RFC 6455 controls the entire request</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Remove Origin and all Sec-WebSocket fields but retain Connection and Upgrade</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Retain Sec-WebSocket-Key so the server can produce Sec-WebSocket-Accept</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Remove Connection, Upgrade, and Key; retain the other applicable fields</label>
+          </fieldset><div class="explain">A: RFC 8441 changes specific opening-handshake fields. B: Connection and Upgrade MUST NOT appear in this HTTP/2 request, while Origin and several Sec-WebSocket fields remain applicable. C: Section 5 says Key/Accept processing is superseded by `:protocol`. D: This preserves the fields RFC 8441 carries forward and removes the HTTP/1.1-only switch and nonce exchange; HTTP/2 field names are lowercase on the wire.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="a" data-difficulty="L3" data-hint="Distinguish orderly stream completion from an exceptional reset after the WebSocket close exchange.">
+        <header><h4>Q10: How should the HTTP/2 stream close after an orderly WebSocket shutdown?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The peers have completed their WebSocket closing exchange. The implementation now needs the HTTP/2 analogue of an orderly TCP-level close rather than an exception.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. Finish the stream with END_STREAM</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Send RST_STREAM with CANCEL for every normal close</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Send a connection-wide GOAWAY to close only this WebSocket</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Reuse HTTP status 101 after WebSocket data has begun</label>
+          </fieldset><div class="explain">A: Section 5 maps orderly TCP-level closure to HTTP/2 `END_STREAM`. B: `RST_STREAM` with `CANCEL` represents reset exceptions. C: A connection-wide GOAWAY has a broader scope than this one stream. D: HTTP/2 does not use the HTTP/1.1 101 bootstrap, and status is not the stream-close mechanism after the protocol is open.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A forward-proxy tunnel and the later WebSocket bootstrap are separate stages whose HTTP versions may differ.">
+        <header><h4>Q11: Which request should the client send first to this HTTP forward proxy?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client speaks HTTP/2 to a forward proxy and wants a WebSocket connection to an origin through that proxy. The client has not yet created a tunnel to the origin.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. Extended CONNECT with :protocol=websocket to make the proxy the WebSocket origin</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. An ordinary GET carrying Connection and Upgrade across the HTTP/2 proxy hop</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. Traditional CONNECT without :protocol; bootstrap inside the tunnel</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. Extended CONNECT without checking any setting because forward proxies are exempt</label>
+          </fieldset><div class="explain">A: Section 7 does not redefine the forward proxy as the WebSocket service. B: HTTP/1.1 connection fields cannot be sent on the HTTP/2 hop. C: RFC 8441 says to use traditional CONNECT, without `:protocol`, to tunnel through an HTTP forward proxy; the HTTP version negotiated through that tunnel then determines the WebSocket bootstrap. D: Intermediary use does not waive the negotiation rules.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="The incompatible extension was sent on one stream before opt-in; identify the failure scope described by Section 3.">
+        <header><h4>Q12: What failure should a non-supporting peer produce?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">Before receiving SETTINGS_ENABLE_CONNECT_PROTOCOL=1, a client sends a CONNECT request with :protocol=websocket. The peer does not implement RFC 8441.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. Treat it as an ordinary CONNECT and ignore :protocol</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. Detect a malformed request and generate a stream error</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. Tear down the entire HTTP/2 connection in every case</label>
+            <label class="choice"><input type="radio" name="Q12" value="d"> D. Convert it into an HTTP/1.1 Upgrade request automatically</label>
+          </fieldset><div class="explain">A: Ignoring an unknown pseudo-header would silently change CONNECT semantics. B: Section 3 explains that use before opt-in is detected by a non-supporting peer as a malformed request and produces a stream error. C: The cited failure scope is the stream, not an unconditional connection-wide failure. D: No automatic downgrade or translation rule is defined.</div>
         </div>
       </article>
     </section>
