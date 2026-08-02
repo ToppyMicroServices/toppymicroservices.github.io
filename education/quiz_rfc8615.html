@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8615", "SKILL_SUBTITLE": "Well-Known URIs", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8615", "SKILL_SUBTITLE": "Well-Known URIs", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 3, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -44,7 +44,8 @@
       </div>
     </header>
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions distinguish the registered path convention from application-defined hostname selection, metadata scope, browser protections, and deployment policy. Section numbers refer to RFC 8615.</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8615" target="_blank" rel="noopener noreferrer">RFC 8615: Well-Known URIs</a></li></ul>
     </section>
     <section class="card panel" aria-label="Quiz settings">
@@ -54,101 +55,97 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="The prefix is rooted at the top of the path hierarchy.">
-        <header><h4>Q1: Which path is a well-known URI under RFC 8615 for a supporting scheme?</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Check both the path position and whether a resource is named after the prefix.">
+        <header><h4>Q1: Assuming <code>agent-card</code> is registered, which path is its well-known URI for a supporting scheme?</h4><span class="type">Multiple Choice</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. /.well-known/agent-card.json</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. /agents/.well-known/agent-card.json</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. /.well-known/</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: It begins with the registered top-level /.well-known/ prefix.
-B: A nested occurrence of .well-known is not well-known by definition.
-C: RFC 8615 defines no resource format for the prefix itself and clients should not expect it to exist.</div></div>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. <code>/.well-known/agent-card</code></label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. <code>/agents/.well-known/agent-card</code></label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. <code>/.well-known/</code> by itself</label>
+        </fieldset><div class="explain">RFC 8615 Section 3 defines a well-known URI whose path begins with <code>/.well-known/</code> and continues with a registered name, so A has the required top-level position. B places the prefix below another path component. C is only the reserved prefix; the RFC defines no representation there and says clients should not expect that resource to exist.</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Check the grammar of the registered name before considering later path components.">
-        <header><h4>Q2: A new protocol wants the suffix &quot;metadata/agents&quot;. What is the registration problem?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. Registered names must begin with a slash</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. The registered name cannot contain the slash character</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. All registered names must end in .json</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The registry stores the suffix relative to /.well-known/, not a leading slash.
-B: Registered names must conform to segment-nz, which excludes slash.
-C: RFC 8615 does not require a filename extension.</div></div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Separate the registry name from any additional path syntax defined by the application specification.">
+        <header><h4>Q2: Which registration review is correct?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A proposal wants clients to use <code>/.well-known/metadata/agents</code> and submits <code>metadata/agents</code> as the registered URI suffix. Its specification defines no syntax for path components after the registered name.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. Accept it because every string after <code>/.well-known/</code> is one registered name</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. Revise it to a slash-free registered name and explicitly define any following path components</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. Register <code>metadata</code> and <code>agents</code> as two unrelated suffixes and concatenate them</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. Move <code>agents</code> into a query string, which removes the need for a registered name</label>
+        </fieldset><div class="explain">RFC 8615 Section 3 requires the registered name to conform to <code>segment-nz</code>, which excludes <code>/</code>. It also permits a registration to define additional path components, query strings, or fragments. B satisfies both boundaries. A treats multiple segments as one name, C invents composition semantics between registrations, and D still needs a registered suffix before the query.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="A location is useful only when clients know what representation and schemes apply.">
-        <header><h4>Q3: What must a well-known URI registration define at minimum?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. A globally fixed hostname and certificate authority</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. A mandatory redirect target for every deployment</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. A specification for the format, media types, and applicable schemes</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: RFC 8615 does not choose the hostname and does not define a dedicated CA.
-B: Redirect behavior is application-specific and not a minimum registry field.
-C: The registration must reference a specification defining the retrieved representation and schemes.</div></div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="A reviewer needs enough information to know what is retrieved and with which URI schemes.">
+        <header><h4>Q3: What is missing from this registration proposal?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A proposal supplies the suffix, change controller, specification document, and provisional status. The specification says only that the resource is “agent metadata”; it defines neither a representation format nor an associated media type. It intends normal HTTP and HTTPS use.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. A globally fixed hostname and a dedicated certificate authority</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. A mandatory redirect target shared by every conforming deployment</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. A specification of the retrieved format and associated media type</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. An explicit schemes field, because omitting it excludes HTTP and HTTPS</label>
+        </fieldset><div class="explain">RFC 8615 Section 3 requires the referenced specification to define the retrieved format and associated media type, so C identifies the defect. The RFC neither fixes a hostname or CA nor requires redirects. D is wrong because HTTP and HTTPS are assumed when no schemes are explicitly listed; another scheme would need explicit support.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate the well-known path convention from application discovery policy.">
-        <header><h4>Q4: Does RFC 8615 tell an A2A client which hostname contains an agent&#x27;s metadata?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. Yes, it always uses the issuer hostname</label>
-          <label class="choice"><input type="radio" name="Q4" value="b"> B. No, the application must define how the hostname is chosen</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. Yes, it requires www.example.com for discovery</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: RFC 8615 does not define an issuer concept or hostname-selection rule.
-B: RFC 8615 explicitly leaves hostname determination to the application.
-C: The example hostname is illustrative and not a deployment requirement.</div></div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Registration reserves a path suffix; discovery still needs an authority-selection rule.">
+        <header><h4>Q4: Which change is needed before clients can interoperate?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A profile registers the suffix <code>a2a</code>. Given the identifier <code>alice@example.com</code>, one client probes <code>example.com</code>, another probes <code>agents.example.com</code>, and both claim RFC 8615 compliance. The profile gives no hostname-selection rule.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. Require every client to prefer the hostname beginning with <code>agents.</code></label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. Define in the A2A profile how the input identifier determines the hostname</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. Treat both results as equivalent when their TLS certificates validate</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. Let each deployment choose silently because the suffix is globally registered</label>
+        </fieldset><div class="explain">RFC 8615 Section 3 explicitly does not define how to determine the hostname; the application must do so. B supplies the missing interoperability and authority rule. A invents a convention, C confuses transport authentication with hostname selection, and D leaves clients with incompatible and potentially unsafe guesses.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="A predictable location is not the same as authenticity or authorization.">
-        <header><h4>Q5: What does retrieving a document from a well-known URI establish by itself?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. Retrieval from that URI under the client's chosen origin and transport checks</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. That every claim in the document is globally trusted</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. That the resource owner authorized every advertised operation</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The path convention does not by itself authenticate claims inside the document.
-B: Trust in metadata needs application-defined validation beyond path placement.
-C: RFC 8615 is a location convention and carries no operation authorization semantics.</div></div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Validate what each HTTPS connection proves, then look for the application's rule connecting the two origins.">
+        <header><h4>Q5: May the client accept the redirected metadata as authoritative?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">The profile selects <code>tenant.example</code> and fetches <code>https://tenant.example/.well-known/a2a</code>. The server redirects to <code>https://metadata.example.net/a2a/tenant</code>. TLS validation succeeds for both hosts, but the profile says nothing about redirects or cross-origin authority.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; the first origin's redirect automatically delegates all metadata authority</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes; successful TLS on the target proves that it speaks for the first origin</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. Not from RFC 8615 alone; the profile must define redirect and authority validation</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. No; RFC 8615 categorically prohibits redirects from well-known resources</label>
+        </fieldset><div class="explain">RFC 8615 Section 3 leaves discovery and metadata scope to the application, while Section 4.3 warns against assuming administrative relationships across origins. C therefore identifies a missing profile rule. A and B infer delegation that two valid TLS channels do not establish. D overstates the RFC: it does not impose a blanket redirect ban.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Compare the normal port convention with application-specific exceptions.">
-        <header><h4>Q6: A deployment serves well-known metadata from a non-default HTTPS port. What is required?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. The port is inferred from the registered suffix</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. The client must scan all ports on the host</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. The application must explicitly specify the alternate port</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: The suffix does not encode an alternate port.
-B: RFC 8615 does not authorize port scanning as discovery.
-C: RFC 8615 requires explicit application specification when an alternative port is used.</div></div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="The URI suffix does not tell clients to discover a port.">
+        <header><h4>Q6: Which client behavior matches the profile and RFC 8615?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An A2A profile explicitly defines discovery at <code>https://host.example:9443/.well-known/a2a</code>. A deployment uses that port, while the registered suffix is simply <code>a2a</code>.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. Reject the profile because well-known URIs can use only the scheme's default port</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. Ignore 9443 and scan the host until a matching representation is found</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. Use 9443 because the application specification explicitly selects it</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. Encode the port in the IANA suffix so clients can derive the authority</label>
+        </fieldset><div class="explain">RFC 8615 Section 3 says applications typically use the default port, but an alternative port is allowed when the application explicitly specifies it. C follows that rule. A turns a typical choice into a prohibition, B invents port scanning, and D confuses the registered path suffix with the URI authority.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Consider what a resource at the origin-wide discovery location can represent.">
-        <header><h4>Q7: Why should write access to a well-known location be tightly controlled?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. Because well-known resources cannot be cached</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. Because the location can represent the entire origin</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. Because every well-known response runs executable code</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: RFC 8615 does not generally prohibit caching.
-B: A co-located tenant with write access could affect discovery for the whole origin.
-C: The media type and processing model are defined by the application.</div></div>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Ask whether a path-level tenant permission can change metadata interpreted for the whole origin.">
+        <header><h4>Q7: Which deployment change best preserves the stated trust boundary?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise"><code>platform.example</code> hosts unrelated tenants. Each tenant may publish files under its own path, but a reverse-proxy rule also lets any tenant write <code>/.well-known/a2a</code>. Clients interpret that resource as platform-wide metadata.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. Keep tenant writes because the leading dot makes the directory private</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. Reserve that location for origin-level control or place tenants on separate origins</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. Keep tenant writes and disable caching so unauthorized changes cannot matter</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. Rename the registered suffix for every request to prevent ownership conflicts</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.1 says well-known locations effectively represent the entire origin and recommends appropriately controlling write access, especially with co-located entities. B aligns ownership with that scope. A mistakes a filesystem/UI convention for protection, C does not prevent malicious content, and D breaks stable discovery without fixing authority.</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Browsers and origin-wide mechanisms are shared with other applications.">
-        <header><h4>Q8: An application shares an HTTPS origin with unrelated web content. Which assumption is unsafe?</h4><span class="type">Multiple Choice</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. Only the discovery application can interact with cookies and storage on that origin</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. Sensitive metadata may need encryption or access controls</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. Identifier names should avoid collisions with co-located applications</label>
-        </fieldset><div class="explain">**Explanation:**
-
-A: Other content on the origin can share browser security mechanisms and may issue requests.
-B: RFC 8615 calls out sensitive-data exposure as a deployment concern.
-C: Flexible identifier names can reduce origin-wide collisions.</div></div>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Cookie confidentiality and the ability to cause an authenticated request are different properties.">
+        <header><h4>Q8: Which security review is most accurate?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A state-changing well-known endpoint authenticates with a cookie marked <code>HttpOnly; Secure; Path=/.well-known/a2a</code>. An unrelated application on the same origin has an XSS flaw. The design assumes the flags prevent that script from causing authenticated requests to the endpoint.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. The assumption is sound because <code>HttpOnly</code> blocks both reads and sends by script</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. The assumption is sound because the cookie <code>Path</code> creates a separate origin</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. The only required change is to rename the cookie to avoid a collision</label>
+          <label class="choice"><input type="radio" name="Q8" value="d"> D. The flags help, but request authorization and forgery defenses are still needed</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.2 warns that injected same-origin content can make potentially arbitrary requests to a well-known resource. <code>HttpOnly</code> limits script access to the cookie value and <code>Path</code> limits where the browser sends it; neither creates a new origin or by itself authorizes a state change. D separates those mitigations from application-level request validation. A and B overstate cookie flags, while C addresses only name collisions.</div>
+        </div>
       </article>
       <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A well-known path is a discovery convention, not a separate browser security boundary.">
         <header><h4>Q9: Which review finding best addresses the confidentiality requirement?</h4><span class="type">Multiple Choice</span></header>
@@ -159,9 +156,7 @@ C: Flexible identifier names can reduce origin-wide collisions.</div></div>
           <label class="choice"><input type="radio" name="Q9" value="b"> B. Keep the design because <code>/.well-known/</code> is isolated from other same-origin content</label>
           <label class="choice"><input type="radio" name="Q9" value="c"> C. Publish only public discovery data; deliver credentials through a protected flow</label>
           <label class="choice"><input type="radio" name="Q9" value="d"> D. Put the token in a query parameter so it is no longer part of the representation</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 8615 Section 4.2 warns that well-known resources remain accessible to browsers and interact with other content on the same origin. The prefix does not create a confidential compartment. C meets the stated public-discovery and token-confidentiality requirements. A only hides a location, B assumes isolation that the RFC does not provide, and D still exposes the credential through a URL.</div>
+        </fieldset><div class="explain">RFC 8615 Section 4.2 warns that well-known resources remain accessible to browsers and interact with other content on the same origin. The prefix does not create a confidential compartment. C meets the stated public-discovery and token-confidentiality requirements. A only hides a location, B assumes isolation that the RFC does not provide, and D still exposes the credential through a URL and logs.</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="Separate successful HTTPS retrieval from the authority and scope rules that the application must define.">
@@ -173,9 +168,31 @@ RFC 8615 Section 4.2 warns that well-known resources remain accessible to browse
           <label class="choice"><input type="radio" name="Q10" value="b"> B. Yes; all hosts sharing a registrable domain are one RFC 8615 security scope</label>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. No; the profile must define trusted host selection, metadata scope, and endpoint validation</label>
           <label class="choice"><input type="radio" name="Q10" value="d"> D. No; RFC 8615 prohibits a well-known document from naming any other endpoint</label>
-        </fieldset><div class="explain">**Explanation:**
-
-RFC 8615 Section 3 leaves hostname determination and metadata scope to the application. Section 4.3 warns that applying one origin's metadata to another host assumes an administrative relationship that might not exist. HTTPS and a valid document signature authenticate their respective channel and signer; neither supplies the missing A2A authority rule. C identifies the profile work required. D overstates the RFC: cross-host references are not categorically forbidden.</div>
+        </fieldset><div class="explain">RFC 8615 Section 3 leaves hostname determination and metadata scope to the application. Section 4.3 warns that applying one origin's metadata to another host assumes an administrative relationship that might not exist. HTTPS and a valid document signature authenticate their respective channel and signer; neither supplies the missing A2A authority rule. C identifies the profile work required. D overstates the RFC: cross-host references are not categorically forbidden.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="A registered location does not by itself establish that every possible hostname implements the application.">
+        <header><h4>Q11: Which profile change addresses the deployment risk identified by RFC 8615?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">An enterprise imports 200,000 partner domains. For every domain, its client immediately probes <code>https://domain/.well-known/a2a</code> and retries failures without a bound. Most domains have never opted into A2A, and their web operators report an unexpected request flood.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q11" value="a"> A. Keep the behavior because registering the suffix authorizes probes against every domain</label>
+          <label class="choice"><input type="radio" name="Q11" value="b"> B. Define when discovery applies and bound concurrency and retries</label>
+          <label class="choice"><input type="radio" name="Q11" value="c"> C. Add a random query value so each retry is treated as a distinct request</label>
+          <label class="choice"><input type="radio" name="Q11" value="d"> D. Switch to a hidden suffix so server operators will not notice the traffic</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.3 warns that bootstrapping another protocol through a particular hostname can send many unwanted requests to servers that do not implement it, resembling a denial-of-service attack. The RFC does not prescribe one algorithm, but B is the appropriate application-profile mitigation for the stated workload. A mistakes registration for deployment consent, and C and D worsen observability or load without defining applicability.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Visibility in an administration tool is not the same as effective write permission on the served path.">
+        <header><h4>Q12: Which finding should block deployment?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A hosting control panel hides directories whose names begin with a dot. The content-upload account cannot see <code>.well-known</code> in the panel, but an authorization test shows it can write directly to the served <code>/.well-known/a2a</code> path. Administrators assume the hidden directory is protected.</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q12" value="a"> A. None; hidden directories are access-controlled by definition</label>
+          <label class="choice"><input type="radio" name="Q12" value="b"> B. Only the control panel display needs changing; effective permissions are irrelevant</label>
+          <label class="choice"><input type="radio" name="Q12" value="c"> C. The upload account can control origin-wide metadata, so its effective write permission must be removed</label>
+          <label class="choice"><input type="radio" name="Q12" value="d"> D. The risk exists only if the response uses an executable media type</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.4 warns that administrators may not realize a hidden <code>.well-known</code> directory exists while an attacker with write access can control its contents. C follows the observed permission rather than the UI. A and B confuse hiding with access control, and D ignores that forged discovery metadata can be harmful without executable content.</div>
         </div>
       </article>
     </section>

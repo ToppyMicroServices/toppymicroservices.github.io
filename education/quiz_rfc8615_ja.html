@@ -28,7 +28,7 @@
   <script defer src="quiz_template_skeleton.js?v=20260731-2"></script>
 </head>
 <body data-theme="dark">
-  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8615", "SKILL_SUBTITLE": "Well-Known URI", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 2, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
+  <script>window.DRILL_SETTINGS = {"SKILL_NAME": "RFC 8615", "SKILL_SUBTITLE": "Well-Known URI", "LEARNING_MODE_DEFAULT": true, "PROGRESS_VERSION": 3, "BRAND_NAME": "ToppyMicroServices", "BRAND_LOGO": "og-brand-clean.min.png", "BRAND_URL": "../index.html"};</script>
   <div class="container">
     <header>
       <div>
@@ -44,7 +44,8 @@
       </div>
     </header>
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">参照仕様</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>登録されたパスの規約と、アプリケーションが定めるホスト名の選択、メタデータの適用範囲、ブラウザ対策、運用方針を区別します。Section番号はRFC 8615を指します。</p>
       <ul><li><a href="https://www.rfc-editor.org/rfc/rfc8615" target="_blank" rel="noopener noreferrer">RFC 8615: Well-Known URIs</a></li></ul>
     </section>
     <section class="card panel" aria-label="クイズ設定">
@@ -54,101 +55,97 @@
       </div>
     </section>
     <section id="questions">
-      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="prefixはpath階層の最上位から始まる。">
-        <header><h4>Q1: RFC 8615に対応するschemeで、well-known URIとなるpathはどれ？</h4><span class="type">単一選択</span></header>
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="パス内の位置と、接頭辞に続くリソース名の有無を確認する。">
+        <header><h4>Q1: <code>agent-card</code>が登録済みであるとして、対応スキームでwell-known URIとなるパスはどれ？</h4><span class="type">単一選択</span></header>
         <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q1" value="a"> A. /.well-known/agent-card.json</label>
-          <label class="choice"><input type="radio" name="Q1" value="b"> B. /agents/.well-known/agent-card.json</label>
-          <label class="choice"><input type="radio" name="Q1" value="c"> C. /.well-known/</label>
-        </fieldset><div class="explain">**解説:**
-
-A: path階層の最上位にある<code>/.well-known/</code> prefixで始まる。
-B: pathの途中に置かれた<code>.well-known</code>は、定義上well-known URIではない。
-C: RFC 8615はprefix自体のresource形式を定義せず、clientはその存在を期待すべきでない。</div></div>
+          <label class="choice"><input type="radio" name="Q1" value="a"> A. <code>/.well-known/agent-card</code></label>
+          <label class="choice"><input type="radio" name="Q1" value="b"> B. <code>/agents/.well-known/agent-card</code></label>
+          <label class="choice"><input type="radio" name="Q1" value="c"> C. <code>/.well-known/</code>だけ</label>
+        </fieldset><div class="explain">RFC 8615 Section 3は、<code>/.well-known/</code>で始まり、その後に登録名が続くパスをwell-known URIと定義するため、Aが該当する。Bは接頭辞を別のパス要素の下に置いている。Cは予約された接頭辞にすぎず、RFCはそこに表現形式を定義しておらず、クライアントもリソースの存在を期待すべきではない。</div></div>
       </article>
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="後続のpath componentを考える前に、registered nameの文法を確認する。">
-        <header><h4>Q2: 新しいprotocolがsuffix &quot;metadata/agents&quot;を登録したい。問題はどれ？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q2" value="a"> A. registered nameはslashで始めなければならない</label>
-          <label class="choice"><input type="radio" name="Q2" value="b"> B. registered nameにはslashを含められない</label>
-          <label class="choice"><input type="radio" name="Q2" value="c"> C. registered nameはすべて.jsonで終えなければならない</label>
-        </fieldset><div class="explain">**解説:**
-
-A: registryへ登録するのは<code>/.well-known/</code>からのrelative suffixであり、先頭のslashは含めない。
-B: registered nameは、slashを含まない<code>segment-nz</code>に適合する必要がある。
-C: RFC 8615はfile extensionを要求しない。</div></div>
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="登録名と、仕様が別途定義できる後続パスの構文を分けて考える。">
+        <header><h4>Q2: 登録審査として正しい指摘はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2Aの提案では<code>/.well-known/metadata/agents</code>を使うため、登録するURI suffixを<code>metadata/agents</code>として申請している。仕様には、登録名に続くパス要素の構文が定義されていない。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q2" value="a"> A. 接頭辞以降の文字列全体が一つの登録名になるため、このまま受理する</label>
+          <label class="choice"><input type="radio" name="Q2" value="b"> B. slashを含まない登録名へ改め、必要な後続パスを仕様で明示する</label>
+          <label class="choice"><input type="radio" name="Q2" value="c"> C. <code>metadata</code>と<code>agents</code>を無関係な二つのsuffixとして登録し、連結する</label>
+          <label class="choice"><input type="radio" name="Q2" value="d"> D. <code>agents</code>をqueryへ移せば、登録名は不要になる</label>
+        </fieldset><div class="explain">RFC 8615 Section 3では、登録名は<code>segment-nz</code>に適合し、<code>/</code>を含んではならない。一方、登録仕様は後続のパス要素、query、fragmentの構文を定義できる。Bは両方の境界を守る。Aは複数segmentを一つの名前として扱い、Cは別々の登録に合成の意味を勝手に与え、Dはqueryの前に必要な登録suffixを消してしまう。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="clientがrepresentationとschemeを解釈できて初めて、locationが役立つ。">
-        <header><h4>Q3: well-known URIの登録が最低限参照すべき定義はどれ？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q3" value="a"> A. 世界共通で固定されたhostnameとcertificate authority</label>
-          <label class="choice"><input type="radio" name="Q3" value="b"> B. 全deploymentに必須のredirect先</label>
-          <label class="choice"><input type="radio" name="Q3" value="c"> C. format、media type、利用可能なschemeを定めるspecification</label>
-        </fieldset><div class="explain">**解説:**
-
-A: RFC 8615はhostnameを選ばず、専用CAも定義しない。
-B: redirectの動作はapplication固有であり、最低限必要な登録項目ではない。
-C: 登録は、取得するrepresentationのformat・media typeと利用可能なschemeを定めるspecificationを参照する。</div></div>
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="審査者が、何をどのスキームで取得するのか判断できる情報が必要になる。">
+        <header><h4>Q3: この登録提案に不足しているものはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">提案にはsuffix、変更管理者、仕様文書、provisional statusが記載されている。しかし仕様はリソースを「agent metadata」と呼ぶだけで、表現形式と対応するmedia typeを定義していない。通常のHTTPとHTTPSで使う予定である。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q3" value="a"> A. 世界共通で固定されたホスト名と専用の認証局</label>
+          <label class="choice"><input type="radio" name="Q3" value="b"> B. すべての実装が共有する必須のredirect先</label>
+          <label class="choice"><input type="radio" name="Q3" value="c"> C. 取得する表現形式と、それに対応するmedia typeの仕様</label>
+          <label class="choice"><input type="radio" name="Q3" value="d"> D. schemes項目。省略するとHTTPとHTTPSを利用できないため</label>
+        </fieldset><div class="explain">RFC 8615 Section 3は、参照する仕様に取得形式と対応するmedia typeの定義を求めるため、不足しているのはCである。RFCは固定ホスト名、専用CA、共通redirect先を要求しない。Dも誤りで、schemeを明記しない場合はHTTPとHTTPSが仮定される。別のschemeを使うなら、その対応を明示する必要がある。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="well-known pathの規約とapplicationのdiscovery policyを分けて考える。">
-        <header><h4>Q4: RFC 8615は、agent metadataを置くhostnameの選び方まで定める？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q4" value="a"> A. はい, 常にissuer hostnameを使う</label>
-          <label class="choice"><input type="radio" name="Q4" value="b"> B. いいえ, applicationがhostnameの選び方を定義する</label>
-          <label class="choice"><input type="radio" name="Q4" value="c"> C. はい, discoveryにwww.example.comを要求する</label>
-        </fieldset><div class="explain">**解説:**
-
-A: RFC 8615はissuerの概念やhostname選択規則を定義しない。
-B: hostnameの決め方はapplicationへ委ねられている。
-C: exampleのhostnameは例示であり、deployment要件ではない。</div></div>
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="登録で予約されるのはパスのsuffixであり、接続先を選ぶ規則は別に必要になる。">
+        <header><h4>Q4: クライアント間の相互運用に必要な修正はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profileはsuffix <code>a2a</code>を登録した。識別子<code>alice@example.com</code>を受け取った一方のクライアントは<code>example.com</code>を、別のクライアントは<code>agents.example.com</code>を探索し、どちらもRFC 8615準拠だと主張する。profileにはホスト名の選択規則がない。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q4" value="a"> A. すべてのクライアントに<code>agents.</code>で始まるホスト名を優先させる</label>
+          <label class="choice"><input type="radio" name="Q4" value="b"> B. 入力識別子からホスト名を決める方法をA2A profileで定義する</label>
+          <label class="choice"><input type="radio" name="Q4" value="c"> C. TLS証明書が有効なら、二つの探索結果を同等に扱う</label>
+          <label class="choice"><input type="radio" name="Q4" value="d"> D. suffixは世界共通なので、各実装が暗黙に接続先を選べばよい</label>
+        </fieldset><div class="explain">RFC 8615 Section 3はホスト名の決め方を定義せず、アプリケーションに委ねている。Bは不足する相互運用規則とauthorityの境界を補う。AはRFCにない命名規則を作り、Cはtransport認証と接続先選択を混同し、Dは互換性のない危険な推測を残す。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="予測可能なlocationは、authenticityやauthorizationと同じではない。">
-        <header><h4>Q5: well-known URIからdocumentを取得しただけで、何を確認できる？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q5" value="a"> A. clientが選んだorigin・transport検査の下で、そのURIから取得したこと</label>
-          <label class="choice"><input type="radio" name="Q5" value="b"> B. document内の全claimが世界中で信頼されること</label>
-          <label class="choice"><input type="radio" name="Q5" value="c"> C. resource ownerが掲載された全operationをauthorizeしたこと</label>
-        </fieldset><div class="explain">**解説:**
-
-A: pathの規約だけでは、document内のclaimまでauthenticateしない。
-B: metadataを信頼するには、pathへの配置とは別にapplicationが定めた検証が必要である。
-C: RFC 8615はlocationの規約であり、operationをauthorizeする意味は持たない。</div></div>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="各HTTPS接続が証明する範囲と、二つのoriginを結ぶアプリケーション規則を分ける。">
+        <header><h4>Q5: redirect先のmetadataをauthoritativeとして受理してよい？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">profileは<code>tenant.example</code>を選び、<code>https://tenant.example/.well-known/a2a</code>へ接続する。serverは<code>https://metadata.example.net/a2a/tenant</code>へredirectする。両方のホストでTLS検証は成功するが、profileはredirectとoriginをまたぐauthorityを定義していない。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q5" value="a"> A. よい。最初のoriginのredirectはmetadata authorityを自動的に委任する</label>
+          <label class="choice"><input type="radio" name="Q5" value="b"> B. よい。redirect先のTLS成功は、元のoriginを代表することまで証明する</label>
+          <label class="choice"><input type="radio" name="Q5" value="c"> C. RFC 8615だけでは受理できず、profileがredirectとauthority検証を定義する必要がある</label>
+          <label class="choice"><input type="radio" name="Q5" value="d"> D. いけない。RFC 8615はwell-known resourceからのredirectを一律に禁止する</label>
+        </fieldset><div class="explain">RFC 8615 Section 3は発見方法とmetadataのscopeをアプリケーションに委ね、Section 4.3はorigin間の管理関係を勝手に仮定する危険を警告する。したがってCはprofileに不足する規則を特定している。AとBは、二つのTLS channelからは得られない委任を推測している。Dも強すぎる断定であり、RFCはredirectを一律禁止していない。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="通常のport規約と、application固有の例外を比べる。">
-        <header><h4>Q6: well-known metadataをHTTPSのdefault以外のportで提供する。何が必要？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q6" value="a"> A. registered suffixからportを推測する</label>
-          <label class="choice"><input type="radio" name="Q6" value="b"> B. clientがhostの全portをscanする</label>
-          <label class="choice"><input type="radio" name="Q6" value="c"> C. applicationが代替portを明示する</label>
-        </fieldset><div class="explain">**解説:**
-
-A: suffixは代替portをencodeしない。
-B: RFC 8615はport scanningをdiscovery手段として定義しない。
-C: default以外のportを使う場合、applicationが明示しなければならない。</div></div>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="URI suffixからportを探索する仕組みではない。">
+        <header><h4>Q6: profileとRFC 8615に合うクライアント動作はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">A2A profileは探索先を<code>https://host.example:9443/.well-known/a2a</code>と明示している。deploymentもこのportを使い、登録suffixは単に<code>a2a</code>である。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q6" value="a"> A. well-known URIはdefault portしか使えないため、このprofileを拒否する</label>
+          <label class="choice"><input type="radio" name="Q6" value="b"> B. 9443を無視し、対応する表現が見つかるまで全portをscanする</label>
+          <label class="choice"><input type="radio" name="Q6" value="c"> C. application specificationが明示している9443を使う</label>
+          <label class="choice"><input type="radio" name="Q6" value="d"> D. authorityを導出できるよう、IANA suffixにportをencodeする</label>
+        </fieldset><div class="explain">RFC 8615 Section 3によれば、通常はschemeのdefault portを使うが、applicationが明示すれば代替portも利用できる。したがってCが正しい。Aは通常の選択を禁止事項に変え、BはRFCにないport scanningを導入し、Dは登録するパスsuffixとURI authorityを混同する。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="origin全体のdiscovery locationにあるresourceが、何を代表しうるかを考える。">
-        <header><h4>Q7: well-known locationへのwrite accessを厳しく制御すべき理由はどれ？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q7" value="a"> A. well-known resourceはcacheできないため</label>
-          <label class="choice"><input type="radio" name="Q7" value="b"> B. locationがorigin全体を代表しうるため</label>
-          <label class="choice"><input type="radio" name="Q7" value="c"> C. well-known responseは必ずexecutable codeを実行するため</label>
-        </fieldset><div class="explain">**解説:**
-
-A: RFC 8615は一般にcacheを禁止しない。
-B: 同居tenantがwrite accessを持つと、origin全体のdiscoveryへ影響できる。
-C: media typeと処理modelはapplicationが定義する。</div></div>
+      <article class="q card" data-id="Q7" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="tenant単位のパス権限が、origin全体として解釈されるmetadataを変更できないか確認する。">
+        <header><h4>Q7: 既定のtrust boundaryを最もよく保つ配備変更はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise"><code>platform.example</code>には無関係な複数tenantが同居している。各tenantは自分のパスへfileを公開できるが、reverse proxyの規則により、どのtenantも<code>/.well-known/a2a</code>へ書き込める。クライアントはそのresourceをplatform全体のmetadataとして解釈する。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q7" value="a"> A. 先頭がdotのdirectoryはprivateなので、tenantのwriteを維持する</label>
+          <label class="choice"><input type="radio" name="Q7" value="b"> B. origin管理者だけが書けるようにするか、tenantを別originへ分離する</label>
+          <label class="choice"><input type="radio" name="Q7" value="c"> C. cacheを無効にすれば不正変更は影響しないため、tenantのwriteを維持する</label>
+          <label class="choice"><input type="radio" name="Q7" value="d"> D. ownership衝突を避けるため、requestごとに登録suffixを変更する</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.1は、well-known locationが実質的にorigin全体を代表するため、とくに複数entityが同居する場合はwrite accessを適切に制御すべきだとする。Bは所有権限とscopeを一致させる。AはfilesystemやUIの慣習を保護機構と誤認し、Cは悪意ある内容の公開を防げず、Dはauthorityを直さないまま安定した探索を壊す。</div>
+        </div>
       </article>
-      <article class="q card" data-id="Q8" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="browserのorigin単位の仕組みは、同居するapplication間で共有される。">
-        <header><h4>Q8: 無関係なWeb contentとHTTPS originを共有する場合、危険な前提はどれ？</h4><span class="type">単一選択</span></header>
-        <div class="body"><fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q8" value="a"> A. discovery applicationだけが、そのoriginのcookieとstorageを扱える</label>
-          <label class="choice"><input type="radio" name="Q8" value="b"> B. sensitive metadataには暗号化やaccess controlが必要な場合がある</label>
-          <label class="choice"><input type="radio" name="Q8" value="c"> C. identifier名は同居applicationとの衝突を避けるべき</label>
-        </fieldset><div class="explain">**解説:**
-
-A: 同じoriginの他contentもbrowser security mechanismを共有し、requestを発行しうる。
-B: RFC 8615はsensitive dataの露出をdeployment上の懸念に挙げる。
-C: identifier名に柔軟性を持たせると、origin内の衝突を減らせる。</div></div>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="cookie値の機密性と、認証済みrequestを発生させる能力は別の性質である。">
+        <header><h4>Q8: 最も正確なsecurity reviewはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">状態を変更するwell-known endpointは、<code>HttpOnly; Secure; Path=/.well-known/a2a</code>を付けたcookieで認証する。同じoriginの無関係なapplicationにはXSS脆弱性がある。設計者は、この属性によりscriptから認証済みrequestを発生させられないと考えている。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q8" value="a"> A. 正しい。<code>HttpOnly</code>はscriptによるcookieの読取りと送信を両方止める</label>
+          <label class="choice"><input type="radio" name="Q8" value="b"> B. 正しい。cookieの<code>Path</code>は別のorigin境界を作る</label>
+          <label class="choice"><input type="radio" name="Q8" value="c"> C. 必要な変更はcookie名を変えて衝突を避けることだけである</label>
+          <label class="choice"><input type="radio" name="Q8" value="d"> D. 属性だけでは足りず、requestのauthorizationと偽造対策も必要である</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.2は、同一originへ注入されたcontentがwell-known resourceへ任意のrequestを送れる可能性を警告する。<code>HttpOnly</code>はscriptからcookie値を読めなくし、<code>Path</code>はbrowserが送るパスを絞るが、別originを作らず、状態変更をauthorizeするものでもない。Dはこれらの緩和策とapplication側のrequest検証を分けている。AとBはcookie属性を過大評価し、Cは名前衝突しか扱わない。</div>
+        </div>
       </article>
       <article class="q card" data-id="Q9" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="well-known pathは発見規約であり、browser上の独立したsecurity boundaryではない。">
         <header><h4>Q9: 機密性の要件に対する設計レビューとして、最も適切なのはどれ？</h4><span class="type">単一選択</span></header>
@@ -159,23 +156,43 @@ C: identifier名に柔軟性を持たせると、origin内の衝突を減らせ�
           <label class="choice"><input type="radio" name="Q9" value="b"> B. <code>/.well-known/</code>は同一originの他contentから隔離されるので変更しない</label>
           <label class="choice"><input type="radio" name="Q9" value="c"> C. 公開用の発見情報だけを置き、credentialは保護された手順で渡す</label>
           <label class="choice"><input type="radio" name="Q9" value="d"> D. tokenをquery parameterへ移し、representationの外に置く</label>
-        </fieldset><div class="explain">**解説:**
-
-RFC 8615 Section 4.2は、well-known resourceもbrowserからaccessでき、同一originの他contentと相互作用することを警告している。このprefixは機密領域を作らない。Cは公開発見とtoken機密性の両方を満たす。Aは場所を隠すだけ、BはRFCにない隔離を仮定し、DはcredentialをURLに露出させる。</div>
+        </fieldset><div class="explain">RFC 8615 Section 4.2は、well-known resourceもbrowserからaccessでき、同一originの他contentと相互作用することを警告している。このprefixは機密領域を作らない。Cは公開発見とtoken機密性の両方を満たす。Aは場所を隠すだけ、BはRFCにない隔離を仮定し、DはcredentialをURLやlogへ露出させる。</div>
         </div>
       </article>
       <article class="q card" data-id="Q10" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="HTTPS取得の成功と、applicationが定義すべきauthority・scopeの規則を分けて考える。">
-        <header><h4>Q10: clientは発見したpolicyを二つのhostへ適用してよい？</h4><span class="type">単一選択</span></header>
+        <header><h4>Q10: 発見したpolicyを二つのsibling hostへ適用してよい？</h4><span class="type">単一選択</span></header>
         <div class="body">
           <p class="question-premise">userが<code>billing.example</code>を選び、clientは<code>billing.example/.well-known/a2a</code>からHTTPS documentを取得した。documentはscopeを<code>*.example</code>と宣言し、<code>admin.example</code>をendpointとして示す。certificateとdocument signatureは有効だが、A2A profileにはhostname選択やoriginをまたぐscopeの規則がない。</p>
           <fieldset class="choices">
-          <label class="choice"><input type="radio" name="Q10" value="a"> A. よい。有効なdocument signatureが宣言されたwildcard scopeをauthoritativeにする</label>
+          <label class="choice"><input type="radio" name="Q10" value="a"> A. よい。有効なdocument signatureにより、宣言されたwildcard scopeはauthoritativeになる</label>
           <label class="choice"><input type="radio" name="Q10" value="b"> B. よい。同じregistrable domainのhostはRFC 8615上で一つのsecurity scopeになる</label>
           <label class="choice"><input type="radio" name="Q10" value="c"> C. まだ不可。profileが信頼するhost選択、metadata scope、endpoint検証を定義する必要がある</label>
           <label class="choice"><input type="radio" name="Q10" value="d"> D. 不可。RFC 8615はwell-known documentが別endpointを示すことを常に禁止する</label>
-        </fieldset><div class="explain">**解説:**
-
-RFC 8615 Section 3は、hostnameの決定とmetadataのscopeをapplicationに委ねる。Section 4.3は、あるoriginのmetadataを別hostへ適用すると、実在しない管理関係を仮定する危険があると警告する。HTTPSとdocument signatureはchannelとsignerをそれぞれ認証しても、欠けているA2Aのauthority規則は補わない。Cが必要なprofile設計を示す。Dは強すぎる断定であり、RFCは別endpointへの参照を一律禁止していない。</div>
+        </fieldset><div class="explain">RFC 8615 Section 3は、hostnameの決定とmetadataのscopeをapplicationに委ねる。Section 4.3は、あるoriginのmetadataを別hostへ適用すると、実在しない管理関係を仮定する危険があると警告する。HTTPSとdocument signatureはchannelとsignerをそれぞれ認証しても、欠けているA2Aのauthority規則は補わない。Cが必要なprofile設計を示す。Dは強すぎる断定であり、RFCは別endpointへの参照を一律禁止していない。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="locationの登録だけでは、あらゆるhostnameがapplicationを実装しているとは限らない。">
+        <header><h4>Q11: RFC 8615が指摘する配備リスクに対応するprofile変更はどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">企業が20万件のpartner domainをimportする。クライアントは全domainの<code>https://domain/.well-known/a2a</code>を直ちにprobeし、失敗時も無制限にretryする。大半のdomainはA2Aを導入しておらず、Web運用者から予期しない大量requestが報告された。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q11" value="a"> A. suffixの登録は全domainへのprobeを許可するため、動作を維持する</label>
+          <label class="choice"><input type="radio" name="Q11" value="b"> B. discovery条件を定め、同時実行数とretry回数を制限する</label>
+          <label class="choice"><input type="radio" name="Q11" value="c"> C. retryごとにrandom queryを付け、別requestとして扱わせる</label>
+          <label class="choice"><input type="radio" name="Q11" value="d"> D. server運用者がtrafficに気付かないよう、隠しsuffixへ変更する</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.3は、特定hostnameへのbootstrapにより、未対応serverへ大量の不要requestが送られ、DoS attackに見える危険を警告する。RFCは単一のalgorithmを規定しないが、与えられたworkloadにはBのapplication profile対策が妥当である。Aは登録を配備側の同意と誤認し、CとDは適用条件を定めず、負荷や観測性をさらに悪化させる。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="管理画面上の可視性ではなく、配信パスに対する実効的なwrite permissionを確認する。">
+        <header><h4>Q12: deploymentを止めるべきfindingはどれ？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">hosting control panelは、dotで始まるdirectoryを表示しない。content upload用accountからpanel上の<code>.well-known</code>は見えないが、authorization testでは配信中の<code>/.well-known/a2a</code>へ直接書き込めた。管理者は隠しdirectoryなので保護されると考えている。</p>
+          <fieldset class="choices">
+          <label class="choice"><input type="radio" name="Q12" value="a"> A. ない。隠しdirectoryには定義上access controlが適用される</label>
+          <label class="choice"><input type="radio" name="Q12" value="b"> B. control panelの表示だけを直せばよく、実効permissionは関係ない</label>
+          <label class="choice"><input type="radio" name="Q12" value="c"> C. 実効write permissionを取り除き、origin管理者に限定する</label>
+          <label class="choice"><input type="radio" name="Q12" value="d"> D. responseが実行可能なmedia typeの場合に限ってriskがある</label>
+        </fieldset><div class="explain">RFC 8615 Section 4.4は、管理者が隠し<code>.well-known</code> directoryの存在に気付かない一方、write accessを持つ攻撃者が内容を支配できる危険を警告する。CはUIではなく観測済みのpermissionに基づく。AとBは非表示とaccess controlを混同し、Dは実行可能contentでなくても偽のdiscovery metadataが害を生む点を見落としている。</div>
         </div>
       </article>
     </section>
