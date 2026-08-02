@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 8446",
       SKILL_SUBTITLE: "TLS 1.3",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">一次資料</h3>
+      <p>handshake authentication、key-exchange property、0-RTT policy、traffic-key state、exporter scope、downstream authorizationを分けて扱います。Section番号はRFC 8446を指します。</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</a></li>
       </ul>
@@ -93,14 +94,13 @@
       <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="長期のauthentication keyと, 1回のconnection用に新しく確立するshared secretを区別します.">
         <header><h4>Q1: TLS 1.3の基礎設計目標として代表的な性質はどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">attackerはfresh ECDHE shareを使うcertificate-authenticated TLS 1.3 connectionを記録し、後にserverのlong-term certificate private keyを取得する。reviewerは過去通信の復号を制限するpropertyを確認する。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. static RSA key transportとのcompatibility</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. 1つのstatic Diffie-Hellman shareをconnection間で再利用すること</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. ephemeral key exchangeによるforward secrecy</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8446 Section 1.2はstatic RSAとstatic Diffie-Hellman key exchangeを廃止しています. public-key-based exchangeはfreshな(EC)DHE shareを使うため, 後から長期authentication keyが漏れても, それだけで過去connectionのshared secretは得られません.
 
             forward secrecyはTLS 1.3の全modeで自動的に得られるわけではありません. PSK-only exchangeはapplication dataにこの性質を提供せず, PSKと(EC)DHEを組み合わせた場合は提供できます. reviewerはTLS versionだけでなく, negotiated key-exchange modeを確認する必要があります.
@@ -108,7 +108,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="freshなhandshakeで一意のconnectionを確認する前にapplication dataを受理すると, 何が起き得るかを考えます.">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="freshなhandshakeで一意のconnectionを確認する前にapplication dataを受理すると, 何が起き得るかを考えます.">
         <header><h4>Q2: 0-RTT early dataの主なリスクはどれ</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -117,8 +117,6 @@
             <label class="choice"><input type="radio" name="Q2" value="c"> C. 1-RTTより強いforward secrecyを常に得る</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8446 Section 8は, TLSが0-RTT dataへinherentなreplay protectionを提供しないと説明します. attackerは同じearly-data byteを複数回処理させ得ます. certificate expirationはこの性質を分ける論点ではありません.
 
             applicationはrepeated executionが許容できない作用を生まない場合に限ってearly dataを受理し, deploymentに合うreplay defenseを適用する必要があります. idempotenceは判断材料ですが, authorization, rate-limit, backend boundaryをまたぐ全replayが安全だとは証明しません.
@@ -129,14 +127,13 @@
       <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="handshakeの段階と通信方向ごとに異なるsecretが必要になる流れを追います.">
         <header><h4>Q3: TLS 1.3のkey scheduleは一般に何に基づく</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">implementationはshared secretを一度encodeし、handshakeとapplication trafficの両方向で1つのAEAD keyを再利用しようとする。reviewerはこの設計に代わるTLS 1.3のconstructionを選ぶ。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. shared secretを直接Base64 encodeする</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. HKDFによるextract-and-expand derivation</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. 全handshake stageで1つのtraffic keyを再利用する</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8446 Section 7はHKDF-based key scheduleを定義します. `HKDF-Extract`が各stageのinput keying materialを組み合わせ, `HKDF-Expand-Label`が用途別のsecretとkeyを導出します. handshakeとapplication, client方向とserver方向のtraffic secretも分離されます.
 
             Base64は表現を変えるだけで, key derivationやdomain separationを提供しません. 1つのtraffic keyを全stageで再利用する設計も, TLS 1.3 key scheduleの分離を失います.
@@ -147,6 +144,7 @@
       <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="残りのhandshakeを保護できるだけのkey-schedule stateが揃う境界を確認します.">
         <header><h4>Q4: ServerHelloより後に送るTLS 1.3 handshake messageはどう保護される</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">packet traceではServerHello後のEncryptedExtensionsとCertificateがplaintextになっている。reviewerは期待されるprotection boundaryを判断する。</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. middlebox互換を保つため,ServerHello後のhandshake messageも平文で送る</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. 圧縮だけを適用し,handshake traffic keyでは暗号化しない</label>
@@ -176,8 +174,6 @@
             </svg>
           </figure>
           <div class="explain">
-            **Explanation:**
-
             ServerHello後は, peerがhandshake traffic secretの導出に必要なinputを得ています. RFC 8446は以降のhandshake messageを対応するhandshake traffic keyで保護したrecordとして送ります. compressionが保護機構なのではありません.
 
             これにより, earlier handshakeよりcertificateやextension informationの平文露出が減ります. ClientHelloとServerHelloは, secretを導出するparameterの確立に必要なので見えるままです.
@@ -185,34 +181,34 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="transport channelの保護を, application authorizationやearly-data replay policyと分けます.">
-        <header><h4>Q5: TLSがin transit dataに提供する基本保護はどれ</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="authenticated TLS connectionが終わる地点と、次のconnectionを越えるevidenceを追います。">
+        <header><h4>Q5: backendはこのheaderをoriginal client-authentication evidenceとして扱えるか？</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A2A gatewayはmutually authenticated TLSを終端し、client certificateを検証して、別のgateway-to-backend TLS connection上でunsigned X-Agent-ID headerを転送する。backend policyはoriginal clientがauthenticateしたevidenceを要求する。</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. confidentialityとintegrity</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. アプリの認可を自動化する</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. 全てのmodeでreplayを完全に防ぐことを保証する</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. 可能。client-gateway TLS protectionがheaderへ自動的に継承される</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. 可能。backendへの任意のTLS connectionがnamed clientを証明する</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. 不可。gateway assertionを保護するか、backendでclient evidenceを検証する</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. 不可。RFC 8446はTLS-terminating gatewayをすべて禁止する</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            TLS record protectionはauthenticated encryptionにより, in-transit dataのconfidentialityとintegrityを提供します. これらのchannel propertyは, どのapplication principalにoperationを許すかを決めません. authorizationはapplication policyの責務です.
-
-            TLSは全modeでreplay preventionを保証するものでもありません. 特に0-RTTにはRFC 8446 Section 8のreplay considerationがあります. peer authenticationとcertificate validationを使う場合も, negotiated authentication modeとrelying partyのtrust policyに依存します.
+            A: RFC 8446 Sections 5と7.3のrecord protectionは1本のTLS connectionへ適用され、別connection上のderived headerを自動保護しません。B: 2本目のTLS connectionはそのmodeに従って自分のpeerをauthenticateし、任意headerに書かれたoriginal clientを証明しません。C: gatewayを明示的なtrust boundaryとしてprotected assertionとsemanticsを定義するか、backendが検証できるevidenceを渡します。D: RFC 8446はTLS connectionを定義しますがgateway architectureを禁止しません。authorizationとdelegated identityはapplication profileの判断です。
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^(ec)?dhe$" data-difficulty="L2" data-hint="static key transportやPSK-only modeではなく, ephemeral Diffie-Hellmanのfamilyを探します.">
-        <header><h4>Q6: TLS 1.3でforward secrecyを得るためのephemeral key exchangeを1つ挙げよ</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="fresh Diffie-Hellman inputを加えるかどうかで、2つのregistered PSK key-exchange modeを比べます。">
+        <header><h4>Q6: 指定したforward-secrecy基準を満たすresumption modeはどれか？</h4><span class="type">単一選択</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type DHE or ECDHE" />
+          <p class="question-premise">profileはresumption PSKを使うが、PSK-only compromiseで新connectionのapplication trafficが露出しないよう、fresh ephemeral key agreementを要求する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. 全TLS 1.3 modeにforward secrecyがあるためkey_shareなしのpsk_ke</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. clientとserverがfresh key_shareを持つpsk_dhe_ke</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. resumption PSKと組み合わせたstatic RSA key transport</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. PSK modeはこのpropertyへ影響しないためどちらでもよい</label>
+          </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            DHEとECDHEはfreshなephemeral Diffie-Hellman shareからconnectionごとのsecretを確立します. TLS 1.3はstatic RSA key transportとstatic Diffie-Hellmanを廃止しており, (EC)DHEがpublic-key exchangeでforward secrecyを提供するfamilyです.
-
-            PSKはresumptionに使えますが, PSK-only modeはapplication dataにforward secrecyを提供しません. `psk_dhe_ke` modeはephemeral Diffie-Hellmanを追加するため, この性質が変わります.
+            A: Section 2.2はPSK-only useがapplication dataのforward secrecyを失うと説明します。B: Sections 2.2と4.2.9は`psk_dhe_ke`をPSKと(EC)DHEの組合せとし、双方の`key_share`を要求するため基準に合います。C: TLS 1.3はstatic RSA key transportを廃止しました。D: 2つのmodeの違いは、fresh (EC)DHE inputが新connectionへ加わるかです。
           </div>
         </div>
       </article>
@@ -227,12 +223,70 @@
             <label class="choice"><input type="radio" name="Q7" value="c"> C. できない. 再実行を安全にするapplication profileがなければ0-RTTから除外する</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             設計判断として妥当なのはCです. RFC 8446 Sections 2.3と8は, 0-RTTのsecurity propertyが弱く, connectionをまたぐreplayへのinherentな保護がないと説明します. したがってTLS authenticationの成功からat-most-once実行は導けません. replay stateがzoneごとに分かれ, 別zoneへの再送経路もあれば, applicationが同じoperationを複数回受ける可能性があります.
 
             Appendix E.5に従い, 0-RTTを使うapplication profileは安全なmessageとその扱いを定義する必要があります. 資金移動には1-RTTを使うか, 全実行経路で検証できる保護済みoperation IDとdeduplicationなどのapplication semanticsを設けられます. RFC 8446はその特定設計を一律に要求せず, anti-replay mechanismがあってもTLS authentication自体が一般的なtransaction保証になるわけではありません.
           </div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="HelloRetryRequestはparameter negotiationをやり直し、first-flight application dataを受理できるかも変えます。">
+        <header><h4>Q8: このHelloRetryRequest後、early dataをどう扱うか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">clientはearly_data付きの最初のClientHelloと0-RTT application recordを送る。serverは別key shareを求めるHelloRetryRequestを返す。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. serverがauthenticateできるようClientHello2でもearly_dataを繰り返す</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. serverはoriginal early dataの任意prefixを受理できる</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. ClientHello2からearly_dataを除き、serverはfirst-flight early recordを無視する</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. HelloRetryRequestは常にfatal TLS errorなのでabortする</label>
+          </fieldset><div class="explain">A: Section 4.1.2はfollow-up ClientHelloから`early_data`を除くよう要求します。B: Section 4.2.10はearly dataの部分受理を許しません。C: HelloRetryRequest後はearly dataが許されず、serverはconfigured limitまでfirst-flight application-data recordをskipします。D: HelloRetryRequestは定義済みhandshake pathです。同一connectionで2回目のretry requestを受けることはerrorです。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="early-data acceptanceはPSK-associated parameterへbindされ、protocol semanticsが変わる再送はapplicationの判断です。">
+        <header><h4>Q9: stackはこのALPN変更をどう扱うか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">ticketはALPN h2で確立された。resumption時にclientはh2 requestを0-RTTで送るが、新handshakeはALPN a2a/1を選択する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. PSK possessionがALPNを上書きするためearly dataを受理する</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. handshake後に同じbyteをa2a/1として自動再送する</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. a2a/1に見えるearly-data prefixだけを受理する</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. early dataをrejectし、ALPN変更を越えて自動再送しない</label>
+          </fieldset><div class="explain">A: Section 4.2.10はearly data受理前にselected ALPNがPSKに関連付けられた値と一致することを要求します。B: ALPNが異なる場合、TLS implementationはearly dataを自動再送してはなりません。applicationは別messageを構成する必要があります。C: serverはearly-data messageの一部だけを受理できません。D: 0-RTT dataをrejectしてhandshakeを完了し、a2a/1 requestを送るかとその構成はapplicationが判断します。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="senderのsending secret、receiverのreceiving secret、要求されたresponseを別々に追います。">
+        <header><h4>Q10: 正しいKeyUpdate state transitionはどれか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">Finished後、peer AがKeyUpdate(update_requested)を送る。peer Bは次のApplication Data recordを送る前にそれを受信する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. AはBのacknowledgementまでold sending keyを使い続ける</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. Aはsend keyを進め、Bはreceive keyを進めてKeyUpdateを返す</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. Bはresponseなしで両方向のkeyを更新する</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. 両peerがfull certificate handshakeを再開する</label>
+          </fieldset><div class="explain">A: KeyUpdate送信後、Aはnext-generation keyでtrafficを送ります。B: Section 4.6.3はBへreceiving keyの更新を要求し、`update_requested`なら次のApplication Dataより前にKeyUpdate(`update_not_requested`)を送らせます。C: sending traffic secretとreceiving traffic secretは独立し、Bのsending-key updateはresponseで通知されます。D: KeyUpdateはcertificate authenticationをやり直さずapplication traffic secretを進めます。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="exporterは1本のTLS sessionからderiveされます。byteの転送は別verifierでそのsessionを再現しません。">
+        <header><h4>Q11: backendはforwarded exporterを自分のclient-session bindingとして扱えるか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">clientとgatewayはregular TLS exporterをderiveし、session-bound proofへ使う。gatewayはproofを検証後、別TLS connectionでexporter valueとidentityをbackendへ転送する。backendはclient-gateway handshakeへ参加していない。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. 可能。exporter byteは全hopで同じTLS sessionを識別する</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. 可能。backend TLS connectionがclient transcriptを遡って含む</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. 不可。gateway assertionを保護するか、backendでclient evidenceを検証する</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. 不可。TLS exporterはapplication protocolで一切利用できない</label>
+          </fieldset><div class="explain">A: Section 7.5は特定session secret、label、contextからexporterをderiveします。value転送でsessionは移動しません。B: 別backend connectionには独自のhandshake contextがあります。C: gatewayは明示的trust modelの下で新しいprotected assertionを作るか、backendが自ら検証する対象へbindされたevidenceを受け取れます。forwarded byteをbackend自身のclient TLS bindingとは呼べません。D: RFC 8446はapplication利用のためexporterを定義します。gateway trust modelはRFC 8446ではなくapplicationが決めます。</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="resumed handshakeが実際にnegotiatedしたauthentication mechanismと、省略されたmessageを確認します。">
+        <header><h4>Q12: このresumed connectionはfresh certificate signatureを証明するか？</h4><span class="type">単一選択</span></header>
+        <div class="body">
+          <p class="question-premise">serverはPSKでresumeする。handshakeはpre_shared_keyとFinishedを含むが、CertificateとCertificateVerifyはない。application policyはこのhandshakeでserver certificate keyによるfresh proofを要求する。</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. 証明する。全TLS 1.3 handshakeはCertificateVerifyを含む</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. 証明する。Finishedはcertificate private keyによるsignatureである</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. しない。PSK authenticationにはfresh CertificateVerifyがない</label>
+            <label class="choice"><input type="radio" name="Q12" value="d"> D. 証明しない。PSK resumptionにはserver authenticationが一切ない</label>
+          </fieldset><div class="explain">A: Section 2.2はPSKでauthenticateするserverがCertificateとCertificateVerifyを送らないことを示します。B: Finishedはhandshake secretからderiveしたtranscript MACであり、certificate-key signatureではありません。C: PSKはresumptionを確立済みcontextへcryptographically bindしますが、このhandshake上のfresh CertificateVerifyという指定要件は満たしません。D: PSKはPSK trust contextの下でserverをauthenticateします。失敗するのはapplicationのより強いcertificate-signature基準です。</div>
         </div>
       </article>
     </section>

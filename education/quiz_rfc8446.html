@@ -37,7 +37,7 @@
       SKILL_NAME: "RFC 8446",
       SKILL_SUBTITLE: "TLS 1.3",
       LEARNING_MODE_DEFAULT: true,
-      PROGRESS_VERSION: 2,
+      PROGRESS_VERSION: 3,
       BRAND_NAME: "ToppyMicroServices",
       BRAND_LOGO: "og-brand-clean.min.png",
       BRAND_URL: "../index.html"
@@ -68,7 +68,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="refs-h">
-      <h3 id="refs-h">References (URLs)</h3>
+      <h3 id="refs-h">Primary reference</h3>
+      <p>These questions separate handshake authentication, key-exchange properties, 0-RTT policy, traffic-key state, exporter scope, and downstream authorization. Section numbers refer to RFC 8446.</p>
       <ul>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</a></li>
       </ul>
@@ -93,14 +94,13 @@
       <article class="q card" data-id="Q1" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Distinguish a long-term authentication key from the fresh shared secret established for one connection.">
         <header><h4>Q1: Which key exchange property is a baseline design goal in TLS 1.3</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An attacker records certificate-authenticated TLS 1.3 connections that use fresh ECDHE shares, then later obtains the server's long-term certificate private key. The review asks which property limits retrospective decryption.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q1" value="a"> A. Compatibility with static RSA key transport</label>
             <label class="choice"><input type="radio" name="Q1" value="b"> B. Reuse of one static Diffie-Hellman share across connections</label>
             <label class="choice"><input type="radio" name="Q1" value="c"> C. Forward secrecy from ephemeral key exchange</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8446 Section 1.2 removes static RSA and static Diffie-Hellman key exchange. Public-key-based exchanges use fresh (EC)DHE shares, so later compromise of a long-term authentication key does not by itself reveal the shared secret of an earlier connection.
 
             Forward secrecy is not automatic in every TLS 1.3 mode. A PSK-only exchange does not provide it for application data, while combining the PSK with (EC)DHE can. A reviewer must therefore inspect the negotiated key-exchange mode, not infer the property from the TLS version alone.
@@ -108,7 +108,7 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Consider what can happen when application data is accepted before a fresh handshake has confirmed a unique connection.">
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="a" data-difficulty="L1" data-hint="Consider what can happen when application data is accepted before a fresh handshake has confirmed a unique connection.">
         <header><h4>Q2: What is the primary security risk of 0-RTT early data</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
           <fieldset class="choices">
@@ -117,8 +117,6 @@
             <label class="choice"><input type="radio" name="Q2" value="c"> C. Stronger forward secrecy than 1-RTT</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8446 Section 8 states that TLS does not provide inherent replay protection for 0-RTT data. An attacker can cause the same early-data bytes to be processed more than once under conditions described in that section; certificate expiration is not the distinguishing issue.
 
             Applications should accept early data only when repeated execution has no unacceptable effect and should apply replay defenses suitable for the deployment. Idempotence is relevant, but it does not by itself prove that every replay is harmless across authorization, rate-limit, and backend boundaries.
@@ -129,14 +127,13 @@
       <article class="q card" data-id="Q3" data-type="mc" data-answer="b" data-difficulty="L2" data-hint="Trace how TLS needs distinct secrets for handshake stages and for the two traffic directions.">
         <header><h4>Q3: TLS 1.3 derives keys through which general construction</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An implementation proposes encoding the shared secret once and reusing one AEAD key for handshake and application traffic in both directions. The reviewer must select the TLS 1.3 construction that replaces this design.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q3" value="a"> A. Direct Base64 encoding of the shared secret</label>
             <label class="choice"><input type="radio" name="Q3" value="b"> B. HKDF extract-and-expand derivation</label>
             <label class="choice"><input type="radio" name="Q3" value="c"> C. One traffic key reused across every handshake stage</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             RFC 8446 Section 7 defines an HKDF-based key schedule. `HKDF-Extract` combines input keying material at successive stages, and `HKDF-Expand-Label` derives purpose-specific secrets and keys, including separate handshake and application traffic secrets for each direction.
 
             Base64 only changes representation and cannot provide key derivation or domain separation. Reusing one traffic key across stages would also discard the separation that the TLS 1.3 schedule is designed to provide.
@@ -147,6 +144,7 @@
       <article class="q card" data-id="Q4" data-type="mc" data-answer="c" data-difficulty="L2" data-hint="Identify the point where the peers have enough key-schedule state to protect the rest of the handshake.">
         <header><h4>Q4: How are TLS 1.3 handshake messages sent after ServerHello protected</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">A packet trace shows EncryptedExtensions and Certificate in plaintext after ServerHello. The reviewer must determine the expected protection boundary.</p>
           <fieldset class="choices">
             <label class="choice"><input type="radio" name="Q4" value="a"> A. They remain plaintext for middlebox compatibility</label>
             <label class="choice"><input type="radio" name="Q4" value="b"> B. They are compressed but not encrypted</label>
@@ -176,8 +174,6 @@
             </svg>
           </figure>
           <div class="explain">
-            **Explanation:**
-
             After ServerHello, the peers have the inputs needed to derive handshake traffic secrets. RFC 8446 then carries the remaining handshake messages in records protected with the corresponding handshake traffic keys; compression is not the protection mechanism.
 
             This reduces plaintext exposure of certificate and extension information compared with earlier handshakes. ClientHello and ServerHello remain visible because they are needed to establish the parameters from which those secrets are derived.
@@ -185,34 +181,34 @@
         </div>
       </article>
 
-      <article class="q card" data-id="Q5" data-type="mc" data-answer="a" data-difficulty="L2" data-hint="Separate transport-channel protections from application authorization and from early-data replay policy.">
-        <header><h4>Q5: What does TLS provide to protect data in transit</h4><span class="type">Multiple Choice</span></header>
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Trace where the authenticated TLS connection ends and what evidence crosses the next connection.">
+        <header><h4>Q5: May the backend treat this header as original client-authentication evidence?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
+          <p class="question-premise">An A2A gateway terminates mutually authenticated TLS, validates the client certificate, and forwards an unsigned X-Agent-ID header over a separate gateway-to-backend TLS connection. The backend policy requires evidence that the original client authenticated.</p>
           <fieldset class="choices">
-            <label class="choice"><input type="radio" name="Q5" value="a"> A. Confidentiality and integrity</label>
-            <label class="choice"><input type="radio" name="Q5" value="b"> B. Automatic access control for the application</label>
-            <label class="choice"><input type="radio" name="Q5" value="c"> C. Guaranteed prevention of all replay in every mode</label>
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. Yes; the client-gateway TLS protection automatically follows the header</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Yes; any TLS connection to the backend proves the named client</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. No; protect a gateway assertion or let the backend verify client evidence</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. No; RFC 8446 prohibits all TLS-terminating gateways</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            TLS record protection uses authenticated encryption to provide confidentiality and integrity for data in transit. Those channel properties do not decide which application principal may perform an operation; authorization remains an application-policy decision.
-
-            TLS also does not promise replay prevention in every mode. In particular, 0-RTT has the replay considerations described in RFC 8446 Section 8. Peer authentication and certificate validation, when used, still depend on the negotiated authentication mode and the relying party's trust policy.
+            A: RFC 8446 Sections 5 and 7.3 protect records on one TLS connection and do not automatically protect a derived header on another. B: The second TLS connection authenticates its own peer according to its mode, not the original client named in an arbitrary header. C: Make the gateway an explicit trust boundary with a protected assertion and defined semantics, or pass evidence the backend can validate. D: RFC 8446 defines TLS connections; it does not ban gateway architectures. Authorization and delegated identity remain application-profile decisions.
           </div>
         </div>
       </article>
 
-      <article class="q card" data-id="Q6" data-type="text" data-eval="regex" data-answer="^(ec)?dhe$" data-difficulty="L2" data-hint="Look for the ephemeral Diffie-Hellman family rather than a static key-transport mechanism or a PSK-only mode.">
-        <header><h4>Q6: Name a common ephemeral key exchange used for forward secrecy in TLS 1.3</h4><span class="type">Short Text</span></header>
+      <article class="q card" data-id="Q6" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Compare the two registered PSK key-exchange modes by whether fresh Diffie-Hellman input is added.">
+        <header><h4>Q6: Which resumption mode meets the stated forward-secrecy criterion?</h4><span class="type">Multiple Choice</span></header>
         <div class="body">
-          <input type="text" name="Q6" aria-label="Q6 input" placeholder="Type DHE or ECDHE" />
+          <p class="question-premise">A profile uses a resumption PSK but requires fresh ephemeral key agreement so that PSK-only compromise does not expose the new connection's application traffic.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q6" value="a"> A. psk_ke without key_share because every TLS 1.3 mode has forward secrecy</label>
+            <label class="choice"><input type="radio" name="Q6" value="b"> B. psk_dhe_ke with fresh client and server key_share values</label>
+            <label class="choice"><input type="radio" name="Q6" value="c"> C. Static RSA key transport combined with the resumption PSK</label>
+            <label class="choice"><input type="radio" name="Q6" value="d"> D. Either PSK mode because the mode cannot affect this property</label>
+          </fieldset>
           <div class="explain">
-            **Explanation:**
-
-            DHE and ECDHE use fresh ephemeral Diffie-Hellman shares to establish a per-connection secret. TLS 1.3 removes static RSA key transport and static Diffie-Hellman, so (EC)DHE is the public-key exchange family that supplies forward secrecy.
-
-            A PSK can be used for resumption, but PSK-only mode does not provide forward secrecy for application data. The `psk_dhe_ke` mode adds an ephemeral Diffie-Hellman exchange and therefore changes that property.
+            A: Section 2.2 says PSK-only use loses forward secrecy for application data. B: Sections 2.2 and 4.2.9 define `psk_dhe_ke` as PSK plus (EC)DHE, with both sides supplying `key_share`; that matches the criterion. C: TLS 1.3 removed static RSA key transport. D: The modes differ precisely in whether fresh (EC)DHE input contributes to the new connection.
           </div>
         </div>
       </article>
@@ -227,12 +223,70 @@
             <label class="choice"><input type="radio" name="Q7" value="c"> C. No; keep this operation out of 0-RTT unless the application profile makes repeated execution safe</label>
           </fieldset>
           <div class="explain">
-            **Explanation:**
-
             C is the defensible decision. RFC 8446 Sections 2.3 and 8 state that 0-RTT has weaker security properties and no inherent protection against replay across connections. Successful TLS authentication therefore does not establish at-most-once execution. Isolated replay state and a cross-zone retry path can still let the application observe the operation more than once.
 
             Appendix E.5 requires an application profile using 0-RTT to identify which messages are safe and to define appropriate handling. For a transfer, the service can use 1-RTT, or it can define application-level semantics such as a protected operation identifier with deduplication across every execution path. RFC 8446 does not mandate that particular design, and even its anti-replay mechanisms do not turn TLS authentication into a general transaction guarantee.
           </div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q8" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="A HelloRetryRequest restarts parameter negotiation and changes whether the first-flight application data can be accepted.">
+        <header><h4>Q8: What must happen to early data after this HelloRetryRequest?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client sends a first ClientHello with early_data and 0-RTT application records. The server responds with HelloRetryRequest for a different key share.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q8" value="a"> A. Repeat early_data in ClientHello2 so the server can authenticate it</label>
+            <label class="choice"><input type="radio" name="Q8" value="b"> B. Let the server accept any prefix of the original early data</label>
+            <label class="choice"><input type="radio" name="Q8" value="c"> C. Remove early_data from ClientHello2 and ignore the first-flight records</label>
+            <label class="choice"><input type="radio" name="Q8" value="d"> D. Abort because every HelloRetryRequest is a fatal TLS error</label>
+          </fieldset><div class="explain">A: Section 4.1.2 requires removal of `early_data` from the follow-up ClientHello. B: Section 4.2.10 does not permit partial early-data acceptance. C: Early data is not permitted after HelloRetryRequest, and the server skips the first-flight application-data records up to the configured limit. D: HelloRetryRequest is a defined handshake path; a second retry request on the same connection would be an error.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q9" data-type="mc" data-answer="d" data-difficulty="L3" data-hint="Early-data acceptance is bound to PSK-associated parameters, and retransmission belongs to the application when protocol semantics change.">
+        <header><h4>Q9: How should the stack handle this ALPN change?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A ticket was established with ALPN h2. On resumption the client sends an h2 request as 0-RTT, but the new handshake selects ALPN a2a/1.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q9" value="a"> A. Accept early data because possession of the PSK overrides ALPN</label>
+            <label class="choice"><input type="radio" name="Q9" value="b"> B. Automatically replay the same bytes after the handshake under a2a/1</label>
+            <label class="choice"><input type="radio" name="Q9" value="c"> C. Accept only the early-data prefix that resembles a2a/1</label>
+            <label class="choice"><input type="radio" name="Q9" value="d"> D. Reject early data; do not auto-resend across the ALPN change</label>
+          </fieldset><div class="explain">A: Section 4.2.10 requires the selected ALPN to match the value associated with the PSK before accepting early data. B: A TLS implementation MUST NOT automatically resend early data when ALPN differs; the application may need to construct a different message. C: The server cannot accept only a subset of early-data messages. D: Reject the 0-RTT data, finish the handshake, and let the application decide whether and how to issue an a2a/1 request.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q10" data-type="mc" data-answer="b" data-difficulty="L3" data-hint="Track the sender's sending secret, the receiver's receiving secret, and the requested response independently.">
+        <header><h4>Q10: Which KeyUpdate state transition is correct?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">After Finished, peer A sends KeyUpdate(update_requested). Peer B receives it before sending its next Application Data record.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q10" value="a"> A. A keeps its old sending keys until B acknowledges the update</label>
+            <label class="choice"><input type="radio" name="Q10" value="b"> B. A advances send keys; B advances receive keys and returns KeyUpdate</label>
+            <label class="choice"><input type="radio" name="Q10" value="c"> C. B updates both directions without sending any KeyUpdate response</label>
+            <label class="choice"><input type="radio" name="Q10" value="d"> D. Both peers restart the full certificate handshake</label>
+          </fieldset><div class="explain">A: After sending KeyUpdate, A sends traffic with the next-generation keys. B: Section 4.6.3 requires B to update its receiving keys and, for `update_requested`, send KeyUpdate(`update_not_requested`) before its next Application Data. C: Sending and receiving traffic secrets are independent; B's sending-key update is signaled by its response. D: KeyUpdate advances application traffic secrets without restarting certificate authentication.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q11" data-type="mc" data-answer="c" data-difficulty="L4" data-hint="An exporter is derived from one TLS session; forwarding its bytes does not recreate that session at another verifier.">
+        <header><h4>Q11: May the backend treat the forwarded exporter as its client-session binding?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A client and gateway derive a regular TLS exporter and use it in a session-bound proof. The gateway validates the proof, then forwards the exporter value and identity to a backend over a separate TLS connection. The backend never participates in the client-gateway handshake.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q11" value="a"> A. Yes; exporter bytes identify the same TLS session at every hop</label>
+            <label class="choice"><input type="radio" name="Q11" value="b"> B. Yes; the backend's TLS connection retroactively includes the client transcript</label>
+            <label class="choice"><input type="radio" name="Q11" value="c"> C. No; use a protected gateway assertion or backend-verified client evidence</label>
+            <label class="choice"><input type="radio" name="Q11" value="d"> D. No; TLS exporters may never be used by application protocols</label>
+          </fieldset><div class="explain">A: Section 7.5 derives the exporter from a particular session secret, label, and context; forwarding the value does not move that session. B: A separate backend connection has its own handshake context. C: The gateway can make a new protected assertion under an explicit trust model, or the backend can receive evidence bound to what it verifies; it must not call forwarded bytes its own client TLS binding. D: RFC 8446 explicitly defines exporters for application use. RFC 8446 does not choose the gateway trust model for the application.</div>
+        </div>
+      </article>
+      <article class="q card" data-id="Q12" data-type="mc" data-answer="c" data-difficulty="L3" data-hint="Identify which authentication mechanism the resumed handshake actually negotiated and which messages are absent.">
+        <header><h4>Q12: Does this resumed connection prove a fresh certificate signature?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <p class="question-premise">A server resumes with a PSK. The handshake contains pre_shared_key and Finished but no Certificate or CertificateVerify. An application policy requires a fresh proof using the server certificate key on this handshake.</p>
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q12" value="a"> A. Yes; every TLS 1.3 handshake includes CertificateVerify</label>
+            <label class="choice"><input type="radio" name="Q12" value="b"> B. Yes; Finished is a signature made by the certificate private key</label>
+            <label class="choice"><input type="radio" name="Q12" value="c"> C. No; PSK authentication includes no fresh CertificateVerify</label>
+            <label class="choice"><input type="radio" name="Q12" value="d"> D. No; PSK resumption provides no server authentication of any kind</label>
+          </fieldset><div class="explain">A: Section 2.2 shows that a server authenticating via PSK does not send Certificate or CertificateVerify. B: Finished is a transcript MAC derived from handshake secrets, not a certificate-key signature. C: The PSK cryptographically ties resumption to its established context, but it does not satisfy the stated requirement for a fresh CertificateVerify on this handshake. D: The PSK does authenticate the server under the PSK trust context; the failure is relative to the application's stronger certificate-signature criterion.</div>
         </div>
       </article>
     </section>
