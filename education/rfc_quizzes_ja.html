@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>A2A設計のRFC学習ガイド・RFCクイズ一覧 | ToppyMicroServices</title>
-  <meta name="description" content="AIエージェント間連携（A2A）の設計に必要なHTTP、認証・認可、通信相手の確認、再送、プライバシーのRFCを学習順に整理したガイドとクイズ一覧。" />
+  <title>A2A・API設計の5問診断とRFCクイズ | ToppyMicroServices</title>
+  <meta name="description" content="A2A・API連携の相手確認、権限、再送、ログ、TLSを5問で診断し、必要なRFCクイズへ進める実務向け学習ページ。" />
   <link rel="canonical" href="https://www.toppymicros.com/education/rfc_quizzes_ja.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -12,22 +12,22 @@
   <meta name="color-scheme" content="dark light" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="A2A設計のRFC学習ガイド・RFCクイズ一覧 | ToppyMicroServices" />
-  <meta property="og:description" content="AIエージェント間連携（A2A）の設計に必要なHTTP、認証・認可、通信相手の確認、再送、プライバシーのRFCを学習順に整理したガイドとクイズ一覧。" />
+  <meta property="og:title" content="A2A・API設計の5問診断とRFCクイズ | ToppyMicroServices" />
+  <meta property="og:description" content="A2A・API連携で事故につながりやすい5つの判断を確認し、必要な学習へ進めます。" />
   <meta property="og:url" content="https://www.toppymicros.com/education/rfc_quizzes_ja.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="A2A設計のRFC学習ガイド・RFCクイズ一覧 | ToppyMicroServices" />
-  <meta name="twitter:description" content="AIエージェント間連携（A2A）の設計に必要なHTTP、認証・認可、通信相手の確認、再送、プライバシーのRFCを学習順に整理したガイドとクイズ一覧。" />
+  <meta name="twitter:title" content="A2A・API設計の5問診断とRFCクイズ" />
+  <meta name="twitter:description" content="信頼・権限・再送・ログ・TLSを実務判断で確認。" />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "A2A設計のRFC学習ガイド・RFCクイズ一覧",
-    "description": "AIエージェント間連携（A2A）の設計に必要なHTTP、認証・認可、通信相手の確認、再送、プライバシーのRFCを学習順に整理したガイドとクイズ一覧。",
+    "name": "A2A・API設計の5問診断とRFCクイズ",
+    "description": "A2A・API連携の相手確認、権限、再送、ログ、TLSを5問で診断し、必要なRFCクイズへ進める実務向け学習ページ。",
     "url": "https://www.toppymicros.com/education/rfc_quizzes_ja.html",
     "inLanguage": "ja",
     "isPartOf": {
@@ -61,7 +61,7 @@
   <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/rfc_quizzes.html" />
 
   <link rel="stylesheet" href="quiz.css?v=20260803-1" />
-  <link rel="stylesheet" href="a2a_rfc_map.css?v=20260803-1" />
+  <link rel="stylesheet" href="a2a_rfc_map.css?v=20260803-2" />
   <script defer src="../assets/global.js?v=20260726-2"></script>
 
   <style>
@@ -102,14 +102,14 @@
             <span class="name">ToppyMicroServices</span>
           </a>
         </div>
-        <h1>RFC学習ガイド・クイズ一覧</h1>
-        <h2>Agent-to-Agent / HTTP / TLS / QUIC / Web / URI</h2>
+        <h1>A2A・API設計クイズ</h1>
+        <h2>相手確認・権限・再送・ログ・TLSを実務判断で確認</h2>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">🌞 Light</button>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Light</button>
         <div class="lang-toggle" aria-label="言語切替">
-          <a aria-label="English" data-lang="en" href="rfc_quizzes.html">🇺🇸</a>
-          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="rfc_quizzes_ja.html">🇯🇵</a>
+          <a aria-label="English" data-lang="en" href="rfc_quizzes.html">EN</a>
+          <a class="active" aria-current="page" aria-label="日本語" data-lang="ja" href="rfc_quizzes_ja.html">JA</a>
         </div>
         <a class="badge" href="../index.html">Home</a>
       </div>
@@ -117,18 +117,20 @@
 
     <section class="learning-entry card panel" aria-labelledby="startHereTitle">
       <div class="learning-entry-head">
-        <span class="learning-entry-eyebrow">Start here</span>
-        <h2 id="startHereTitle">まず5問で試し、自分に合うコースを選ぶ</h2>
-        <p>最初はRFC 2119の5問版で、問題の形式と解説の読み方を確認できます。その後は5 RFCの入門順、または経験に合う難易度別コースへ進んでください。</p>
-        <div class="learning-entry-actions" aria-label="最初に選ぶコース">
-          <a class="learning-entry-primary" href="quiz_rfc2119_ja.html?starter=5">まず5問を解く</a>
-          <a href="#starterPath">5 RFCの学習順を見る</a>
+        <span class="learning-entry-eyebrow">5分で設計診断</span>
+        <h2 id="startHereTitle">そのA2A・API連携で、何を信頼できますか？</h2>
+        <p>RFC番号の暗記ではなく、実装・設計レビューで迷いやすい5つの場面を扱います。回答後に、判断の根拠と次に学ぶテーマが分かります。</p>
+        <ul class="entry-facts" aria-label="診断の概要">
+          <li><strong>5問</strong><span>選択式</span></li>
+          <li><strong>約5分</strong><span>全問に解説</span></li>
+          <li><strong>前提</strong><span>Web/APIの基本</span></li>
+        </ul>
+        <div class="decision-points" aria-label="確認するテーマ">
+          <span>相手の確認</span><span>操作権限</span><span>安全な再送</span><span>ログとprivacy</span><span>TLSの境界</span>
         </div>
-        <dl class="learning-entry-meta">
-          <div><dt>所要時間</dt><dd>約8分</dd></div>
-          <div><dt>前提知識</dt><dd>Web/APIの基本用語。RFC本文を見ながらで構いません</dd></div>
-          <div><dt>目的</dt><dd>実装・設計レビューの判断を問う形式に慣れる</dd></div>
-        </dl>
+        <div class="learning-entry-actions" aria-label="診断を開始">
+          <a class="learning-entry-primary" href="quiz_a2a_design_ja.html">5問の設計診断を始める</a>
+        </div>
       </div>
 
       <div class="starter-path" id="starterPath">
@@ -186,7 +188,32 @@
       </div>
     </section>
 
-    <section class="card panel a2a-guide" aria-labelledby="a2aGuideTitle">
+    <section class="learning-paths" id="learningPaths" aria-labelledby="pathsTitle">
+      <div class="section-intro">
+        <span class="course-level">診断の次に</span>
+        <h2 id="pathsTitle">必要な深さだけ学ぶ</h2>
+        <p>各コースを開くと、テーマ名から該当クイズを選べます。RFC番号は根拠資料として併記しています。</p>
+      </div>
+      <div class="path-list">
+        <details class="path-disclosure card">
+          <summary><span><span class="course-level">Foundation</span><strong>Web/APIの安全な基礎</strong><small>前提: Web/APIの基本</small></span><span class="path-time">47問・60〜90分</span></summary>
+          <div class="path-body"><p>HTTP、JSON、OAuth、TLS、privacyの役割を混同せず判断します。</p><div class="course-links"><a href="quiz_rfc9110_ja.html">HTTPの意味 (9110)</a><a href="quiz_rfc8259_ja.html">JSON境界 (8259)</a><a href="quiz_rfc6749_ja.html">OAuthの役割 (6749)</a><a href="quiz_rfc8446_ja.html">TLS (8446)</a><a href="quiz_rfc6973_ja.html">Privacy (6973)</a></div></div>
+        </details>
+        <details class="path-disclosure card">
+          <summary><span><span class="course-level">Practitioner</span><strong>deploymentとtrustの判断</strong><small>前提: 基礎コース相当、またはAPI securityの実務</small></span><span class="path-time">52問・75〜105分</span></summary>
+          <div class="path-body"><p>JWT、metadata、TLS、proof-of-possession、現行OAuth securityをレビューします。</p><div class="course-links"><a href="quiz_rfc7519_ja.html">JWT (7519)</a><a href="quiz_rfc8414_ja.html">Metadata (8414)</a><a href="quiz_rfc8446_ja.html">TLS (8446)</a><a href="quiz_rfc9449_ja.html">DPoP (9449)</a><a href="quiz_rfc9700_ja.html">OAuth Security (9700)</a></div></div>
+        </details>
+        <details class="path-disclosure card">
+          <summary><span><span class="course-level">Specialist</span><strong>複数のsecurity evidenceを分ける</strong><small>前提: 認証・暗号・protocol reviewのいずれか</small></span><span class="path-time">38問・60〜90分</span></summary>
+          <div class="path-body"><p>channel、署名、attestation、identity、authorizationを別々の根拠として扱います。</p><div class="course-links"><a href="quiz_rfc5056_ja.html">Channel Binding (5056)</a><a href="quiz_rfc9421_ja.html">HTTP署名 (9421)</a><a href="quiz_rfc9334_ja.html">Attestation (9334)</a><a href="quiz_rfc9711_ja.html">Entity Attestation (9711)</a><a href="quiz_rfc9847_ja.html">Identity (9847)</a></div></div>
+        </details>
+      </div>
+    </section>
+
+    <details class="hub-disclosure card" id="learningMap">
+      <summary><span><strong>8段階の学習マップ</strong><small>A2A設計を支えるRFCと位置付けを確認</small></span><span class="disclosure-action" aria-hidden="true"></span></summary>
+      <div class="hub-disclosure-body">
+    <section class="a2a-guide" aria-labelledby="a2aGuideTitle">
       <div class="a2a-guide-head">
         <div class="a2a-guide-copy">
           <span class="a2a-eyebrow">A2A設計のRFC学習マップ</span>
@@ -207,7 +234,7 @@
 
           <div class="a2a-source-links" aria-label="関連資料">
             <span class="a2a-source-label">関連資料</span>
-            <a href="https://github.com/a2aproject/A2A/blob/main/docs/specification.md" target="_blank" rel="noopener noreferrer">A2A 1.0 公式仕様 ↗</a>
+            <a href="https://a2a-protocol.org/latest/specification/" target="_blank" rel="noopener noreferrer">A2A 1.0 公式仕様</a>
             <a href="../agents-secure-binding.html">関連仕様案: Agents Secure Binding</a>
           </div>
         </div>
@@ -241,8 +268,13 @@
       </div>
       <div class="a2a-rfc-groups" id="a2aRfcGroups"></div>
     </section>
+      </div>
+    </details>
 
-    <section class="card panel" aria-label="Hub controls">
+    <details class="hub-disclosure card catalog-disclosure" id="allQuizzes">
+      <summary><span><strong>すべてのRFCクイズから探す</strong><small>番号・タイトル・キーワードで検索</small></span><span class="disclosure-action" aria-hidden="true"></span></summary>
+      <div class="hub-disclosure-body">
+    <section class="catalog-controls" aria-label="Hub controls">
       <div class="hub-top">
         <div>
           <p>クイズを選んでください（英語/日本語）。検索でRFC番号・タイトル・キーワードで絞り込めます。</p>
@@ -256,6 +288,8 @@
     </section>
 
     <section class="grid-hub" id="quizList" aria-label="RFC quiz list"></section>
+      </div>
+    </details>
   </div>
 
   <script src="a2a_rfc_map.js?v=20260730-2"></script>
@@ -267,7 +301,7 @@
       function updateThemeToggle(mode){
         const b=document.getElementById('themeToggle'); if(!b) return;
         const light=mode==='light';
-        b.textContent=light?'🌙 Dark':'🌞 Light';
+        b.textContent=light?'Dark':'Light';
         b.setAttribute('aria-pressed', light ? 'true' : 'false');
       }
       function setTheme(mode, persist){

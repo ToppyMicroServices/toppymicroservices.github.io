@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A2A and API Design: 5-Question Check | ToppyMicroServices</title>
+  <meta name="description" content="Five practical questions about discovery, authorization, retries, logging, and TLS in A2A and API integrations." />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_a2a_design.html" />
+
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="A2A and API Design: 5-Question Check | ToppyMicroServices" />
+  <meta property="og:description" content="Check five decisions that commonly cause failures in agent and API integrations." />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_a2a_design.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="A2A and API Design: 5-Question Check" />
+  <meta name="twitter:description" content="Practical decisions about trust, authorization, retries, logging, and TLS." />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_a2a_design.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_a2a_design_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_a2a_design.html" />
+
+  <link rel="icon" href="https://www.toppymicros.com/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="https://www.toppymicros.com/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="https://www.toppymicros.com/apple-touch-icon.png" sizes="180x180">
+
+  <link rel="stylesheet" href="quiz.css?v=20260803-1" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260803-1"></script>
+</head>
+<body data-theme="light">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "A2A and API design check",
+      SKILL_SUBTITLE: "Discovery, authorization, retries, logging, and TLS",
+      LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 1,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">A2A and API Design: 5-Question Check</h1>
+        <h2 id="subtitle">Decide what to trust before an integration reaches production</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Light</button>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <a href="quiz_a2a_design.html" class="active" aria-current="page" aria-label="English" data-lang="en">EN</a>
+          <a href="quiz_a2a_design_ja.html" aria-label="Japanese" data-lang="ja">JA</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="Toggle learning/test mode">Learning Mode</button>
+        <span id="score-badge" aria-live="polite" title="Live Score">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="scope-h">
+      <h3 id="scope-h">Sources used for the decisions</h3>
+      <ul>
+        <li><a href="https://a2a-protocol.org/latest/specification/" target="_blank" rel="noopener noreferrer">Agent2Agent Protocol Specification</a></li>
+        <li><a href="https://a2a-protocol.org/latest/topics/agent-discovery/" target="_blank" rel="noopener noreferrer">A2A Agent Discovery</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6749" target="_blank" rel="noopener noreferrer">RFC 6749: OAuth 2.0</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6973" target="_blank" rel="noopener noreferrer">RFC 6973: Privacy Considerations</a></li>
+      </ul>
+    </section>
+
+    <section class="card panel" aria-label="Quiz settings">
+      <div class="row" aria-label="Answer reveal controls">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show the explanation after each answer</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">Show all answers</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Separate self-described discovery data from the checks that establish whether this endpoint is suitable for a sensitive task.">
+        <header><h4>Q1: You fetch an Agent Card from a known domain. What should you do before sending a confidential task?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Trust every listed identity and skill because the Card was reachable</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Treat the Card as discovery data, then verify the endpoint, security scheme, and local trust policy</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. Treat any HTTPS response as proof that every advertised capability is authorized</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. Reject every public Card that does not carry an application-level signature</label>
+          </fieldset>
+          <div class="explain">
+            <strong>Explanation:</strong> An Agent Card tells a client what a server advertises and how it expects to be contacted. It is useful discovery input, but a sensitive task still needs the endpoint, authentication scheme, authorization boundary, and deployment trust policy to be checked.
+
+            A: Reachability does not independently prove every identity claim, skill, or permission in the document.
+            B: This keeps discovery separate from the security checks required before disclosing data or invoking a capability.
+            C: HTTPS protects a connection to the authenticated server name; it does not authorize every advertised operation.
+            D: A signature can add integrity evidence when present, but the absence of one does not make every public Card unusable under the A2A model.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="A credential can be valid while the requested resource or operation still falls outside the caller's permitted boundary.">
+        <header><h4>Q2: An A2A endpoint receives a valid access token. What must still be decided before executing a high-impact operation?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. Whether the operation appears anywhere in the public Agent Card</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. Whether the token has not expired, with no further resource check</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. Whether the caller, operation, resource, and token scope fit the server's authorization policy</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. Whether the client says that a human approved the operation</label>
+          </fieldset>
+          <div class="explain">
+            <strong>Explanation:</strong> Authentication and token validity are inputs to an authorization decision, not a substitute for it. A2A requires authorization checks on operations, while OAuth scopes and resource boundaries limit what a token can be used to access.
+
+            A: Advertising a skill describes capability; it does not grant every caller permission to invoke it.
+            B: Expiration is only one token check and does not establish access to the requested resource or action.
+            C: This evaluates the credential in the context of the exact caller, operation, resource, and server policy.
+            D: An unverified client assertion does not replace a server-side authorization check.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="After a connection failure, the server may have applied the request even though the client did not receive the response.">
+        <header><h4>Q3: The connection drops after task submission but before a response arrives. What is the safest retry approach?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. Repeat the submission until one response succeeds, without checking prior state</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. Record the first attempt as failed and always create an unrelated new task</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. Wait forever because any retry of an operation is forbidden by HTTP</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. Check task state or use a defined idempotency or deduplication mechanism before retrying</label>
+          </fieldset>
+          <div class="explain">
+            <strong>Explanation:</strong> A lost response creates an unknown outcome: the server might already have accepted the task. RFC 9110 warns against automatically retrying non-idempotent requests unless the client knows the operation is idempotent or can determine that the original request was not applied.
+
+            A: Blind repetition can duplicate purchases, messages, or other side effects.
+            B: Creating a new task can still duplicate the accepted work and loses correlation with the first attempt.
+            C: Retries are possible when the method or application contract supplies a safe recovery rule.
+            D: Status lookup, stable operation identifiers, and defined deduplication make the uncertain result manageable.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="Operational correlation usually needs stable identifiers, not the raw credentials or full user content carried by the request.">
+        <header><h4>Q4: Production debugging needs useful logs. What should be recorded by default?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. Raw access tokens and complete prompts so every event can be replayed</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. Task and request identifiers plus minimal operational data, with secrets and personal data removed</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. Every payload encrypted with the application's ordinary runtime key</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. Full content without access controls whenever the retention period is short</label>
+          </fieldset>
+          <div class="explain">
+            <strong>Explanation:</strong> Useful diagnostics can usually correlate events with task, request, error, and timing identifiers. OAuth credentials must remain confidential, and privacy guidance favors data minimization, limited retention, and access appropriate to the operational purpose.
+
+            A: Tokens and full prompts create credential and personal-data exposure that ordinary correlation does not require.
+            B: This preserves operational traceability while reducing the amount of sensitive material available through logs.
+            C: Reversible content remains sensitive and can be exposed when the application or key is compromised.
+            D: Short retention does not remove the need for access controls or data minimization during that period.
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="Identify the property established by the secure channel, then list the application decisions that occur above that channel.">
+        <header><h4>Q5: A TLS connection succeeds with a certificate valid for the server name. What does that establish?</h4><span class="type">Multiple Choice</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. The remote agent is authorized to perform every requested business action</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Every claim in its Agent Card is current, complete, and policy-approved</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. The channel protects data and authenticates the configured server identity; application authorization remains separate</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. Requests and responses cannot be duplicated or replayed by the application</label>
+          </fieldset>
+          <div class="explain">
+            <strong>Explanation:</strong> TLS 1.3 is designed to provide an authenticated, confidential, integrity-protected channel. The application still has to decide whether the authenticated endpoint, caller, requested action, data, and current policy fit together.
+
+            A: Channel authentication does not grant business-level authority for arbitrary actions.
+            B: TLS protects transport to the named server but does not validate every application claim or its freshness.
+            C: This states the channel guarantee without extending it into identity, capability, or authorization claims above TLS.
+            D: Application-level duplicate handling and replay consequences still need their own protocol rules.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">Show Answers &amp; Score</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p><a href="rfc_quizzes.html">Choose a deeper learning path</a></p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>

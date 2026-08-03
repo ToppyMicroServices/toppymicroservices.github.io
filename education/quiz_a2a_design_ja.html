@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A2A・API設計 5問診断 | ToppyMicroServices</title>
+  <meta name="description" content="A2A・API連携の相手確認、権限、再送、ログ、TLSについて、実務で必要な5つの判断を確認するクイズ。" />
+  <link rel="canonical" href="https://www.toppymicros.com/education/quiz_a2a_design_ja.html" />
+
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#0b1221" />
+  <meta name="color-scheme" content="dark light" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="A2A・API設計 5問診断 | ToppyMicroServices" />
+  <meta property="og:description" content="エージェント/API連携で事故につながりやすい5つの判断を確認します。" />
+  <meta property="og:url" content="https://www.toppymicros.com/education/quiz_a2a_design_ja.html" />
+  <meta property="og:site_name" content="ToppyMicroServices" />
+  <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="A2A・API設計 5問診断" />
+  <meta name="twitter:description" content="信頼、権限、再送、ログ、TLSを実務判断で確認。" />
+  <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
+
+  <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_a2a_design.html" />
+  <link rel="alternate" hreflang="ja" href="https://www.toppymicros.com/education/quiz_a2a_design_ja.html" />
+  <link rel="alternate" hreflang="x-default" href="https://www.toppymicros.com/education/quiz_a2a_design.html" />
+
+  <link rel="icon" href="https://www.toppymicros.com/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="https://www.toppymicros.com/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="https://www.toppymicros.com/apple-touch-icon.png" sizes="180x180">
+
+  <link rel="stylesheet" href="quiz.css?v=20260803-1" />
+  <link rel="stylesheet" href="quiz_template_skeleton.css?v=20260726-2" />
+  <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
+  <script defer src="../assets/global.js?v=20260726-2"></script>
+  <script defer src="quiz_template_skeleton.js?v=20260803-1"></script>
+</head>
+<body data-theme="light">
+  <script>
+    window.DRILL_SETTINGS = {
+      SKILL_NAME: "A2A・API設計診断",
+      SKILL_SUBTITLE: "相手確認・権限・再送・ログ・TLS",
+      LEARNING_MODE_DEFAULT: true,
+      PROGRESS_VERSION: 1,
+      BRAND_NAME: "ToppyMicroServices",
+      BRAND_LOGO: "og-brand-clean.min.png",
+      BRAND_URL: "../index.html"
+    };
+  </script>
+
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand">
+          <a id="brand-link" href="../index.html" aria-label="Home">
+            <img id="brand-logo" alt="ToppyMicroServices logo" src="og-brand-clean.min.png" width="40" height="40" style="display:inline-block">
+            <span id="brand-name" class="name">ToppyMicroServices</span>
+          </a>
+        </div>
+        <h1 id="title">A2A・API設計 5問診断</h1>
+        <h2 id="subtitle">本番投入の前に、何を信頼できるか判断する</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Light</button>
+        <div class="lang-toggle" aria-label="言語切替">
+          <a href="quiz_a2a_design.html" aria-label="English" data-lang="en">EN</a>
+          <a href="quiz_a2a_design_ja.html" class="active" aria-current="page" aria-label="日本語" data-lang="ja">JA</a>
+        </div>
+        <button type="button" class="badge clickable" id="mode-badge" aria-live="polite" aria-pressed="true" title="学習・テストモード切替">学習モード</button>
+        <span id="score-badge" aria-live="polite" title="現在の得点">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="card scope" aria-labelledby="scope-h">
+      <h3 id="scope-h">判断の根拠となる資料</h3>
+      <ul>
+        <li><a href="https://a2a-protocol.org/latest/specification/" target="_blank" rel="noopener noreferrer">Agent2Agent Protocol Specification</a></li>
+        <li><a href="https://a2a-protocol.org/latest/topics/agent-discovery/" target="_blank" rel="noopener noreferrer">A2A Agent Discovery</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6749" target="_blank" rel="noopener noreferrer">RFC 6749: OAuth 2.0</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener noreferrer">RFC 8446: TLS 1.3</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc6973" target="_blank" rel="noopener noreferrer">RFC 6973: Privacy Considerations</a></li>
+      </ul>
+    </section>
+
+    <section class="card panel" aria-label="クイズ設定">
+      <div class="row" aria-label="解説表示の設定">
+        <label class="switch" for="toggleExplainOnAnswer">
+          <input type="checkbox" id="toggleExplainOnAnswer" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">回答直後に解説を表示</span>
+        </label>
+        <label class="switch" for="toggleShowAllAnswers">
+          <input type="checkbox" id="toggleShowAllAnswers" />
+          <span class="ui-toggle" aria-hidden="true"></span>
+          <span class="switch-label">すべての回答を表示</span>
+        </label>
+      </div>
+    </section>
+
+    <section id="questions">
+      <article class="q card" data-id="Q1" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="自己申告された発見情報と、機密性のある依頼を送る前に必要な確認を分けて考えてください。">
+        <header><h4>Q1: 既知のドメインからAgent Cardを取得しました。機密性のある依頼を送る前に何をしますか？</h4><span class="type">選択問題</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q1" value="a"> A. Cardを取得できたので、掲載されたidentityとskillをすべて信頼する</label>
+            <label class="choice"><input type="radio" name="Q1" value="b"> B. Cardは発見情報として扱い、endpoint・認証方式・local trust policyを確認する</label>
+            <label class="choice"><input type="radio" name="Q1" value="c"> C. HTTPSなら、掲載された全機能の権限まで自動的に保証されたと扱う</label>
+            <label class="choice"><input type="radio" name="Q1" value="d"> D. application-levelの署名がないpublic Cardは、すべて利用不可とする</label>
+          </fieldset>
+          <div class="explain">
+            <strong>解説:</strong> Agent Cardは、serverが何を提供すると宣言し、どの方法で接続するかを示す発見情報です。機密性のある依頼を送る前には、endpoint、認証方式、認可境界、deploymentのtrust policyを別途確認します。
+
+            A: 到達できることだけでは、文書内のidentity、skill、権限を独立に証明できません。
+            B: 発見とsecurity確認を分けるため、dataの開示や機能の実行前に必要な判断を行えます。
+            C: HTTPSは認証したserver名との通信を保護しますが、掲載された全操作を許可するものではありません。
+            D: 署名は存在する場合にintegrityの根拠を追加できますが、A2Aでは署名のないpublic Cardが常に利用不可とは限りません。
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q2" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="credentialが有効であることと、requested resourceやoperationが許可されていることを分けてください。">
+        <header><h4>Q2: A2A endpointが有効なaccess tokenを受け取りました。影響の大きい操作を実行する前に、まだ何を判断しますか？</h4><span class="type">選択問題</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q2" value="a"> A. public Agent Cardのどこかに、その操作が掲載されているか</label>
+            <label class="choice"><input type="radio" name="Q2" value="b"> B. tokenが失効していないかだけを確認し、resourceは確認しない</label>
+            <label class="choice"><input type="radio" name="Q2" value="c"> C. caller、operation、resource、token scopeがserverの認可policyに合うか</label>
+            <label class="choice"><input type="radio" name="Q2" value="d"> D. clientが「人間の承認済み」と申告しているか</label>
+          </fieldset>
+          <div class="explain">
+            <strong>解説:</strong> authenticationとtokenの有効性は認可判断の材料であり、認可そのものではありません。A2A operationではserver側の認可確認が必要で、OAuthのscopeとresource境界はtokenを何に使えるかを制限します。
+
+            A: skillの掲載は機能の説明であり、すべてのcallerへ実行権限を与えるものではありません。
+            B: 有効期限はtoken確認の一部にすぎず、requested resourceやactionへのaccessを証明しません。
+            C: credentialを、具体的なcaller、operation、resource、server policyの組み合わせで評価できます。
+            D: 検証していないclient側の申告は、server側の認可確認を置き換えません。
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q3" data-type="mc" data-answer="d" data-difficulty="L2" data-hint="接続が切れた時点で、serverは依頼を受理済みかもしれず、clientは結果を知らない状態です。">
+        <header><h4>Q3: task送信後、応答を受け取る前に接続が切れました。最も安全なretry方法はどれですか？</h4><span class="type">選択問題</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q3" value="a"> A. 以前の状態を確認せず、応答が返るまで同じ依頼を繰り返す</label>
+            <label class="choice"><input type="radio" name="Q3" value="b"> B. 最初の依頼を失敗と記録し、無関係な新しいtaskを必ず作る</label>
+            <label class="choice"><input type="radio" name="Q3" value="c"> C. HTTPではoperationのretryが禁止されているため、無期限に待つ</label>
+            <label class="choice"><input type="radio" name="Q3" value="d"> D. task状態を確認するか、定義済みのidempotency・重複排除を使ってからretryする</label>
+          </fieldset>
+          <div class="explain">
+            <strong>解説:</strong> 応答を失うと、serverがtaskを受理したか分からない状態になります。RFC 9110は、operationがidempotentだと分かる場合や、元のrequestが適用されていないと確認できる場合を除き、non-idempotent requestの自動retryに注意を求めています。
+
+            A: 無条件の繰り返しは、購入、送信、外部操作などの副作用を重複させます。
+            B: 新しいtaskも受理済みの処理を重複させる可能性があり、最初の依頼との関連も失います。
+            C: methodやapplication契約に安全な回復規則があれば、retryは可能です。
+            D: 状態確認、安定したoperation ID、重複排除を使うと、不明な結果を安全に扱えます。
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q4" data-type="mc" data-answer="b" data-difficulty="L1" data-hint="運用上の関連付けには、raw credentialや利用者の全contentではなく、安定したidentifierを使えます。">
+        <header><h4>Q4: 本番障害を調べるためのlogには、標準で何を残しますか？</h4><span class="type">選択問題</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q4" value="a"> A. 全eventを再現できるよう、raw access tokenとprompt全文を残す</label>
+            <label class="choice"><input type="radio" name="Q4" value="b"> B. task・request IDと最小限の運用dataを残し、secretと個人dataは除去する</label>
+            <label class="choice"><input type="radio" name="Q4" value="c"> C. applicationの通常runtime keyで暗号化し、全payloadを残す</label>
+            <label class="choice"><input type="radio" name="Q4" value="d"> D. 保存期間が短ければ、access controlなしで全文を残す</label>
+          </fieldset>
+          <div class="explain">
+            <strong>解説:</strong> task、request、error、時刻のidentifierがあれば、多くの障害はeventを関連付けて調べられます。OAuth credentialは機密に保つ必要があり、privacyの観点でも目的に必要なdataだけを保持し、期間とaccessを制限します。
+
+            A: tokenとprompt全文は、通常の関連付けには不要なcredentialや個人dataの漏えい面を作ります。
+            B: 運用上の追跡可能性を保ちながら、logから取得できるsensitive dataを減らせます。
+            C: 復号可能なcontentは依然として機密dataで、applicationやkeyの侵害時に露出します。
+            D: 短期間でも、保持中のaccess controlとdata minimizationは必要です。
+          </div>
+        </div>
+      </article>
+
+      <article class="q card" data-id="Q5" data-type="mc" data-answer="c" data-difficulty="L1" data-hint="secure channelが確立する性質と、その上でapplicationが判断する事項を分けてください。">
+        <header><h4>Q5: server名に対して有効なcertificateでTLS接続が成功しました。何が確認できたと言えますか？</h4><span class="type">選択問題</span></header>
+        <div class="body">
+          <fieldset class="choices">
+            <label class="choice"><input type="radio" name="Q5" value="a"> A. remote agentは、要求された全business actionを実行する権限がある</label>
+            <label class="choice"><input type="radio" name="Q5" value="b"> B. Agent Cardの全claimは最新で、完全で、policy承認済みである</label>
+            <label class="choice"><input type="radio" name="Q5" value="c"> C. channelはdataを保護し、設定したserver identityを認証したが、application認可は別である</label>
+            <label class="choice"><input type="radio" name="Q5" value="d"> D. applicationによるrequestやresponseの重複・replayは発生しない</label>
+          </fieldset>
+          <div class="explain">
+            <strong>解説:</strong> TLS 1.3は、認証され、機密性とintegrityを備えたchannelを提供するためのprotocolです。その上でapplicationは、endpoint、caller、requested action、data、現在のpolicyが合うかを別途判断します。
+
+            A: channel authenticationは、任意のbusiness actionを行うauthorityを与えません。
+            B: TLSはnamed serverへのtransportを保護しますが、application claimの正しさやfreshnessまでは検証しません。
+            C: TLSの保証範囲を、上位のidentity、capability、authorizationへ広げずに説明しています。
+            D: application-levelの重複処理やreplayの影響には、別のprotocol ruleが必要です。
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="card panel" id="bottom-actions">
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn success" id="bottomShowAnswers" data-results-target="results-bottom">回答とスコアを表示</button>
+      </div>
+      <div class="results card" id="results-bottom" aria-live="polite" style="display:none"></div>
+    </div>
+
+    <footer class="muted" style="margin-top:24px">
+      <p><a href="rfc_quizzes_ja.html">次の学習コースを選ぶ</a></p>
+      <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
+    </footer>
+  </div>
+</body>
+</html>
