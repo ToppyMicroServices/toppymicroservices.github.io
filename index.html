@@ -6,8 +6,8 @@
   <title>ToppyMicroServices — Work-boundary engineering for AI-operated teams</title>
   <meta name="description" content="Toppy builds the evidence layer that defines what AI may do, when humans must intervene, what failures must be tested, and what remains reviewable after launch." />
   <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#032340" />
-  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#02213b" />
+  <meta name="color-scheme" content="dark" />
   <link rel="canonical" href="https://www.toppymicros.com/" />
 
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -111,298 +111,202 @@
   </script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
     :root {
-      --bg: #032340;
+      color-scheme: dark;
+      --bg: #02213b;
+      --surface: #072d4a;
       --fg: #f5fbff;
-      --muted: #a8c6df;
-      --card: #07345f;
-      --card-2: #0a3f70;
-      --accent: #29aeea;
-      --accent-2: #7dd3fc;
-      --accent-3: #d9f2ff;
+      --muted: #b4cad9;
+      --accent: #62d2ff;
+      --accent-strong: #0c719b;
       --border: rgba(185, 226, 255, 0.2);
-      --shadow: 0 18px 50px rgba(0, 18, 38, 0.32);
-      --glow-1: rgba(41, 174, 234, 0.18);
-      --glow-2: rgba(125, 211, 252, 0.11);
-      --glow-3: rgba(245, 251, 255, 0.06);
-      --maxw: 1140px;
-      --navh: 64px; /* header height for scroll offset */
+      --maxw: 1040px;
+      --navh: 72px;
     }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f4fbff;
-        --fg: #06294a;
-        --muted: #4d6880;
-        --card: rgba(255,255,255,0.86);
-        --card-2: rgba(248,252,255,0.96);
-        --accent: #087fb8;
-        --accent-2: #0284c7;
-        --accent-3: #0f4f7a;
-        --border: rgba(6, 41, 74, 0.14);
-        --shadow: 0 20px 60px rgba(8, 127, 184, 0.10);
-        --glow-1: rgba(14, 165, 233, 0.12);
-        --glow-2: rgba(2, 132, 199, 0.08);
-        --glow-3: rgba(15, 79, 122, 0.05);
-      }
-    }
+
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-    }
     body {
-      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(1000px 640px at 10% -10%, var(--glow-1), transparent 60%),
-        radial-gradient(920px 560px at 88% 0%, var(--glow-2), transparent 55%),
-        radial-gradient(700px 440px at 50% 18%, var(--glow-3), transparent 62%),
-        var(--bg);
+      background: var(--bg);
       color: var(--fg);
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    a:focus-visible, .btn:focus-visible, .gh-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    p { margin: 0; }
+    .container { width: min(calc(100% - 40px), var(--maxw)); margin: 0 auto; }
 
-    .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
-
-    /* Header */
-    header { min-height: var(--navh); position: sticky; top: 0; backdrop-filter: saturate(150%) blur(16px); background: color-mix(in hsl, var(--bg) 78%, transparent); border-bottom: 1px solid var(--border); z-index: 20; }
-    .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .01em; white-space: nowrap; }
-    .brand-logo { height: 28px; width: auto; border-radius: 6px; opacity: .95; }
-    .nav a { color: var(--fg); opacity: .9; }
-    .nav .links a { white-space: nowrap; flex-shrink: 0; }
-    .nav .links { display: flex; gap: 14px; align-items: center; font-size: 13px; }
-    @media (max-width: 760px) {
-      :root { --navh: 104px; }
-      .nav { flex-wrap: wrap; }
-      .nav .links { flex-wrap: wrap; width: 100%; gap: 12px; }
+    header {
+      position: sticky;
+      top: 0;
+      min-height: var(--navh);
+      background: rgba(2, 33, 59, 0.96);
+      border-bottom: 1px solid var(--border);
+      z-index: 20;
     }
+    .nav { display: flex; min-height: var(--navh); align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 800; white-space: nowrap; }
+    .brand:hover { text-decoration: none; }
+    .brand-logo { width: 32px; height: 32px; border-radius: 6px; }
+    .links { display: flex; align-items: center; gap: 22px; font-size: 14px; }
+    .links a { color: var(--muted); white-space: nowrap; }
+    .links a:hover { color: var(--fg); }
 
-    .btn { display: inline-block; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border); background: color-mix(in hsl, var(--card-2) 82%, transparent); color: var(--fg); font-weight: 700; transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease, background .18s ease; }
-    .btn:hover { border-color: var(--accent-3); text-decoration: none; }
-    .btn.primary { background: linear-gradient(135deg, var(--accent), #0ea5e9 58%, #075985); color: #ffffff; border: none; box-shadow: 0 16px 32px rgba(14, 165, 233, .24); }
-    @media (hover:hover) { .btn:hover { transform: translateY(-1px); } }
-
-    .section-head { display:flex; align-items:end; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
-    .section-head h2 { margin: 0; }
-    .btn.sm { padding: 8px 12px; font-weight: 600; }
-    .btn.quiet { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-    .btn.quiet:hover { color: var(--fg); border-color: var(--accent); text-decoration: none; }
-
-    /* GitHub icon link (header, top-right) */
-    .gh-link{
-      display:inline-flex; align-items:center; justify-content:center;
-      width:32px; height:32px; border-radius:8px;
-      border:1px solid var(--border); background: var(--card);
-      text-decoration:none;
-      transition: border-color .18s ease, transform .18s ease;
-    }
-    .gh-link:hover{ border-color: var(--accent); }
-    .gh-link svg{ width:18px; height:18px; fill: var(--fg); opacity:.9; }
-
-    /* Hero */
-    .hero { padding: 46px 0 28px; }
-    .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
-    .hero h1 { font-size: clamp(36px, 7vw, 74px); margin: 0 0 14px; line-height: .96; letter-spacing: 0; max-width: none; overflow-wrap: normal; }
-    .hero h1 span { display: block; }
-    .hero p.lead { font-size: clamp(17px, 2vw, 20px); color: var(--muted); margin: 0 0 14px; max-width: 62ch; }
-    .hero .hero-subline { font-size: clamp(15px, 2vw, 18px); color: var(--fg); margin: 0 0 22px; font-weight: 500; max-width: 58ch; }
-    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-    .hero-grid { display: grid; gap: 22px; align-items: stretch; }
-    .hero-copy { display: flex; flex-direction: column; gap: 18px; }
-    .eyebrow-pill {
+    .btn {
       display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      width: fit-content;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: color-mix(in hsl, var(--card) 86%, transparent);
-      color: var(--accent-3);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .hero-panel {
-      position: relative;
-      overflow: hidden;
-      min-height: 100%;
-      padding: 22px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background:
-        linear-gradient(180deg, color-mix(in hsl, var(--accent) 10%, var(--card) 90%), color-mix(in hsl, var(--card-2) 92%, var(--bg) 8%));
-      box-shadow: var(--shadow);
-    }
-    .hero-panel::before {
-      content: "";
-      position: absolute;
-      inset: 18px 18px auto auto;
-      width: 118px;
-      height: 118px;
-      background: url("216722720.png") center / contain no-repeat;
-      opacity: .07;
-      filter: grayscale(1) contrast(1.2);
-      pointer-events: none;
-    }
-    .hero-panel h2 { margin: 0 0 12px; font-size: 22px; }
-    .badge-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .badge { border: 1px solid var(--border); background: color-mix(in hsl, var(--card) 82%, transparent); padding: 7px 11px; border-radius: 999px; font-size: 13px; color: var(--muted); }
-    .hero-note { margin: 4px 0 0; color: var(--muted); font-size: 14px; max-width: 62ch; }
-
-    /* Ensure in-page anchor targets appear below sticky header */
-    .hero, section { scroll-margin-top: calc(var(--navh) + 12px); }
-
-    /* Sections */
-    section { padding: 42px 0; border-top: 1px solid var(--border); }
-    h2 { font-size: clamp(26px, 3vw, 36px); margin: 0 0 12px; letter-spacing: 0; }
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-    .auto-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .auto-grid .card { grid-column: auto; }
-    .card { grid-column: span 12; padding: 20px; border: 1px solid var(--border); background: color-mix(in hsl, var(--card-2) 82%, transparent); border-radius: 8px; box-shadow: var(--shadow); }
-    .card h3 { margin: 0 0 8px; font-size: 20px; letter-spacing: 0; }
-    .card p { margin: 0; color: var(--muted); }
-    .card p + p { margin-top: 8px; }
-    .artifact-label {
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: color-mix(in hsl, var(--card) 82%, transparent);
-      color: var(--accent-3);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    @media (min-width: 700px) { .card { grid-column: span 4; } }
-    @media (hover:hover) {
-      .card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-      .card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 12px 36px rgba(0,0,0,.18); }
-    }
-
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.95em;
-      padding: 0.12em 0.35em;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: color-mix(in hsl, var(--card) 80%, var(--bg) 20%);
-      white-space: nowrap;
-    }
-
-    .muted { color: var(--muted); }
-    .link-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    .mt-8 { margin-top: 8px; }
-
-    .section-lead { margin: 0 0 12px; color: var(--muted); max-width: 68ch; }
-    .section-kicker { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
-    .note { margin-top: 10px; color: var(--muted); font-size: 14px; }
-    .company-grid { display: grid; gap: 16px; }
-    .cta-band {
-      padding: 26px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, color-mix(in hsl, var(--accent) 18%, var(--card) 82%), color-mix(in hsl, var(--accent-2) 8%, var(--card-2) 92%));
-      box-shadow: var(--shadow);
-    }
-    .cta-band h2 { max-width: 14ch; }
-    .cta-band p { max-width: 62ch; color: var(--muted); }
-    .signal-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 14px;
-    }
-    .signal {
-      padding: 14px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: color-mix(in hsl, var(--card) 80%, transparent);
-    }
-    .flow-list {
-      counter-reset: flow;
-      list-style: none;
-      display: grid;
-      gap: 10px;
-      padding: 0;
-      margin: 16px 0 0;
-    }
-    .flow-list li {
-      counter-increment: flow;
-      display: grid;
-      grid-template-columns: 34px minmax(0, 1fr);
-      gap: 10px;
-      align-items: start;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: color-mix(in hsl, var(--card) 82%, transparent);
-    }
-    .flow-list li::before {
-      content: counter(flow);
-      display: inline-flex;
+      min-height: 44px;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      background: color-mix(in hsl, var(--accent-2) 24%, var(--card) 76%);
+      padding: 9px 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
       color: var(--fg);
-      font-weight: 800;
-      font-size: 13px;
+      font-weight: 700;
+      transition: background-color .18s ease, border-color .18s ease, color .18s ease;
     }
-    .flow-list strong { display: block; margin-bottom: 2px; }
-    .flow-list span { color: var(--muted); font-size: 14px; }
-    .proof-tier { margin-top: 22px; }
-    .proof-tier h3 { margin: 0 0 10px; font-size: 18px; }
-    .fine-list { margin: 10px 0 0; padding-left: 18px; color: var(--muted); }
-    .fine-list li + li { margin-top: 6px; }
-    /* Footer */
-    footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; padding: 24px 0 40px; }
+    .btn:hover { border-color: var(--accent); text-decoration: none; }
+    .btn.primary { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+    .btn.primary:hover { background: #095c7f; border-color: #095c7f; }
+    .btn.quiet { background: transparent; }
 
-    /* Visually hidden, but accessible for screen readers; becomes visible when focused */
-    .sr-only{
-      position:absolute;
-      width:1px;
-      height:1px;
-      padding:0;
-      margin:-1px;
-      overflow:hidden;
-      clip:rect(0,0,0,0);
-      white-space:nowrap;
-      border:0;
+    .hero, section { scroll-margin-top: calc(var(--navh) + 12px); }
+    .hero { padding: 104px 0 96px; }
+    .hero-lockup { display: flex; align-items: center; gap: 18px; }
+    .hero-logo { width: 64px; height: 64px; border-radius: 8px; flex: 0 0 auto; }
+    .eyebrow, .section-kicker {
+      margin: 0 0 6px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
     }
-    .sr-only:focus{
-      position:static;
-      width:auto;
-      height:auto;
-      margin:0;
-      clip:auto;
-      padding:8px 12px;
-      border-radius:8px;
+    .hero h1 { margin: 0; font-size: clamp(42px, 7vw, 66px); line-height: 1; letter-spacing: -.035em; }
+    .hero .lead { max-width: 780px; margin-top: 36px; font-size: clamp(28px, 4vw, 42px); font-weight: 700; line-height: 1.2; letter-spacing: -.025em; }
+    .hero-intro { max-width: 650px; margin-top: 14px; color: var(--muted); font-size: 18px; }
+    .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+
+    section { padding: 72px 0; border-top: 1px solid var(--border); }
+    .section-layout { display: grid; grid-template-columns: minmax(190px, 260px) minmax(0, 1fr); gap: 52px; align-items: start; }
+    h2 { margin: 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.18; letter-spacing: -.025em; }
+    h3 { margin: 0; }
+    .section-intro { max-width: 36ch; margin-top: 14px; color: var(--muted); }
+
+    .work-list { border-top: 1px solid var(--border); }
+    .work-item {
+      display: grid;
+      grid-template-columns: minmax(150px, .7fr) minmax(260px, 1.5fr) auto;
+      gap: 24px;
+      align-items: center;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background-color .18s ease;
+    }
+    .work-item h3 { font-size: 19px; line-height: 1.35; }
+    .work-item p { color: var(--muted); font-size: 15px; }
+    .work-item > a { font-weight: 700; white-space: nowrap; }
+    .work-type { display: block; margin-bottom: 4px; color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .secondary-links { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 22px; color: var(--muted); font-size: 14px; }
+    .secondary-links span { color: var(--muted); }
+
+    .capability-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .capability-list article { padding: 22px; }
+    .capability-list article:first-child { padding-left: 0; }
+    .capability-list article + article { border-left: 1px solid var(--border); }
+    .capability-list h3 { margin-bottom: 7px; font-size: 17px; }
+    .capability-list p { color: var(--muted); font-size: 14px; }
+    .section-action { margin-top: 24px; }
+
+    .research-list { display: grid; gap: 14px; }
+    .research-item { padding: 18px 20px; background: var(--surface); border-left: 3px solid var(--accent-strong); border-radius: 0 6px 6px 0; }
+    .research-item h3 { margin-bottom: 5px; font-size: 18px; }
+    .research-item p { color: var(--muted); font-size: 14px; }
+    .research-links { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 10px; font-size: 14px; font-weight: 700; }
+
+    .contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: end; }
+    .contact-grid p { max-width: 620px; margin-top: 14px; color: var(--muted); }
+    .company-note { margin-top: 24px; font-size: 14px; }
+
+    footer { padding: 26px 0 42px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    .footer-row { display: flex; align-items: center; gap: 10px; }
+    .footer-logo { width: 28px; height: 28px; border-radius: 6px; }
+    .footer-meta { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .sr-only:focus {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: auto;
+      height: auto;
+      margin: 0;
+      clip: auto;
+      padding: 8px 12px;
       background: var(--accent);
-      color:#0b1221; /* high contrast on accent background */
-      display:inline-block;
-      text-decoration:none;
-      font-weight:600;
+      color: var(--bg);
+      border-radius: 6px;
+      font-weight: 700;
+      z-index: 30;
     }
-    /* Footer logo */
-    .footer-row { display:flex; align-items:center; gap:10px; }
-    .footer-logo { height:28px; width:auto; border-radius:6px; opacity:.95; }
-    @media (min-width: 860px) {
-      .hero-grid { grid-template-columns: minmax(0, 1.28fr) minmax(340px, 0.92fr); }
-      .company-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    @media (hover: hover) {
+      .work-item:hover { background: rgba(255, 255, 255, .025); }
+    }
+
+    @media (min-width: 761px) and (max-width: 900px) {
+      .section-layout { grid-template-columns: 1fr; gap: 30px; }
+      .section-intro { max-width: 48ch; }
+    }
+
+    @media (max-width: 760px) {
+      :root { --navh: auto; }
+      header { position: static; }
+      .nav { align-items: flex-start; flex-direction: column; padding: 15px 0 12px; gap: 12px; }
+      .links { width: 100%; gap: 18px; overflow-x: auto; padding-bottom: 3px; }
+      .hero { padding: 66px 0 64px; }
+      .hero-lockup { align-items: flex-start; flex-direction: column; gap: 14px; }
+      .hero-logo { width: 48px; height: 48px; }
+      .hero h1 { font-size: clamp(30px, 9vw, 36px); }
+      .hero .lead { margin-top: 28px; }
+      section { padding: 54px 0; }
+      .section-layout, .contact-grid { grid-template-columns: 1fr; gap: 30px; }
+      .section-intro { max-width: 48ch; }
+      .work-item { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+      .work-item > a { margin-top: 4px; }
+      .capability-list { grid-template-columns: 1fr; }
+      .capability-list article, .capability-list article:first-child { padding: 18px 0; }
+      .capability-list article + article { border-top: 1px solid var(--border); border-left: 0; }
+    }
+
+    @media (max-width: 420px) {
+      .container { width: min(calc(100% - 28px), var(--maxw)); }
+      .brand span { font-size: 15px; }
+      .links { gap: 15px; font-size: 13px; }
+      .hero-actions .btn { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
     }
   </style>
   <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
@@ -414,326 +318,141 @@
   <header>
     <nav class="container nav" aria-label="Main">
       <a href="/" class="brand" aria-label="Home">
-        <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" fetchpriority="high">
-        <span>ToppyMicroServices OÜ</span>
+        <img src="216722720.png" alt="" class="brand-logo" width="32" height="32" decoding="async" fetchpriority="high">
+        <span>ToppyMicroServices</span>
       </a>
       <div class="links">
-        <a href="#thesis">Thesis</a>
-        <a href="#proof">Proof</a>
-        <a href="#services">Services</a>
-        <a href="news.html">News</a>
+        <a href="#work">Work</a>
         <a href="#research">Research</a>
-        <a href="#contact" class="btn">Contact</a>
-        <a class="gh-link" href="https://github.com/ToppyMicroServices" aria-label="GitHub — ToppyMicroServices (opens in new tab)" title="GitHub — ToppyMicroServices" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-        </a>
+        <a href="news.html">News</a>
+        <a href="#contact">Contact</a>
       </div>
     </nav>
   </header>
 
   <main id="main" class="container">
     <section class="hero" aria-label="Hero">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <div>
-            <div class="eyebrow-pill">Work-boundary engineering for AI-operated teams</div>
-            <h1 aria-label="Work-boundary engineering"><span>Work-boundary</span><span>engineering</span></h1>
-            <p class="lead">AI is entering daily work as a drafter, analyst, reviewer, searcher, and tool user. The new problem is not only model quality. It is unmanaged delegation.</p>
-            <p class="hero-subline">Toppy builds the evidence layer that defines what AI may do, when humans must intervene, what failures must be tested, and what remains reviewable after launch.</p>
-          </div>
-          <div class="hero-actions" aria-label="Primary actions">
-            <a class="btn primary" href="contact.html">Discuss a project</a>
-            <a class="btn quiet" href="#thesis">Read thesis</a>
-            <a class="btn quiet" href="#proof">See proof</a>
-          </div>
-          <div class="badge-row" aria-label="Trust strip">
-            <span class="badge">Decision boundaries</span>
-            <span class="badge">Approval paths</span>
-            <span class="badge">Evidence logs</span>
-            <span class="badge">Bounded tool authority</span>
-          </div>
-          <p class="hero-note">Current stage: public engineering proof, early commercial validation. The company is deliberately narrow: work boundaries for teams moving from AI features to AI-operated work.</p>
+      <div class="hero-lockup">
+        <img src="216722720.png" alt="" class="hero-logo" width="72" height="72" decoding="async" fetchpriority="high">
+        <div>
+          <p class="eyebrow">Work-boundary engineering</p>
+          <h1>ToppyMicroServices</h1>
         </div>
-        <aside class="hero-panel" aria-label="Work boundary stack">
-          <p class="section-kicker">Boundary stack</p>
-          <h2>From AI task to managed work</h2>
-          <ol class="flow-list">
-            <li><div><strong>AI-operated task</strong><span>Outputs, tool calls, retrieved context, decisions, and exceptions.</span></div></li>
-            <li><div><strong>Work boundary</strong><span>What the system may do, must not do, and must hand back to people.</span></div></li>
-            <li><div><strong>Evidence trail</strong><span>Tests, failure cases, reviewer decisions, logs, and unresolved risk.</span></div></li>
-            <li><div><strong>Human authority</strong><span>Who approves, who owns exceptions, and when the workflow stops.</span></div></li>
-            <li><div><strong>Tool and data boundary</strong><span>Permissions, retention, network access, and narrow enablement.</span></div></li>
-          </ol>
-        </aside>
+      </div>
+      <p class="lead">Clear boundaries for AI-operated work.</p>
+      <p class="hero-intro">We define what AI may do, when people must approve, and what evidence should remain reviewable.</p>
+      <div class="hero-actions" aria-label="Primary actions">
+        <a class="btn primary" href="#work">View selected work</a>
+        <a class="btn quiet" href="contact.html">Discuss a project</a>
       </div>
     </section>
 
-    <section id="thesis" aria-label="Thesis">
-      <div class="section-head">
+    <section id="work" aria-label="Public work">
+      <div class="section-layout">
         <div>
-          <p class="section-kicker">Thesis</p>
-          <h2>AI adoption creates new management work</h2>
+          <p class="section-kicker">Public work</p>
+          <h2>Selected work</h2>
+          <p class="section-intro">Products and engineering artifacts that make boundaries and evidence concrete.</p>
         </div>
-      </div>
-      <p class="section-lead">When AI systems perform work, the hard part is not only model quality. A company needs boundaries for decisions, approvals, evidence, and tool authority. Most teams have not named this job yet.</p>
-      <div class="auto-grid">
-        <div class="card">
-          <h3>Work ownership gets unclear</h3>
-          <p>Teams ship AI-mediated work before naming who owns approvals, exceptions, and post-launch review.</p>
-        </div>
-        <div class="card">
-          <h3>Decisions cross invisible lines</h3>
-          <p>Recommendations, drafts, tool calls, and approvals blur together unless the work boundary is explicit.</p>
-        </div>
-        <div class="card">
-          <h3>Evidence disappears</h3>
-          <p>Human review becomes performative when the workflow does not state what gets tested, logged, or preserved.</p>
-        </div>
-        <div class="card">
-          <h3>Tools become authority</h3>
-          <p>Automation becomes risky when file access, network calls, and retention are broader than the work actually needs.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="wedge" aria-label="Wedge and ideal customers">
-      <div class="section-head">
         <div>
-          <p class="section-kicker">Wedge</p>
-          <h2>A new operating category: work boundary engineering</h2>
-        </div>
-      </div>
-      <p class="section-lead">Our wedge is the boundary layer between AI systems and the work they are allowed to perform. It is narrower than governance, more operational than evaluation, and still underbuilt in ordinary AI adoption programs.</p>
-      <div class="auto-grid">
-        <div class="card">
-          <h3>Why now</h3>
-          <p>AI adoption moved faster than responsibility design. Large-enterprise governance is often too heavy, while small teams still need boundaries, logs, approvals, and tool rules they can operate.</p>
-        </div>
-        <div class="card">
-          <h3>Best-fit teams</h3>
-          <ul class="fine-list">
-            <li>B2B SaaS teams moving from AI features to AI-operated workflows.</li>
-            <li>Operators using LLMs internally without clear approval, evidence, or stop rules.</li>
-            <li>Small technical organizations that need automation inside security-sensitive work.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Product path</h3>
-          <p>We start as a productized service. We are learning the recurring work patterns of AI-operated teams. The long-term product is the evidence layer for delegated AI work.</p>
-        </div>
-        <div class="card">
-          <h3>What we are not</h3>
-          <ul class="fine-list">
-            <li>Not an AI automation agency.</li>
-            <li>Not a generic AI governance program.</li>
-            <li>Not only model evaluation.</li>
-            <li>Not prompt magic or dashboard theatre.</li>
-            <li>Not risk hidden behind optimistic demos.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="proof" aria-label="Proof hierarchy">
-      <div class="section-head">
-        <div>
-          <p class="section-kicker">Proof</p>
-          <h2>Proof artifacts as future-work capabilities</h2>
-        </div>
-        <a class="btn quiet sm" href="https://github.com/ToppyMicroServices" target="_blank" rel="noopener noreferrer">GitHub organization</a>
-      </div>
-      <p class="section-lead">The public work is not a flat portfolio. It is evidence for the capabilities AI-operated work needs: verifiable outputs, reportable decisions, bounded tools, session-aware delegation, and public diagnostic signals.</p>
-      <p class="note"><strong>Stage:</strong> public engineering proof, early commercial validation. Engineering evidence and market evidence are tracked separately.</p>
-
-      <div class="proof-tier" aria-label="Core proof">
-        <h3>Core proof: work-boundary engineering</h3>
-        <div class="auto-grid">
-          <div class="card">
-            <span class="artifact-label">Output verification</span>
-            <h3>YOLOZU</h3>
-            <p>YOLOZU is a free-of-charge commercial ToppyMicroServices product for validating and fairly evaluating existing vision predictions through a stable <code>predictions.json</code> interface contract. It provides public engineering evidence for making output boundaries comparable and verifiable.</p>
-            <div class="link-row mt-8">
-              <a class="btn" href="/yolozu/">Product page</a>
-              <a class="btn quiet sm" href="https://pypi.org/project/yolozu/" target="_blank" rel="noopener noreferrer">PyPI</a>
-              <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.18744756" target="_blank" rel="noopener noreferrer">Software</a>
-            </div>
+          <div class="work-list">
+            <article class="work-item">
+              <h3><span class="work-type">Output validation</span>YOLOZU</h3>
+              <p>Evaluate existing vision predictions through a stable predictions interface.</p>
+              <a href="/yolozu/">View project</a>
+            </article>
+            <article class="work-item">
+              <h3><span class="work-type">Decision reporting</span>AuditLoop</h3>
+              <p>Make decision boundaries, evidence, and human intervention points reviewable.</p>
+              <a href="auditloop.html">View project</a>
+            </article>
+            <article class="work-item">
+              <h3><span class="work-type">Narrow tools</span>VSCode PDF Viewer Secure</h3>
+              <p>An offline-first PDF viewer with restrictive defaults and explicit feature enablement.</p>
+              <a href="products/vscode-pdfviewer-secure">View project</a>
+            </article>
+            <article class="work-item">
+              <h3><span class="work-type">Delegation identity</span>Agents Secure Binding</h3>
+              <p>A verifier-side acceptance profile for session-bound agent identity.</p>
+              <a href="agents-secure-binding.html">View project</a>
+            </article>
           </div>
-          <div class="card">
-            <span class="artifact-label">Decision reporting</span>
-            <h3>AuditLoop</h3>
-            <p>AuditLoop shows the ability to make AI decisions reportable: what the system may do, what evidence must exist, and when humans take authority back.</p>
-            <div class="link-row mt-8">
-              <a class="btn" href="auditloop.html">AuditLoop page</a>
-              <a class="btn quiet sm" href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">Paper</a>
-              <a class="btn quiet sm" href="https://doi.org/10.5281/zenodo.17358362" target="_blank" rel="noopener noreferrer">Zenodo concept</a>
-            </div>
-          </div>
-          <div class="card">
-            <span class="artifact-label">Failure evidence</span>
-            <h3>Calibration and failure-mode work</h3>
-            <p>Public research around overconfidence, filters, and large language models supports the boundary decisions behind client-facing reports.</p>
+          <div class="secondary-links" aria-label="More public work">
+            <span>More:</span>
+            <a href="https://github.com/ToppyMicroServices" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://dmarc4all.toppymicros.com" target="_blank" rel="noopener noreferrer">dmarc4all</a>
+            <a href="education/rfc_quizzes.html">RFC quizzes</a>
           </div>
         </div>
       </div>
-
-      <div class="proof-tier" aria-label="Security proof">
-        <h3>Security surface proof</h3>
-        <div class="auto-grid">
-          <div class="card">
-            <span class="artifact-label">Bounded tools</span>
-            <h3>VSCode PDF Viewer Secure</h3>
-            <p>VSCode PDF Viewer Secure shows the ability to design a narrow tool surface: offline-first, read-only by default, with restrictive browser behavior and explicit feature enablement.</p>
-            <div class="link-row mt-8">
-              <a class="btn" href="products/vscode-pdfviewer-secure">Product page</a>
-              <a class="btn quiet sm" href="https://marketplace.visualstudio.com/items?itemName=ToppyMicroServices.vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">Marketplace</a>
-              <a class="btn quiet sm" href="https://open-vsx.org/extension/ToppyMicroServices.vscode-pdfviewer-secure" target="_blank" rel="noopener noreferrer">Open VSX</a>
-            </div>
-          </div>
-          <div class="card">
-            <span class="artifact-label">Delegation identity</span>
-            <h3>Agents Secure Binding</h3>
-            <p>Agents Secure Binding shows the ability to reason about agent delegation and session boundaries through a verifier-side acceptance profile for authority grants, holder proof, live sessions, freshness, attestation results, and local policy.</p>
-            <div class="link-row mt-8">
-              <a class="btn" href="agents-secure-binding.html">Project note</a>
-              <a class="btn quiet sm" href="https://github.com/thinksyncs/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">SSOT</a>
-            </div>
-          </div>
-          <div class="card">
-            <span class="artifact-label">Public diagnostics</span>
-            <h3>dmarc4all</h3>
-            <p>DMARC4all shows the ability to turn public signals into operating evidence through privacy-first diagnostics and bounded data handling.</p>
-            <p><a class="btn quiet sm" href="https://dmarc4all.toppymicros.com" target="_blank" rel="noopener noreferrer">Open managed service page</a></p>
-          </div>
-          <div class="card">
-            <span class="artifact-label">Spec discipline</span>
-            <h3>RFC quizzes</h3>
-            <p>Spec-driven educational pages for HTTP, TLS, and QUIC show disciplined explanation, information design, and long-term maintenance.</p>
-            <p><a class="btn quiet sm" href="education/rfc_quizzes.html">Open RFC quizzes</a></p>
-          </div>
-        </div>
-      </div>
-
     </section>
 
     <section id="services" aria-label="Services">
-      <div class="section-head">
+      <div class="section-layout">
         <div>
-          <p class="section-kicker">Services</p>
-          <h2>What you can hire Toppy for</h2>
+          <p class="section-kicker">What we do</p>
+          <h2>One workflow at a time</h2>
+          <p class="section-intro">Focused work for an AI-operated workflow or tool surface.</p>
         </div>
-        <a class="btn quiet sm" href="contact.html">Open contact page</a>
-      </div>
-      <p class="section-lead">Services are delivery formats for Work Boundary Engineering: make AI-operated work explicit enough to buy, finish, approve, log, test, and constrain.</p>
-      <div class="auto-grid">
-        <div class="card">
-          <span class="artifact-label">5 business days</span>
-          <h3>AI Work Boundary Sprint</h3>
-          <p>For a founder, product lead, or operator preparing one AI-operated workflow for launch.</p>
-          <p class="note"><strong>Output:</strong> boundary map, approval matrix, evidence-log template, stop rules, and unresolved-risk list.</p>
-        </div>
-        <div class="card">
-          <span class="artifact-label">2 weeks</span>
-          <h3>Delegation Evidence Report</h3>
-          <p>For teams already using LLMs internally or shipping agentic workflow features.</p>
-          <p class="note"><strong>Output:</strong> delegation rules, failure modes, review criteria, audit-log requirements, and implementation priorities.</p>
-        </div>
-        <div class="card">
-          <span class="artifact-label">2-4 weeks</span>
-          <h3>Agent Permission Surface Review</h3>
-          <p>For teams that need a narrow internal tool or feature surface around AI-operated work.</p>
-          <p class="note"><strong>Output:</strong> permission boundary, network/file/data-retention limits, dangerous-action gates, and release checklist.</p>
-        </div>
-        <div class="card">
-          <span class="artifact-label">3-5 business days</span>
-          <h3>AI Incident Reconstruction</h3>
-          <p>For teams that need to explain an AI output incident, bad recommendation, or missed intervention after it happened.</p>
-          <p class="note"><strong>Output:</strong> input timeline, referenced context, failed rule, human-intervention point, evidence gaps, and prevention checklist.</p>
+        <div>
+          <div class="capability-list">
+            <article>
+              <h3>Define decisions</h3>
+              <p>Approval, escalation, and stop rules.</p>
+            </article>
+            <article>
+              <h3>Design evidence</h3>
+              <p>Tests, logs, and unresolved risks.</p>
+            </article>
+            <article>
+              <h3>Constrain tools</h3>
+              <p>File, network, retention, and data boundaries.</p>
+            </article>
+          </div>
+          <p class="section-action"><a href="contact.html">See engagement details</a></p>
         </div>
       </div>
     </section>
 
-    <section id="research" aria-label="Speculative lab">
-      <div class="section-head">
+    <section id="research" aria-label="Research">
+      <div class="section-layout">
         <div>
-          <p class="section-kicker">Speculative Lab</p>
-          <h2>Exploratory work kept separate from delivery</h2>
+          <p class="section-kicker">Research</p>
+          <h2>Exploratory work</h2>
+          <p class="section-intro">Research is labeled separately from services and products.</p>
         </div>
-      </div>
-      <p class="section-lead">We keep exploratory work separate from client delivery, but public research shows the modeling discipline brought to ambiguous systems.</p>
-      <div class="auto-grid">
-        <div class="card">
-          <span class="artifact-label">Speculative lab</span>
-          <h3>Thermo-Credit theory and dashboard</h3>
-          <p>Exploratory economic research on credit dynamics, paired with a public theory note and dashboard. Dashboard readings should be understood as latest available by region, with data gaps treated as visible caveats.</p>
-          <p class="note"><strong>Data freshness:</strong> current public report latest dates are JP 2025-03-31, EU 2020-03-31, and US 2025-03-31; checked 2026-06-13.</p>
-          <div class="link-row mt-8">
-            <a class="btn quiet sm" href="theory.html">Theory note</a>
-            <a class="btn quiet sm" href="https://www.toppymicros.com/2025_11_Thermo_Credit/report.html" target="_blank" rel="noopener noreferrer">Dashboard report</a>
-          </div>
-        </div>
-        <div class="card">
-          <span class="artifact-label">Speculative lab</span>
-          <h3>Kantian and control-theoretic work</h3>
-          <p>Research artifacts remain labeled as research, not service claims. Their role is to show how Toppy reasons about uncertainty, overconfidence, and control boundaries.</p>
-          <div class="link-row mt-8">
-            <a class="btn quiet sm" href="Economy_AI_ERA.html">AI economy note</a>
-            <a class="btn quiet sm" href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">LLM overconfidence paper</a>
-          </div>
+        <div class="research-list">
+          <article class="research-item">
+            <h3>Kantian and control-theoretic work</h3>
+            <p>Uncertainty, overconfidence, and control boundaries.</p>
+            <div class="research-links">
+              <a href="Economy_AI_ERA.html">AI economy note</a>
+              <a href="https://arxiv.org/abs/2510.14925" target="_blank" rel="noopener noreferrer">Paper</a>
+            </div>
+          </article>
+          <article class="research-item">
+            <h3>Thermo-Credit</h3>
+            <p>Exploratory economic research on credit dynamics.</p>
+            <div class="research-links">
+              <a href="theory.html">Theory note</a>
+              <a href="https://www.toppymicros.com/2025_11_Thermo_Credit/report.html" target="_blank" rel="noopener noreferrer">Dashboard</a>
+            </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section id="about" aria-label="Company">
-      <div class="section-head">
+    <section id="contact" aria-label="Company and contact">
+      <div class="contact-grid">
         <div>
           <p class="section-kicker">Company</p>
-          <h2>Who we serve and how we work</h2>
+          <h2>Independent and founder-led</h2>
+          <p>ToppyMicroServices OÜ is an Estonia-based company working with founders, technical operators, and small product teams.</p>
+          <p class="company-note">Founder and operator: Akira (<a href="https://github.com/thinksyncs" target="_blank" rel="noopener noreferrer">thinksyncs</a>).</p>
         </div>
-      </div>
-      <div class="company-grid">
-        <div class="card">
-          <h3>Who Toppy is for</h3>
-          <p>ToppyMicroServices is built for founders, technical operators, and small product teams that need AI-operated work they can still inspect, explain, and control after launch.</p>
-          <p class="note">The strongest fit is work-boundary design, responsibility mapping, evidence requirements, and bounded internal tool surfaces where accountability matters.</p>
-        </div>
-        <div class="card">
-          <h3>Founder / operator</h3>
-          <p>Toppy is founder-led by Akira (<a href="https://github.com/thinksyncs" target="_blank" rel="noopener noreferrer">thinksyncs</a>), the public maintainer behind ToppyMicroServices artifacts across work-boundary engineering, security-bounded software surfaces, and exploratory reliability research.</p>
-          <p class="note">The operating reason is simple: AI-performed work, human authority, and software boundaries should remain inspectable after launch. The site avoids unverifiable customer logos, certifications, or credentials.</p>
-        </div>
-        <div class="card">
-          <h3>Professional stance</h3>
-          <p>We are an independent Estonia-based company focused on operating design for AI-performed work and security-bounded software delivery.</p>
-          <p class="note">Exploratory research, public products, and client-facing services are labeled separately so the offer stays legible.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" aria-label="Contact">
-      <div class="cta-band">
-        <p class="section-kicker">Contact</p>
-        <h2>Design the work boundary</h2>
-        <p>Tell us where AI is entering the work, what must remain human-owned, and which decisions need approval, evidence, logs, or software boundaries.</p>
         <div class="hero-actions" aria-label="Contact actions">
           <a class="btn primary" href="contact.html">Discuss a project</a>
-          <a class="btn quiet" href="mailto:info@toppymicros.com">Email Toppy</a>
-          <a class="btn quiet" href="#proof">See proof</a>
-        </div>
-        <div class="signal-list" aria-label="Contact guidance">
-          <div class="signal">
-            <strong>For projects</strong>
-            <span>Share the AI-operated work, the unclear boundary, and the decision your team does not yet trust.</span>
-          </div>
-          <div class="signal">
-            <strong>For investors and strategic partners</strong>
-            <span>Contact us if you care about the new management work created by AI-operated teams.</span>
-          </div>
-          <div class="signal">
-            <strong>For product and security questions</strong>
-            <span>Email <a href="mailto:info@toppymicros.com">info@toppymicros.com</a> for public products, support, partnership discussions, or research artifacts.</span>
-          </div>
+          <a class="btn quiet" href="mailto:info@toppymicros.com">Email</a>
         </div>
       </div>
     </section>
@@ -743,12 +462,14 @@
   <footer>
     <div class="container">
       <div class="footer-row">
-        <img src="216722720.png" alt="ToppyMicroServices logo" class="footer-logo" width="28" height="28" loading="lazy" decoding="async">
+        <img src="216722720.png" alt="" class="footer-logo" width="28" height="28" loading="lazy" decoding="async">
         <div>© 2026 ToppyMicroServices OÜ</div>
       </div>
-      <div class="mt-8">Legal address: Telliskivi tn 57, 10412 Tallinn, Põhja-Tallinna District, Harju County, Estonia</div>
-      <div class="mt-8">Registry code: 16551297</div>
-      <div class="mt-8 link-row" aria-label="Legal links">
+      <div class="footer-meta">
+        <span>Legal address: Telliskivi tn 57, 10412 Tallinn, Põhja-Tallinna District, Harju County, Estonia</span>
+        <span>Registry code: 16551297</span>
+      </div>
+      <div class="footer-links" aria-label="Legal links">
         <a href="contact.html">Contact</a>
         <a href="security-policy.html">Security Policy</a>
         <a href="privacy-policy.html">Privacy Policy</a>
