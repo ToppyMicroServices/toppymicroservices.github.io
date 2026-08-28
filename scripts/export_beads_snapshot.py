@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import json
 import os
 from pathlib import Path
@@ -79,15 +80,18 @@ def _dependency_keys(record: dict[str, Any]) -> set[tuple[str, str]]:
     return keys
 
 
-def _comment_keys(record: dict[str, Any]) -> set[tuple[str, str, str]]:
-    keys: set[tuple[str, str, str]] = set()
+def _comment_keys(record: dict[str, Any]) -> Counter[tuple[str, str, str]]:
+    keys: Counter[tuple[str, str, str]] = Counter()
     for comment in record.get("comments") or []:
         if not isinstance(comment, dict):
             continue
-        comment_id = str(comment.get("id", ""))
         author = str(comment.get("author", ""))
         text = str(comment.get("text", ""))
-        keys.add((comment_id, author, text))
+        created_at = str(comment.get("created_at", ""))
+        # Schema migrations may re-key a comment ID while preserving the
+        # comment itself. Count the stable semantic fields so a one-for-one
+        # re-key passes, but content, timestamp, or multiplicity loss fails.
+        keys[(author, text, created_at)] += 1
     return keys
 
 
@@ -109,7 +113,7 @@ def _assert_lossless(
         if missing_dependencies:
             losses.append(f"{issue_id}: dependencies {sorted(missing_dependencies)!r}")
         if missing_comments:
-            losses.append(f"{issue_id}: comments {sorted(missing_comments)!r}")
+            losses.append(f"{issue_id}: comments {sorted(missing_comments.items())!r}")
     if losses:
         raise SystemExit(
             "refusing snapshot export: candidate drops existing nested records:\n"
