@@ -205,6 +205,128 @@ class BeadsWorkflowTests(unittest.TestCase):
                 self.assertNotEqual(proc.returncode, 0)
                 self.assertEqual(output.read_bytes(), original)
 
+    def test_snapshot_export_accepts_semantic_comment_id_rekey(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "issues.jsonl"
+            candidate_path = root / "candidate.jsonl"
+            comment = {
+                "author": "dev",
+                "text": "preserve this comment",
+                "created_at": "2026-03-05T10:47:02Z",
+            }
+            _write_jsonl(
+                output,
+                [{"id": "site-a", "comments": [{"id": 1, **comment}]}],
+            )
+            _write_jsonl(
+                candidate_path,
+                [
+                    {
+                        "id": "site-a",
+                        "comments": [
+                            {
+                                "id": "a94e2adf-1e00-5fd9-b219-2bc76be80601",
+                                **comment,
+                            }
+                        ],
+                    }
+                ],
+            )
+
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(EXPORTER),
+                    "--output",
+                    str(output),
+                    "--candidate",
+                    str(candidate_path),
+                ],
+                cwd=ROOT,
+                check=True,
+            )
+
+            record = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(
+                record["comments"][0]["id"],
+                "a94e2adf-1e00-5fd9-b219-2bc76be80601",
+            )
+
+    def test_snapshot_export_refuses_semantic_comment_loss_after_rekey(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "issues.jsonl"
+            candidate_path = root / "candidate.jsonl"
+            comment = {
+                "author": "dev",
+                "text": "preserve this comment",
+                "created_at": "2026-03-05T10:47:02Z",
+            }
+            baseline = [
+                {
+                    "id": "site-a",
+                    "comments": [
+                        {"id": 1, **comment},
+                        {"id": 2, **comment},
+                    ],
+                }
+            ]
+            cases = {
+                "changed text": [
+                    {
+                        "id": "site-a",
+                        "comments": [
+                            {"id": "rekey-1", **comment},
+                            {"id": "rekey-2", **comment, "text": "changed"},
+                        ],
+                    }
+                ],
+                "changed timestamp": [
+                    {
+                        "id": "site-a",
+                        "comments": [
+                            {"id": "rekey-1", **comment},
+                            {
+                                "id": "rekey-2",
+                                **comment,
+                                "created_at": "2026-03-05T10:47:03Z",
+                            },
+                        ],
+                    }
+                ],
+                "collapsed duplicate": [
+                    {
+                        "id": "site-a",
+                        "comments": [{"id": "rekey-1", **comment}],
+                    }
+                ],
+            }
+
+            for label, candidate in cases.items():
+                with self.subTest(label=label):
+                    _write_jsonl(output, baseline)
+                    original = output.read_bytes()
+                    _write_jsonl(candidate_path, candidate)
+                    proc = subprocess.run(
+                        [
+                            sys.executable,
+                            str(EXPORTER),
+                            "--output",
+                            str(output),
+                            "--candidate",
+                            str(candidate_path),
+                        ],
+                        cwd=ROOT,
+                        text=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        check=False,
+                    )
+                    self.assertNotEqual(proc.returncode, 0)
+                    self.assertIn("comments", proc.stderr)
+                    self.assertEqual(output.read_bytes(), original)
+
     def test_tracked_guidance_has_no_legacy_sync_command(self) -> None:
         for relative in ("AGENTS.md", ".beads/README.md", ".beads/config.yaml"):
             content = (ROOT / relative).read_text(encoding="utf-8")
