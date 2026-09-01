@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <title>Agents Secure Binding | ToppyMicroServices</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Reader-facing entry point for Agents Secure Binding: a verifier-side acceptance profile for binding delegated agent identity, live session proof, freshness, attestation results, and local policy." />
+<meta name="description" content="Agents Secure Binding is an experimental verifier-side profile for binding delegated Agent identity to a live session." />
 <meta name="robots" content="index,follow,max-image-preview:large" />
 <meta name="theme-color" content="#02213b" />
 <meta name="color-scheme" content="dark" />
@@ -16,13 +16,13 @@
 
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Agents Secure Binding | ToppyMicroServices" />
-<meta property="og:description" content="A short technical note and entry point for an agent identity and session-binding security profile." />
+<meta property="og:description" content="An experimental verifier-side profile for binding delegated Agent identity to a live session." />
 <meta property="og:url" content="https://www.toppymicros.com/agents-secure-binding.html" />
 <meta property="og:site_name" content="ToppyMicroServices" />
 <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Agents Secure Binding | ToppyMicroServices" />
-<meta name="twitter:description" content="A short technical note and entry point for an agent identity and session-binding security profile." />
+<meta name="twitter:description" content="An experimental verifier-side profile for binding delegated Agent identity to a live session." />
 <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
 <script type="application/ld+json">
@@ -30,7 +30,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Agents Secure Binding",
-  "description": "Reader-facing entry point for the Agents Secure Binding verifier-side acceptance profile.",
+  "description": "An experimental verifier-side profile for binding delegated Agent identity to a live session.",
   "url": "https://www.toppymicros.com/agents-secure-binding.html",
   "publisher": {
     "@type": "Organization",
@@ -140,6 +140,7 @@
   }
   .lead { max-width: 780px; margin-top: 14px; color: var(--muted); font-size: 18px; }
   .hero .section-lead { margin-top: 14px; }
+  .source-note { max-width: 780px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
   section { padding: 72px 0; border-top: 1px solid var(--border); }
   .section-lead { max-width: 780px; margin-top: 14px; color: var(--muted); }
@@ -164,13 +165,6 @@
   .muted { color: var(--muted); }
   ul { margin: 0; padding-left: 20px; color: var(--muted); }
   li + li { margin-top: 8px; }
-  .link-list {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    margin-top: 24px;
-  }
-  .link-list .btn { text-align: center; }
   .session-demo {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -405,45 +399,6 @@
     font-weight: 800;
     line-height: 1;
   }
-  .result-table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface);
-    max-width: 100%;
-    min-width: 0;
-  }
-  .result-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 640px;
-    font-size: 14px;
-  }
-  .result-table th,
-  .result-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    vertical-align: top;
-  }
-  .result-table tr:last-child td { border-bottom: 0; }
-  .result-table th {
-    color: var(--fg);
-    background: var(--surface-strong);
-  }
-  .result-tag {
-    display: inline-block;
-    min-width: 74px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    border: 1px solid currentColor;
-    font-size: 12px;
-    font-weight: 800;
-    text-align: center;
-    letter-spacing: .04em;
-  }
-  .result-tag.accept { color: var(--accent-2); }
-  .result-tag.reject { color: var(--danger); }
   footer { padding: 26px 0 42px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
   .footer-row { display: flex; align-items: center; gap: 10px; }
   .footer-logo { width: 28px; height: 28px; border-radius: 6px; }
@@ -547,35 +502,35 @@
     <section class="hero" aria-label="Agents Secure Binding profile">
       <p class="eyebrow">Technical note</p>
       <h1>Agents Secure Binding</h1>
-      <p class="lead">Binding delegated agent identity to the actual TLS and attestation session.</p>
-      <p class="section-lead">We propose this as a verifier-side acceptance profile and implementation experiment. The receiver accepts an Agent only when the authority grant, holder-of-key proof, accepted TLS or exported-authenticator session, freshness and replay state, any required attestation result, and local expected policy all describe the same intended interaction.</p>
+      <p class="lead">Bind delegated Agent identity to the live session.</p>
+      <p class="section-lead">ASB is an experimental verifier-side acceptance profile. It checks that the grant, holder-of-key proof, accepted TLS or exported-authenticator session, and local policy refer to the same interaction.</p>
       <div class="actions">
         <a class="btn primary" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
         <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
       </div>
+      <p class="source-note"><code>docs/SSOT.md</code> is the public source of truth. If this overview differs, the SSOT takes precedence.</p>
     </section>
 
-    <section aria-label="Source of truth">
-      <p class="section-kicker">Source of truth</p>
-      <h2>This page is an entry point, not the specification</h2>
-      <p class="note">The only public source of truth for the profile is <code>docs/SSOT.md</code> in the GitHub repository. This ToppyMicroServices page is a short reader-facing note and link hub. If this page and the public SSOT ever differ, the SSOT wins.</p>
+    <section aria-label="Problem">
+      <p class="section-kicker">Problem</p>
+      <h2>Valid evidence can still describe the wrong interaction</h2>
+      <p class="section-lead">A grant and session proof can each verify while referring to different Agents, tasks, or sessions.</p>
     </section>
 
     <section aria-labelledby="session-binding-demo-title">
       <div class="demo-toolbar">
         <div>
-          <p class="section-kicker">Animated explainer</p>
-          <h2 id="session-binding-demo-title">Valid credentials still need session binding</h2>
+          <p class="section-kicker">Session binding</p>
+          <h2 id="session-binding-demo-title">Bind the grant to the accepted session</h2>
         </div>
         <button class="btn replay-btn" type="button" data-replay-session-demo>Replay</button>
       </div>
-      <p class="section-lead">The receiver accepts only when the Identity Grant, holder proof, current TLS or exported-authenticator session, freshness state, optional attestation result, and Alice's local expected policy all line up. Replayed bindings, substituted grants, wrong keys, peer-selected labels, cached security state, and peer-supplied metadata fail closed.</p>
+      <p class="section-lead">A replayed or substituted proof fails even when its signature is valid.</p>
 
       <div class="session-demo is-playing" data-session-demo>
         <div class="demo-layout">
           <div class="demo-canvas">
-            <div class="lane-board" role="img" aria-label="Session-bound identity flow: happy path accepts, attack path rejects">
+            <div class="lane-board" role="img" aria-label="Session-bound identity flow: a matching interaction is accepted and a mismatched interaction is rejected">
               <div class="flow-lane good">
                 <div class="flow-lane-head">
                   <h3 class="flow-lane-title">Happy path</h3>
@@ -583,19 +538,19 @@
                 </div>
                 <div class="flow-steps">
                   <div class="flow-card step-1">
-                    <strong>1. Manager</strong>
-                    <span>Issues the delegated identity.</span>
-                    <span class="packet-pill grant">Identity Grant packet</span>
+                    <strong>1. Authority</strong>
+                    <span>Signs the Agent's Identity Grant.</span>
+                    <span class="packet-pill grant">Identity Grant</span>
                   </div>
                   <div class="flow-card step-2">
                     <strong>2. Agent</strong>
-                    <span>Starts the accepted TLS or exported-authenticator session.</span>
+                    <span>Opens the accepted session.</span>
                     <span class="packet-pill binding">live session</span>
                   </div>
                   <div class="flow-card step-3">
-                    <strong>3. Agent → Alice</strong>
-                    <span>Sends proof for this grant and this session.</span>
-                    <span class="packet-pill binding">Session Binding Statement packet</span>
+                    <strong>3. Agent → Verifier</strong>
+                    <span>Binds the exact grant to that session.</span>
+                    <span class="packet-pill binding">Session Binding Statement</span>
                   </div>
                   <div class="outcome-card accept step-5">Result: ACCEPT</div>
                 </div>
@@ -604,7 +559,7 @@
               <div class="flow-lane bad">
                 <div class="flow-lane-head">
                   <h3 class="flow-lane-title">Attack path</h3>
-                  <span class="flow-lane-note">valid-looking material, wrong binding</span>
+                  <span class="flow-lane-note">valid signature, wrong session</span>
                 </div>
                 <div class="flow-steps">
                   <div class="flow-card step-a1">
@@ -613,14 +568,14 @@
                     <span class="packet-pill grant">old / wrong grant</span>
                   </div>
                   <div class="flow-card step-a2">
-                    <strong>2. Attacker → Alice</strong>
-                    <span>Adds peer-supplied service or task metadata.</span>
-                    <span class="packet-pill metadata">Metadata packet</span>
+                    <strong>2. Attacker → Verifier</strong>
+                    <span>Presents the proof in another session or context.</span>
+                    <span class="packet-pill metadata">mismatched context</span>
                   </div>
                   <div class="flow-card step-a3">
-                    <strong>3. Alice Verifier</strong>
-                    <span>Detects grant_hash, key, session, or policy mismatch.</span>
-                    <span class="packet-pill binding">local expected policy wins</span>
+                    <strong>3. Verifier</strong>
+                    <span>Finds a grant, key, session, or policy mismatch.</span>
+                    <span class="packet-pill binding">local policy</span>
                   </div>
                   <div class="outcome-card reject step-a3">Result: REJECT</div>
                 </div>
@@ -628,249 +583,57 @@
             </div>
           </div>
 
-          <aside class="check-panel card" aria-label="Alice verifier checklist">
+          <aside class="check-panel card" aria-label="Verifier checklist">
             <div>
-              <p class="section-kicker">Alice checklist</p>
-              <h3>Accept only if every local check passes</h3>
+              <p class="section-kicker">Verifier checklist</p>
+              <h3>Accept only when every check passes</h3>
             </div>
             <ul class="check-list">
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Manager signature validates the Identity Grant.</span></li>
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Agent confirmation key matches the authorized agent key.</span></li>
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span><code>grant_hash</code> binds the statement to the exact grant.</span></li>
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>TLS or exported-authenticator binding matches the accepted session.</span></li>
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Freshness, replay state, and any required attestation result are valid for this attempt.</span></li>
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Local expected policy matches the signed and bound material.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>The grant signature is valid, and the grant authorizes the Agent key.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span><code>grant_hash</code> and the binding match the exact grant and current session.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Freshness and replay checks pass, and any required attestation is valid.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>The bound values match local policy.</span></li>
             </ul>
-            <p class="muted">Peer metadata can be evidence to inspect, but it is not Alice's policy source.</p>
+            <p class="muted">Peer metadata may be evidence, but it does not define the verifier's policy.</p>
           </aside>
-        </div>
-
-        <div>
-          <h3>Verifier outcomes</h3>
-          <div class="result-table-wrap" role="region" aria-label="Verifier result table" tabindex="0">
-            <table class="result-table">
-              <thead>
-                <tr>
-                  <th scope="col">Case</th>
-                  <th scope="col">Result</th>
-                  <th scope="col">Why</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>valid grant + valid binding</td>
-                  <td><span class="result-tag accept">ACCEPT</span></td>
-                  <td>The signed grant, Agent key, <code>grant_hash</code>, session binding, freshness state, and local policy all match.</td>
-                </tr>
-                <tr>
-                  <td>replayed binding</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>The statement does not bind to Alice's current TLS or attestation session.</td>
-                </tr>
-                <tr>
-                  <td>grant_hash mismatch</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>The binding statement points at a different Identity Grant.</td>
-                </tr>
-                <tr>
-                  <td>wrong Agent key</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>The confirmation key does not match the agent authorized by the grant.</td>
-                </tr>
-                <tr>
-                  <td>Manager key reused as Agent key</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>Manager authority and Agent confirmation roles are separate.</td>
-                </tr>
-                <tr>
-                  <td>missing attestation binder</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>When attestation is required, the receiver cannot bind the statement to the accepted attestation result.</td>
-                </tr>
-                <tr>
-                  <td>peer-selected exporter label</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>The binding input is selected by the application or deployment profile, not by the peer.</td>
-                </tr>
-                <tr>
-                  <td>TLS 0-RTT or resumed-session proof reuse</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>Profile-authenticated identity is not returned for 0-RTT, and a resumed connection needs its own proof and replay state.</td>
-                </tr>
-                <tr>
-                  <td>cached security decision reused</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>Verified grants, session proofs, attestation evidence, and verifier decisions are not reusable acceptance evidence for a later request.</td>
-                </tr>
-                <tr>
-                  <td>peer metadata injection</td>
-                  <td><span class="result-tag reject">REJECT</span></td>
-                  <td>Alice uses local expected policy, not peer-supplied metadata, as the acceptance policy.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section aria-label="Problem">
-      <p class="section-kicker">Problem</p>
-      <h2>Successful components can still compose into the wrong actor</h2>
-      <p class="section-lead">TLS, signed authorization material, holder-of-key proof, attestation, and local policy can each verify successfully while the composition still authenticates the wrong session, service, Agent, task, or authority boundary.</p>
-      <div class="grid two">
-        <div class="card">
-          <h3>Valid credentials are not enough</h3>
-          <p class="muted">A peer can present valid cryptographic material while still causing replay, relay, token substitution, context diversion, wrong-agent, cache-confusion, or confused-deputy failures.</p>
-        </div>
-        <div class="card">
-          <h3>Peer metadata is not policy</h3>
-          <p class="muted">The receiver should not turn service, tenant, task, scope, or agent metadata supplied by the peer into local authorization policy.</p>
-        </div>
-      </div>
-    </section>
-
-    <section aria-label="Acceptance model">
-      <p class="section-kicker">Acceptance model</p>
-      <h2>One invariant, checked across separate dimensions</h2>
-      <p class="section-lead">Before the application receives a profile-authenticated Agent identity, Alice checks that authentication facts and local policy facts identify the same intended interaction. The labels below are diagnostic dimensions, not protocol layers or a trust hierarchy.</p>
-      <div class="grid two">
-        <div class="card">
-          <h3>Authentication and binding</h3>
-          <ul>
-            <li><strong>D0:</strong> accepted TLS or exported-authenticator session.</li>
-            <li><strong>D1:</strong> attested platform validity, when required by local policy.</li>
-            <li><strong>D2:</strong> authenticator, proof, or attestation result bound to the accepted session.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Verifier-local policy</h3>
-          <ul>
-            <li><strong>D3:</strong> service, tenant, deployment, or environment.</li>
-            <li><strong>D4:</strong> workload, process, service component, or Agent.</li>
-            <li><strong>D5:</strong> task, thread, context, delegation, or request scope.</li>
-            <li><strong>D6:</strong> capability, tool authority, or action boundary.</li>
-          </ul>
         </div>
       </div>
     </section>
 
     <section aria-label="Approach">
       <p class="section-kicker">Approach</p>
-      <h2>Separate authority, holder proof, and session evidence</h2>
-      <p class="section-lead">This profile separates who is allowed to authorize a delegated identity from who proves possession in the live session, then requires the verifier to compare both against local expected policy before acceptance.</p>
+      <h2>Separate the roles, then check that they agree</h2>
+      <p class="section-lead">The authority key signs the Identity Grant. The authorized Agent key binds that exact grant to the accepted session. The endpoint key authenticates the accepted TLS or exported-authenticator endpoint.</p>
       <div class="grid two">
         <div class="card">
-          <h3>Two signed materials</h3>
-          <ul>
-            <li>Identity Grant: Manager or policy authority signs the intended agent, task, delegation, scope, and related values.</li>
-            <li>Session Binding Statement: the holder of the authorized confirmation key binds that exact grant to the accepted session.</li>
-          </ul>
+          <h3>Two signed objects</h3>
+          <p class="muted">The Identity Grant states the delegated authority and scope. The Session Binding Statement binds that grant to the accepted session.</p>
         </div>
         <div class="card">
-          <h3>Three key roles</h3>
-          <ul>
-            <li>Manager or policy-authority key for Identity Grants.</li>
-            <li>Agent confirmation key for Session Binding Statements.</li>
-            <li>TLS endpoint key for the accepted TLS or exported-authenticator endpoint.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Local policy comparison</h3>
-          <p class="muted">The receiver compares signed and session-bound material against canonical local expected values. Peer-provided aliases, display names, natural-language labels, and reserialized metadata are not repaired during final acceptance.</p>
-        </div>
-        <div class="card">
-          <h3>Verifier-side gate</h3>
-          <p class="muted">The profile does not replace an agent protocol. It defines a fail-closed acceptance gate that an application or deployment profile can place before treating the peer as the intended Agent.</p>
+          <h3>Verification order</h3>
+          <p class="muted">Authenticate both objects, check the session and local policy, then record replay state. If a check fails, the identity is not accepted.</p>
         </div>
       </div>
     </section>
 
-    <section aria-label="Verification procedure">
-      <p class="section-kicker">Verification procedure</p>
-      <h2>Authentication, policy, then replay commit</h2>
-      <p class="section-lead">The verifier first authenticates the signed material, then compares canonical local policy values, then commits replay state only after the full acceptance decision succeeds.</p>
-      <div class="grid two">
-        <div class="card">
-          <h3>Authentication phase</h3>
-          <ul>
-            <li>Verify the authority grant under a trusted policy-authority key.</li>
-            <li>Check issuer, audience, profile guard, algorithm, key status, time validity, grant ID, and required authorization fields.</li>
-            <li>Verify the session proof under the authorized Agent confirmation key or explicitly authorized endpoint key.</li>
-            <li>Recompute <code>grant_hash</code> over the exact verified grant bytes.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Policy and replay phase</h3>
-          <ul>
-            <li>Compare service, tenant, Agent, task, capability, and endpoint values against local expected policy.</li>
-            <li>Reject missing, stale, ambiguous, revoked, wrong-use, or peer-selected policy values.</li>
-            <li>Bind each accepted task to a task-specific context and verifier nonce or attempt ID.</li>
-            <li>Commit replay state only for the accepted interaction.</li>
-          </ul>
-        </div>
+    <section aria-label="Implementation">
+      <p class="section-kicker">Implementation</p>
+      <h2>What exists today</h2>
+      <p class="section-lead">The repository contains verifier code and tests covering rejection of invalid or mismatched input before the application receives an accepted Agent identity.</p>
+      <div class="card grid">
+        <ul>
+          <li><strong>Token formats:</strong> JWT/JWS and CWT/COSE verifier coverage.</li>
+          <li><strong>Verifier safety:</strong> local-policy checks, replay handling, and cache safety for caller-dependent results.</li>
+          <li><strong>Security tests:</strong> negative tests for replay, binding and key mismatches, grant substitution, and cache misuse.</li>
+        </ul>
       </div>
     </section>
 
-    <section aria-label="Implemented work">
-      <p class="section-kicker">Implemented work</p>
-      <h2>What the repository currently contains</h2>
-      <p class="section-lead">The implementation tests focus on fail-closed acceptance: attacker-shaped input should be rejected before an application treats the observed identity as accepted.</p>
-      <div class="grid two">
-        <div class="card">
-          <h3>Token profiles</h3>
-          <ul>
-            <li>JWT/JWS Identity Grant and Session Binding Statement profile.</li>
-            <li>CWT/COSE verifier coverage for the same trust model.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Verifier and cache safety</h3>
-          <ul>
-            <li>Local expected-policy comparison before acceptance.</li>
-            <li>Replay-state and response-cache safety policy for caller-dependent results.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Red-team coverage</h3>
-          <ul>
-            <li>Live-style red-team tests for replay, relay, diversion, wrong-agent, key-role confusion, grant substitution, and cache misuse.</li>
-            <li>Separate notes for boundaries that remain outside the direct-Agent profile.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Readable specification artifact</h3>
-          <p class="muted">The repository includes the Markdown SSOT and a rendered PDF for review.</p>
-        </div>
-      </div>
+    <section aria-label="Status and sources">
+      <p class="section-kicker">Status and sources</p>
+      <h2>Proposal, not a standard</h2>
+      <p class="section-lead">This is a proposal and implementation experiment, not standards-body consensus or AGTP/A2A core protocol text. It defines a verifier-side acceptance gate, not a full protocol stack. Gateway-routed deployments need a separate binding profile.</p>
       <div class="actions">
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
-      </div>
-    </section>
-
-    <section aria-label="Boundaries">
-      <p class="section-kicker">Boundaries</p>
-      <h2>What is not claimed</h2>
-      <div class="grid two">
-        <div class="card">
-          <h3>Not a standard</h3>
-          <p>This is a proposal and implementation experiment, not standards-body consensus or AGTP/A2A core protocol text.</p>
-        </div>
-        <div class="card">
-          <h3>Not a full protocol stack</h3>
-          <p>This page defines an acceptance profile, not a TLS extension, identity provider, registry, gateway, or application protocol. Gateway-routed deployments need separate binding-profile work.</p>
-        </div>
-      </div>
-    </section>
-
-    <section aria-label="Links">
-      <p class="section-kicker">Links</p>
-      <h2>Repository entry points</h2>
-      <p class="section-lead">Use the repository documents for the current profile text, rendered specification, and red-team evidence.</p>
-      <div class="link-list">
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
-        <a class="btn primary" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
         <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
         <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
         <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
