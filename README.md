@@ -44,9 +44,9 @@ Selected standalone pages:
 - `education/rfc_quizzes.html` and `education/rfc_quizzes_ja.html` — RFC learning guides and quizzes
 - `contact.html` — business contact and product support information
 - `products/vscode-pdfviewer-secure/` — VSCode PDF Viewer Secure product page
-- `Economy_AI_ERA.html` — AI Economy / Window Guidance as Code (EN) — research note published as a proof artifact
+- `Economy_AI_ERA.html` — mAI Economy / Window Guidance as Code (EN): credit-based research program and next experiment
 - `Economy_AI_ERA_ja.html` — 同上（JA）
-- `theory.html` — summary of Thermo-Credit (QTC) theory, published as a proof artifact
+- `theory.html` — current Thermo-Credit measurement scope and the earlier analogy note
 - `education/quiz_finance_terms.html` — Finance terminology quiz (JA)
 - `education/quiz_finance_terms_en.html` — Finance terminology quiz (EN)
 
