@@ -2,7 +2,7 @@
 
 # toppymicroservices.github.io
 
-**ToppyMicroServices OÜ** — Designing ultra-lean, AI-first companies from scratch.
+**ToppyMicroServices OÜ** — Software and independent research.
 
 This repository contains the source for the public website of ToppyMicroServices OÜ.  
 The README is written for readers who want to understand the site structure, intent, and scope.
@@ -26,21 +26,22 @@ The README is written for readers who want to understand the site structure, int
 ## Overview
 This repository hosts the static website for **ToppyMicroServices OÜ**, deployed via GitHub Pages.
 
-ToppyMicroServices designs ultra-lean, AI-first companies from scratch. In this context, "company design" refers to the deliberate structuring of roles, workflows, decision boundaries, and automation, with the goal of minimizing headcount, organizational overhead, and long-term lock-in.
+The homepage features software for agent authorization, vision-model evaluation, and developer workflows. It links to public source code and distribution pages, alongside the founder's research and English and Japanese RFC learning materials.
 
-The website serves three purposes:
-- To state the company design principles that guide our work
-- To publish proof artifacts (research notes, evaluation methods, and dashboards) that demonstrate these principles in practice
-- To describe the scope of public-facing services
-
-Current public services include ultra-lean company architecture, AI-first operations and automation, vendor-neutral evaluation and reliability, and dmarc4all (DMARC/SPF/DKIM policy design and reporting setup).
+Featured software: Agents Secure Binding, YOLOZU, LaTeX Workspace Security, and Beads Git Graph. The two extensions retain their LaTeX Workshop and Git Graph attribution. Research notes and experimental profiles are not presented as adopted standards or production guarantees.
 
 ## Public Pages
-The site consists of a small number of standalone pages. Some pages describe services or policies, while others are published as proof artifacts supporting the company design philosophy.
+The site consists of standalone product, research, education, and policy pages.
 
 Primary site: https://toppymicroservices.github.io (CNAME → https://www.toppymicros.com)
 
 Selected standalone pages:
+
+- `index.html` — selected public software, research, learning materials, and company information
+- `news.html` — dated releases and research updates, linked to primary sources
+- `agents-secure-binding.html` — ASB technical introduction and source links
+- `yolozu/` — vision-prediction validation and evaluation toolkit
+- `education/rfc_quizzes.html` and `education/rfc_quizzes_ja.html` — RFC learning guides and quizzes
 - `contact.html` — business contact and product support information
 - `products/vscode-pdfviewer-secure/` — VSCode PDF Viewer Secure product page
 - `Economy_AI_ERA.html` — AI Economy / Window Guidance as Code (EN) — research note published as a proof artifact
@@ -52,12 +53,12 @@ Selected standalone pages:
 ## Concept Notes
 Concept notes are early-stage research notes and design documents published as static pages.
 
-They are intended for readers who want to understand the underlying ideas, assumptions, and design trade-offs. These pages are provided as proof artifacts and are not operational products, policy tools, or production systems.
+These pages describe research ideas and assumptions. They are not operational products, policy tools, or production systems.
 
 ## Interactive Quizzes
-This repository includes simple, client-side interactive quizzes for finance terminology (Japanese and English).
+This repository includes client-side quizzes for RFCs, protocol design, and finance terminology in Japanese and English.
 
-These quizzes are educational utilities and are independent from the core service offerings.
+These quizzes are educational materials, not certification exams.
 
 ### Quiz authoring policy (required)
 These quizzes are not designed for certifications or rote memorization. Their purpose is to help developers build durable engineering skill in an AI-first era.
@@ -86,7 +87,8 @@ These quizzes are not designed for certifications or rote memorization. Their pu
 ## Research References
 Some pages reference external research outputs associated with ToppyMicroServices.
 
-- Preprint: https://arxiv.org/abs/2510.14925 (not peer-reviewed)
+- EIML workshop at ICML 2026: [official accepted-papers listing](https://sites.google.com/view/eimlicml2026/accepted-papers_1), including the founder's accepted poster. This is workshop acceptance, not an ICML main-conference paper or evidence of attendance.
+- Related preprint: https://arxiv.org/abs/2510.14925. Keep this source distinct from the workshop listing; the listing does not link a paper version.
 - Related artifacts include AuditLoop evaluation metrics and Thermo-Credit indicators, which are referenced from the site pages where relevant
 
 ## Compliance & Governance Mapping

@@ -4,48 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>News | ToppyMicroServices</title>
-  <meta name="description" content="News from ToppyMicroServices." />
+  <meta name="description" content="Software releases, research, and learning materials from ToppyMicroServices, with links to the original sources." />
   <meta name="robots" content="index,follow" />
-  <meta name="theme-color" content="#032340" />
-  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#02213b" />
+  <meta name="color-scheme" content="dark" />
   <link rel="canonical" href="https://www.toppymicros.com/news.html" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="News | ToppyMicroServices" />
-  <meta property="og:description" content="News from ToppyMicroServices." />
+  <meta property="og:description" content="Software releases, research, and learning materials from ToppyMicroServices." />
   <meta property="og:url" content="https://www.toppymicros.com/news.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="News | ToppyMicroServices" />
-  <meta name="twitter:description" content="News from ToppyMicroServices." />
+  <meta name="twitter:description" content="Software releases, research, and learning materials from ToppyMicroServices." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
     :root {
-      --bg: #032340;
+      color-scheme: dark;
+      --bg: #02213b;
       --fg: #f5fbff;
-      --muted: #a8c6df;
-      --card: #07345f;
-      --accent: #29aeea;
+      --muted: #b4cad9;
+      --accent: #62d2ff;
       --border: rgba(185, 226, 255, 0.2);
-      --maxw: 920px;
-    }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f4fbff;
-        --fg: #06294a;
-        --muted: #4d6880;
-        --card: #ffffff;
-        --accent: #087fb8;
-        --border: rgba(6, 41, 74, 0.14);
-      }
+      --maxw: 1040px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--fg);
       line-height: 1.6;
@@ -53,65 +45,86 @@
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
     a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    .container { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    .container { width: min(calc(100% - 40px), var(--maxw)); margin: 0 auto; }
     header { border-bottom: 1px solid var(--border); }
-    .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .nav { display: flex; min-height: 72px; align-items: center; justify-content: space-between; gap: 24px; }
     .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 800; }
-    .brand-logo { width: 28px; height: 28px; border-radius: 6px; }
-    .links { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; }
-    .links a { color: var(--fg); opacity: .9; }
-    main { padding-bottom: 48px; }
-    .hero { padding: 48px 0 20px; }
+    .brand-logo { width: 32px; height: 32px; border-radius: 6px; }
+    .links { display: flex; gap: 22px; font-size: 14px; }
+    .links a { display: inline-flex; align-items: center; min-height: 32px; color: var(--muted); }
+    .links a[aria-current="page"] { color: var(--fg); }
+    .hero { padding: 72px 0 48px; }
     .eyebrow { margin: 0 0 8px; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-    h1 { margin: 0; font-size: clamp(34px, 7vw, 58px); line-height: 1; }
-    section { border-top: 1px solid var(--border); padding: 28px 0; }
+    h1 { margin: 0; font-size: clamp(34px, 7vw, 58px); line-height: 1.1; letter-spacing: -.035em; }
+    .news-list { max-width: 780px; padding-bottom: 72px; }
     .news-item {
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--card);
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
     }
-    .news-item + .news-item { margin-top: 16px; }
     time { display: block; color: var(--muted); font-size: 14px; margin-bottom: 6px; }
     h2 { margin: 0 0 8px; font-size: 22px; }
     p { margin: 0; color: var(--muted); }
-    footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+    .source-link { display: inline-flex; margin-top: 12px; font-size: 14px; font-weight: 700; }
+    footer { padding: 26px 0 42px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+    .sr-only:focus { position: fixed; top: 10px; left: 10px; width: auto; height: auto; padding: 8px 12px; margin: 0; clip: auto; background: var(--accent); color: var(--bg); z-index: 30; }
+    @media (max-width: 760px) {
+      .nav { align-items: flex-start; flex-direction: column; padding: 15px 0 12px; gap: 12px; }
+      .links { width: 100%; gap: 18px; }
+      .hero { padding: 54px 0 36px; }
+    }
+    @media (max-width: 420px) {
+      .container { width: calc(100% - 28px); }
+      .brand { font-size: 15px; }
+      .links { gap: 15px; font-size: 13px; }
+    }
   </style>
   <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
   <script defer src="/assets/global.js"></script>
 </head>
 <body>
+  <a href="#main" class="sr-only">Skip to content</a>
   <header>
     <nav class="container nav" aria-label="Main">
       <a href="/" class="brand" aria-label="Home">
-        <img src="216722720.png" alt="ToppyMicroServices logo" class="brand-logo" width="28" height="28" decoding="async" />
-        <span>ToppyMicroServices OÜ</span>
+        <img src="216722720.png" alt="" class="brand-logo" width="32" height="32" decoding="async" />
+        <span>ToppyMicroServices</span>
       </a>
       <div class="links">
-        <a href="/">Home</a>
+        <a href="/#work">Work</a>
         <a href="/#research">Research</a>
-        <a href="/contact.html">Contact</a>
+        <a href="/news.html" aria-current="page">News</a>
+        <a href="/#contact">Company</a>
       </div>
     </nav>
   </header>
 
-  <main class="container">
+  <main id="main" class="container">
     <section class="hero" aria-label="News">
-      <p class="eyebrow">News</p>
+      <p class="eyebrow">Releases &amp; research</p>
       <h1>News</h1>
     </section>
 
-    <section aria-label="News items">
+    <section class="news-list" aria-label="News items">
       <article class="news-item">
-        <time datetime="2026-07">Jul,2026</time>
-        <h2>Agent-to-Agent RFC quizzes added</h2>
-        <p>English and Japanese quizzes for 11 RFCs related to Agent-to-Agent protocol design are now available in the <a href="/education/rfc_quizzes.html">RFC quiz collection</a>.</p>
+        <time datetime="2026-09-02">September 2, 2026</time>
+        <h2>LaTeX Workspace Security v11.4.1</h2>
+        <p>The VS Code extension pairs manual container builds with an integrated PDF viewer. This release includes an installable VSIX and a software bill of materials. It is an independent fork of LaTeX Workshop.</p>
+        <a class="source-link" href="https://github.com/thinksyncs/LaTeX-Secure-Workspace/releases/tag/v11.4.1" target="_blank" rel="noopener noreferrer">Release notes and files</a>
       </article>
 
       <article class="news-item">
-        <time datetime="2026-07">Jul,2026</time>
-        <h2>ICML 2026 workshop participation</h2>
-        <p>Our research engineer will participate in the EIML workshop at ICML 2026 in Seoul with a poster.</p>
+        <time datetime="2026-07">July 2026</time>
+        <h2>Poster accepted at the EIML workshop, ICML 2026</h2>
+        <p>Our founder’s paper, “Stable Miscalibration in Large Language Models: A Practical View of High-Confidence Errors,” is listed among the accepted posters for the July 10 workshop in Seoul.</p>
+        <a class="source-link" href="https://sites.google.com/view/eimlicml2026/accepted-papers_1" target="_blank" rel="noopener noreferrer">Official workshop listing</a>
+      </article>
+
+      <article class="news-item">
+        <time datetime="2026-07">July 2026</time>
+        <h2>Agent-to-Agent RFC quizzes added</h2>
+        <p>Quizzes covering 11 RFCs for Agent-to-Agent protocol design joined the collection, with explanations in English and Japanese.</p>
+        <a class="source-link" href="/education/rfc_quizzes.html">RFC learning guide</a>
       </article>
     </section>
   </main>
