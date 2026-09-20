@@ -26,9 +26,11 @@ The README is written for readers who want to understand the site structure, int
 ## Overview
 This repository hosts the static website for **ToppyMicroServices OÜ**, deployed via GitHub Pages.
 
-The homepage features software for agent authorization, vision-model evaluation, and developer workflows. It links to public source code and distribution pages, alongside the founder's research and English and Japanese RFC learning materials.
+The homepage puts core R&D first: Agents Secure Binding, YOLOZU, and mAI Economy, with Thermo-Credit nested as its measurement work. Each project shows its scope, current maturity, and links to the available work. Existing software is distinguished from planned experiments.
 
-Featured software: Agents Secure Binding, YOLOZU, LaTeX Workspace Security, and Beads Git Graph. The two extensions retain their LaTeX Workshop and Git Graph attribution. Research notes and experimental profiles are not presented as adopted standards or production guarantees.
+Public resources follow the core projects: the founder's workshop poster and the Japanese-language Observatory. LaTeX Workspace Security, Beads Git Graph, RFC learning materials, and AuditLoop remain discoverable through a disclosure. The two extensions retain their LaTeX Workshop and Git Graph attribution. Research notes and experimental profiles are not presented as adopted standards or production guarantees.
+
+Observatory's public link belongs with the resources; its sign-in-required administration link stays in the footer. Listing observations are not confirmed breaches. YOLOZU's detailed commands and schemas are reached through its documentation hub, not separate homepage cards.
 
 ## Public Pages
 The site consists of standalone product, research, education, and policy pages.
