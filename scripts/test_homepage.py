@@ -40,10 +40,18 @@ class HomepageTests(unittest.TestCase):
         self.assertNotIn(admin, main)
         self.assertIn(admin, footer)
         self.assertNotIn(public, footer)
-        for href in (public, admin):
+        self.assertIn("Observatory admin (Japanese only; sign-in required)", footer)
+        for href in (public, public + "research.html", admin):
             links = [a for a in self.page.select("a") if a.get("href") == href]
             self.assertEqual(len(links), 1)
             self.assertEqual(links[0].get("hreflang"), "ja")
+
+    def test_observatory_leads_resources_without_claiming_confirmed_breaches(self):
+        resources = self.html.split('<section id="publications"', 1)[1].split("</section>", 1)[0]
+        self.assertIn('id="observatory"', resources)
+        self.assertLess(resources.index("Ransomware Observatory"), resources.index("High-confidence errors"))
+        self.assertIn("observation history", resources)
+        self.assertIn("A listing is a claim, not confirmation of a breach.", resources)
 
     def test_local_links_and_external_link_attributes(self):
         for link in self.page.select("a"):
