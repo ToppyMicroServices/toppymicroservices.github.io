@@ -41,10 +41,16 @@ class HomepageTests(unittest.TestCase):
         self.assertIn(admin, footer)
         self.assertNotIn(public, footer)
         self.assertIn("Observatory admin (Japanese only; sign-in required)", footer)
-        for href in (public, public + "research.html", admin):
+        for href in (public, admin):
             links = [a for a in self.page.select("a") if a.get("href") == href]
             self.assertEqual(len(links), 1)
             self.assertEqual(links[0].get("hreflang"), "ja")
+
+    def test_withdrawn_observatory_notes_are_not_linked(self):
+        for name in ("index.html", "README.md", "llms.txt", "llms-full.txt"):
+            with self.subTest(name=name):
+                text = (ROOT / name).read_text(encoding="utf-8")
+                self.assertNotIn("https://observatory.toppymicros.com/research", text)
 
     def test_observatory_leads_resources_without_claiming_confirmed_breaches(self):
         resources = self.html.split('<section id="publications"', 1)[1].split("</section>", 1)[0]
