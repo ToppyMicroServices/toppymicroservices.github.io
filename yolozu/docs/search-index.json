@@ -14,6 +14,13 @@
     "title": "30-minute path"
   },
   {
+    "href": "agents.html",
+    "kind": "guide",
+    "search_text": "LLM agents ChatGPT OpenAI Claude MCP install discovery capabilities llms.txt Use YOLOZU when you need to validate existing vision predictions, evaluate them against labels, or inspect bounded local MCP capabilities. Check a predictions JSON against the predictions interface contract before evaluation. Evaluate existing detections against a labeled dataset with a fixed protocol and inspect the resulting evidence. Integrate the typed Python API or discover local MCP tools and their input schemas before invoking them.",
+    "summary": "Use YOLOZU when you need to validate existing vision predictions, evaluate them against labels, or inspect bounded local MCP capabilities.",
+    "title": "Use YOLOZU with an LLM or agent"
+  },
+  {
     "href": "start.html#python-api-title",
     "kind": "api",
     "search_text": "python api evaluate_coco typed strict The stable yolozu.api surface returns typed results and machine-readable exceptions without launching a subprocess or changing the working directory.",
@@ -152,6 +159,13 @@
     "search_text": "calibrate_scores Temperature-scale detection scores to improve mAP proxy on a fixed subset (no NMS). stable tools/calibrate_scores.py --dataset --predictions --output --output-report --output-artifact --split --temperatures --min-score --max-score python3 tools/calibrate_scores.py --dataset data/coco128 --predictions reports/predictions.json --output reports/predictions_calibrated.json --output-report reports/calibration_report.json",
     "summary": "Temperature-scale detection scores to improve mAP proxy on a fixed subset (no NMS).",
     "title": "calibrate_scores"
+  },
+  {
+    "href": "commands.html#tool-cancel-image-job",
+    "kind": "command",
+    "search_text": "cancel_image_job Cancel queued image work or stop a running owned process; release retained assets after termination and preserve tenant rate limits. experimental yolozu/integrations/mcp_server.py  Call the cancel_image_job MCP tool with a queued or running job_id.",
+    "summary": "Cancel queued image work or stop a running owned process; release retained assets after termination and preserve tenant rate limits.",
+    "title": "cancel_image_job"
   },
   {
     "href": "commands.html#tool-check-golden-compatibility",
@@ -541,9 +555,16 @@
   {
     "href": "commands.html#tool-generate-web-docs",
     "kind": "command",
-    "search_text": "generate_web_docs Safely generate searchable onboarding web docs from repository-local SSOT sources, validated URLs, schemas, and curated evidence. stable tools/generate_web_docs.py --manifest --schemas --content --output --check --json python3 tools/generate_web_docs.py python3 tools/generate_web_docs.py --check --json",
-    "summary": "Safely generate searchable onboarding web docs from repository-local SSOT sources, validated URLs, schemas, and curated evidence.",
+    "search_text": "generate_web_docs Safely generate searchable web docs and LLM discovery/onboarding files from repository-local SSOT sources, schemas, and curated evidence. stable tools/generate_web_docs.py --manifest --schemas --content --output --check --json python3 tools/generate_web_docs.py python3 tools/generate_web_docs.py --check --json",
+    "summary": "Safely generate searchable web docs and LLM discovery/onboarding files from repository-local SSOT sources, schemas, and curated evidence.",
     "title": "generate_web_docs"
+  },
+  {
+    "href": "commands.html#tool-get-image-job",
+    "kind": "command",
+    "search_text": "get_image_job Return bounded status and result data for one opaque image job, enforcing tenant polling and expiry limits without exposing internal paths. experimental yolozu/integrations/mcp_server.py  Call the get_image_job MCP tool with the opaque job_id returned by submit_image_job.",
+    "summary": "Return bounded status and result data for one opaque image job, enforcing tenant polling and expiry limits without exposing internal paths.",
+    "title": "get_image_job"
   },
   {
     "href": "commands.html#tool-gpu-validation-preflight",
@@ -558,6 +579,20 @@
     "search_text": "hpo_sweep Run a configurable parameter sweep (grid or list) and emit JSONL/CSV/MD results. stable tools/hpo_sweep.py --config --dry-run --max-runs --resume python3 tools/hpo_sweep.py --config docs/hpo_sweep_example.json --dry-run",
     "summary": "Run a configurable parameter sweep (grid or list) and emit JSONL/CSV/MD results.",
     "title": "hpo_sweep"
+  },
+  {
+    "href": "commands.html#tool-image-service-capabilities",
+    "kind": "command",
+    "search_text": "image_service_capabilities Describe image-service capacity, per-60-second request limits, retention, and isolation boundaries without selecting or executing a model. experimental yolozu/integrations/mcp_server.py  Call the image_service_capabilities MCP tool before uploading an image.",
+    "summary": "Describe image-service capacity, per-60-second request limits, retention, and isolation boundaries without selecting or executing a model.",
+    "title": "image_service_capabilities"
+  },
+  {
+    "href": "commands.html#tool-image-service-plugin-client",
+    "kind": "command",
+    "search_text": "image_service_plugin_client Send one user-selected local image through a temporary bounded stdio MCP session; preview by default, preserve abstention, and remove temporary image/job data on normal exit. experimental plugins/yolozu-image-service/scripts/image_service_client.py --help --capabilities --image --class --execute --timeout python3 plugins/yolozu-image-service/scripts/image_service_client.py --help python3 plugins/yolozu-image-service/scripts/image_service_client.py --capabilities python3 plugins/yolozu-image-service/scripts/image_service_client.py --image data/smoke/images/val/000000000009.jpg --class cat",
+    "summary": "Send one user-selected local image through a temporary bounded stdio MCP session; preview by default, preserve abstention, and remove temporary image/job data on normal exit.",
+    "title": "image_service_plugin_client"
   },
   {
     "href": "commands.html#tool-import-yolo-data-yaml",
@@ -658,6 +693,13 @@
     "title": "prepare_external_runtime_smoke_datasets"
   },
   {
+    "href": "commands.html#tool-prepare-image-service-plugin",
+    "kind": "command",
+    "search_text": "prepare_image_service_plugin Prepare a non-overwriting local OpenAI plugin copy after checking the selected installed runtime's five-tool MCP surface; do not install dependencies, register a marketplace, or qualify a model. experimental tools/prepare_image_service_plugin.py --help --output --python python3 tools/prepare_image_service_plugin.py --help python3 tools/prepare_image_service_plugin.py --python .venv/bin/python --output /tmp/yolozu-staging/plugins/yolozu-image-service",
+    "summary": "Prepare a non-overwriting local OpenAI plugin copy after checking the selected installed runtime's five-tool MCP surface; do not install dependencies, register a marketplace, or qualify a model.",
+    "title": "prepare_image_service_plugin"
+  },
+  {
     "href": "commands.html#tool-prepare-keypoints-dataset",
     "kind": "command",
     "search_text": "prepare_keypoints_dataset Prepare keypoints dataset in one command (auto-detect YOLO Pose or COCO keypoints) and emit YOLOZU-ready dataset wrapper. stable tools/prepare_keypoints_dataset.py --source --out --list-formats --format --split --num-keypoints --keypoint-names --annotations --images-dir --out-split --min-kps --max-images --link-images --category-id --category-name --class-id --cvat-images-dir python3 tools/prepare_keypoints_dataset.py --source /path/to/export --format auto --out data/keypoints_dataset python3 tools/prepare_keypoints_dataset.py --source /path/to/cvat_export --format cvat_xml --out data/keypoints_dataset",
@@ -712,6 +754,13 @@
     "search_text": "publish_benchmark_table Generate official benchmark publication table (JSON+Markdown) from benchmark reports with run-id traceability. stable tools/publish_benchmark_table.py --report --output-json --output-md --title --cadence --protocol-id --source-command --publication-run-id python3 tools/publish_benchmark_table.py --report reports/benchmark_latency.json --output-json reports/benchmark_table.json --output-md reports/benchmark_table.md --source-command \"python3 tools/benchmark_latency.py --config configs/benchmark_latency_example.json\"",
     "summary": "Generate official benchmark publication table (JSON+Markdown) from benchmark reports with run-id traceability.",
     "title": "publish_benchmark_table"
+  },
+  {
+    "href": "commands.html#tool-put-image-asset",
+    "kind": "command",
+    "search_text": "put_image_asset Rate-limit, decode, validate, and privately store one bounded image without accepting a filesystem path or remote URL. experimental yolozu/integrations/mcp_server.py   Call the put_image_asset MCP tool with strict base64 and its decoded JPEG, PNG, or WebP media type.",
+    "summary": "Rate-limit, decode, validate, and privately store one bounded image without accepting a filesystem path or remote URL.",
+    "title": "put_image_asset"
   },
   {
     "href": "commands.html#tool-qualify-artifact-research",
@@ -835,8 +884,8 @@
   {
     "href": "commands.html#tool-run-mcp-server",
     "kind": "command",
-    "search_text": "run_mcp_server Run the YOLOZU MCP stdio server, expose canonical live tool ids and filtered packaged discovery, and provide typed TTT/CTTA export jobs that reject arbitrary extra args and require status=full checkpoint preflight. stable tools/run_mcp_server.py --transport --manifest --print-tools --guaranteed --supported --maturity --tag --ids-only --sample-generate-config --sample-review-config --workspace-root yolozu-mcp yolozu-mcp --print-tools --guaranteed --ids-only yolozu-mcp --print-tools --supported --ids-only yolozu-mcp --print-tools --ids-only --maturity stable --tag validation yolozu-mcp --sample-generate-config > reports/ai_generate_config.json && yolozu-mcp --sample-review-config reports/ai_generate_config.json",
-    "summary": "Run the YOLOZU MCP stdio server, expose canonical live tool ids and filtered packaged discovery, and provide typed TTT/CTTA export jobs that reject arbitrary extra args and require status=full checkpoint preflight.",
+    "search_text": "run_mcp_server Run the YOLOZU MCP server over stdio or Streamable HTTP with bounded image-service tools, exclusive tenant ownership, cancellable process jobs, rate limits, and idle-time retention cleanup. stable tools/run_mcp_server.py --transport --surface --host --port --http-path --public-url --auth-token-env --tenant-id --retention-seconds --manifest --print-tools --guaranteed --supported --maturity --tag --ids-only --sample-generate-config --sample-review-config --workspace-root yolozu-mcp yolozu-mcp --transport streamable-http --surface image-service --host 127.0.0.1 --port 8000 --http-path /mcp yolozu-mcp --print-tools --guaranteed --ids-only yolozu-mcp --print-tools --supported --ids-only yolozu-mcp --print-tools --ids-only --maturity stable --tag validation yolozu-mcp --sample-generate-config > reports/ai_generate_config.json && yolozu-mcp --sample-review-config reports/ai_generate_config.json",
+    "summary": "Run the YOLOZU MCP server over stdio or Streamable HTTP with bounded image-service tools, exclusive tenant ownership, cancellable process jobs, rate limits, and idle-time retention cleanup.",
     "title": "run_mcp_server"
   },
   {
@@ -908,6 +957,13 @@
     "search_text": "smoke_synthgen Run deterministic SynthGen intake smoke, or generate and qualify a fresh cross-repo handoff with strict QA and loader checks. experimental tools/smoke_synthgen.py --dataset-root --schema-id --predictions --max-samples --output-dir --synthgen-repo --synthgen-python --backend --mode --global-seed --num-train --num-val python3 tools/smoke_synthgen.py --dataset-root data/smoke/synthgen_minishard --output-dir reports ./.venv/bin/python tools/smoke_synthgen.py --synthgen-repo ../YOLOZU-synthgen --output-dir /tmp/yolozu-synthgen-qualification",
     "summary": "Run deterministic SynthGen intake smoke, or generate and qualify a fresh cross-repo handoff with strict QA and loader checks.",
     "title": "smoke_synthgen"
+  },
+  {
+    "href": "commands.html#tool-submit-image-job",
+    "kind": "command",
+    "search_text": "submit_image_job Queue a deadline-bounded cancellable image process using only a qualified registered pipeline or abstention; execution is opt-in and terminal paths release retained assets. experimental yolozu/integrations/mcp_server.py      Call the submit_image_job MCP tool with an asset_id, fixed_classes, and execute=false. Call the submit_image_job MCP tool with execute=true only after approving model execution.",
+    "summary": "Queue a deadline-bounded cancellable image process using only a qualified registered pipeline or abstention; execution is opt-in and terminal paths release retained assets.",
+    "title": "submit_image_job"
   },
   {
     "href": "commands.html#tool-summarize-bop19-pose-evidence",
