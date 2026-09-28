@@ -83,6 +83,25 @@ class HomepageTests(unittest.TestCase):
         self.assertIn("YOLOZU — Vision model evaluation toolkit", names)
         self.assertIn("mAI Economy", names)
 
+    def test_beads_copy_leads_with_local_cross_provider_task_work(self):
+        self.assertIn("Coordinate local tasks across AI providers in VS Code.", self.html)
+        self.assertNotIn("Git history and task dependencies in VS Code.", self.html)
+        for name in ("llms.txt", "llms-full.txt"):
+            with self.subTest(name=name):
+                text = (ROOT / name).read_text(encoding="utf-8")
+                self.assertIn("across AI providers", text)
+
+    def test_pdf_viewer_is_not_promoted_or_indexed(self):
+        for name in ("index.html", "contact.html", "llms.txt", "llms-full.txt", "README.md"):
+            with self.subTest(name=name):
+                text = (ROOT / name).read_text(encoding="utf-8")
+                self.assertNotIn("VSCode PDF Viewer Secure", text)
+        product = Page(ROOT / "products/vscode-pdfviewer-secure/index.html")
+        robots = [attrs for _, attrs in product.elements if attrs.get("name") == "robots"]
+        self.assertEqual(robots[0].get("content"), "noindex,nofollow")
+        sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+        self.assertNotIn("products/vscode-pdfviewer-secure", sitemap)
+
 
 if __name__ == "__main__":
     unittest.main()
