@@ -61,6 +61,16 @@ one designated clone may migrate and push the shared schema; other clones must
 adopt the published database with `bd bootstrap`. Do not independently migrate
 multiple clones.
 
+## Public-Site Editorial Gate
+
+Treat public updates as a curated technical record, not an activity feed.
+
+- Publish a News entry only when it identifies a specific Toppy contribution and links to a released artifact or primary source that readers can inspect.
+- Do not publish routine additions, item counts, beginner summaries, link collections, marketing-only claims, or unreviewed generated text as company updates.
+- Distinguish what is implemented, measured, accepted, planned, and unknown. Do not turn plans or examples into results.
+- New or edited News entries require explicit owner approval. Keep the stable entry ID, copy, and primary-source URL aligned with the approved entry set enforced by `scripts/test_homepage.py`.
+- If the technical value is unclear, keep the material in repository documentation until the contribution and evidence are concrete.
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.

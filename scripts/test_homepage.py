@@ -2,9 +2,61 @@
 
 import json
 import unittest
+from html.parser import HTMLParser
 from urllib.parse import unquote, urlsplit
 
 from test_mai_pages import Page, ROOT
+
+
+class NewsEntries(HTMLParser):
+    """Read the complete visible content of each approved update entry."""
+
+    def __init__(self, text):
+        super().__init__(convert_charrefs=True)
+        self.entries = []
+        self.current = None
+        self.capture_tag = None
+        self.capture_key = None
+        self.feed(text)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "article" and "news-item" in attrs.get("class", "").split():
+            self.current = {"attrs": attrs, "tags": [], "loose_text": []}
+            return
+        if self.current is None:
+            return
+        self.current["tags"].append(tag)
+        if tag in ("time", "h2", "p"):
+            self.capture_tag = tag
+            self.capture_key = tag
+            self.current[tag] = ""
+            self.current[f"{tag}_attrs"] = attrs
+        elif tag == "a":
+            self.capture_tag = tag
+            self.capture_key = "link_text"
+            self.current["link_text"] = ""
+            self.current["link_attrs"] = attrs
+
+    def handle_data(self, data):
+        if self.current is None:
+            return
+        if self.capture_key:
+            self.current[self.capture_key] += data
+        elif data.strip():
+            self.current["loose_text"].append(data.strip())
+
+    def handle_endtag(self, tag):
+        if self.current is None:
+            return
+        if tag == self.capture_tag:
+            self.capture_tag = None
+            self.capture_key = None
+        if tag == "article":
+            for key in ("time", "h2", "p", "link_text"):
+                self.current[key] = " ".join(self.current.get(key, "").split())
+            self.entries.append(self.current)
+            self.current = None
 
 
 class HomepageTests(unittest.TestCase):
@@ -91,8 +143,74 @@ class HomepageTests(unittest.TestCase):
                 text = (ROOT / name).read_text(encoding="utf-8")
                 self.assertIn("across AI providers", text)
 
+    def test_technical_updates_are_approved_and_source_backed(self):
+        text = (ROOT / "news.html").read_text(encoding="utf-8")
+        entries = NewsEntries(text).entries
+        approved = {
+            "yolozu-v4-11-0": {
+                "source": "https://github.com/ToppyMicroServices/YOLOZU/releases/tag/v4.11.0",
+                "datetime": "2026-09-28",
+                "date": "September 28, 2026",
+                "title": "YOLOZU v4.11.0: portable qualification gates",
+                "body": "Release qualification can now run as a reusable GitHub Action from a versioned YAML contract. When a pack is produced, the Action records the decision and uploads the verified Qualification Pack. The optional MCP integration now uses the official Python SDK v2 while retaining legacy-client checks.",
+                "link_text": "Release notes and source",
+            },
+            "beads-git-graph-v0-9-2": {
+                "source": "https://github.com/ToppyMicroServices/beads-git-graph/releases/tag/v0.9.2",
+                "datetime": "2026-09-26",
+                "date": "September 26, 2026",
+                "title": "Beads Git Graph v0.9.2: bounded task execution",
+                "body": "Task execution now limits runtime and captured output for Git, Beads, and helper processes. Provider requests are cancelled when the extension host shuts down, and retained session identifiers are capped.",
+                "link_text": "Release notes and verification",
+            },
+            "eiml-2026-poster": {
+                "source": "https://sites.google.com/view/eimlicml2026/accepted-papers_1",
+                "datetime": "2026-07",
+                "date": "July 2026",
+                "title": "Poster accepted at the EIML workshop, ICML 2026",
+                "body": "Our founder’s paper, “Stable Miscalibration in Large Language Models: A Practical View of High-Confidence Errors,” is listed among the accepted posters for the July 10 workshop in Seoul.",
+                "link_text": "Official workshop listing",
+            },
+        }
+        self.assertEqual(len(entries), len(approved))
+        self.assertEqual({entry["attrs"].get("data-entry-id") for entry in entries}, set(approved))
+        self.assertIn("We publish an update only when readers can inspect the released artifact or primary source.", text)
+        for entry_id, expected in approved.items():
+            with self.subTest(entry_id=entry_id):
+                entry = next(item for item in entries if item["attrs"].get("data-entry-id") == entry_id)
+                self.assertEqual(entry["tags"], ["time", "h2", "p", "a"])
+                self.assertEqual(entry["loose_text"], [])
+                self.assertEqual(entry["attrs"].get("data-primary-source"), expected["source"])
+                self.assertEqual(entry["time_attrs"], {"datetime": expected["datetime"]})
+                self.assertEqual(entry["time"], expected["date"])
+                self.assertEqual(entry["h2"], expected["title"])
+                self.assertEqual(entry["p"], expected["body"])
+                self.assertEqual(entry["link_text"], expected["link_text"])
+                self.assertEqual(entry["link_attrs"].get("href"), expected["source"])
+                self.assertEqual(entry["link_attrs"].get("target"), "_blank")
+                self.assertEqual(entry["link_attrs"].get("class"), "source-link")
+                self.assertTrue({"noopener", "noreferrer"} <= set(entry["link_attrs"].get("rel", "").split()))
+        for low_signal in ("Agent-to-Agent RFC quizzes added", "LaTeX Workspace Security", "integrated PDF viewer"):
+            self.assertNotIn(low_signal, text)
+
+    def test_unsubstantiated_supporting_work_is_not_promoted(self):
+        for name in ("index.html", "news.html", "llms.txt", "llms-full.txt", "README.md"):
+            with self.subTest(name=name):
+                text = (ROOT / name).read_text(encoding="utf-8")
+                self.assertNotIn("LaTeX Workspace Security", text)
+                self.assertNotIn("AuditLoop", text)
+        auditloop = Page(ROOT / "auditloop.html")
+        robots = [attrs for _, attrs in auditloop.elements if attrs.get("name") == "robots"]
+        self.assertEqual(robots[0].get("content"), "noindex,nofollow")
+        sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+        self.assertNotIn("auditloop.html", sitemap)
+
+    def test_deployment_runs_public_content_checks(self):
+        workflow = (ROOT / ".github/workflows/static.yml").read_text(encoding="utf-8")
+        self.assertIn("python3 -m unittest discover -s scripts -p 'test_*.py'", workflow)
+
     def test_pdf_viewer_is_not_promoted_or_indexed(self):
-        for name in ("index.html", "contact.html", "llms.txt", "llms-full.txt", "README.md"):
+        for name in ("index.html", "news.html", "contact.html", "llms.txt", "llms-full.txt", "README.md"):
             with self.subTest(name=name):
                 text = (ROOT / name).read_text(encoding="utf-8")
                 self.assertNotIn("VSCode PDF Viewer Secure", text)
