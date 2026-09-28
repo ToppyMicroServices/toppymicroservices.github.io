@@ -14,7 +14,7 @@ The README is written for readers who want to understand the site structure, int
   - [Contents](#contents)
   - [Overview](#overview)
   - [Public Pages](#public-pages)
-  - [Concept Notes](#concept-notes)
+  - [Publication Standard](#publication-standard)
   - [Interactive Quizzes](#interactive-quizzes)
   - [Research References](#research-references)
   - [Compliance & Governance Mapping](#compliance--governance-mapping)
@@ -28,7 +28,7 @@ This repository hosts the static website for **ToppyMicroServices OÜ**, deploye
 
 The homepage puts core R&D first: Agents Secure Binding, YOLOZU, and mAI Economy, with Thermo-Credit nested as its measurement work. Each project shows its scope, current maturity, and links to the available work. Existing software is distinguished from planned experiments.
 
-Public resources follow the core projects: the Japanese-language Ransomware Observatory and the founder's workshop poster. LaTeX Workspace Security, Beads Git Graph, RFC learning materials, and AuditLoop remain discoverable through a disclosure. The two extensions retain their LaTeX Workshop and Git Graph attribution. Experimental profiles are not presented as adopted standards or production guarantees.
+Public resources follow the core projects: the Japanese-language Ransomware Observatory and the founder's workshop poster. Beads Git Graph and RFC learning materials remain discoverable through a disclosure. Experimental profiles are not presented as adopted standards or production guarantees.
 
 Observatory's listings lead the resources; its sign-in-required administration link stays in the footer. The copy emphasizes observation history and distinguishes listing claims from confirmed breaches. YOLOZU's detailed commands and schemas are reached through its documentation hub, not separate homepage cards.
 
@@ -40,7 +40,7 @@ Primary site: https://toppymicroservices.github.io (CNAME → https://www.toppym
 Selected standalone pages:
 
 - `index.html` — selected public software, research, learning materials, and company information
-- `news.html` — dated releases and research updates, linked to primary sources
+- `news.html` — selected technical releases and research results, linked to primary sources
 - `agents-secure-binding.html` — ASB technical introduction and source links
 - `yolozu/` — vision-prediction validation and evaluation toolkit
 - `education/rfc_quizzes.html` and `education/rfc_quizzes_ja.html` — RFC learning guides and quizzes
@@ -51,10 +51,12 @@ Selected standalone pages:
 - `education/quiz_finance_terms.html` — Finance terminology quiz (JA)
 - `education/quiz_finance_terms_en.html` — Finance terminology quiz (EN)
 
-## Concept Notes
-Concept notes are early-stage research notes and design documents published as static pages.
+## Publication Standard
+The public site is selective. A technical update must identify a specific Toppy contribution that readers can inspect through a released artifact or primary source.
 
-These pages describe research ideas and assumptions. They are not operational products, policy tools, or production systems.
+Eligible updates include material engineering releases, reproducible measurements, accepted research, and technical notes that state their method, evidence, maturity, and limits. Routine additions, item counts, generic explainers, marketing-only summaries, and unreviewed generated text are not company updates. Planned work must be labeled and tied to a concrete research plan.
+
+Every entry in `news.html` has a stable ID and an external primary source. New or edited entries require explicit owner approval and an intentional update to the approved entry set and copy in `scripts/test_homepage.py`. The same test runs before deployment.
 
 ## Interactive Quizzes
 This repository includes client-side quizzes for RFCs, protocol design, and finance terminology in Japanese and English.
@@ -70,8 +72,7 @@ These quizzes are not designed for certifications or rote memorization. Their pu
 
 **Question policy**
 - Avoid memorization of commands/flags/options as a primary goal (AI can look these up). Instead, test the meanings behind them: concepts, design philosophy, thought frameworks, key terms, metric meanings, common misconceptions, and typical errors.
-- When a new reference URL or a new small theme is added, create **10 questions**.
-- For a large theme, create **25 questions**.
+- Let the question count follow the concepts that need review. There is no quota; do not add questions merely to increase the count.
 
 **Explanation policy (must)**
 - Explanations are learning-first: a reader should be able to study by reading them.
@@ -90,7 +91,7 @@ Some pages reference external research outputs associated with ToppyMicroService
 
 - EIML workshop at ICML 2026: [official accepted-papers listing](https://sites.google.com/view/eimlicml2026/accepted-papers_1), including the founder's accepted poster. This is workshop acceptance, not an ICML main-conference paper or evidence of attendance.
 - Related preprint: https://arxiv.org/abs/2510.14925. Keep this source distinct from the workshop listing; the listing does not link a paper version.
-- Related artifacts include AuditLoop evaluation metrics and Thermo-Credit indicators, which are referenced from the site pages where relevant
+- Thermo-Credit indicators are referenced from the research pages where their current scope and limits are stated.
 
 ## Compliance & Governance Mapping
 Selected pages reference external frameworks such as the EU AI Act, ISO/IEC 42001, and the NIST AI Risk Management Framework.
