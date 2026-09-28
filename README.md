@@ -45,7 +45,6 @@ Selected standalone pages:
 - `yolozu/` — vision-prediction validation and evaluation toolkit
 - `education/rfc_quizzes.html` and `education/rfc_quizzes_ja.html` — RFC learning guides and quizzes
 - `contact.html` — business contact and product support information
-- `products/vscode-pdfviewer-secure/` — VSCode PDF Viewer Secure product page
 - `Economy_AI_ERA.html` — mAI Economy / Window Guidance as Code (EN): credit-based research program and next experiment
 - `Economy_AI_ERA_ja.html` — 同上（JA）
 - `theory.html` — current Thermo-Credit measurement scope and the earlier analogy note
