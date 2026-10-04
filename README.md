@@ -40,6 +40,7 @@ Primary site: https://toppymicroservices.github.io (CNAME → https://www.toppym
 Selected standalone pages:
 
 - `index.html` — selected public software, research, learning materials, and company information
+- `zk-license-demo.html` — Japanese public explanation of identity-data minimization and retention guidance
 - `news.html` — selected technical releases and research results, linked to primary sources
 - `agents-secure-binding.html` — ASB technical introduction and source links
 - `yolozu/` — vision-prediction validation and evaluation toolkit

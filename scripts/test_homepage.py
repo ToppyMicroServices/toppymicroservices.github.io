@@ -147,6 +147,14 @@ class HomepageTests(unittest.TestCase):
         text = (ROOT / "news.html").read_text(encoding="utf-8")
         entries = NewsEntries(text).entries
         approved = {
+            "zk-license-demo-2026-10": {
+                "source": "https://github.com/ToppyMicroServices/zk-license-demo",
+                "datetime": "2026-10-04",
+                "date": "October 4, 2026",
+                "title": "ZK license demo: verify conditions with less identity data",
+                "body": 'Toppy has published a synthetic-credential demo that checks driving-entitlement and expiry conditions without disclosing identity attributes. It includes a readable verifier policy and tests for tampering and replay rejection. This uses existing AnonCreds technology and does not authenticate real Japanese driving licences.',
+                "link_text": "Source and verification",
+            },
             "yolozu-v4-11-0": {
                 "source": "https://github.com/ToppyMicroServices/YOLOZU/releases/tag/v4.11.0",
                 "datetime": "2026-09-28",
