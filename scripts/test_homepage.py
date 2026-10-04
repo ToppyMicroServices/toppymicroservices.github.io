@@ -152,7 +152,7 @@ class HomepageTests(unittest.TestCase):
                 "datetime": "2026-10-04",
                 "date": "October 4, 2026",
                 "title": "ZK license demo: verify conditions with less identity data",
-                "body": 'Toppy has published a synthetic-credential demo that checks driving-entitlement and expiry conditions without disclosing identity attributes. It includes a readable verifier policy and tests for tampering and replay rejection. This uses existing AnonCreds technology and does not authenticate real Japanese driving licences.',
+                "body": 'Toppy has published a demonstration of checking driving-entitlement and expiry conditions without collecting names, addresses or licence numbers. Built with fictional credentials, it includes proof verification and replay rejection, alongside practical guidance for retaining and managing identity data.',
                 "link_text": "Source and verification",
             },
             "yolozu-v4-11-0": {
