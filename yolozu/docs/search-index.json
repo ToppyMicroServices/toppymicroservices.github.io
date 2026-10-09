@@ -70,6 +70,13 @@
     "title": "adapter_parity_suite"
   },
   {
+    "href": "commands.html#tool-adapter-sdk",
+    "kind": "command",
+    "search_text": "adapter_sdk Discover installed yolozu.adapters.v1 metadata without imports, then explicitly load and check a reviewed adapter plugin against the Stable predictions interface contract. stable yolozu/cli.py   --config --records --allow-plugin-load python3 -m yolozu adapter list python3 -m yolozu adapter test dummy --allow-plugin-load python3 -m yolozu adapter --help",
+    "summary": "Discover installed yolozu.adapters.v1 metadata without imports, then explicitly load and check a reviewed adapter plugin against the Stable predictions interface contract.",
+    "title": "adapter_sdk"
+  },
+  {
     "href": "commands.html#tool-announce-release",
     "kind": "command",
     "search_text": "announce_release Generate (and optionally post) release announcement bundle for LinkedIn/X/Reddit from GitHub release event payload. stable tools/announce_release.py --event-json --out-dir --post --platform --strict-post --reddit-subreddit --reddit-kind --x-max-len python3 tools/announce_release.py --out-dir reports/announce python3 tools/announce_release.py --out-dir reports/announce --post --strict-post",
@@ -714,6 +721,13 @@
     "title": "prepare_real_multitask_fewshot"
   },
   {
+    "href": "commands.html#tool-prepare-torchvision-maskrcnn",
+    "kind": "command",
+    "search_text": "prepare_torchvision_maskrcnn Verify and locally convert one exact user-provided Torchvision checkpoint without downloading, relicensing, or redistributing model bytes. experimental yolozu/cli.py --checkpoint --artifact-root --accept-upstream-terms python3 -m yolozu prepare-torchvision-maskrcnn --checkpoint ~/.cache/torch/hub/checkpoints/maskrcnn_resnet50_fpn_v2_coco-73cbd019.pth --accept-upstream-terms python3 -m yolozu prepare-torchvision-maskrcnn --help",
+    "summary": "Verify and locally convert one exact user-provided Torchvision checkpoint without downloading, relicensing, or redistributing model bytes.",
+    "title": "prepare_torchvision_maskrcnn"
+  },
+  {
     "href": "commands.html#tool-prepare-ttt-domain-shift-target",
     "kind": "command",
     "search_text": "prepare_ttt_domain_shift_target Prepare a deterministic, provenance-hashed domain-shift target and recipe while refusing source/output overlap, symlink outputs, protected roots, and unowned replacement. research scripts/prepare_ttt_domain_shift_target.py --dataset-root --split --out --corruption --severity --seed --max-images --copy-labels --no-copy-labels --force --recipe-out python3 scripts/prepare_ttt_domain_shift_target.py --dataset-root data/smoke --split val --out reports/domain_shift/smoke_gaussian_blur_s2 --corruption gaussian_blur --severity 2 --seed 2026 --force",
@@ -779,9 +793,16 @@
   {
     "href": "commands.html#tool-qualify-image-pipeline",
     "kind": "command",
-    "search_text": "qualify_image_pipeline Measure one exact registered local image pipeline with pinned inputs/assets, bounded child-process cancellation, exact aggregates, and atomic unactivated evidence output. experimental tools/qualify_image_pipeline.py --job --input --bundle-id --bundle-version --output-dir --workspace --artifact-root --ground-truth --evaluator-id --channel --qualification-timeout-seconds --smoke --force python3 tools/qualify_image_pipeline.py --job configs/examples/adaptive_image_job.json --input data/smoke/images/val --bundle-id example --bundle-version 1 --output-dir reports/image_pipeline_qualification python3 tools/qualify_image_pipeline.py --help",
-    "summary": "Measure one exact registered local image pipeline with pinned inputs/assets, bounded child-process cancellation, exact aggregates, and atomic unactivated evidence output.",
+    "search_text": "qualify_image_pipeline Measure one exact registered local image pipeline, including a qualification-only Candidate, with pinned inputs/assets, a code-owned local COCO evaluator, bounded child-process cancellation, exact aggregates, and atomic unactivated evidence output. experimental tools/qualify_image_pipeline.py --job --input --bundle-id --bundle-version --output-dir --workspace --artifact-root --ground-truth --evaluator-id --channel --qualification-timeout-seconds --smoke --force python3 tools/qualify_image_pipeline.py --job configs/qualification/torchvision_maskrcnn_coco16_cpu.json --input data/coco/images/val2017 --bundle-id torchvision-maskrcnn-r50-fpn-v2-coco-cpu --bundle-version 2026-09-26-local1 --channel Candidate --ground-truth data/coco/annotations/instances_val2017_full.json --evaluator-id coco_bbox_simple_map_v1 --output-dir reports/image_pipeline_qualification python3 tools/qualify_image_pipeline.py --help",
+    "summary": "Measure one exact registered local image pipeline, including a qualification-only Candidate, with pinned inputs/assets, a code-owned local COCO evaluator, bounded child-process cancellation, exact aggregates, and atomic unactivated evidence output.",
     "title": "qualify_image_pipeline"
+  },
+  {
+    "href": "commands.html#tool-qualify-release",
+    "kind": "command",
+    "search_text": "qualify_release Create, verify, and compare portable release qualification packs from direct options or one strict YAML spec, with fail-closed pass, hold, and fail decisions over the Stable COCO evaluation engine. stable yolozu/cli.py  --spec --dataset --predictions --output-dir --baseline-predictions --split --bbox-format --max-images --dry-run --min-map50-95 --max-map50-95-drop --force python3 -m yolozu qualify-release create --spec examples/release_qualification_action/yolozu.yaml python3 -m yolozu qualify-release create --dataset data/smoke --predictions data/smoke/predictions/predictions_dummy.json --output-dir reports/qualification_smoke --split val --max-images 2 --dry-run python3 -m yolozu qualify-release verify reports/qualification_smoke python3 -m yolozu qualify-release --help",
+    "summary": "Create, verify, and compare portable release qualification packs from direct options or one strict YAML spec, with fail-closed pass, hold, and fail decisions over the Stable COCO evaluation engine.",
+    "title": "qualify_release"
   },
   {
     "href": "commands.html#tool-qualify-sdft-continual",
@@ -1365,6 +1386,20 @@
     "title": "Reference Adapter Regression Report"
   },
   {
+    "href": "schemas.html#schema-release-qualification-schema",
+    "kind": "schema",
+    "search_text": "YOLOZU release qualification decision Checked-in YOLOZU JSON Schema. checks decision evaluator_version limitations pack_format passed protocol_fingerprint request_fingerprint schema_version docs/schemas/release_qualification.schema.json",
+    "summary": "Checked-in YOLOZU JSON Schema.",
+    "title": "YOLOZU release qualification decision"
+  },
+  {
+    "href": "schemas.html#schema-release-qualification-spec-schema",
+    "kind": "schema",
+    "search_text": "YOLOZU release qualification spec Checked-in YOLOZU JSON Schema. baseline_predictions dataset evaluation force output_dir predictions schema_version thresholds docs/schemas/release_qualification_spec.schema.json",
+    "summary": "Checked-in YOLOZU JSON Schema.",
+    "title": "YOLOZU release qualification spec"
+  },
+  {
     "href": "schemas.html#schema-research-lane-report-schema",
     "kind": "schema",
     "search_text": "YOLOZU Research Lane Report Checked-in YOLOZU JSON Schema. kind lane latency_overhead promotion_gate report_artifact research_output_artifact rollback stable_baseline_artifact docs/schemas/research_lane_report.schema.json",
@@ -1545,6 +1580,13 @@
     "search_text": "Instance-segmentation report and overlays stable A checked demo that pairs a JSON metric report with visible mask overlays. instance_seg_demo_report.json overlays/*.png demo_config.json",
     "summary": "A checked demo that pairs a JSON metric report with visible mask overlays.",
     "title": "Instance-segmentation report and overlays"
+  },
+  {
+    "href": "examples.html#example-labeled-first-evaluation",
+    "kind": "example",
+    "search_text": "First COCO evaluation and release gate stable Generate eight visible labeled images with yolozu demo dataset, strictly validate the inputs, and run COCOeval before trying a portable release qualification pack. Known synthetic predictions check the workflow, not model accuracy. labeled_preview.png labeled_sample_coco.json labeled_sample_qualification/qualification.json labeled_sample_qualification/checksums.json",
+    "summary": "Generate eight visible labeled images with yolozu demo dataset, strictly validate the inputs, and run COCOeval before trying a portable release qualification pack. Known synthetic predictions check the workflow, not model accuracy.",
+    "title": "First COCO evaluation and release gate"
   },
   {
     "href": "examples.html#example-external-predictions-bridge",
