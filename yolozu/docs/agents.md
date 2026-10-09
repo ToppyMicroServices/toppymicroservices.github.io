@@ -2,7 +2,7 @@
 
 Use YOLOZU when you need to validate existing vision predictions, evaluate them against labels, or inspect bounded local MCP capabilities.
 
-Source docs version: 4.9.0. docs_version identifies the source checkout, not the installed package or latest PyPI release. Source URLs follow a mutable branch; check source_sha256 and provenance.json for this build. Inspect the installed CLI and MCP schemas before invoking tools.
+Source docs version: 4.11.0. docs_version identifies the source checkout, not the installed package or latest PyPI release. Source URLs follow a mutable branch; check source_sha256 and provenance.json for this build. Inspect the installed CLI and MCP schemas before invoking tools.
 
 ## When to use YOLOZU
 
@@ -76,6 +76,14 @@ Expected: Explain that this guarantee is unavailable and that the default adapti
 
 - [Capability catalog](https://www.toppymicros.com/yolozu/docs/capabilities.json)
 - [LLM index](https://www.toppymicros.com/yolozu/docs/llms.txt)
+
+- [First evaluation with visible labeled inputs](https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/labeled_sample.md)
+
+Install the checked release, generate a sample, strictly validate it, run COCOeval, and try a portable release gate. Synthetic metrics check the workflow.
+
+- [日本語: モデルなしで最初の評価reportを作る](https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/labeled_sample_ja.md)
+
+Japanese instructions for the same generated-sample evaluation and release gate; no model or external dataset download is needed.
 
 - [Installation and dependencies](https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/install.md)
 
