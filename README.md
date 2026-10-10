@@ -28,7 +28,7 @@ This repository hosts the static website for **ToppyMicroServices OÜ**, deploye
 
 The homepage puts core R&D first: Agents Secure Binding, YOLOZU, and mAI Economy, with Thermo-Credit nested as its measurement work. Each project shows its scope, current maturity, and links to the available work. Existing software is distinguished from planned experiments.
 
-Public resources follow the core projects: the Japanese-language Ransomware Observatory and the founder's workshop poster. Beads Git Graph and RFC learning materials remain discoverable through a disclosure. Experimental profiles are not presented as adopted standards or production guarantees.
+Public resources follow the core projects: the Japanese-language Ransomware Observatory, the synthetic identity-data demo, released Beads Git Graph software, and the founder's workshop poster. Only RFC learning materials remain in a disclosure. Experimental profiles are not presented as adopted standards or production guarantees.
 
 Observatory's listings lead the resources; its sign-in-required administration link stays in the footer. The copy emphasizes observation history and distinguishes listing claims from confirmed breaches. YOLOZU's detailed commands and schemas are reached through its documentation hub, not separate homepage cards.
 
@@ -40,7 +40,7 @@ Primary site: https://toppymicroservices.github.io (CNAME → https://www.toppym
 Selected standalone pages:
 
 - `index.html` — selected public software, research, learning materials, and company information
-- `zk-license-demo.html` and `zk-license-demo-en.html` — Japanese and English public explanations of identity-data minimization and retention guidance
+- `zk-license-demo.html` and `zk-license-demo-en.html` — Japanese and English technical explanations of the AnonCreds demo, stored-policy checks and replay rejection
 - `news.html` — selected technical releases and research results, linked to primary sources
 - `agents-secure-binding.html` — ASB technical introduction and source links
 - `yolozu/` — vision-prediction validation and evaluation toolkit
@@ -57,7 +57,7 @@ The public site is selective. A technical update must identify a specific Toppy 
 
 Eligible updates include material engineering releases, reproducible measurements, accepted research, and technical notes that state their method, evidence, maturity, and limits. Routine additions, item counts, generic explainers, marketing-only summaries, and unreviewed generated text are not company updates. Planned work must be labeled and tied to a concrete research plan.
 
-Every entry in `news.html` has a stable ID and an external primary source. New or edited entries require explicit owner approval and an intentional update to the approved entry set and copy in `scripts/test_homepage.py`. The same test runs before deployment.
+Every entry in `news.html` has a stable ID and an external primary source. New or edited entries require explicit owner approval and an intentional update to the approved entry set and copy in `scripts/test_homepage.py`. The same test runs before deployment. It detects changes to the recorded entries; source review and owner approval remain editorial steps.
 
 ## Interactive Quizzes
 This repository includes client-side quizzes for RFCs, protocol design, and finance terminology in Japanese and English.
