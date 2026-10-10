@@ -17,12 +17,13 @@ class NewsEntries(HTMLParser):
         self.current = None
         self.capture_tag = None
         self.capture_key = None
+        self.related_link = None
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if tag == "article" and "news-item" in attrs.get("class", "").split():
-            self.current = {"attrs": attrs, "tags": [], "loose_text": []}
+            self.current = {"attrs": attrs, "tags": [], "loose_text": [], "related_links": []}
             return
         if self.current is None:
             return
@@ -34,14 +35,20 @@ class NewsEntries(HTMLParser):
             self.current[f"{tag}_attrs"] = attrs
         elif tag == "a":
             self.capture_tag = tag
-            self.capture_key = "link_text"
-            self.current["link_text"] = ""
-            self.current["link_attrs"] = attrs
+            if "source-link" in attrs.get("class", "").split():
+                self.capture_key = "link_text"
+                self.current["link_text"] = ""
+                self.current["link_attrs"] = attrs
+            else:
+                self.related_link = {"attrs": attrs, "text": ""}
+                self.current["related_links"].append(self.related_link)
 
     def handle_data(self, data):
         if self.current is None:
             return
-        if self.capture_key:
+        if self.related_link is not None:
+            self.related_link["text"] += data
+        elif self.capture_key:
             self.current[self.capture_key] += data
         elif data.strip():
             self.current["loose_text"].append(data.strip())
@@ -52,11 +59,45 @@ class NewsEntries(HTMLParser):
         if tag == self.capture_tag:
             self.capture_tag = None
             self.capture_key = None
+            self.related_link = None
         if tag == "article":
             for key in ("time", "h2", "p", "link_text"):
                 self.current[key] = " ".join(self.current.get(key, "").split())
+            for link in self.current["related_links"]:
+                link["text"] = " ".join(link["text"].split())
             self.entries.append(self.current)
             self.current = None
+
+
+class NavigationLinks(HTMLParser):
+    """Read labels and destinations from the main navigation link group."""
+
+    def __init__(self, text):
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.links = []
+        self.current = None
+        self.feed(text)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if self.depth:
+            self.depth += 1
+        elif {"links", "top-links"} & set(attrs.get("class", "").split()):
+            self.depth = 1
+        if self.depth and tag == "a":
+            self.current = {"attrs": attrs, "text": ""}
+            self.links.append(self.current)
+
+    def handle_data(self, data):
+        if self.current is not None:
+            self.current["text"] += data
+
+    def handle_endtag(self, tag):
+        if tag == "a":
+            self.current = None
+        if self.depth:
+            self.depth -= 1
 
 
 class HomepageTests(unittest.TestCase):
@@ -80,6 +121,10 @@ class HomepageTests(unittest.TestCase):
         details = self.page.select("details")
         self.assertEqual(len(details), 1)
         self.assertNotIn("open", details[0])
+        folded = self.html.split('<details class="supporting-work">', 1)[1].split("</details>", 1)[0]
+        self.assertNotIn("Beads Git Graph", folded)
+        self.assertIn("RFC learning guide", folded)
+        self.assertIn('id="beads-git-graph"', self.html)
         links = {a["href"] for a in self.page.select("a")}
         for href in ("agents-secure-binding.html", "/yolozu/", "/yolozu/docs/", "Economy_AI_ERA.html", "theory.html", "education/rfc_quizzes.html", "education/rfc_quizzes_ja.html"):
             self.assertIn(href, links)
@@ -136,14 +181,14 @@ class HomepageTests(unittest.TestCase):
         self.assertIn("mAI Economy", names)
 
     def test_beads_copy_leads_with_local_cross_provider_task_work(self):
-        self.assertIn("Coordinate local tasks across AI providers in VS Code.", self.html)
+        self.assertIn("Released VS Code extension for coordinating local tasks across AI providers.", self.html)
         self.assertNotIn("Git history and task dependencies in VS Code.", self.html)
         for name in ("llms.txt", "llms-full.txt"):
             with self.subTest(name=name):
                 text = (ROOT / name).read_text(encoding="utf-8")
                 self.assertIn("across AI providers", text)
 
-    def test_technical_updates_are_approved_and_source_backed(self):
+    def test_technical_updates_match_editorial_record_and_primary_sources(self):
         text = (ROOT / "news.html").read_text(encoding="utf-8")
         entries = NewsEntries(text).entries
         approved = {
@@ -151,9 +196,13 @@ class HomepageTests(unittest.TestCase):
                 "source": "https://github.com/ToppyMicroServices/zk-license-demo",
                 "datetime": "2026-10-04",
                 "date": "October 4, 2026",
-                "title": "ZK license demo: verify conditions with less identity data",
-                "body": 'Toppy has published a demonstration of checking driving-entitlement and expiry conditions without collecting names, addresses or licence numbers. Built with fictional credentials, it includes proof verification and replay rejection, alongside practical guidance for retaining and managing identity data.',
+                "title": "ZK license demo: reject weakened proof conditions",
+                "body": "This synthetic-credential demo uses AnonCreds to check driving entitlement and expiry without disclosing names, addresses or licence numbers. The verifier matches proof conditions to its stored request before cryptographic verification, rejects weakened conditions, and records successful requests to prevent reuse.",
                 "link_text": "Source and verification",
+                "related_links": [
+                    {"attrs": {"href": "zk-license-demo.html", "lang": "ja", "hreflang": "ja"}, "text": "日本語の技術解説"},
+                    {"attrs": {"href": "zk-license-demo-en.html", "lang": "en", "hreflang": "en"}, "text": "English technical explanation"},
+                ],
             },
             "yolozu-v4-11-0": {
                 "source": "https://github.com/ToppyMicroServices/YOLOZU/releases/tag/v4.11.0",
@@ -186,7 +235,11 @@ class HomepageTests(unittest.TestCase):
         for entry_id, expected in approved.items():
             with self.subTest(entry_id=entry_id):
                 entry = next(item for item in entries if item["attrs"].get("data-entry-id") == entry_id)
-                self.assertEqual(entry["tags"], ["time", "h2", "p", "a"])
+                expected_tags = ["time", "h2", "p", "a"]
+                if expected.get("related_links"):
+                    expected_tags += ["div", "a", "a"]
+                self.assertEqual(entry["tags"], expected_tags)
+                self.assertEqual(entry["related_links"], expected.get("related_links", []))
                 self.assertEqual(entry["loose_text"], [])
                 self.assertEqual(entry["attrs"].get("data-primary-source"), expected["source"])
                 self.assertEqual(entry["time_attrs"], {"datetime": expected["datetime"]})
@@ -200,6 +253,37 @@ class HomepageTests(unittest.TestCase):
                 self.assertTrue({"noopener", "noreferrer"} <= set(entry["link_attrs"].get("rel", "").split()))
         for low_signal in ("Agent-to-Agent RFC quizzes added", "LaTeX Workspace Security", "integrated PDF viewer"):
             self.assertNotIn(low_signal, text)
+
+    def test_main_navigation_labels_and_destinations_agree(self):
+        names = (
+            "index.html", "news.html", "contact.html", "agents-secure-binding.html",
+            "zk-license-demo.html", "zk-license-demo-en.html", "Economy_AI_ERA.html",
+            "Economy_AI_ERA_ja.html", "theory.html", "security-policy.html",
+            "privacy-policy.html", "terms-legal-notice.html", "auditloop.html",
+        )
+        expected = [("R&D", "/#work"), ("Resources", "/#publications"),
+                    ("Updates", "/news.html"), ("Company", "/#contact")]
+        for name in names:
+            with self.subTest(page=name):
+                links = NavigationLinks((ROOT / name).read_text(encoding="utf-8")).links
+                actual = [(link["text"].strip(), "/" + link["attrs"]["href"].lstrip("/"))
+                          for link in links[:4]]
+                self.assertEqual(actual, expected)
+                for link in links:
+                    if link["attrs"].get("aria-current") == "page":
+                        self.assertEqual(urlsplit(link["attrs"]["href"]).path, "/" + name)
+
+    def test_asb_flow_keeps_its_steps_accessible(self):
+        page = Page(ROOT / "agents-secure-binding.html")
+        self.assertFalse(any(attrs.get("role") == "img" for _, attrs in page.elements))
+        flows = [attrs for attrs in page.select("section")
+                 if "flow-lane" in attrs.get("class", "").split()]
+        self.assertEqual(len(flows), 2)
+        for attrs in flows:
+            self.assertIn(attrs["aria-labelledby"], page.ids)
+        lists = [attrs for attrs in page.select("ol")
+                 if "flow-steps" in attrs.get("class", "").split()]
+        self.assertEqual(len(lists), 2)
 
     def test_unsubstantiated_supporting_work_is_not_promoted(self):
         for name in ("index.html", "news.html", "llms.txt", "llms-full.txt", "README.md"):

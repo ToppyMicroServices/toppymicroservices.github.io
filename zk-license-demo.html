@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>免許証のコピーではなく、必要な条件の証明を受け取る | Toppy</title>
-  <meta name="description" content="カーシェアの情報流出をきっかけに、本人確認で保持する情報を減らす設計と、保存・管理を見直すための提案を公開します。" />
+  <title>資格情報の条件を、属性値を開示せず検証する | Toppy</title>
+  <meta name="description" content="AnonCredsを使う架空資格情報のデモ。証明内の条件と保存した要求の照合、発行者の信頼設定、一回限りの要求の状態管理を公開しています。" />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#02213b" />
   <meta name="color-scheme" content="dark" />
@@ -16,14 +16,14 @@
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="免許証のコピーではなく、必要な条件の証明を受け取る | Toppy" />
-  <meta property="og:description" content="架空の資格情報を用いた条件確認デモと、本人確認情報の保持・管理を見直すための提案。" />
+  <meta property="og:title" content="資格情報の条件を、属性値を開示せず検証する | Toppy" />
+  <meta property="og:description" content="AnonCredsを使う架空資格情報のデモ。要求した条件の照合と、期限・宛先・セッション・再送の検証。" />
   <meta property="og:url" content="https://www.toppymicros.com/zk-license-demo.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="免許証のコピーではなく、必要な条件の証明を受け取る | Toppy" />
-  <meta name="twitter:description" content="架空の資格情報を用いた条件確認デモと、本人確認情報の保持・管理を見直すための提案。" />
+  <meta name="twitter:title" content="資格情報の条件を、属性値を開示せず検証する | Toppy" />
+  <meta name="twitter:description" content="AnonCredsを使う架空資格情報のデモ。要求した条件の照合と、期限・宛先・セッション・再送の検証。" />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -91,6 +91,9 @@
     .technology-note p { margin-bottom: 0; }
     strong { color: var(--fg); }
     h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.45; letter-spacing: normal; }
+    .article-dates { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; }
+    .article-dates time { margin: 0; font-size: inherit; }
+    @media (max-width: 420px) { h1 { font-size: 26px; } }
   </style>
   <script defer data-domain="toppymicros.com" data-auto="false" src="https://plausible.io/js/script.tag"></script>
   <script defer src="/assets/global.js"></script>
@@ -104,36 +107,31 @@
         <span>ToppyMicroServices</span>
       </a>
       <div class="links">
-        <a href="/#work">Work</a>
-        <a href="/#research">Research</a>
-        <a href="/news.html" aria-current="page">Updates</a>
+        <a href="/#work">R&amp;D</a>
+        <a href="/#publications">Resources</a>
+        <a href="/news.html">Updates</a>
         <a href="/#contact">Company</a>
       </div>
     </nav>
   </header>
 
   <main id="main" class="container">
-<section class="hero"><p class="eyebrow">Toppy / お知らせ</p><h1>免許証のコピーではなく、<br>必要な条件の証明を受け取る</h1><p class="hero-intro"><time datetime="2026-10-04">2026年10月4日</time></p></section>
+<section class="hero"><p class="eyebrow">Technical demo</p><h1>資格情報の条件を、<br>属性値を開示せず検証する</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">2026年10月4日公開</time><span>2026年10月10日更新</span></p></section>
 <article class="explanation">
 <p><a href="zk-license-demo-en.html" lang="en" hreflang="en">Read in English</a></p>
-<p>本人確認に、必要な情報だけを。ToppyMicroServicesは、利用者が渡す情報と事業者が保管する情報を減らすため、ゼロ知識証明を使ったデモを公開しました。架空の資格情報を使い、「普通車の運転資格があり、有効期限が利用予定日以降」という条件を、氏名・住所・免許証番号を開示せずに確認できます。<sup><a href="#technology-note" id="technology-note-reference" aria-label="技術・仕様の脚注">1</a></sup></p>
-<h2>カーシェアの情報流出をきっかけに</h2>
-<p>パーク24は2026年9月29日、タイムズカーの不正アクセスについて、約160万アカウントの運転免許証画像などの本人確認書類情報が漏えいしたと発表しました。<a href="https://www.park24.co.jp/news/2026/09/20260929-1.html" target="_blank" rel="noopener noreferrer">パーク24の発表</a></p>
-<p>預かった情報を守ることに加え、預かる情報そのものを減らす。Toppyは、本人確認の工程からデータの持ち方を見直す設計を提案します。</p>
-<h2>条件を確認する工程で、受け取る情報を減らす</h2>
-<p>例えば、有効期限の条件を確認する工程では、氏名や住所を含む画像全体を受け取らず、条件を満たすという証明を受け取る方法があります。デモでは、信頼する発行者が署名した資格情報を利用者が保持し、そこから証明を作ります。確認する側は、発行者の署名に基づいて、その証明を検証します。</p>
-<p>利用者は、その確認に必要のない個人情報を渡さずに済みます。事業者は、確認のために受け取る情報を絞り、保管やアクセス管理の対象を減らす設計を検討できます。</p>
-<h2>保持と管理を見直すための実務上の提案</h2>
-<p>Toppyは、技術の導入とあわせて、日々の保持・管理も見直すことを提案します。今ある仕組みでも、次の点から取り組めます。</p>
-<ul><li><strong>保存する理由と期間を決める。</strong> 画像、確認結果、契約情報を分け、それぞれの利用目的、保存先、責任者、保存期間を整理します。法令上の義務や事故・紛争対応で保持が必要な記録は、その理由も残します。</li><li><strong>必要な記録を選ぶ。</strong> 画像全体が必要なのか、確認日時・条件・結果などで目的を達成できるのかを工程ごとに確認します。証明や利用履歴も無条件に保存せず、目的と保存期間を決めます。</li><li><strong>閲覧できる人と経路を絞る。</strong> 担当業務に応じた権限、管理者の多要素認証、通信・保存データの暗号化、鍵のアクセス管理を検討します。確認書類をメール、問い合わせ記録、ログへ不用意に複製しない運用も大切です。</li><li><strong>不要になった情報を確実に減らす。</strong> 保存理由がなくなった時点で削除する運用を設けます。委託先、複製、バックアップの保存期限と復元時の扱いも確認します。調査中の事案では、必要な証拠を先に保全し、一律に削除しない判断が必要です。</li></ul>
-<p>個人情報保護委員会のガイドラインは、利用目的に応じた保存期間の設定、安全管理措置、利用する必要がなくなった個人データの消去に努めることを示しています。具体的な期間や保持義務は、対象業務に即して確認する必要があります。<a href="https://www.ppc.go.jp/personalinfo/legal/guidelines_tsusoku/" target="_blank" rel="noopener noreferrer">個人情報保護委員会・通則編</a>、<a href="https://www.ppc.go.jp/all_faq_index/faq1-q10-7/" target="_blank" rel="noopener noreferrer">不正アクセス等への対策に関するFAQ</a></p>
-<p>利用者側に置く資格情報と端末、発行者が確認する元の情報、事業者に残る確認履歴。それぞれの管理責任を決めることも、導入設計の一部です。</p>
-<h2>公開デモから、導入の検討へ</h2>
-<p>公開デモは架空の資格情報を使ったサンプルです。証明の生成・検証と使い回しの拒否を実装し、macOSとLinuxで全46テストを通過しました。コードと再現手順を公開しており、実際に相手へ渡る情報や検証の動作を確認できます。</p>
-<p>実際のカーシェアへの導入では、実免許証との連携、本人確認、免停・取消しの確認を、契約や保険の要件とあわせて設計する必要があります。Toppyは、この公開デモを、必要な確認を保ちながら個人情報の収集を減らすための出発点として提供します。</p>
-<p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">公開コードと再現手順</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/main/docs/validation.md" target="_blank" rel="noopener noreferrer">検証結果</a></p>
-<p>利用者の方は、漏えいに関する通知を確認する際、身に覚えのないメールやSMSのリンクから個人情報を再提出せず、普段利用する公式サイトやアプリから案内を確認してください。パーク24も、同社を装う連絡と、パスワード・認証コード・クレジットカード情報の入力を求める連絡に注意を呼びかけています。<a href="https://www.park24.co.jp/news/2026/09/20260929-1.html" target="_blank" rel="noopener noreferrer">同社の注意喚起</a></p>
-<aside class="technology-note" id="technology-note" role="note" aria-label="技術・仕様の脚注"><p><sup>1</sup> 本デモの暗号処理には<a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds / anoncreds-rs</a>を使用しています。参照する<a href="https://anoncreds.github.io/anoncreds-spec/" target="_blank" rel="noopener noreferrer">AnonCreds仕様</a>は<a href="https://github.com/CommunitySpecification/1.0" target="_blank" rel="noopener noreferrer">Community Specification License 1.0</a>に基づいて公開されています。 <a href="#technology-note-reference" aria-label="本文に戻る">↩</a></p></aside>
+<p>Toppyの公開デモは、署名付きの架空資格情報から、普通車の運転資格と有効期限の条件を検証します。証明生成と暗号検証には<a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds / anoncreds-rs</a>を使用します。<sup><a href="#technology-note" id="technology-note-reference" aria-label="技術仕様の脚注">1</a></sup> Toppyが実装したのは、証明内の条件と検証者の要求の照合、および一回限りの要求の状態管理です。</p>
+<h2>要求した条件と証明内の条件を照合する</h2>
+<p>要求は<code>can_drive_ordinary &gt;= 1</code>と<code>valid_until &gt;= service_day</code>です。両方が同じ資格情報に含まれることを確認します。発行者の公開鍵と資格情報の定義は検証者側で設定し、提出者が持ち込んだ鍵は信頼しません。</p>
+<p>AnonCreds 0.2.3を使った最初の実行では、要求を暗号ライブラリに渡すだけでは、条件を弱めて作った証明の受理を防げませんでした。修正した検証処理は、証明内の属性名・演算子・閾値を保存済みの要求と照合し、一致した場合だけ暗号検証へ進みます。弱い条件の証明を書き換えて要求に合わせても、続く暗号検証で拒否されます。<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/zk_license.py" target="_blank" rel="noopener noreferrer">条件照合の実装</a></p>
+<h2>開示する情報と、検証者に残る状態</h2>
+<p>氏名・住所・生年月日・免許証番号・有効期限の元の値は、証明に開示しません。検証者へ渡るのは証明、スキーマと資格情報定義の識別子、要求ID、証明する条件です。</p>
+<p>検証者は要求の期限・宛先・セッションと使用済み状態をSQLiteで管理します。成功した要求をトランザクション内で使用済みにし、再起動後や同時送信時も二度目の受理を拒否します。<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/request_store.py" target="_blank" rel="noopener noreferrer">要求の状態管理</a></p>
+<h2>検証結果と対象範囲</h2>
+<p>2026年10月4日の<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">検証記録</a>では、実AnonCredsの統合テストと、入力・ポリシー・保存状態の単体テストを分けています。条件の弱体化や改ざん、同じ発行者IDを名乗る別鍵、独立プロセスでの検証と再送拒否を確認しています。macOSの実行記録とUbuntu CIの結果を公開し、公開前の検査は暗号ライブラリがなければ失敗する設定です。</p>
+<p>発行・保有・検証を一台で動かす架空資格情報のサンプルです。実免許証の読み取り、操作する人の本人認証、免停・取消しの照会は対象外です。CLIのセッション値も本人認証には使えません。</p>
+<p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">公開コードと再現手順</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/tests/test_crypto.py" target="_blank" rel="noopener noreferrer">実暗号の拒否テスト</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/tests/test_policy.py" target="_blank" rel="noopener noreferrer">ポリシーと状態のテスト</a></p>
+<p>背景には、免許証画像等の漏えいを公表した<a href="https://www.park24.co.jp/news/2026/09/20260929-1.html" target="_blank" rel="noopener noreferrer">パーク24の2026年9月29日の発表</a>があります。実際の導入では、残す確認記録の目的・保存期間・管理責任を業務ごとに検討します。保持と管理の参考資料として<a href="https://www.ppc.go.jp/personalinfo/legal/guidelines_tsusoku/" target="_blank" rel="noopener noreferrer">個人情報保護委員会のガイドライン</a>を参照できます。</p>
+<aside class="technology-note" id="technology-note" role="note" aria-label="技術仕様の脚注"><p><sup>1</sup> 参照する<a href="https://anoncreds.github.io/anoncreds-spec/" target="_blank" rel="noopener noreferrer">AnonCreds仕様</a>は<a href="https://github.com/CommunitySpecification/1.0" target="_blank" rel="noopener noreferrer">Community Specification License 1.0</a>に基づいて公開されています。 <a href="#technology-note-reference" aria-label="本文に戻る">↩</a></p></aside>
 </article>
 </main>
 <footer>

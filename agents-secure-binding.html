@@ -231,7 +231,11 @@
     display: grid;
     gap: 10px;
     align-items: stretch;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
+  .flow-steps > li + li { margin-top: 0; }
   .flow-card {
     display: grid;
     gap: 7px;
@@ -241,7 +245,7 @@
     border: 1px solid var(--border);
     border-radius: 6px;
     background: var(--surface);
-    opacity: .76;
+    opacity: 1;
   }
   .flow-card strong {
     display: block;
@@ -278,7 +282,7 @@
     border: 1px solid currentColor;
     font-weight: 800;
     letter-spacing: .04em;
-    opacity: .82;
+    opacity: 1;
   }
   .outcome-card.accept {
     color: var(--accent-2);
@@ -359,10 +363,10 @@
   .session-demo.is-playing .step-a2 { animation-delay: 5.7s; }
   .session-demo.is-playing .step-a3 { animation-delay: 6.6s; }
   @keyframes stepPulse {
-    0% { opacity: .28; filter: none; }
+    0% { opacity: 1; filter: none; }
     24% { opacity: 1; filter: drop-shadow(0 0 12px color-mix(in hsl, var(--accent-2) 42%, transparent)); }
     74% { opacity: 1; }
-    100% { opacity: .82; filter: none; }
+    100% { opacity: 1; filter: none; }
   }
   .check-panel {
     display: grid;
@@ -385,7 +389,7 @@
     border-radius: 6px;
     background: rgba(255, 255, 255, .025);
     color: var(--muted);
-    opacity: .78;
+    opacity: 1;
   }
   .check-mark {
     display: inline-flex;
@@ -470,6 +474,8 @@
       scroll-behavior: auto !important;
     }
     .session-demo .flow-step,
+    .session-demo .flow-card,
+    .session-demo .outcome-card,
     .session-demo .check-item,
     .session-demo .result-badge {
       opacity: 1 !important;
@@ -490,8 +496,8 @@
         <span>ToppyMicroServices</span>
       </a>
       <div class="links">
-        <a href="/#work">Work</a>
-        <a href="/#research">Research</a>
+        <a href="/#work">R&amp;D</a>
+        <a href="/#publications">Resources</a>
         <a href="/news.html">Updates</a>
         <a href="/#contact">Company</a>
       </div>
@@ -502,84 +508,101 @@
     <section class="hero" aria-label="Agents Secure Binding profile">
       <p class="eyebrow">Technical note</p>
       <h1>Agents Secure Binding</h1>
-      <p class="lead">Bind delegated Agent identity to the live session.</p>
-      <p class="section-lead">ASB is an experimental verifier-side acceptance profile. It checks that the grant, holder-of-key proof, accepted TLS or exported-authenticator session, and local policy refer to the same interaction.</p>
+      <p class="lead">An experimental verifier-side profile for binding delegated Agent identity to the live session.</p>
       <div class="actions">
-        <a class="btn primary" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the SSOT</a>
+        <a class="btn primary" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the specification</a>
         <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
       </div>
-      <p class="source-note"><code>docs/SSOT.md</code> is the public source of truth. If this overview differs, the SSOT takes precedence.</p>
+      <p class="source-note">The specification in <code>docs/SSOT.md</code> governs this overview.</p>
     </section>
 
-    <section aria-label="Problem">
+    <section aria-labelledby="problem-title">
       <p class="section-kicker">Problem</p>
-      <h2>Valid evidence can still describe the wrong interaction</h2>
+      <h2 id="problem-title">Valid evidence can still describe the wrong interaction</h2>
       <p class="section-lead">A grant and session proof can each verify while referring to different Agents, tasks, or sessions.</p>
+    </section>
+
+    <section aria-labelledby="approach-title">
+      <p class="section-kicker">Mechanism</p>
+      <h2 id="approach-title">Bind authority to the accepted session</h2>
+      <p class="section-lead">The authority signs an Identity Grant stating the Agent's delegated authority and scope. The authorized Agent key signs a Session Binding Statement for that exact grant and session. The endpoint key authenticates the accepted TLS or exported-authenticator endpoint.</p>
+      <p class="section-lead">The verifier authenticates both signed objects, checks the binding against the accepted session and local policy, then records replay state before accepting the identity.</p>
+    </section>
+
+    <section aria-labelledby="implementation-title">
+      <p class="section-kicker">Implementation and verification</p>
+      <h2 id="implementation-title">What exists today</h2>
+      <p class="section-lead">The Go client integration includes JWT/JWS verification and session checks. CWT/COSE is covered by reference-adapter tests.</p>
+      <p class="section-lead">Negative tests cover replay, binding and key mismatches, grant substitution, local-policy checks, and cache misuse. The verification report records current coverage and remaining evaluation work.</p>
+      <div class="actions">
+        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">Verification report</a>
+        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">Security tests</a>
+        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Specification PDF</a>
+      </div>
+      <p class="section-lead">ASB is an experimental verifier-side gate, not standards-body consensus or AGTP/A2A core protocol text. It is not a full protocol stack. Gateway deployments require separate route binding and runtime integration.</p>
     </section>
 
     <section aria-labelledby="session-binding-demo-title">
       <div class="demo-toolbar">
         <div>
-          <p class="section-kicker">Session binding</p>
-          <h2 id="session-binding-demo-title">Bind the grant to the accepted session</h2>
+          <p class="section-kicker">Flow illustration</p>
+          <h2 id="session-binding-demo-title">Matching and mismatched interactions</h2>
         </div>
         <button class="btn replay-btn" type="button" data-replay-session-demo>Replay</button>
       </div>
-      <p class="section-lead">A replayed or substituted proof fails even when its signature is valid.</p>
-
       <div class="session-demo is-playing" data-session-demo>
         <div class="demo-layout">
           <div class="demo-canvas">
-            <div class="lane-board" role="img" aria-label="Session-bound identity flow: a matching interaction is accepted and a mismatched interaction is rejected">
-              <div class="flow-lane good">
+            <div class="lane-board">
+              <section class="flow-lane good" aria-labelledby="matching-flow-title">
                 <div class="flow-lane-head">
-                  <h3 class="flow-lane-title">Happy path</h3>
+                  <h3 class="flow-lane-title" id="matching-flow-title">Matching interaction</h3>
                   <span class="flow-lane-note">grant and live session match</span>
                 </div>
-                <div class="flow-steps">
-                  <div class="flow-card step-1">
+                <ol class="flow-steps" role="list">
+                  <li class="flow-card step-1">
                     <strong>1. Authority</strong>
                     <span>Signs the Agent's Identity Grant.</span>
                     <span class="packet-pill grant">Identity Grant</span>
-                  </div>
-                  <div class="flow-card step-2">
+                  </li>
+                  <li class="flow-card step-2">
                     <strong>2. Agent</strong>
                     <span>Opens the accepted session.</span>
                     <span class="packet-pill binding">live session</span>
-                  </div>
-                  <div class="flow-card step-3">
+                  </li>
+                  <li class="flow-card step-3">
                     <strong>3. Agent → Verifier</strong>
                     <span>Binds the exact grant to that session.</span>
                     <span class="packet-pill binding">Session Binding Statement</span>
-                  </div>
-                  <div class="outcome-card accept step-5">Result: ACCEPT</div>
-                </div>
-              </div>
+                  </li>
+                  <li class="outcome-card accept step-5">Result: ACCEPT</li>
+                </ol>
+              </section>
 
-              <div class="flow-lane bad">
+              <section class="flow-lane bad" aria-labelledby="mismatched-flow-title">
                 <div class="flow-lane-head">
-                  <h3 class="flow-lane-title">Attack path</h3>
+                  <h3 class="flow-lane-title" id="mismatched-flow-title">Replayed or substituted evidence</h3>
                   <span class="flow-lane-note">valid signature, wrong session</span>
                 </div>
-                <div class="flow-steps">
-                  <div class="flow-card step-a1">
+                <ol class="flow-steps" role="list">
+                  <li class="flow-card step-a1">
                     <strong>1. Attacker</strong>
                     <span>Replays a binding or substitutes a grant.</span>
                     <span class="packet-pill grant">old / wrong grant</span>
-                  </div>
-                  <div class="flow-card step-a2">
+                  </li>
+                  <li class="flow-card step-a2">
                     <strong>2. Attacker → Verifier</strong>
                     <span>Presents the proof in another session or context.</span>
                     <span class="packet-pill metadata">mismatched context</span>
-                  </div>
-                  <div class="flow-card step-a3">
+                  </li>
+                  <li class="flow-card step-a3">
                     <strong>3. Verifier</strong>
                     <span>Finds a grant, key, session, or policy mismatch.</span>
                     <span class="packet-pill binding">local policy</span>
-                  </div>
-                  <div class="outcome-card reject step-a3">Result: REJECT</div>
-                </div>
-              </div>
+                  </li>
+                  <li class="outcome-card reject step-a3">Result: REJECT</li>
+                </ol>
+              </section>
             </div>
           </div>
 
@@ -600,45 +623,6 @@
       </div>
     </section>
 
-    <section aria-label="Approach">
-      <p class="section-kicker">Approach</p>
-      <h2>Separate the roles, then check that they agree</h2>
-      <p class="section-lead">The authority key signs the Identity Grant. The authorized Agent key binds that exact grant to the accepted session. The endpoint key authenticates the accepted TLS or exported-authenticator endpoint.</p>
-      <div class="grid two">
-        <div class="card">
-          <h3>Two signed objects</h3>
-          <p class="muted">The Identity Grant states the delegated authority and scope. The Session Binding Statement binds that grant to the accepted session.</p>
-        </div>
-        <div class="card">
-          <h3>Verification order</h3>
-          <p class="muted">Authenticate both objects, check the session and local policy, then record replay state. If a check fails, the identity is not accepted.</p>
-        </div>
-      </div>
-    </section>
-
-    <section aria-label="Implementation">
-      <p class="section-kicker">Implementation</p>
-      <h2>What exists today</h2>
-      <p class="section-lead">The repository contains verifier code and tests covering rejection of invalid or mismatched input before the application receives an accepted Agent identity.</p>
-      <div class="card grid">
-        <ul>
-          <li><strong>Token formats:</strong> JWT/JWS and CWT/COSE verifier coverage.</li>
-          <li><strong>Verifier safety:</strong> local-policy checks, replay handling, and cache safety for caller-dependent results.</li>
-          <li><strong>Security tests:</strong> negative tests for replay, binding and key mismatches, grant substitution, and cache misuse.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section aria-label="Status and sources">
-      <p class="section-kicker">Status and sources</p>
-      <h2>Proposal, not a standard</h2>
-      <p class="section-lead">This is a proposal and implementation experiment, not standards-body consensus or AGTP/A2A core protocol text. It defines a verifier-side acceptance gate, not a full protocol stack. Gateway-routed deployments need a separate binding profile.</p>
-      <div class="actions">
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">View red-team report</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">View security red-team tests</a>
-      </div>
-    </section>
   </main>
 
   <footer>
