@@ -175,10 +175,24 @@ class HomepageTests(unittest.TestCase):
     def test_structured_data_includes_core_projects(self):
         schemas = [json.loads(body) for attrs, body in self.page.scripts if attrs.get("type") == "application/ld+json"]
         organization = next(s for s in schemas if s["@type"] == "Organization")
-        names = {item["name"] for item in organization["hasPart"]}
+        website = next(s for s in schemas if s["@type"] == "WebSite")
+        self.assertNotIn("hasPart", organization)
+        self.assertEqual(organization["sameAs"], ["https://github.com/ToppyMicroServices"])
+        self.assertEqual(website["publisher"]["@id"], organization["@id"])
+        self.assertNotEqual(organization["@id"], organization["founder"]["@id"])
+        names = {item["name"] for item in website["about"]}
         self.assertIn("Agents Secure Binding", names)
         self.assertIn("YOLOZU — Vision model evaluation toolkit", names)
         self.assertIn("mAI Economy", names)
+
+    def test_ai_context_is_discoverable_without_expanding_main_navigation(self):
+        links = {a["href"] for a in self.page.select("a")}
+        self.assertIn("/ai/", links)
+        self.assertIn("/llms.txt", links)
+        guides = [a for a in self.page.select("link") if a.get("rel") == "describedby"]
+        self.assertEqual(guides[0]["href"], "https://www.toppymicros.com/llms.txt")
+        self.assertEqual(guides[0]["type"], "text/plain")
+        self.assertNotIn("/ai/", {a["attrs"]["href"] for a in NavigationLinks(self.html).links})
 
     def test_beads_copy_leads_with_local_cross_provider_task_work(self):
         self.assertIn("Released VS Code extension for coordinating local tasks across AI providers.", self.html)

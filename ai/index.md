@@ -1,4 +1,4 @@
-# ToppyMicroServices OÜ — Full context
+# Toppy, with sources.
 
 Company facts, project status and primary sources for research and citation.
 

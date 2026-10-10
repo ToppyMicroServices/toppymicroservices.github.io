@@ -15,6 +15,7 @@ The README is written for readers who want to understand the site structure, int
   - [Overview](#overview)
   - [Public Pages](#public-pages)
   - [Publication Standard](#publication-standard)
+  - [AI-readable Context](#ai-readable-context)
   - [Interactive Quizzes](#interactive-quizzes)
   - [Research References](#research-references)
   - [Compliance & Governance Mapping](#compliance--governance-mapping)
@@ -40,6 +41,7 @@ Primary site: https://toppymicroservices.github.io (CNAME → https://www.toppym
 Selected standalone pages:
 
 - `index.html` — selected public software, research, learning materials, and company information
+- `ai/` — source guide with project status, primary sources, and machine-readable formats
 - `zk-license-demo.html` and `zk-license-demo-en.html` — Japanese and English technical explanations of the AnonCreds demo, stored-policy checks and replay rejection
 - `news.html` — selected technical releases and research results, linked to primary sources
 - `agents-secure-binding.html` — ASB technical introduction and source links
@@ -58,6 +60,22 @@ The public site is selective. A technical update must identify a specific Toppy 
 Eligible updates include material engineering releases, reproducible measurements, accepted research, and technical notes that state their method, evidence, maturity, and limits. Routine additions, item counts, generic explainers, marketing-only summaries, and unreviewed generated text are not company updates. Planned work must be labeled and tied to a concrete research plan.
 
 Every entry in `news.html` has a stable ID and an external primary source. New or edited entries require explicit owner approval and an intentional update to the approved entry set and copy in `scripts/test_homepage.py`. The same test runs before deployment. It detects changes to the recorded entries; source review and owner approval remain editorial steps.
+
+## AI-readable Context
+
+`ai/catalog.json` is the reviewed source for `llms.txt`, `llms-full.txt`, the `/ai/` HTML and Markdown guide, and the summaries in `ai/projects/`. The catalog is site documentation, not a tool registry or callable API. It links to project-owned agent guides and capability descriptions where available.
+
+To update it, check the linked primary sources, edit the catalog and its `reviewed` date, then regenerate:
+
+```bash
+python3 scripts/build_ai_context.py
+python3 scripts/build_ai_context.py --check
+python3 -m unittest discover -s scripts -p 'test_*.py'
+```
+
+The deployment tests reject stale generated files. They check structure and consistency, not whether a release or research claim remains current; that still needs source review. Keep the homepage and project-page copy aligned when status changes. Do not edit generated summaries by hand.
+
+The short index helps readers choose a project; full context combines the same source-backed facts. HTML and Markdown expose the same information. Company and founder identifiers remain separate in structured data. These formats support discovery and accurate citation, but do not guarantee indexing, model training, recommendations or search placement. They do not change crawler permissions in `robots.txt`.
 
 ## Interactive Quizzes
 This repository includes client-side quizzes for RFCs, protocol design, and finance terminology in Japanese and English.
