@@ -139,6 +139,15 @@ class AIContextTests(unittest.TestCase):
             self.assertIn(item["description"], self.guide.visible_text)
             self.assertIn(build.md_text(item["description"]), self.outputs["ai/index.md"])
 
+    def test_source_labels_show_literal_ampersands_in_text_resources(self):
+        label = "For AI & Reviewers"
+        for name in ("llms.txt", "llms-full.txt", "ai/index.md",
+                     "ai/projects/agents-secure-binding.md"):
+            with self.subTest(name=name):
+                self.assertIn(label, self.outputs[name])
+                self.assertNotIn("For AI &amp; Reviewers", self.outputs[name])
+        self.assertIn("For AI &amp; Reviewers", self.outputs["ai/index.html"])
+
     def test_index_routes_to_project_files_without_duplicating_full_context(self):
         text = self.outputs["llms.txt"]
         for project in self.catalog["projects"]:
@@ -146,6 +155,9 @@ class AIContextTests(unittest.TestCase):
             self.assertIn(url, text)
             self.assertIn(build.md_text(project["summary"]), text)
             self.assertNotIn(build.md_text(project["scope_note"]), text)
+            for source in project["sources"]:
+                if source.get("index_label"):
+                    self.assertIn(f'- {build.md_link(source["index_label"], source["url"])}', text)
         self.assertLess(len(text), len(self.outputs["llms-full.txt"]))
         for name in ("llms.txt", "llms-full.txt"):
             self.assertIn("across AI providers", self.outputs[name])

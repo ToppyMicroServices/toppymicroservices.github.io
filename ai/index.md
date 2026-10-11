@@ -40,6 +40,8 @@ Canonical page: [Agents Secure Binding](https://www.toppymicros.com/agents-secur
 
 Primary sources:
 
+- [For Humans](https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-overview.md)
+- [For AI & Reviewers](https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md)
 - [Supported v1 release](https://github.com/ToppyMicroServices/agents-secure-binding/releases/tag/v1.1.1)
 - [v2 prerelease](https://github.com/ToppyMicroServices/agents-secure-binding/releases/tag/v2.0.0-rc.2)
 - [Component status](https://github.com/ToppyMicroServices/agents-secure-binding#components-and-status)

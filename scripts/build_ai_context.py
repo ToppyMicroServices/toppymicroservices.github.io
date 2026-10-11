@@ -97,6 +97,9 @@ def validate_catalog(catalog):
         validate_links(project.get("sources"), f"projects[{index}].sources")
         if not project["sources"]:
             raise ValueError(f"{identifier} must link at least one primary source")
+        for source in project["sources"]:
+            if "index_label" in source:
+                require_text(source["index_label"], f"{identifier}.sources.index_label")
         validate_links(project.get("agent_resources", []), f"projects[{index}].agent_resources")
     validate_links(catalog.get("resources"), "resources", descriptions=True)
     validate_links(catalog.get("policies"), "policies", descriptions=True)
@@ -105,7 +108,7 @@ def validate_catalog(catalog):
 
 def md_text(value):
     """Keep catalog text literal when Markdown is rendered as HTML."""
-    escaped = html.escape(value, quote=False).replace("\\", "\\\\")
+    escaped = html.escape(value, quote=False).replace("&amp;", "&").replace("\\", "\\\\")
     return re.sub(r"([\[\]*_`])", r"\\\1", escaped)
 
 
@@ -188,10 +191,16 @@ def render_index(catalog):
              ])]
     for group in GROUPS:
         parts.append(f"## {group}")
-        parts.append("\n".join(
-            f'- {md_link(project["name"], SITE + "/ai/projects/" + project["id"] + ".md")}: '
-            f'{md_text(project["status"].rstrip("."))}. {md_text(project["summary"])}'
-            for project in catalog["projects"] if project["group"] == group))
+        lines = []
+        for project in catalog["projects"]:
+            if project["group"] != group:
+                continue
+            lines.append(
+                f'- {md_link(project["name"], SITE + "/ai/projects/" + project["id"] + ".md")}: '
+                f'{md_text(project["status"].rstrip("."))}. {md_text(project["summary"])}')
+            lines.extend(f'- {md_link(source["index_label"], source["url"])}'
+                         for source in project["sources"] if source.get("index_label"))
+        parts.append("\n".join(lines))
     parts += ["## Policies", "\n".join(
                   f'- {md_link(item["label"], item["url"])}' for item in catalog["policies"])]
     return "\n\n".join(parts) + "\n"
