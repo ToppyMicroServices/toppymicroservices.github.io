@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>資格情報の条件を、属性値を開示せず検証する | Toppy</title>
-  <meta name="description" content="AnonCredsを使う架空資格情報のデモ。証明内の条件と保存した要求の照合、発行者の信頼設定、一回限りの要求の状態管理を公開しています。" />
+  <title>運転資格の確認で、渡す個人情報を減らす | Toppy</title>
+  <meta name="description" content="氏名や住所を相手に渡さず、普通車の運転資格と有効期限の条件を確かめるToppyの技術デモ。架空の免許情報を使う試作と、公開コード・検証記録を紹介します。" />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#02213b" />
   <meta name="color-scheme" content="dark" />
@@ -17,14 +17,14 @@
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="資格情報の条件を、属性値を開示せず検証する | Toppy" />
-  <meta property="og:description" content="AnonCredsを使う架空資格情報のデモ。要求した条件の照合と、期限・宛先・セッション・再送の検証。" />
+  <meta property="og:title" content="運転資格の確認で、渡す個人情報を減らす | Toppy" />
+  <meta property="og:description" content="氏名や住所を渡さず、必要な条件を確かめる。架空の免許情報を使った技術デモです。" />
   <meta property="og:url" content="https://www.toppymicros.com/zk-license-demo.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="資格情報の条件を、属性値を開示せず検証する | Toppy" />
-  <meta name="twitter:description" content="AnonCredsを使う架空資格情報のデモ。要求した条件の照合と、期限・宛先・セッション・再送の検証。" />
+  <meta name="twitter:title" content="運転資格の確認で、渡す個人情報を減らす | Toppy" />
+  <meta name="twitter:description" content="氏名や住所を渡さず、必要な条件を確かめる。架空の免許情報を使った技術デモです。" />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -117,22 +117,19 @@
   </header>
 
   <main id="main" class="container">
-<section class="hero"><p class="eyebrow">Technical demo</p><h1>資格情報の条件を、<br>属性値を開示せず検証する</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">2026年10月4日公開</time><span>2026年10月10日更新</span></p></section>
+<section class="hero"><p class="eyebrow">技術デモ</p><h1>運転資格の確認で、<br>渡す個人情報を減らす</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">2026年10月4日公開</time><span>2026年10月16日更新</span></p></section>
 <article class="explanation">
 <p><a href="zk-license-demo-en.html" lang="en" hreflang="en">Read in English</a></p>
-<p>Toppyの公開デモは、署名付きの架空資格情報から、普通車の運転資格と有効期限の条件を検証します。証明生成と暗号検証には<a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds / anoncreds-rs</a>を使用します。<sup><a href="#technology-note" id="technology-note-reference" aria-label="技術仕様の脚注">1</a></sup> Toppyが実装したのは、証明内の条件と検証者の要求の照合、および一回限りの要求の状態管理です。</p>
-<h2>要求した条件と証明内の条件を照合する</h2>
-<p>要求は<code>can_drive_ordinary &gt;= 1</code>と<code>valid_until &gt;= service_day</code>です。両方が同じ資格情報に含まれることを確認します。発行者の公開鍵と資格情報の定義は検証者側で設定し、提出者が持ち込んだ鍵は信頼しません。</p>
-<p>AnonCreds 0.2.3を使った最初の実行では、要求を暗号ライブラリに渡すだけでは、条件を弱めて作った証明の受理を防げませんでした。修正した検証処理は、証明内の属性名・演算子・閾値を保存済みの要求と照合し、一致した場合だけ暗号検証へ進みます。弱い条件の証明を書き換えて要求に合わせても、続く暗号検証で拒否されます。<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/zk_license.py" target="_blank" rel="noopener noreferrer">条件照合の実装</a></p>
-<h2>開示する情報と、検証者に残る状態</h2>
-<p>氏名・住所・生年月日・免許証番号・有効期限の元の値は、証明に開示しません。検証者へ渡るのは証明、スキーマと資格情報定義の識別子、要求ID、証明する条件です。</p>
-<p>検証者は要求の期限・宛先・セッションと使用済み状態をSQLiteで管理します。成功した要求をトランザクション内で使用済みにし、再起動後や同時送信時も二度目の受理を拒否します。<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/request_store.py" target="_blank" rel="noopener noreferrer">要求の状態管理</a></p>
-<h2>検証結果と対象範囲</h2>
-<p>2026年10月4日の<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">検証記録</a>では、実AnonCredsの統合テストと、入力・ポリシー・保存状態の単体テストを分けています。条件の弱体化や改ざん、同じ発行者IDを名乗る別鍵、独立プロセスでの検証と再送拒否を確認しています。macOSの実行記録とUbuntu CIの結果を公開し、公開前の検査は暗号ライブラリがなければ失敗する設定です。</p>
-<p>発行・保有・検証を一台で動かす架空資格情報のサンプルです。実免許証の読み取り、操作する人の本人認証、免停・取消しの照会は対象外です。CLIのセッション値も本人認証には使えません。</p>
-<p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">公開コードと再現手順</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/tests/test_crypto.py" target="_blank" rel="noopener noreferrer">実暗号の拒否テスト</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/tests/test_policy.py" target="_blank" rel="noopener noreferrer">ポリシーと状態のテスト</a></p>
-<p>背景には、免許証画像等の漏えいを公表した<a href="https://www.park24.co.jp/news/2026/09/20260929-1.html" target="_blank" rel="noopener noreferrer">パーク24の2026年9月29日の発表</a>があります。実際の導入では、残す確認記録の目的・保存期間・管理責任を業務ごとに検討します。保持と管理の参考資料として<a href="https://www.ppc.go.jp/personalinfo/legal/guidelines_tsusoku/" target="_blank" rel="noopener noreferrer">個人情報保護委員会のガイドライン</a>を参照できます。</p>
-<aside class="technology-note" id="technology-note" role="note" aria-label="技術仕様の脚注"><p><sup>1</sup> 参照する<a href="https://anoncreds.github.io/anoncreds-spec/" target="_blank" rel="noopener noreferrer">AnonCreds仕様</a>は<a href="https://github.com/CommunitySpecification/1.0" target="_blank" rel="noopener noreferrer">Community Specification License 1.0</a>に基づいて公開されています。 <a href="#technology-note-reference" aria-label="本文に戻る">↩</a></p></aside>
+<p>Toppyは、氏名や住所を相手に渡さずに、運転資格に関する条件を確かめる仕組みを試作しています。このデモでは架空の免許情報を使い、<strong>「普通車の運転資格がある」「利用予定日まで有効期限が切れない」</strong>の2点を確認します。</p>
+<h2>相手に何が伝わるか</h2>
+<p>確認する側には、条件を満たしていることを示す暗号による証明が届きます。氏名・住所・免許証番号や、有効期限の日付そのものは渡しません。確認した条件と、その確認が済んだかどうかの記録は残ります。</p>
+<h2>Toppyが実装したこと</h2>
+<p>証明が依頼した条件どおりかを確かめ、同じ確認の使い回しを防ぐ処理を実装しました。たとえば、利用予定日より前に期限が切れる情報を、条件を緩めて通そうとしても拒否します。コードと検証記録を公開しています。</p>
+<h2>現在は架空の情報を使う試作です</h2>
+<p>一台のパソコンで動かすデモです。実際の免許証の読み取りや本人確認、免許の停止・取消しの照会には対応していません。</p>
+<aside class="technology-note" id="technology-note" role="note" aria-label="技術資料">
+<p>暗号処理には、公開ライブラリの<a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds</a>を使用しています。実装の詳細は<a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">公開コードと再現手順</a>、確認した動作は<a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">検証記録</a>で読めます。</p>
+</aside>
 </article>
 </main>
 <footer>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify credential conditions without revealing attribute values | Toppy</title>
-  <meta name="description" content="A synthetic AnonCreds demo with predicate checks against stored requests, issuer trust configured by the verifier, and stateful handling of one-time requests." />
+  <title>Share less personal information when checking driving eligibility | Toppy</title>
+  <meta name="description" content="Toppy's prototype uses fictional licence records to check driving eligibility and expiry without sharing names or addresses. Read what it demonstrates and inspect the code and validation record." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#02213b" />
   <meta name="color-scheme" content="dark" />
@@ -17,14 +17,14 @@
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Verify credential conditions without revealing attribute values | Toppy" />
-  <meta property="og:description" content="A synthetic AnonCreds demo with predicate matching and checks for expiry, audience, session and replay." />
+  <meta property="og:title" content="Share less personal information when checking driving eligibility | Toppy" />
+  <meta property="og:description" content="Check the required conditions without sharing a name or address. A technical demo using fictional licence records." />
   <meta property="og:url" content="https://www.toppymicros.com/zk-license-demo-en.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Verify credential conditions without revealing attribute values | Toppy" />
-  <meta name="twitter:description" content="A synthetic AnonCreds demo with predicate matching and checks for expiry, audience, session and replay." />
+  <meta name="twitter:title" content="Share less personal information when checking driving eligibility | Toppy" />
+  <meta name="twitter:description" content="Check the required conditions without sharing a name or address. A technical demo using fictional licence records." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -116,22 +116,19 @@
   </header>
 
   <main id="main" class="container">
-<section class="hero"><p class="eyebrow">Technical demo</p><h1>Verify credential conditions<br>without revealing attribute values</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">Published October 4, 2026</time><span>Updated October 10, 2026</span></p></section>
+<section class="hero"><p class="eyebrow">Technical demo</p><h1>Share less personal information<br>when checking driving eligibility</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">Published October 4, 2026</time><span>Updated October 16, 2026</span></p></section>
 <article class="explanation">
 <p><a href="zk-license-demo.html" lang="ja" hreflang="ja">日本語で読む</a></p>
-<p>Toppy's public demo verifies ordinary-car driving entitlement and expiry conditions from a signed synthetic credential. It uses <a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds / anoncreds-rs</a> for proof generation and cryptographic verification.<sup><a href="#technology-note" id="technology-note-reference" aria-label="Specification footnote">1</a></sup> Toppy's code matches the proven conditions to the verifier's request and manages one-time requests.</p>
-<h2>Match the proof to the stored request</h2>
-<p>The request requires <code>can_drive_ordinary &gt;= 1</code> and <code>valid_until &gt;= service_day</code> from the same credential. The verifier configures the issuer's public key and credential definition. It does not trust a key supplied by the proof sender.</p>
-<p>In the initial run with AnonCreds 0.2.3, passing the intended request to the cryptographic library did not reject proofs made for weaker conditions. The corrected verifier compares embedded attribute names, operators and thresholds with its stored request before cryptographic verification. Relabelling a weaker proof to match the requested bounds still fails the subsequent cryptographic check. <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/zk_license.py" target="_blank" rel="noopener noreferrer">Predicate matching implementation</a></p>
-<h2>Disclosed data and retained verifier state</h2>
-<p>The presentation does not disclose the name, address, date of birth, licence number or original expiry value. The verifier receives the proof, schema and credential-definition identifiers, request ID and proven conditions.</p>
-<p>SQLite stores the request's expiry, audience, session and used status. The verifier checks this context and consumes a successful request within a transaction. A restart or concurrent submission cannot make that request reusable. <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/request_store.py" target="_blank" rel="noopener noreferrer">Request state handling</a></p>
-<h2>Validation and scope</h2>
-<p>The <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">October 4, 2026 validation record</a> separates real AnonCreds integration tests from input, policy and state unit tests. It records rejection of weakened and tampered predicates and of another key using the same issuer ID, plus independent-process verification and replay rejection. The macOS record and Ubuntu CI results are public. Release checks fail if the real cryptographic library is unavailable.</p>
-<p>This sample runs issuance, holding and verification on one machine with fictional credentials. Reading real driving licences, authenticating a person and checking suspension or cancellation are outside its scope. The CLI's session values do not authenticate a person.</p>
-<p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">Source and reproduction steps</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/tests/test_crypto.py" target="_blank" rel="noopener noreferrer">Cryptographic rejection tests</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/tests/test_policy.py" target="_blank" rel="noopener noreferrer">Policy and state tests</a></p>
-<p>This work was prompted by <a href="https://www.park24.co.jp/news/2026/09/20260929-1.html" target="_blank" rel="noopener noreferrer">Park24's September 29, 2026 disclosure</a> of leaked identity-document images. Deployment planning still involves decisions about the purpose, retention period and ownership of verification records. Japan's <a href="https://www.ppc.go.jp/personalinfo/legal/guidelines_tsusoku/" target="_blank" rel="noopener noreferrer" hreflang="ja">PPC guidelines</a> provide further context on retention and management.</p>
-<aside class="technology-note" id="technology-note" role="note" aria-label="Specification footnote"><p><sup>1</sup> The referenced <a href="https://anoncreds.github.io/anoncreds-spec/" target="_blank" rel="noopener noreferrer">AnonCreds specification</a> is published under the <a href="https://github.com/CommunitySpecification/1.0" target="_blank" rel="noopener noreferrer">Community Specification License 1.0</a>. <a href="#technology-note-reference" aria-label="Return to text">↩</a></p></aside>
+<p>Toppy is prototyping a way to check driving eligibility without sharing a name or address. This demo uses fictional licence records to check two conditions: <strong>eligibility to drive an ordinary car, and a recorded expiry date that covers the planned use date.</strong></p>
+<h2>What the other party receives</h2>
+<p>The party making the check receives cryptographic proof that the conditions are met. The proof does not reveal the name, address, licence number or exact expiry date. The requested conditions and a record of whether the check has been completed are retained.</p>
+<h2>What Toppy implemented</h2>
+<p>Our code checks that the proof meets the requested conditions and prevents the same check from being reused. For example, changing the conditions cannot make a record that expires before the planned use date pass. The code and validation record are public.</p>
+<h2>A prototype using fictional records</h2>
+<p>The demo runs on one computer. It does not read real driving licences, verify a person's identity or check whether a licence has been suspended or cancelled.</p>
+<aside class="technology-note" id="technology-note" role="note" aria-label="Technical references">
+<p>The cryptographic operations use the open-source <a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds</a> library. See the <a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">source and reproduction steps</a> for implementation details, and the <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">validation record</a> for the checks performed.</p>
+</aside>
 </article>
 </main>
 <footer>

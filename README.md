@@ -42,7 +42,7 @@ Selected standalone pages:
 
 - `index.html` — selected public software, research, learning materials, and company information
 - `ai/` — source guide with project status, primary sources, and machine-readable formats
-- `zk-license-demo.html` and `zk-license-demo-en.html` — Japanese and English technical explanations of the AnonCreds demo, stored-policy checks and replay rejection
+- `zk-license-demo.html` and `zk-license-demo-en.html` — Japanese and English introductions for general readers to the fictional-licence demo, with links to code and validation records
 - `news.html` — selected technical releases and research results, linked to primary sources
 - `agents-secure-binding.html` — ASB technical introduction and source links
 - `yolozu/` — vision-prediction validation and evaluation toolkit
