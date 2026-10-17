@@ -44,21 +44,17 @@
   <main id="main" class="container">
     <section class="section"><h1>Use YOLOZU with an LLM or agent</h1>
 
-<p>Use YOLOZU when you need to validate existing vision predictions, evaluate them against labels, or inspect bounded local MCP capabilities.</p>
+<p>Use an agent to check prediction files and evaluate them against labeled data. Start with a local example, then connect an MCP client.</p>
 
-<p>Source docs version: 4.11.0. docs_version identifies the source checkout, not the installed package or latest PyPI release. Source URLs follow a mutable branch; check source_sha256 and provenance.json for this build. Inspect the installed CLI and MCP schemas before invoking tools.</p>
+<p>These docs use source version 4.11.0. Check the installed CLI and MCP schemas before running commands; the installed package may differ. Source links can change. This build records its sources in source_sha256 and provenance.json.</p>
 
-<h2>When to use YOLOZU</h2>
-
-<ul><li>Check a predictions JSON against the predictions interface contract before evaluation.</li><li>Evaluate existing detections against a labeled dataset with a fixed protocol and inspect the resulting evidence.</li><li>Integrate the typed Python API or discover local MCP tools and their input schemas before invoking them.</li></ul>
-
-<h2>Limits and when not to use it</h2>
+<h2>What to expect</h2>
 
 <ul><li>Do not infer model quality from a synthetic proof or a successful dry run. Real COCO metrics require the coco extra and labeled inputs.</li><li>Do not treat registered MCP tools as guaranteed execution. Runtime, dependency, data, and permission requirements still apply.</li><li>The packaged adaptive image service abstains until CNN license review, quality qualification, and activation are completed separately. It is not a ready-to-run hosted detector.</li><li>The local OpenAI plugin is not a public ChatGPT directory listing. Provider authentication, hosting, and attachment handoff are separate deployment work.</li></ul>
 
 <h2>First successful evaluation</h2>
 
-<p>Start with the self-contained CPU evaluation tutorial. It creates its own inputs before strict validation and real COCOeval. Installation needs package network access; the subsequent toy workflow needs no model or dataset download.</p>
+<p>The CPU tutorial creates sample inputs, validates them, and runs COCOeval. Installation needs network access; the example needs no model or dataset download.</p>
 
 <ul><li><a href="https://www.toppymicros.com/yolozu/docs/start.html">30-minute tutorial</a></li><li><a href="https://www.toppymicros.com/yolozu/docs/start.md">Tutorial Markdown</a></li></ul>
 
@@ -88,23 +84,15 @@ yolozu-mcp --transport stdio --surface image-service</code></pre>
 
 <ul><li><a href="https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/image_service_mcp.md">Workflow source</a></li></ul>
 
-<h2>Starter prompts and expected boundaries</h2>
+<h2>Two starting prompts</h2>
 
 <p>Prompt: Validate my existing detection predictions strictly with YOLOZU; report errors without repairing the input.</p>
 
 <p>Expected: Confirm the user-selected local input, inspect the installed schema, then use strict validation. Do not invent a path or enable repair.</p>
 
-<p>Prompt: Show me a local YOLOZU evaluation example without downloading model weights.</p>
-
-<p>Expected: Use the self-contained 30-minute path and its generated toy inputs; label the proof as synthetic, not model-quality evidence.</p>
-
 <p>Prompt: Show the YOLOZU image service capabilities without running inference.</p>
 
 <p>Expected: Use image_service_capabilities on the image-service connection. Do not upload an image or submit execution.</p>
-
-<p>Prompt: Use YOLOZU to select the best CNN and guarantee its accuracy on my images.</p>
-
-<p>Expected: Explain that this guarantee is unavailable and that the default adaptive service abstains. Do not activate a model or fabricate a quality result.</p>
 
 <h2>Machine-readable references</h2>
 

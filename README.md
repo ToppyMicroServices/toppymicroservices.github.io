@@ -61,6 +61,10 @@ Eligible updates include material engineering releases, reproducible measurement
 
 Every entry in `news.html` has a stable ID and an external primary source. New or edited entries require explicit owner approval and an intentional update to the approved entry set and copy in `scripts/test_homepage.py`. The same test runs before deployment. It detects changes to the recorded entries; source review and owner approval remain editorial steps.
 
+Write for a busy human reader. Start with what the work does, use short headlines, and put the main fact before implementation details. Avoid repeated introductions, duplicate navigation, and examples that add no useful distinction. Keep evidence and material limits close to the claim. Detailed mechanisms belong in linked documentation or clearly labelled disclosures; required instructions and educational reasoning must remain available. Apply the same standard to English and Japanese pages.
+
+The YOLOZU HTML docs include a site-level editorial pass over the exported introductions and headings. Commands, schemas, and source provenance remain from the upstream export. Preserve these wording changes when refreshing the export, or carry them into the upstream generator first.
+
 ## AI-readable Context
 
 `ai/catalog.json` is the reviewed source for `llms.txt`, `llms-full.txt`, the `/ai/` HTML and Markdown guide, and the summaries in `ai/projects/`. The catalog is site documentation, not a tool registry or callable API. It links to project-owned agent guides and capability descriptions where available.

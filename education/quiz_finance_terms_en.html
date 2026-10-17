@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Thermo-Credit finance glossary drill (EN) | ToppyMicroServices</title>
-    <meta name="description" content="Interactive Thermo-Credit finance glossary in English: CET1, RWA, LCR, NSFR, policy levers, and more via MC, multi-select, and text prompts with learning mode." />
+    <title>ECB/BIS finance terms quiz | ToppyMicroServices</title>
+    <meta name="description" content="Learn financial statistics and banking terms through quizzes with explanations." />
     <link rel="canonical" href="https://www.toppymicros.com/education/quiz_finance_terms_en.html" />
 
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -12,14 +12,14 @@
   <meta name="color-scheme" content="dark light" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Thermo-Credit finance glossary drill (EN) | ToppyMicroServices" />
-  <meta property="og:description" content="Interactive Thermo-Credit finance glossary in English: CET1, RWA, LCR, NSFR, policy levers, and more via MC, multi-select, and text prompts with learning mode." />
+  <meta property="og:title" content="ECB/BIS finance terms quiz | ToppyMicroServices" />
+  <meta property="og:description" content="Learn financial statistics and banking terms through quizzes with explanations." />
   <meta property="og:url" content="https://www.toppymicros.com/education/quiz_finance_terms_en.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Thermo-Credit finance glossary drill (EN) | ToppyMicroServices" />
-  <meta name="twitter:description" content="Interactive Thermo-Credit finance glossary in English: CET1, RWA, LCR, NSFR, policy levers, and more via MC, multi-select, and text prompts with learning mode." />
+  <meta name="twitter:title" content="ECB/BIS finance terms quiz | ToppyMicroServices" />
+  <meta name="twitter:description" content="Learn financial statistics and banking terms through quizzes with explanations." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
   <link rel="alternate" hreflang="en" href="https://www.toppymicros.com/education/quiz_finance_terms_en.html" />
@@ -144,8 +144,8 @@
   body[data-theme="light"] .brand a{color:#1f2937}
   </style>
   </head>
-      --bg-gradient-top:#12161a;
-      --bg-gradient-bottom:#141b22;
+<body data-theme="dark">
+  <script>
     window.DRILL_SETTINGS = {
       SKILL_NAME: "ECB/BIS Finance Terms",
       SKILL_SUBTITLE: "Beginner Keyword Quiz",
@@ -165,8 +165,8 @@
             <span id="brand-name" class="name">ToppyMicroServices</span>
           </a>
         </div>
-        <h1 id="title">ECB/BIS Finance Terms 101: Beginner Keyword Quiz (Drill)</h1>
-        <h2 id="subtitle">A reading drill to reach: Explain key terms in your own words</h2>
+        <h1 id="title">ECB/BIS finance terms quiz</h1>
+        <h2 id="subtitle">Explain key terms in your own words</h2>
       </div>
       <div class="header-controls">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to light mode" data-next="light">
@@ -212,8 +212,7 @@
         <button class="btn primary" id="regen" data-results-target="results-panel-top">Regenerate Results Table</button>
         <button class="btn success" id="showAnswersScore" data-results-target="results-panel-top">Show Answers & Score</button>
       </div>
-      <p class="tip muted"><strong>Tip:</strong> Aim to transform “I recognize it” into “I can explain it clearly”.</p>
-      <p class="muted" id="usage-note">How to use: 1) In Learning Mode, explanations show immediately when you answer. 2) Use “Show Answers & Score” to highlight correct answers and display your current score. 3) Use “Regenerate Results Table” to rebuild the summary.</p>
+      <p class="muted" id="usage-note">Learning Mode shows an explanation after each answer. Select “Show Answers &amp; Score” to check your results.</p>
       <div class="results card" id="results-panel-top" aria-live="polite" style="display:none"></div>
     </section>
 
@@ -1062,9 +1061,9 @@
       }
       $$('#questions .q').forEach(q=>{
         const type=q.dataset.type;
-        if(type==='mc'){q.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode').checked){showExplain(q,true);}}));}
-        else if(type==='ms'){q.querySelectorAll('input[type=checkbox]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode').checked){showExplain(q,true);}}));}
-        else if(type==='text'){const t=q.querySelector('input[type=text]'); t?.addEventListener('input',()=>{evaluateQuestion(q); if($('#learningMode').checked && t.value.trim().length){showExplain(q,true);}});} 
+        if(type==='mc'){q.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode').checked){showExplain(q,true);} updateLiveScore();}));}
+        else if(type==='ms'){q.querySelectorAll('input[type=checkbox]').forEach(r=>r.addEventListener('change',()=>{evaluateQuestion(q); if($('#learningMode').checked){showExplain(q,true);} updateLiveScore();}));}
+        else if(type==='text'){const t=q.querySelector('input[type=text]'); t?.addEventListener('input',()=>{evaluateQuestion(q); if($('#learningMode').checked && t.value.trim().length){showExplain(q,true);} updateLiveScore();});}
         else if(type==='classify'){
           const chips=q.querySelectorAll('.chip');
           chips.forEach(ch=>{
