@@ -1,4 +1,4 @@
-# Toppy, with sources.
+# Toppy — Project sources
 
 Company facts, project status and primary sources for research and citation.
 

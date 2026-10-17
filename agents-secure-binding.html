@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <title>Agents Secure Binding | ToppyMicroServices</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Verifier-side software for session-bound delegated Agent identity. Direct-Agent v1 is supported; the ASB v2 profile is in prerelease." />
+<meta name="description" content="ASB checks that an AI agent's signed permission matches the agent on the current connection. v1 is supported; v2 is in prerelease." />
 <meta name="robots" content="index,follow,max-image-preview:large" />
 <meta name="theme-color" content="#02213b" />
 <meta name="color-scheme" content="dark" />
@@ -17,13 +17,13 @@
 
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Agents Secure Binding | ToppyMicroServices" />
-<meta property="og:description" content="Verifier-side software for session-bound delegated Agent identity. Supported v1 release and v2 prerelease, with code and tests." />
+<meta property="og:description" content="ASB checks that an AI agent's signed permission matches the agent on the current connection. v1 is supported; v2 is in prerelease." />
 <meta property="og:url" content="https://www.toppymicros.com/agents-secure-binding.html" />
 <meta property="og:site_name" content="ToppyMicroServices" />
 <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Agents Secure Binding | ToppyMicroServices" />
-<meta name="twitter:description" content="Verifier-side software for session-bound delegated Agent identity. Supported v1 release and v2 prerelease, with code and tests." />
+<meta name="twitter:description" content="ASB checks that an AI agent's signed permission matches the agent on the current connection. v1 is supported; v2 is in prerelease." />
 <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
 
 <script type="application/ld+json">
@@ -31,7 +31,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Agents Secure Binding",
-  "description": "Verifier-side software for session-bound delegated Agent identity. Direct-Agent v1 is supported; the ASB v2 profile is in prerelease.",
+  "description": "ASB checks that an AI agent's signed permission matches the agent on the current connection. v1 is supported; v2 is in prerelease.",
   "url": "https://www.toppymicros.com/agents-secure-binding.html",
   "publisher": {
     "@type": "Organization",
@@ -151,6 +151,9 @@
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
   section { padding: 72px 0; border-top: 1px solid var(--border); }
   .section-lead { max-width: 780px; margin-top: 14px; color: var(--muted); }
+  details { margin-top: 24px; }
+  summary { cursor: pointer; color: var(--accent); }
+  summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .grid { display: grid; gap: 14px; margin-top: 24px; }
   .card {
     padding: 20px;
@@ -513,50 +516,50 @@
 
   <main id="main" class="container">
     <section class="hero" aria-label="Agents Secure Binding profile">
-      <p class="eyebrow">Technical note</p>
+      <p class="eyebrow">AI agent security</p>
       <h1>Agents Secure Binding</h1>
-      <p class="lead">Verifier-side software for binding delegated Agent identity to the live session.</p>
+      <p class="lead">ASB checks whether an AI agent's signed permission applies to the current connection.</p>
       <div class="actions">
-        <a class="btn primary" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-overview.md" target="_blank" rel="noopener noreferrer">For Humans</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">For AI &amp; Reviewers</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Read the specification</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+        <a class="btn primary" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-overview.md" target="_blank" rel="noopener noreferrer">Security overview</a>
+        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding" target="_blank" rel="noopener noreferrer">Code</a>
       </div>
-      <p class="source-note"><a href="https://github.com/ToppyMicroServices/agents-secure-binding/releases/tag/v1.1.1">Direct-Agent v1.1.1</a> is supported; <a href="https://github.com/ToppyMicroServices/agents-secure-binding/releases/tag/v2.0.0-rc.2">ASB v2.0.0-rc.2</a> is a prerelease. Release tags define shipped code; <code>docs/SSOT.md</code> describes the current profile.</p>
+      <p class="source-note"><a href="https://github.com/ToppyMicroServices/agents-secure-binding/releases/tag/v1.1.1">Direct-Agent v1.1.1</a> is supported. <a href="https://github.com/ToppyMicroServices/agents-secure-binding/releases/tag/v2.0.0-rc.2">ASB v2.0.0-rc.2</a> is a prerelease.</p>
     </section>
 
     <section aria-labelledby="problem-title">
-      <p class="section-kicker">Problem</p>
-      <h2 id="problem-title">Valid evidence can still describe the wrong interaction</h2>
-      <p class="section-lead">A grant and session proof can each verify while referring to different Agents, tasks, or sessions.</p>
+      <h2 id="problem-title">A valid signature is not enough</h2>
+      <p class="section-lead">A signed permission can be genuine but belong to a different agent or task. A service needs to check that it applies to the connection it is accepting.</p>
     </section>
 
     <section aria-labelledby="approach-title">
-      <p class="section-kicker">Mechanism</p>
-      <h2 id="approach-title">Bind authority to the accepted session</h2>
-      <p class="section-lead">The authority signs an Identity Grant stating the Agent's delegated authority and scope. The authorized Agent key signs a Session Binding Statement for that exact grant and session. The endpoint key authenticates the accepted TLS or exported-authenticator endpoint.</p>
-      <p class="section-lead">The verifier authenticates both signed objects, checks the binding against the accepted session and local policy, then records replay state before accepting the identity.</p>
+      <h2 id="approach-title">The service decides what is allowed</h2>
+      <p class="section-lead">ASB verifies the agent's identity against the receiving service's rules. The service still decides whether to allow an action.</p>
+      <details>
+        <summary>How the signatures are checked</summary>
+        <p class="section-lead">The authority signs an Identity Grant defining the agent's delegated scope. The authorized agent key signs a Session Binding Statement for that grant and session. The endpoint key authenticates the accepted TLS or exported-authenticator endpoint.</p>
+        <p class="section-lead">The verifier checks both signatures, the session binding, and local policy. It records replay state before accepting the identity.</p>
+        <p class="section-lead"><a href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.md" target="_blank" rel="noopener noreferrer">Current specification</a> · <a href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">PDF</a></p>
+      </details>
     </section>
 
     <section aria-labelledby="implementation-title">
-      <p class="section-kicker">Implementation and verification</p>
-      <h2 id="implementation-title">What exists today</h2>
-      <p class="section-lead">The Go client integration includes JWT/JWS verification and session checks. CWT/COSE is covered by reference-adapter tests.</p>
-      <p class="section-lead">Negative tests cover replay, binding and key mismatches, grant substitution, local-policy checks, and cache misuse. The verification report records current coverage and remaining evaluation work.</p>
-      <div class="actions">
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-overview.md" target="_blank" rel="noopener noreferrer">For Humans</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">For AI &amp; Reviewers</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">Security tests</a>
-        <a class="btn" href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/SSOT.pdf" target="_blank" rel="noopener noreferrer">Specification PDF</a>
-      </div>
-      <p class="section-lead">ASB is an independent profile, not an adopted standard or a full protocol stack. Gateway deployments require separate route binding and runtime integration. Human-coordination and least-privilege work on the current branch remains experimental or preview; it is not included in v2.0.0-rc.2.</p>
+      <h2 id="implementation-title">Code and tests</h2>
+      <p class="section-lead">The Go integration and security tests are public. The tests check rejection of reused proofs, substituted permissions, and mismatched keys or connections.</p>
+      <p class="section-lead">ASB is an independent project, not an adopted standard or a complete security system.</p>
+      <details>
+        <summary>Implementation coverage and limits</summary>
+        <p class="section-lead">The Go integration verifies JWT/JWS and session bindings. CWT/COSE has reference-adapter tests. Tests also cover local-policy checks and cache misuse.</p>
+        <p class="section-lead">Gateways need separate route binding and runtime integration. Human-coordination and least-privilege features on the current branch remain experimental or preview; they are not in v2.0.0-rc.2. Release tags identify shipped code.</p>
+        <p class="section-lead"><a href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/live-red-team-report.md" target="_blank" rel="noopener noreferrer">Verification report</a> · <a href="https://github.com/ToppyMicroServices/agents-secure-binding/blob/main/docs/security-red-team-tests.md" target="_blank" rel="noopener noreferrer">Security tests</a></p>
+      </details>
     </section>
 
     <section aria-labelledby="session-binding-demo-title">
+      <details>
+      <summary id="session-binding-demo-title">Connection checks, step by step</summary>
       <div class="demo-toolbar">
         <div>
-          <p class="section-kicker">Flow illustration</p>
-          <h2 id="session-binding-demo-title">Matching and mismatched interactions</h2>
+          <h3>Matching and mismatched interactions</h3>
         </div>
         <button class="btn replay-btn" type="button" data-replay-session-demo>Replay</button>
       </div>
@@ -623,7 +626,7 @@
             </div>
             <ul class="check-list">
               <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>The grant signature is valid, and the grant authorizes the Agent key.</span></li>
-              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span><code>grant_hash</code> and the binding match the exact grant and current session.</span></li>
+              <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>The proof matches the exact grant and current session.</span></li>
               <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>Freshness and replay checks pass, and any required attestation is valid.</span></li>
               <li class="check-item step-4"><span class="check-mark" aria-hidden="true">✓</span><span>The bound values match local policy.</span></li>
             </ul>
@@ -631,6 +634,7 @@
           </aside>
         </div>
       </div>
+      </details>
     </section>
 
   </main>

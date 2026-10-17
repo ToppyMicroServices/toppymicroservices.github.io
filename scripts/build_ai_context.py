@@ -162,7 +162,7 @@ def markdown_links(title, items):
 
 def render_guide_markdown(catalog, full_context=False):
     company = catalog["company"]
-    title = f'{company["name"]} — Full context' if full_context else "Toppy, with sources."
+    title = f'{company["name"]} — Full context' if full_context else "Toppy — Project sources"
     parts = [f"# {md_text(title)}", DESCRIPTION,
              f'Canonical guide: {SITE}/ai/', f'Reviewed: {catalog["reviewed"]}',
              " · ".join(md_link(label, SITE + path) for label, path in FORMATS),
@@ -213,9 +213,9 @@ def render_project_html(project):
         agents = '\n      <p class="source-links"><span>Agent resources:</span> ' + " ".join(
             html_link(item["label"], item["url"]) for item in project["agent_resources"]) + "</p>"
     return f'''    <article class="project" id="{html.escape(project["id"], quote=True)}">
-      <p class="status">{html.escape(project["status"])}</p>
       <h3>{html_link(project["name"], project["url"])}</h3>
       <p class="summary">{html.escape(project["summary"])}</p>
+      <p class="status">{html.escape(project["status"])}</p>
       <p class="scope">{html.escape(project["scope_note"])}</p>
       <p class="source-links"><span>Primary sources:</span> {sources}</p>{agents}
       <p class="source-links">{html_link("Project Markdown", "/ai/projects/" + project["id"] + ".md")}</p>
@@ -300,8 +300,7 @@ def render_guide_html(catalog):
   </header>
   <main class="container" id="main">
     <section class="hero" aria-labelledby="title">
-      <p class="eyebrow">SOURCE GUIDE</p>
-      <h1 id="title">Toppy, with sources.</h1>
+      <h1 id="title">Project sources</h1>
       <p class="lead">{html.escape(DESCRIPTION)}</p>
       <p class="note">Reviewed <time datetime="{html.escape(catalog["reviewed"], quote=True)}">{html.escape(catalog["reviewed"])}</time>.</p>
       <nav class="formats" aria-label="Available formats">
