@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Licence expiry checks without ID images | Toppy</title>
-  <meta name="description" content="How the demo checks licence expiry without disclosing names, addresses or licence images, from signed credentials to proof creation and verification." />
+  <meta name="description" content="A demo of checking licence expiry without sharing a licence copy, name or address, explained through a Japanese car-sharing example." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#02213b" />
   <meta name="color-scheme" content="dark" />
@@ -18,13 +18,13 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Licence expiry checks without ID images | Toppy" />
-  <meta property="og:description" content="How the demo checks licence expiry without disclosing names, addresses or licence images, from signed credentials to proof creation and verification." />
+  <meta property="og:description" content="A demo of checking licence expiry without sharing a licence copy, name or address, explained through a Japanese car-sharing example." />
   <meta property="og:url" content="https://www.toppymicros.com/zk-license-demo-en.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Licence expiry checks without ID images | Toppy" />
-  <meta name="twitter:description" content="How the demo checks licence expiry without disclosing names, addresses or licence images, from signed credentials to proof creation and verification." />
+  <meta name="twitter:description" content="A demo of checking licence expiry without sharing a licence copy, name or address, explained through a Japanese car-sharing example." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -87,10 +87,15 @@
     .explanation p { margin: 0 0 22px; }
     .explanation .article-lead { color: var(--fg); font-size: 18px; line-height: 1.8; }
     .explanation h2 { margin: 38px 0 16px; line-height: 1.5; }
+    .explanation details { margin: 28px 0; }
+    .explanation summary { color: var(--accent); cursor: pointer; }
+    .explanation summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .explanation details[open] summary { margin-bottom: 12px; }
     .explanation ul { padding-left: 1.4em; color: var(--muted); }
     .explanation li { margin-bottom: 18px; }
     .technology-note { border-top: 1px solid var(--border); padding-top: 22px; margin-top: 32px; font-size: 13px; }
     .technology-note p { margin-bottom: 0; }
+    .technology-note p + p { margin-top: 12px; }
     strong { color: var(--fg); }
     h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.45; letter-spacing: normal; }
     .article-dates { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; }
@@ -119,23 +124,27 @@
   <main id="main" class="container">
 <section class="hero"><h1>Licence expiry checks without ID images</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">Published October 4, 2026</time><span>Updated October 17, 2026</span><a href="zk-license-demo.html" lang="ja" hreflang="ja">日本語</a></p></section>
 <article class="explanation">
-<p class="article-lead">ToppyMicroServices has published a demo of licence expiry checks without sharing the licence image, name or address. The holder creates a proof, and the recipient verifies it.</p>
+<p class="article-lead">Check licence expiry without handing over a copy of the licence. ToppyMicroServices demonstrates how to do this without sharing the driver’s name or address.</p>
+<p>Consider a car-sharing company in Japan checking a driver’s licence.</p>
 
-<h2>1. The issuer signs the credential</h2>
-<p>An issuer digitally signs a record of the driving entitlement and expiry date. The holder keeps this credential.</p>
-<p>The recipient registers a trusted issuer’s public key, which it uses to verify the signature.</p>
+<h2>1. Recreate the police licensing role</h2>
+<p>The demo uses a test program to stand in for the police licensing side. It signs a record of the driving entitlement and expiry date so its source can be checked. The driver keeps this record.</p>
 
-<h2>2. The holder creates a proof</h2>
-<p>The recipient specifies the conditions to check. In this demo, the credential must record an ordinary-car driving entitlement and an expiry date on or after the intended date of use.</p>
-<p>The holder uses the credential to create a proof of both conditions. The proof does not disclose their name, address, licence number or exact expiry date.</p>
+<h2>2. The driver sends a proof</h2>
+<p>Using the record, the driver creates a proof that the licence covers ordinary cars and has not expired on the day of use. The company receives the proof without a licence image, name or address.</p>
+<p>This uses zero-knowledge proofs, a cryptographic method for checking a condition without seeing the underlying information.</p>
 
-<h2>3. The recipient verifies the proof</h2>
-<p>The recipient checks that the proof is based on a credential signed by its trusted issuer and matches the conditions it requested. It can make this check without receiving the original values.</p>
-<p>The demo rejects a proof made for weaker conditions. Once a proof has been accepted for a request, it rejects further submissions for that request.</p>
+<h2>3. The company checks the proof</h2>
+<p>The company’s system verifies the proof and checks the required conditions. It does so without receiving the exact expiry date.</p>
 
-<h2>What the demo establishes</h2>
-<p>The checks use test credentials signed by a simulated issuer. The demo does not read real licences, authenticate the person submitting the proof, or check suspensions and revocations.</p>
+<h2>What the demo covers</h2>
+<p>This is a test-data demo. It is not connected to actual police systems and does not read real licences, authenticate drivers or check suspensions and revocations.</p>
+<details>
+<summary>Technical verification details</summary>
+<p>The verifier uses the test issuer’s preconfigured public key and compares the proof’s conditions with its stored request. It rejects proofs made for weaker conditions and further submissions against a request whose proof has already been accepted.</p>
+</details>
 <aside class="technology-note" id="technology-note" role="note" aria-label="Technical references">
+<p>In Japan, licences are issued by prefectural public safety commissions, with procedures handled at police licensing offices. <a href="https://www.npa.go.jp/policies/application/license_renewal/QA.html" target="_blank" rel="noopener noreferrer">Official guidance</a></p>
 <p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">Code and instructions</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">Validation record</a> · Built with <a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds</a></p>
 </aside>
 </article>
