@@ -48,7 +48,8 @@
     .badge.clickable{cursor:pointer;user-select:none}
     .badge.clickable:focus{outline:2px solid var(--accent);outline-offset:2px}
     .card{background:linear-gradient(180deg,var(--glass),var(--glass-2));border:1px solid rgba(255,255,255,0.03);border-radius:16px;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
-    .panel{display:grid;gap:12px;padding:16px;margin:16px 0}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .panel{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:16px;margin:16px 0}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .panel>.results{min-width:0;overflow-x:auto}
     .btn{appearance:none;border:1px solid var(--border);background:#141c27;color:var(--fg);padding:.55rem .8rem;border-radius:10px;cursor:pointer;transition:all .15s ease}
     .btn:hover{border-color:#2a3748}
   .lang-toggle{display:inline-flex;gap:8px;align-items:center;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:rgba(15,23,34,0.6);padding:4px;flex:0 0 auto;flex-shrink:0}
@@ -183,18 +184,8 @@
     </header>
 
     <section class="card scope" aria-labelledby="scope-h">
-      <h3 id="scope-h">Scope</h3>
-      <ul>
-        <li><strong>Assumed Level</strong>: Beginner in finance; aims to read materials by understanding terms.</li>
-        <li><strong>Topics Covered</strong>:
-          <ul>
-            <li>Basics of ECB / BIS / WDI / FRED</li>
-            <li>ECB BSI concept of Outstanding (stock) and sector breakdowns</li>
-            <li>M3, loan stocks, policy rates, spreads, liquidity</li>
-          </ul>
-        </li>
-        <li><strong>Out of Scope</strong>: Advanced derivatives, detailed accounting entries, Basel formula derivations.</li>
-      </ul>
+      <h3 id="scope-h">About this quiz</h3>
+      <p>Learn the basic terms used in financial statistics through 18 beginner questions. Topics include balances, policy rates and liquidity.</p>
     </section>
 
     <section class="card panel" aria-labelledby="ops-h">
@@ -209,7 +200,7 @@
       <div class="row">
         <button class="btn ghost" id="showAll">Show All Explanations</button>
         <button class="btn ghost" id="hideAll">Hide All Explanations</button>
-        <button class="btn primary" id="regen" data-results-target="results-panel-top">Regenerate Results Table</button>
+        <button class="btn primary" id="regen" data-results-target="results-panel-top">Update results</button>
         <button class="btn success" id="showAnswersScore" data-results-target="results-panel-top">Show Answers & Score</button>
       </div>
       <p class="muted" id="usage-note">Learning Mode shows an explanation after each answer. Select “Show Answers &amp; Score” to check your results.</p>
@@ -217,7 +208,7 @@
     </section>
 
     <details class="cheatsheet card">
-      <summary>Cheat Sheet: Quick Reference</summary>
+      <summary>Quick reference</summary>
       <div class="sheet">
         <ul>
           <li><strong>Outstanding</strong>: End-period amount still outstanding (stock).</li>
@@ -621,7 +612,6 @@
       </div>
 
     <footer class="muted" style="margin-top:24px">
-      <p>This page is a <em>LEARNING FIRST</em> drill to raise <strong id="footer-skill">ECB/BIS Finance Terms</strong> to “<em id="footer-goal">Explain key terms in your own words</em>” level. Depth of understanding over raw score.</p>
       <p style="margin:.4rem 0 0"><span id="footer-brand"></span> <span id="copyright"></span></p>
     </footer>
   </div>

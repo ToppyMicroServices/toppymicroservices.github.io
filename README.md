@@ -63,6 +63,8 @@ Every entry in `news.html` has a stable ID and an external primary source. New o
 
 Write for a busy human reader. Start with what the work does, use short headlines, and put the main fact before implementation details. Avoid repeated introductions, duplicate navigation, and examples that add no useful distinction. Keep evidence and material limits close to the claim. Detailed mechanisms belong in linked documentation or clearly labelled disclosures; required instructions and educational reasoning must remain available. Apply the same standard to English and Japanese pages.
 
+For articles, check the order by reading the headline and first paragraph alone: readers should know what happened or what is available now. Put supporting facts before background and plans. News briefs should name the project and its main change before listing technical details. Tutorials, reference pages, and policies should keep the structure their readers need. Automated checks do not establish that prose meets this editorial standard.
+
 The YOLOZU HTML docs include a site-level editorial pass over the exported introductions and headings. Commands, schemas, and source provenance remain from the upstream export. Preserve these wording changes when refreshing the export, or carry them into the upstream generator first.
 
 ## AI-readable Context
