@@ -211,7 +211,7 @@ class HomepageTests(unittest.TestCase):
                 "datetime": "2026-10-04",
                 "date": "October 4, 2026",
                 "title": "Licence expiry checks without ID images",
-                "body": "This demo checks licence expiry without sharing names, addresses or licence images. It uses fictional records and rejects weakened or reused proofs.",
+                "body": "ToppyMicroServices has published a demo for checking licence expiry without sharing names, addresses or licence images. It uses fictional records.",
                 "link_text": "Source and verification",
                 "related_links": [
                     {"attrs": {"href": "zk-license-demo.html", "lang": "ja", "hreflang": "ja"}, "text": "日本語"},
@@ -222,16 +222,16 @@ class HomepageTests(unittest.TestCase):
                 "source": "https://github.com/ToppyMicroServices/YOLOZU/releases/tag/v4.11.0",
                 "datetime": "2026-09-28",
                 "date": "September 28, 2026",
-                "title": "YOLOZU v4.11.0: release checks in GitHub Actions",
-                "body": "A reusable GitHub Action now runs release checks from versioned rules. When a verification pack is produced, the Action saves it with the decision. Optional MCP integration now uses the official Python SDK v2.",
+                "title": "YOLOZU v4.11.0 automates release checks",
+                "body": "YOLOZU, a toolkit for comparing vision models, can run release checks in GitHub Actions. A reusable Action applies versioned rules and saves any verification pack with the decision.",
                 "link_text": "Release notes and source",
             },
             "beads-git-graph-v0-9-2": {
                 "source": "https://github.com/ToppyMicroServices/beads-git-graph/releases/tag/v0.9.2",
                 "datetime": "2026-09-26",
                 "date": "September 26, 2026",
-                "title": "Beads Git Graph v0.9.2: task limits",
-                "body": "Git, Beads and helper processes now have runtime and captured-output limits. Closing the extension host cancels provider requests. Only a limited number of session IDs are retained.",
+                "title": "Beads Git Graph v0.9.2 limits task runtime",
+                "body": "The VS Code extension now limits how long Git, Beads and helper tasks can run and how much output it keeps. Closing the extension host cancels provider requests.",
                 "link_text": "Release notes and verification",
             },
             "eiml-2026-poster": {
@@ -239,13 +239,16 @@ class HomepageTests(unittest.TestCase):
                 "datetime": "2026-07",
                 "date": "July 2026",
                 "title": "Research poster accepted at EIML 2026",
-                "body": "Our founder’s paper, “Stable Miscalibration in Large Language Models: A Practical View of High-Confidence Errors,” was accepted as a poster at the EIML workshop, ICML 2026.",
+                "body": "Our founder’s paper was accepted as a poster at the EIML workshop at ICML 2026. Its title is “Stable Miscalibration in Large Language Models: A Practical View of High-Confidence Errors.”",
                 "link_text": "Official workshop listing",
             },
         }
         self.assertEqual(len(entries), len(approved))
         self.assertEqual({entry["attrs"].get("data-entry-id") for entry in entries}, set(approved))
-        self.assertIn("We publish an update only when readers can inspect the released artifact or primary source.", text)
+        self.assertIn(
+            "A technical update must identify a specific Toppy contribution that readers can inspect through a released artifact or primary source.",
+            (ROOT / "README.md").read_text(encoding="utf-8"),
+        )
         for entry_id, expected in approved.items():
             with self.subTest(entry_id=entry_id):
                 entry = next(item for item in entries if item["attrs"].get("data-entry-id") == entry_id)

@@ -46,21 +46,19 @@
 
 <p>Use an agent to check prediction files and evaluate them against labeled data. Start with a local example, then connect an MCP client.</p>
 
-<p>These docs use source version 4.11.0. Check the installed CLI and MCP schemas before running commands; the installed package may differ. Source links can change. This build records its sources in source_sha256 and provenance.json.</p>
-
-<h2>What to expect</h2>
-
-<ul><li>Do not infer model quality from a synthetic proof or a successful dry run. Real COCO metrics require the coco extra and labeled inputs.</li><li>Do not treat registered MCP tools as guaranteed execution. Runtime, dependency, data, and permission requirements still apply.</li><li>The packaged adaptive image service abstains until CNN license review, quality qualification, and activation are completed separately. It is not a ready-to-run hosted detector.</li><li>The local OpenAI plugin is not a public ChatGPT directory listing. Provider authentication, hosting, and attachment handoff are separate deployment work.</li></ul>
-
 <h2>First successful evaluation</h2>
 
 <p>The CPU tutorial creates sample inputs, validates them, and runs COCOeval. Installation needs network access; the example needs no model or dataset download.</p>
+
+<p>Do not infer model quality from a synthetic proof or a successful dry run. Real COCO metrics require the coco extra and labeled inputs.</p>
 
 <ul><li><a href="https://www.toppymicros.com/yolozu/docs/start.html">30-minute tutorial</a></li><li><a href="https://www.toppymicros.com/yolozu/docs/start.md">Tutorial Markdown</a></li></ul>
 
 <h2>Inspect before connecting an MCP client</h2>
 
 <p>After the isolated installation in the 30-minute path, install the optional MCP extra in that same environment. These commands exit after writing local discovery and sample files; they do not call a provider API or download a model.</p>
+
+<p>Check the installed CLI and MCP schemas before running commands; the installed package may differ from these docs.</p>
 
 <pre><code>python -m pip install &quot;yolozu[mcp]&quot;
 mkdir -p reports
@@ -70,6 +68,8 @@ yolozu-mcp --sample-generate-config &gt; reports/ai_generate_config.json
 yolozu-mcp --sample-review-config reports/ai_generate_config.json &gt; reports/ai_review_config.json</code></pre>
 
 <p>Inspect the returned IDs and review result. The guaranteed-tool filter narrows this discovery output, not the server&#x27;s runtime surface or filesystem permissions.</p>
+
+<p>Do not treat registered MCP tools as guaranteed execution. Runtime, dependency, data, and permission requirements still apply.</p>
 
 <ul><li><a href="https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/ai_first.md">Workflow source</a></li></ul>
 
@@ -81,6 +81,8 @@ yolozu-mcp --sample-review-config reports/ai_generate_config.json &gt; reports/a
 yolozu-mcp --transport stdio --surface image-service</code></pre>
 
 <p>Use the full surface only when the broader tools are intended. The image-service alternative exposes only capabilities, asset upload, submission, status, and cancellation. Ask for capabilities first; never reinterpret abstention as successful inference.</p>
+
+<p>The packaged adaptive image service abstains until CNN license review, quality qualification, and activation are completed separately. It is not a ready-to-run hosted detector.</p>
 
 <ul><li><a href="https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/image_service_mcp.md">Workflow source</a></li></ul>
 
@@ -95,6 +97,8 @@ yolozu-mcp --transport stdio --surface image-service</code></pre>
 <p>Expected: Use image_service_capabilities on the image-service connection. Do not upload an image or submit execution.</p>
 
 <h2>Machine-readable references</h2>
+
+<p>These docs use source version 4.11.0. Source links can change. This build records its sources in source_sha256 and provenance.json.</p>
 
 <ul><li><a href="https://www.toppymicros.com/yolozu/docs/capabilities.json">Capability catalog</a></li><li><a href="https://www.toppymicros.com/yolozu/docs/llms.txt">LLM index</a></li></ul>
 
@@ -136,7 +140,7 @@ yolozu-mcp --transport stdio --surface image-service</code></pre>
 
 <ul><li><a href="https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/openai_image_service_plugin.md">Local OpenAI plugin</a></li></ul>
 
-<p>Prepare a local plugin from a reviewed checkout; not a public app listing.</p>
+<p>Prepare a local plugin from a reviewed checkout. It is not a public ChatGPT directory listing. Provider authentication, hosting, and attachment handoff are separate deployment work.</p>
 
 <ul><li><a href="https://raw.githubusercontent.com/ToppyMicroServices/YOLOZU/main/docs/production_readiness.md">Readiness and maturity</a></li></ul>
 
