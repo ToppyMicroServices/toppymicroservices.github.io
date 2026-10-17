@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>免許証を見せずに期限確認 | Toppy</title>
-  <meta name="description" content="ToppyMicroServicesは、免許証の画像を渡さずに有効期限内であることを示すデモを公開している。架空の免許情報を使う試作。" />
+  <meta name="description" content="免許証の画像や氏名・住所を渡さずに、有効期限内であることを示すデモ。資格情報の準備、証明の作成、相手の検証を順に説明する。" />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#02213b" />
   <meta name="color-scheme" content="dark" />
@@ -16,15 +16,15 @@
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="article" />
   <meta property="og:title" content="免許証を見せずに期限確認 | Toppy" />
-  <meta property="og:description" content="ToppyMicroServicesは、免許証の画像を渡さずに有効期限内であることを示すデモを公開している。架空の免許情報を使う試作。" />
+  <meta property="og:description" content="免許証の画像や氏名・住所を渡さずに、有効期限内であることを示すデモ。資格情報の準備、証明の作成、相手の検証を順に説明する。" />
   <meta property="og:url" content="https://www.toppymicros.com/zk-license-demo.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="免許証を見せずに期限確認 | Toppy" />
-  <meta name="twitter:description" content="ToppyMicroServicesは、免許証の画像を渡さずに有効期限内であることを示すデモを公開している。架空の免許情報を使う試作。" />
+  <meta name="twitter:description" content="免許証の画像や氏名・住所を渡さずに、有効期限内であることを示すデモ。資格情報の準備、証明の作成、相手の検証を順に説明する。" />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -85,6 +85,8 @@
     }
     .explanation { max-width: 780px; padding-bottom: 64px; }
     .explanation p { margin: 0 0 22px; }
+    .explanation .article-lead { color: var(--fg); font-size: 18px; line-height: 1.8; }
+    html[lang="ja"] .explanation { line-height: 1.9; }
     .explanation h2 { margin: 38px 0 16px; line-height: 1.5; }
     .explanation ul { padding-left: 1.4em; color: var(--muted); }
     .explanation li { margin-bottom: 18px; }
@@ -119,8 +121,22 @@
   <main id="main" class="container">
 <section class="hero"><h1>免許証を見せずに期限確認</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">2026年10月4日公開</time><span>2026年10月17日更新</span><a href="zk-license-demo-en.html" lang="en" hreflang="en">English</a></p></section>
 <article class="explanation">
-<p>ToppyMicroServicesは、免許証の画像を渡さずに有効期限内であることを示すデモを公開している。架空の免許情報を使い、利用予定日に期限が切れていないかを確認する。</p>
-<p>氏名や住所、有効期限の日付そのものは相手に渡さない。実際の免許証の読み取りや本人確認、停止・取消しの確認には対応していない。</p>
+<p class="article-lead">ToppyMicroServicesは、免許証の画像や氏名・住所を渡さずに、有効期限内であることを示すデモを公開している。利用者が証明データを作り、相手はその証明を検証する。</p>
+
+<h2>1. 発行者が情報に署名する</h2>
+<p>発行者は、運転資格や有効期限を記した電子データに電子署名を付ける。利用者は、この「資格情報」を手元に持つ。</p>
+<p>確認する側は、信頼する発行者の署名を確かめるための公開鍵を、あらかじめ登録しておく。</p>
+
+<h2>2. 利用者が証明を作る</h2>
+<p>確認する側が、確かめたい条件を指定する。このデモでは「普通車の運転資格があり、利用する日には期限が切れていないこと」が条件となる。</p>
+<p>利用者側は、手元の資格情報から、両方の条件を満たす証明データを作る。氏名や住所、免許証番号、有効期限の日付そのものは送らない。</p>
+
+<h2>3. 相手が証明を確かめる</h2>
+<p>相手は、事前に信頼した発行者の署名に基づく証明か、指定した条件を満たすかを検証する。元の値を受け取らずに判定できる。</p>
+<p>このデモは、指定より緩い条件で作った証明を拒否する。同じ確認依頼に対して、証明を繰り返し受け付けることもない。</p>
+
+<h2>検証した範囲</h2>
+<p>検証には、模擬発行者が署名したテスト用の資格情報を使っている。実際の免許証の読み取りや本人確認、停止・取消しの照会は行わない。</p>
 <aside class="technology-note" id="technology-note" role="note" aria-label="技術資料">
 <p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">コードと使い方</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">検証記録</a> · 使用技術：<a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds</a></p>
 </aside>

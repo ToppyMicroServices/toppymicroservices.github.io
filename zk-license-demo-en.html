@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Licence expiry checks without ID images | Toppy</title>
-  <meta name="description" content="ToppyMicroServices has published a demo for checking licence expiry without sharing the licence image. It uses fictional records." />
+  <meta name="description" content="How the demo checks licence expiry without disclosing names, addresses or licence images, from signed credentials to proof creation and verification." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#02213b" />
   <meta name="color-scheme" content="dark" />
@@ -16,15 +16,15 @@
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="article" />
   <meta property="og:title" content="Licence expiry checks without ID images | Toppy" />
-  <meta property="og:description" content="ToppyMicroServices has published a demo for checking licence expiry without sharing the licence image. It uses fictional records." />
+  <meta property="og:description" content="How the demo checks licence expiry without disclosing names, addresses or licence images, from signed credentials to proof creation and verification." />
   <meta property="og:url" content="https://www.toppymicros.com/zk-license-demo-en.html" />
   <meta property="og:site_name" content="ToppyMicroServices" />
   <meta property="og:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Licence expiry checks without ID images | Toppy" />
-  <meta name="twitter:description" content="ToppyMicroServices has published a demo for checking licence expiry without sharing the licence image. It uses fictional records." />
+  <meta name="twitter:description" content="How the demo checks licence expiry without disclosing names, addresses or licence images, from signed credentials to proof creation and verification." />
   <meta name="twitter:image" content="https://www.toppymicros.com/og-brand-clean.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -85,6 +85,7 @@
     }
     .explanation { max-width: 780px; padding-bottom: 64px; }
     .explanation p { margin: 0 0 22px; }
+    .explanation .article-lead { color: var(--fg); font-size: 18px; line-height: 1.8; }
     .explanation h2 { margin: 38px 0 16px; line-height: 1.5; }
     .explanation ul { padding-left: 1.4em; color: var(--muted); }
     .explanation li { margin-bottom: 18px; }
@@ -118,8 +119,22 @@
   <main id="main" class="container">
 <section class="hero"><h1>Licence expiry checks without ID images</h1><p class="hero-intro article-dates"><time datetime="2026-10-04">Published October 4, 2026</time><span>Updated October 17, 2026</span><a href="zk-license-demo.html" lang="ja" hreflang="ja">日本語</a></p></section>
 <article class="explanation">
-<p>ToppyMicroServices has published a demo for checking licence expiry without sharing the licence image. It uses fictional records to show that a licence has not expired on the planned use date.</p>
-<p>Names, addresses and exact expiry dates are not disclosed. The demo does not read real licences, verify identity or check suspensions and cancellations.</p>
+<p class="article-lead">ToppyMicroServices has published a demo of licence expiry checks without sharing the licence image, name or address. The holder creates a proof, and the recipient verifies it.</p>
+
+<h2>1. The issuer signs the credential</h2>
+<p>An issuer digitally signs a record of the driving entitlement and expiry date. The holder keeps this credential.</p>
+<p>The recipient registers a trusted issuer’s public key, which it uses to verify the signature.</p>
+
+<h2>2. The holder creates a proof</h2>
+<p>The recipient specifies the conditions to check. In this demo, the credential must record an ordinary-car driving entitlement and an expiry date on or after the intended date of use.</p>
+<p>The holder uses the credential to create a proof of both conditions. The proof does not disclose their name, address, licence number or exact expiry date.</p>
+
+<h2>3. The recipient verifies the proof</h2>
+<p>The recipient checks that the proof is based on a credential signed by its trusted issuer and matches the conditions it requested. It can make this check without receiving the original values.</p>
+<p>The demo rejects a proof made for weaker conditions. Once a proof has been accepted for a request, it rejects further submissions for that request.</p>
+
+<h2>What the demo establishes</h2>
+<p>The checks use test credentials signed by a simulated issuer. The demo does not read real licences, authenticate the person submitting the proof, or check suspensions and revocations.</p>
 <aside class="technology-note" id="technology-note" role="note" aria-label="Technical references">
 <p><a href="https://github.com/ToppyMicroServices/zk-license-demo" target="_blank" rel="noopener noreferrer">Code and instructions</a> · <a href="https://github.com/ToppyMicroServices/zk-license-demo/blob/c0211bc5a2e2aed10d948998d9725d2218a5b151/docs/validation.md" target="_blank" rel="noopener noreferrer">Validation record</a> · Built with <a href="https://github.com/anoncreds/anoncreds-rs" target="_blank" rel="noopener noreferrer">AnonCreds</a></p>
 </aside>
